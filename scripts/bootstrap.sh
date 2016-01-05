@@ -7,7 +7,6 @@ then
   then
     tar -xpf /home/${container_login}.tar --directory /home
     sudo rm /home/${container_login}.tar
-    sudo rm /etc/profile.d/bootstrap.sh
     touch ${tag_file}
     chmod 400 ${tag_file}
   fi
@@ -17,5 +16,7 @@ else
   then
     sudo rm /home/${container_login}.tar
   fi
-  sudo rm /etc/profile.d/bootstrap.sh
 fi
+sudo chown ${container_login}:users /home/${container_login}
+sudo chmod 700 /home/${container_login}
+sudo rm /etc/profile.d/bootstrap.sh
