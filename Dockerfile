@@ -11,6 +11,9 @@ ENV bosh_cli_version 1.3167.0
 ENV bosh_gen_version 0.22.0
 ENV cf_uaac_version 3.1.5
 
+# ENV http_proxy 'http://192.168.10.254:3128'
+# ENV https_proxy 'http://192.168.10.254:3128'
+
 # Add wget package
 RUN apt-get update && \
 	apt-get install -y wget
@@ -83,7 +86,7 @@ RUN wget -O /tmp/cf.deb "https://cli.run.pivotal.io/stable?release=debian64&vers
 # Create bosh user
 RUN useradd -m -g users -G sudo,rvm -s /bin/bash ${container_login} && \
 	echo "${container_login} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${container_login} && \
-	echo '${container_login}:${container_password}' | chpasswd && \
+	echo "${container_login}:${container_password}" | chpasswd && \
 	chage -d 0 ${container_login}
 
 # Install certstrap
