@@ -3,13 +3,14 @@ USER root
 
 ENV container_login bosh
 ENV container_password welcome
-ENV bosh_init_version 0.0.80
-ENV cf_cli_version 6.14.0
-ENV spiff_version 1.0.7
-ENV bundler_version 1.11.2
+
 ENV bosh_cli_version 1.3167.0
+ENV bosh_init_version 0.0.80
 ENV bosh_gen_version 0.22.0
+ENV spiff_version 1.0.7
+ENV cf_cli_version 6.14.0
 ENV cf_uaac_version 3.1.5
+ENV bundler_version 1.11.2
 
 # ENV http_proxy 'http://192.168.10.254:3128'
 # ENV https_proxy 'http://192.168.10.254:3128'
