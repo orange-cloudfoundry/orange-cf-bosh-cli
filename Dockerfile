@@ -105,7 +105,8 @@ WORKDIR /home/${container_login}
 RUN mkdir deployments releases git .ssh && \
 	ln -s /tmp tmp && \
 	touch .ssh/authorized_keys && \
-	chmod 600 .ssh/authorized_keys
+	chmod 600 .ssh/authorized_keys \
+	mkdir -p /data
 USER root
 RUN chmod 700 /home/${container_login}/.ssh
 WORKDIR /home
@@ -122,8 +123,10 @@ RUN tar -cvf ${container_login}.tar \
 	mkdir ${container_login} && \
 	chown ${container_login}:users ${container_login}
 ADD	scripts/bootstrap.sh /etc/profile.d/
+ADD	scripts/homedir.sh /etc/profile.d/
 RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login}/" && \
-    chmod 755 /etc/profile.d/bootstrap.sh
+    chmod 755 /etc/profile.d/bootstrap.sh && \
+	chmod 755 /etc/profile.d/homedir.sh
 
 # Secure root login
 RUN echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd
