@@ -47,8 +47,8 @@ director_uuid = 'fa2a0823-b875-4fe3-9bf1-3de6a9bdddb8'
 deployment_name = 'bosh-cli'
 static_ip = '10.203.7.100'
 dns_servers = '10.203.6.102'
-http_proxy = 'http://elpaaso-squid-ige.internal-qa.paas:3128'
-https_proxy = 'http://elpaaso-squid-ige.internal-qa.paas:3128'
+http_proxy = 'http:/proxy:3128'
+https_proxy = 'http://proxy:3128'
 %>
 ---
 name: <%= deployment_name %>
