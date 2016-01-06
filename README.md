@@ -42,7 +42,8 @@ Another option is to deploy the container threw the "Docker Bosh Release" (https
 In the following example, we deploy 4 instances of the container.
 
 Example of bosh deployment manifest:
-```<%
+```
+<%
 director_uuid = 'fa2a0823-b875-4fe3-9bf1-3de6a9bdddb8'
 deployment_name = 'bosh-cli'
 static_ip = '10.203.7.100'
@@ -120,7 +121,7 @@ properties:
     https_proxy: "<%= https_proxy %>"
   containers:
   - name: &user1_bosh_cli user1_bosh_cli_2222
-    image: user1/orange-cf-bosh-cli
+    image: fbonelle/orange-cf-bosh-cli
     hostname: *user1_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
@@ -130,7 +131,7 @@ properties:
     bind_volumes:
     - /home/bosh
   - name: &user2_bosh_cli user2_bosh_cli_2223
-    image: user1/orange-cf-bosh-cli
+    image: fbonelle/orange-cf-bosh-cli
     hostname: *user2_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
@@ -140,7 +141,7 @@ properties:
     bind_volumes:
     - /home/bosh
   - name: &user3_bosh_cli user3_bosh_cli_2224
-    image: user1/orange-cf-bosh-cli
+    image: fbonelle/orange-cf-bosh-cli
     hostname: *user3_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
@@ -150,7 +151,7 @@ properties:
     bind_volumes:
     - /home/bosh
   - name: &user4_bosh_cli user4_bosh_cli_2225
-    image: user1/orange-cf-bosh-cli
+    image: fbonelle/orange-cf-bosh-cli
     hostname: *user4_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
