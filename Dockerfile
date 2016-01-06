@@ -17,7 +17,8 @@ ENV bundler_version 1.11.2
 
 # Add wget package
 RUN apt-get update && \
-	apt-get install -y wget
+	apt-get install -y wget && \
+	apt-get clean
 
 # Update of image and install missing packages
 RUN echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" > /etc/apt/sources.list.d/git-core-ppa-trusty.list && \
@@ -43,7 +44,8 @@ RUN echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" > /etc/a
 	  libmysqlclient-dev \
 	  libssl-dev \
 	  zlib1g-dev && \
-	apt-get upgrade -y
+	apt-get upgrade -y && \
+	apt-get clean
 
 # We setup SSH access
 RUN mkdir -p /var/run/sshd
@@ -130,9 +132,6 @@ RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login
 
 # Secure root login
 RUN echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd
-
-# Final cleanup
-RUN apt-get clean
 
 # Launch sshd daemon
 EXPOSE 22
