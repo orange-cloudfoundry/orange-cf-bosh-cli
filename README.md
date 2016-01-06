@@ -31,7 +31,7 @@ Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
 If you have a simple docker host, launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run -d -p 2222:22 cf-bosh-cli</code>
 
-Then, log into the container threw ssh: <code>ssh -p 2222 bosh@127.0.0.1</code>
+Then, log into the container with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code>
 
 The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you can add your ssh public key into the file ~/.ssh/authorized_keys.
 
@@ -161,7 +161,7 @@ properties:
     - /home/bosh
 ```
 
-Then, log into the container you want threw ssh: <code>ssh -p 2222 bosh@127.0.0.1</code> to log into first container.
+Then, log into the container you want with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code> to log into first container.
 
 The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you can add your ssh public key into the file ~/.ssh/authorized_keys.
 
