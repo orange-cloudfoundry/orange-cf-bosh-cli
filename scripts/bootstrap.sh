@@ -1,5 +1,6 @@
 # This script should be placed in /etc/profile.d
 # It allows the homedir to be a docker volume
+container_login=<container_login>
 tag_file=/home/${container_login}/.homedir_already_initalized.donotdelete
 if [ ! -f ${tag_file} ]
 then
