@@ -12,9 +12,6 @@ ENV cf_cli_version 6.14.1
 ENV cf_uaac_version 3.1.5
 ENV bundler_version 1.11.2
 
-# ENV http_proxy 'http://192.168.10.254:3128'
-# ENV https_proxy 'http://192.168.10.254:3128'
-
 # Add wget package
 RUN apt-get update && \
     apt-get install -y wget && \
@@ -59,7 +56,8 @@ RUN command curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
     curl -L https://get.rvm.io | bash -s stable && \
     /bin/bash -l -c "rvm requirements" && \
     /bin/bash -l -c "rvm install 2.2" && \
-    /bin/bash -l -c "rvm use 2.2"
+    /bin/bash -l -c "rvm use 2.2" && \
+    apt-get clean
 
 # Install bundler, bosh, bosh-gen & uaa client (uaac)
 RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc -v ${bundler_version}" && \ 
@@ -107,9 +105,14 @@ WORKDIR /home/${container_login}
 RUN mkdir deployments releases git .ssh && \
     ln -s /tmp tmp && \
     touch .ssh/authorized_keys && \
+    chmod 700 .ssh && \
     chmod 600 .ssh/authorized_keys
 USER root
-RUN chmod 700 /home/${container_login}/.ssh && \
+ADD scripts/bootstrap.sh /etc/profile.d/
+ADD scripts/homedir.sh /etc/profile.d/
+RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login}/" && \
+    chmod 755 /etc/profile.d/bootstrap.sh && \
+    chmod 755 /etc/profile.d/homedir.sh && \
     mkdir -p /data && \
     chown ${container_login}:users /data
 WORKDIR /home
@@ -124,12 +127,8 @@ RUN tar -cvf ${container_login}.tar \
              ${container_login}/go && \
     rm -Rf ${container_login} && \
     mkdir ${container_login} && \
-    chown ${container_login}:users ${container_login}
-ADD scripts/bootstrap.sh /etc/profile.d/
-ADD scripts/homedir.sh /etc/profile.d/
-RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login}/" && \
-    chmod 755 /etc/profile.d/bootstrap.sh && \
-    chmod 755 /etc/profile.d/homedir.sh
+    chown ${container_login}:users ${container_login} && \
+    chmod 700 ${container_login}
 
 # Secure root login
 RUN echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd
