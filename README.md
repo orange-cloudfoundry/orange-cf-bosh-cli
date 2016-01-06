@@ -21,7 +21,7 @@ The container expose ssh port (22).
 Pull the image from docker hub: <code>docker pull fbonelle/orange-cf-bosh-cli</code>
 
 ### How to build it?
-First, clone this repository: <code>git clone https://github.com/Orange-OpenSource/elpaaso-sandbox-service.git</code>
+First, clone this repository: <code>git clone https://github.com/Orange-OpenSource/orange-cf-bosh-cli.git</code>
 
 Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
