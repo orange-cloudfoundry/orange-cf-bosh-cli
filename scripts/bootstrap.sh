@@ -21,4 +21,6 @@ else
 fi
 sudo chown ${container_login}:users /home/${container_login}
 sudo chmod 700 /home/${container_login}
+sudo chown ${container_login}:users /data
+sudo chmod 700 /home/${container_login}
 sudo rm /etc/profile.d/bootstrap.sh
