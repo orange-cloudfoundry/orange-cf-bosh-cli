@@ -39,7 +39,10 @@ The password at first logon is "welcome". Then, you have to change your password
 
 Another option is to deploy the container threw the "Docker Bosh Release" (https://github.com/cloudfoundry-community/docker-boshrelease).
 
-In the following example, we deploy 4 instances of the container.
+In the following example:
+* We deploy 4 instances of the container.
+* The homedirectory of the bosh account is a private docker volume.
+* The directory /data is a shared docker volume (from the container called "data_container").
 
 Example of bosh deployment manifest:
 ```
@@ -120,6 +123,10 @@ properties:
     http_proxy: "<%= http_proxy %>"
     https_proxy: "<%= https_proxy %>"
   containers:
+  - name: data_container
+    image: fbonelle/orange-cf-bosh-cli
+    bind_volumes:
+    - /data
   - name: &user1_bosh_cli user1_bosh_cli_2222
     image: fbonelle/orange-cf-bosh-cli
     hostname: *user1_bosh_cli
@@ -130,6 +137,10 @@ properties:
     - "2222:22"
     bind_volumes:
     - /home/bosh
+    depends_on:
+    - data_container
+    volumes_from:
+    - data_container
   - name: &user2_bosh_cli user2_bosh_cli_2223
     image: fbonelle/orange-cf-bosh-cli
     hostname: *user2_bosh_cli
@@ -140,6 +151,10 @@ properties:
     - "2223:22"
     bind_volumes:
     - /home/bosh
+    depends_on:
+    - data_container
+    volumes_from:
+    - data_container
   - name: &user3_bosh_cli user3_bosh_cli_2224
     image: fbonelle/orange-cf-bosh-cli
     hostname: *user3_bosh_cli
@@ -150,6 +165,10 @@ properties:
     - "2224:22"
     bind_volumes:
     - /home/bosh
+    depends_on:
+    - data_container
+    volumes_from:
+    - data_container
   - name: &user4_bosh_cli user4_bosh_cli_2225
     image: fbonelle/orange-cf-bosh-cli
     hostname: *user4_bosh_cli
@@ -160,6 +179,10 @@ properties:
     - "2225:22"
     bind_volumes:
     - /home/bosh
+    depends_on:
+    - data_container
+    volumes_from:
+    - data_container
 ```
 
 Then, log into the container you want with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code> to log into first container.
