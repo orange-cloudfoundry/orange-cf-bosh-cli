@@ -107,10 +107,11 @@ WORKDIR /home/${container_login}
 RUN mkdir deployments releases git .ssh && \
 	ln -s /tmp tmp && \
 	touch .ssh/authorized_keys && \
-	chmod 600 .ssh/authorized_keys && \
-	mkdir -p /data
+	chmod 600 .ssh/authorized_keys
 USER root
-RUN chmod 700 /home/${container_login}/.ssh
+RUN chmod 700 /home/${container_login}/.ssh && \
+	mkdir -p /data && \
+	chown ${container_login}:users /data
 WORKDIR /home
 RUN tar -cvf ${container_login}.tar \
 			 ${container_login}/deployments \
