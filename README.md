@@ -53,6 +53,8 @@ static_ip = '10.203.7.100'
 dns_servers = '10.203.6.102'
 http_proxy = 'http:/proxy:3128'
 https_proxy = 'http://proxy:3128'
+docker_image = 'fbonelle/orange-cf-bosh-cli'
+docker_tag = 'latest'
 %>
 ---
 name: <%= deployment_name %>
@@ -124,11 +126,11 @@ properties:
     https_proxy: "<%= https_proxy %>"
   containers:
   - name: data_container
-    image: fbonelle/orange-cf-bosh-cli
+    image: <%= docker_image %>:<%= docker_tag %>
     bind_volumes:
     - /data
   - name: &user1_bosh_cli user1_bosh_cli_2222
-    image: fbonelle/orange-cf-bosh-cli
+    image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user1_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
@@ -142,7 +144,7 @@ properties:
     volumes_from:
     - data_container
   - name: &user2_bosh_cli user2_bosh_cli_2223
-    image: fbonelle/orange-cf-bosh-cli
+    image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user2_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
@@ -156,7 +158,7 @@ properties:
     volumes_from:
     - data_container
   - name: &user3_bosh_cli user3_bosh_cli_2224
-    image: fbonelle/orange-cf-bosh-cli
+    image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user3_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
@@ -170,7 +172,7 @@ properties:
     volumes_from:
     - data_container
   - name: &user4_bosh_cli user4_bosh_cli_2225
-    image: fbonelle/orange-cf-bosh-cli
+    image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user4_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
