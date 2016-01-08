@@ -12,13 +12,10 @@ ENV cf_cli_version 6.14.1
 ENV cf_uaac_version 3.1.5
 ENV bundler_version 1.11.2
 
-# Add wget package
+# Add wget package, update the image and install missing packages
 RUN apt-get update && \
     apt-get install -y wget && \
-    apt-get clean
-
-# Update of image and install missing packages
-RUN echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" > /etc/apt/sources.list.d/git-core-ppa-trusty.list && \
+    echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" > /etc/apt/sources.list.d/git-core-ppa-trusty.list && \
     wget --quiet -O- "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA1715D88E1DF1F24" | sudo apt-key add - && \
     echo "deb http://ppa.launchpad.net/ubuntu-lxc/lxd-stable/ubuntu trusty main" > /etc/apt/sources.list.d/lxd-stable.list && \
     wget --quiet -O- "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD5495F657635B973" | sudo apt-key add - && \
@@ -42,47 +39,30 @@ RUN echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" > /etc/a
       libssl-dev \
       zlib1g-dev && \
     apt-get upgrade -y && \
-    apt-get clean
+    apt-get clean && \
+    /bin/bash -c "echo \"export GOPATH=*HOME/go\" | tr \"*\" \"$\" > /etc/profile.d/go.sh" && \
+    /bin/bash -c "echo \"export PATH=*PATH:*GOPATH/bin\" | tr \"*\" \"$\" >> /etc/profile.d/go.sh" && \
+    chmod 755 /etc/profile.d/go.sh
 
-# We setup SSH access
-RUN mkdir -p /var/run/sshd
+# We setup SSH access & secure root login
 # SSH login fix. Otherwise user is kicked off after login
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+RUN mkdir -p /var/run/sshd && \
+    sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
+    echo "export VISIBLE=now" >> /etc/profile && \
+    echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd
 ENV NOTVISIBLE "in users profile"
-RUN echo "export VISIBLE=now" >> /etc/profile
 
-# Install RVM
+# Install RVM, bundler, bosh, bosh-gen & uaa client (uaac)
 RUN command curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
     curl -L https://get.rvm.io | bash -s stable && \
     /bin/bash -l -c "rvm requirements" && \
+    apt-get clean && \
     /bin/bash -l -c "rvm install 2.2" && \
     /bin/bash -l -c "rvm use 2.2" && \
-    apt-get clean
-
-# Install bundler, bosh, bosh-gen & uaa client (uaac)
-RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc -v ${bundler_version}" && \ 
+    /bin/bash -l -c "gem install bundler --no-ri --no-rdoc -v ${bundler_version}" && \ 
     /bin/bash -l -c "gem install bosh_cli --no-ri --no-rdoc -v ${bosh_cli_version}" && \
     /bin/bash -l -c "gem install bosh-gen --no-ri --no-rdoc -v ${bosh_gen_version}" && \
     /bin/bash -l -c "gem install cf-uaac --no-ri --no-rdoc -v ${cf_uaac_version}"
-
-# Create /usr/local/bin
-RUN mkdir -p /usr/local/bin && \
-    chmod 755 /usr/local/bin
-
-# Install bosh-init
-RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifacts/bosh-init-${bosh_init_version}-linux-amd64" && \
-    chmod 755 /usr/local/bin/bosh-init
-
-# Install spiff
-RUN wget -O /tmp/spiff_linux_amd64.zip "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${spiff_version}/spiff_linux_amd64.zip" && \
-    unzip /tmp/spiff_linux_amd64.zip -d /usr/local/bin && \
-    chmod 755 /usr/local/bin/spiff && \
-    rm /tmp/spiff_linux_amd64.zip
-
-# Install cf cli
-RUN wget -O /tmp/cf.deb "https://cli.run.pivotal.io/stable?release=debian64&version=${cf_cli_version}&source=github-rel" && \
-    dpkg -i /tmp/cf.deb && \
-    rm /tmp/cf.deb
 
 # Create bosh user
 RUN useradd -m -g users -G sudo,rvm -s /bin/bash ${container_login} && \
@@ -90,48 +70,60 @@ RUN useradd -m -g users -G sudo,rvm -s /bin/bash ${container_login} && \
     echo "${container_login}:${container_password}" | chpasswd && \
     chage -d 0 ${container_login}
 
-# Install certstrap
-RUN /bin/bash -c "echo \"export GOPATH=*HOME/go\" | tr \"*\" \"$\" > /etc/profile.d/go.sh" && \
-    /bin/bash -c "echo \"export PATH=*PATH:*GOPATH/bin\" | tr \"*\" \"$\" >> /etc/profile.d/go.sh" && \
-    chmod 755 /etc/profile.d/go.sh
-USER ${container_login}
-WORKDIR /home/${container_login}
-RUN export GOPATH=/home/${container_login}/go && \
-    go get -v github.com/square/certstrap
+# Install bosh-init, spiff, cf-cli, certstrap & several cf cli plugins
+RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifacts/bosh-init-${bosh_init_version}-linux-amd64" && \
+    chmod 755 /usr/local/bin/bosh-init && \
+    wget -O /tmp/spiff_linux_amd64.zip "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${spiff_version}/spiff_linux_amd64.zip" && \
+    unzip /tmp/spiff_linux_amd64.zip -d /usr/local/bin && \
+    chmod 755 /usr/local/bin/spiff && \
+    rm /tmp/spiff_linux_amd64.zip && \
+    wget -O /tmp/cf.deb "https://cli.run.pivotal.io/stable?release=debian64&version=${cf_cli_version}&source=github-rel" && \
+    dpkg -i /tmp/cf.deb && \
+    rm /tmp/cf.deb && \
+    su -c "go get -v github.com/square/certstrap" --login ${container_login} && \
+    su -c "cf install-plugin 'CLI-Recorder' -r CF-Community -f" --login ${container_login} && \
+    su -c "cf install-plugin 'Diego-Enabler' -r CF-Community -f" --login ${container_login} && \
+    su -c "cf install-plugin 'doctor' -r CF-Community -f" --login ${container_login} && \
+    su -c "cf install-plugin 'manifest-generator' -r CF-Community -f" --login ${container_login} && \
+    su -c "cf install-plugin 'Statistics' -r CF-Community -f" --login ${container_login} && \
+    su -c "cf install-plugin 'targets' -r CF-Community -f" --login ${container_login} && \
+    su -c "cf install-plugin 'Usage Report' -r CF-Community -f" --login ${container_login}
 
-# Create standard directories & files
-USER ${container_login}
-WORKDIR /home/${container_login}
-RUN mkdir deployments releases git .ssh && \
-    ln -s /tmp tmp && \
-    touch .ssh/authorized_keys && \
-    chmod 700 .ssh && \
-    chmod 600 .ssh/authorized_keys
-USER root
-ADD scripts/bootstrap.sh /etc/profile.d/
-ADD scripts/homedir.sh /etc/profile.d/
+# Setup profile
+ADD scripts/bootstrap.sh scripts/homedir.sh /etc/profile.d/
 RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login}/" && \
     chmod 755 /etc/profile.d/bootstrap.sh && \
     chmod 755 /etc/profile.d/homedir.sh && \
+    /bin/bash -c 'mkdir -p /home/${container_login}/{deployments,releases,git,.ssh}' && \
+    ln -s /tmp /home/${container_login}/tmp && \
+    touch /home/${container_login}/.ssh/authorized_keys && \
+    chmod 700 /home/${container_login}/.ssh && \
+    chmod 600 /home/${container_login}/.ssh/authorized_keys && \
     mkdir -p /data && \
-    chown ${container_login}:users /data
-WORKDIR /home
-RUN tar -cvf ${container_login}.tar \
+    chown -R ${container_login}:users /home/${container_login} && \
+    chown ${container_login}:users /data && \
+    tar --directory /home -zcvf ${container_login}.tar.gz \
              ${container_login}/deployments \
              ${container_login}/releases \
              ${container_login}/git \
              ${container_login}/.ssh \
              ${container_login}/.bash_logout \
              ${container_login}/.bashrc \
-             ${container_login}/.profile \
+             ${container_login}/.profile && \
+    tar --directory /home -zcvf ${container_login}_migration.tar.gz \
+             ${container_login}/.cf \
              ${container_login}/go && \
-    rm -Rf ${container_login} && \
-    mkdir ${container_login} && \
-    chown ${container_login}:users ${container_login} && \
-    chmod 700 ${container_login}
+    rm -Rf /home/${container_login} && \
+    mkdir -p /home/${container_login} && \
+    chown ${container_login}:users /home/${container_login} && \
+    chmod 700 /home/${container_login}
 
-# Secure root login
-RUN echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd
+# Cleanup
+RUN apt-get clean && \
+    apt-get autoremove -y && \
+    apt-get purge && \
+    find /var/log -type f -delete && \
+    rm -Rf /tmp/* \
 
 # Launch sshd daemon
 EXPOSE 22
