@@ -122,8 +122,9 @@ RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login
 RUN apt-get clean && \
     apt-get autoremove -y && \
     apt-get purge && \
+    /bin/bash -c 'rm -rf /var/lib/{apt,dpkg,cache,log}/' && \
     find /var/log -type f -delete && \
-    rm -Rf /tmp/* \
+    rm -Rf /tmp/*
 
 # Launch sshd daemon
 EXPOSE 22
