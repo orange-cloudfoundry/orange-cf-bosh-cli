@@ -23,7 +23,7 @@ fi
 # We migrate usefull installed tools
 if [ -f /home/${ARCHIVE_MIGRATION} ]; then
   tar -zxpf /home/${ARCHIVE_MIGRATION} --directory /home
-  rm /home/${ARCHIVE_MIGRATION}
+  sudo rm /home/${ARCHIVE_MIGRATION}
 fi
 
 # We setup rights
