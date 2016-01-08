@@ -102,7 +102,7 @@ RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login
     mkdir -p /data && \
     chown -R ${container_login}:users /home/${container_login} && \
     chown ${container_login}:users /data && \
-    tar --directory /home -zcvf ${container_login}.tar.gz \
+    tar --directory /home -zcvf /home/${container_login}.tar.gz \
              ${container_login}/deployments \
              ${container_login}/releases \
              ${container_login}/git \
@@ -110,7 +110,7 @@ RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login
              ${container_login}/.bash_logout \
              ${container_login}/.bashrc \
              ${container_login}/.profile && \
-    tar --directory /home -zcvf ${container_login}_migration.tar.gz \
+    tar --directory /home -zcvf /home/${container_login}_migration.tar.gz \
              ${container_login}/.cf \
              ${container_login}/go && \
     rm -Rf /home/${container_login} && \
