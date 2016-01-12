@@ -56,14 +56,14 @@ ENV NOTVISIBLE "in users profile"
 # Install RVM, bundler, bosh, bosh-gen & uaa client (uaac)
 RUN command curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
     curl -L https://get.rvm.io | bash -s stable && \
-    /bin/bash -l -c "rvm requirements" && \
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm requirements" && \
     apt-get clean && \
-    /bin/bash -l -c "rvm install 2.2" && \
-    /bin/bash -l -c "rvm use 2.2" && \
-    /bin/bash -l -c "gem install bundler --no-ri --no-rdoc -v ${bundler_version}" && \ 
-    /bin/bash -l -c "gem install bosh_cli --no-ri --no-rdoc -v ${bosh_cli_version}" && \
-    /bin/bash -l -c "gem install bosh-gen --no-ri --no-rdoc -v ${bosh_gen_version}" && \
-    /bin/bash -l -c "gem install cf-uaac --no-ri --no-rdoc -v ${cf_uaac_version}"
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm install 2.2" && \
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm use 2.2" && \
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bundler --no-ri --no-rdoc -v ${bundler_version}" && \ 
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bosh_cli --no-ri --no-rdoc -v ${bosh_cli_version}" && \
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bosh-gen --no-ri --no-rdoc -v ${bosh_gen_version}" && \
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install cf-uaac --no-ri --no-rdoc -v ${cf_uaac_version}"
 
 # Create bosh user
 RUN useradd -m -g users -G sudo,rvm -s /bin/bash ${container_login} && \
@@ -81,20 +81,18 @@ RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifac
     wget -O /tmp/cf.deb "https://cli.run.pivotal.io/stable?release=debian64&version=${cf_cli_version}&source=github-rel" && \
     dpkg -i /tmp/cf.deb && \
     rm /tmp/cf.deb && \
-    su -c "go get -v github.com/square/certstrap" --login ${container_login} && \
-    su -c "cf install-plugin 'CLI-Recorder' -r CF-Community -f" --login ${container_login} && \
-    su -c "cf install-plugin 'Diego-Enabler' -r CF-Community -f" --login ${container_login} && \
-    su -c "cf install-plugin 'doctor' -r CF-Community -f" --login ${container_login} && \
-    su -c "cf install-plugin 'manifest-generator' -r CF-Community -f" --login ${container_login} && \
-    su -c "cf install-plugin 'Statistics' -r CF-Community -f" --login ${container_login} && \
-    su -c "cf install-plugin 'targets' -r CF-Community -f" --login ${container_login} && \
-    su -c "cf install-plugin 'Usage Report' -r CF-Community -f" --login ${container_login}
+    su -c "http_proxy=$http_proxy https_proxy=$https_proxy go get -v github.com/square/certstrap" --login ${container_login} && \
+    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'CLI-Recorder' -r CF-Community -f" --login ${container_login} && \
+    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Diego-Enabler' -r CF-Community -f" --login ${container_login} && \
+    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'doctor' -r CF-Community -f" --login ${container_login} && \
+    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'manifest-generator' -r CF-Community -f" --login ${container_login} && \
+    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Statistics' -r CF-Community -f" --login ${container_login} && \
+    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'targets' -r CF-Community -f" --login ${container_login} && \
+    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Usage Report' -r CF-Community -f" --login ${container_login}
 
 # Setup profile
-ADD scripts/bootstrap.sh scripts/homedir.sh /etc/profile.d/
-RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login}/" && \
-    chmod 755 /etc/profile.d/bootstrap.sh && \
-    chmod 755 /etc/profile.d/homedir.sh && \
+ADD scripts/homedir.sh /etc/profile.d/
+RUN chmod 755 /etc/profile.d/homedir.sh && \
     /bin/bash -c 'mkdir -p /home/${container_login}/{deployments,releases,git,.ssh}' && \
     ln -s /tmp /home/${container_login}/tmp && \
     touch /home/${container_login}/.ssh/authorized_keys && \
@@ -103,20 +101,6 @@ RUN sed -i /etc/profile.d/bootstrap.sh -e "s/<container_login>/${container_login
     mkdir -p /data && \
     chown -R ${container_login}:users /home/${container_login} && \
     chown ${container_login}:users /data && \
-    tar --directory /home -zcvf /home/${container_login}.tar.gz \
-             ${container_login}/deployments \
-             ${container_login}/releases \
-             ${container_login}/git \
-             ${container_login}/.ssh \
-             ${container_login}/.bash_logout \
-             ${container_login}/.bashrc \
-             ${container_login}/.profile && \
-    tar --directory /home -zcvf /home/${container_login}_migration.tar.gz \
-             ${container_login}/.cf \
-             ${container_login}/go && \
-    rm -Rf /home/${container_login} && \
-    mkdir -p /home/${container_login} && \
-    chown ${container_login}:users /home/${container_login} && \
     chmod 700 /home/${container_login}
 
 # Cleanup
