@@ -65,11 +65,23 @@ RUN command curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bosh-gen --no-ri --no-rdoc -v ${bosh_gen_version}" && \
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install cf-uaac --no-ri --no-rdoc -v ${cf_uaac_version}"
 
-# Create bosh user
-RUN useradd -m -g users -G sudo,rvm -s /bin/bash ${container_login} && \
+# Create bosh user & setup profile
+ADD scripts/homedir.sh scripts/cf.sh /etc/profile.d/
+RUN chmod 755 /etc/profile.d/homedir.sh && \
+    chmod 755 /etc/profile.d/cf.sh && \
+    useradd -m -g users -G sudo,rvm -s /bin/bash ${container_login} && \
     echo "${container_login} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${container_login} && \
     echo "${container_login}:${container_password}" | chpasswd && \
-    chage -d 0 ${container_login}
+    chage -d 0 ${container_login} && \
+    /bin/bash -c 'mkdir -p /home/${container_login}/{deployments,releases,git,.ssh}' && \
+    chmod 700 /home/${container_login}/.ssh && \
+    touch /home/${container_login}/.ssh/authorized_keys && \
+    chmod 600 /home/${container_login}/.ssh/authorized_keys && \
+    ln -s /tmp /home/${container_login}/tmp && \
+    chown -R ${container_login}:users /home/${container_login} && \
+    mkdir -p /data && \
+    chmod 700 /home/${container_login} && \
+    chown ${container_login}:users /data
 
 # Install bosh-init, spiff, cf-cli, certstrap & several cf cli plugins
 RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifacts/bosh-init-${bosh_init_version}-linux-amd64" && \
@@ -93,18 +105,6 @@ RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifac
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'targets' -r CF-Community -f" --login ${container_login} && \
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Usage Report' -r CF-Community -f" --login ${container_login}
 
-# Setup profile
-ADD scripts/homedir.sh scripts/cf.sh /etc/profile.d/
-RUN chmod 755 /etc/profile.d/homedir.sh && \
-    /bin/bash -c 'mkdir -p /home/${container_login}/{deployments,releases,git,.ssh}' && \
-    ln -s /tmp /home/${container_login}/tmp && \
-    touch /home/${container_login}/.ssh/authorized_keys && \
-    chmod 700 /home/${container_login}/.ssh && \
-    chmod 600 /home/${container_login}/.ssh/authorized_keys && \
-    mkdir -p /data && \
-    chown -R ${container_login}:users /home/${container_login} && \
-    chown ${container_login}:users /data && \
-    chmod 700 /home/${container_login}
 
 # Cleanup
 RUN apt-get clean && \
