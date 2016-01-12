@@ -82,6 +82,9 @@ RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifac
     dpkg -i /tmp/cf.deb && \
     rm /tmp/cf.deb && \
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy go get -v github.com/square/certstrap" --login ${container_login} && \
+    mkdir -p /home/${container_login}_non_persistent_storage/cf_plugins && \
+    chown -R ${container_login}:users /home/${container_login}_non_persistent_storage && \
+    chmod 700 /home/${container_login}_non_persistent_storage && \
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'CLI-Recorder' -r CF-Community -f" --login ${container_login} && \
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Diego-Enabler' -r CF-Community -f" --login ${container_login} && \
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'doctor' -r CF-Community -f" --login ${container_login} && \
@@ -91,7 +94,7 @@ RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifac
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Usage Report' -r CF-Community -f" --login ${container_login}
 
 # Setup profile
-ADD scripts/homedir.sh /etc/profile.d/
+ADD scripts/homedir.sh scripts/cf.sh /etc/profile.d/
 RUN chmod 755 /etc/profile.d/homedir.sh && \
     /bin/bash -c 'mkdir -p /home/${container_login}/{deployments,releases,git,.ssh}' && \
     ln -s /tmp /home/${container_login}/tmp && \
