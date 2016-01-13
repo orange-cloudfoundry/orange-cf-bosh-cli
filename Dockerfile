@@ -40,10 +40,9 @@ RUN apt-get update && \
       libssl-dev \
       zlib1g-dev && \
     apt-get upgrade -y && \
-    apt-get clean && \
-    /bin/bash -c "echo \"export GOPATH=*HOME/go\" | tr \"*\" \"$\" > /etc/profile.d/go.sh" && \
-    /bin/bash -c "echo \"export PATH=*PATH:*GOPATH/bin\" | tr \"*\" \"$\" >> /etc/profile.d/go.sh" && \
-    chmod 755 /etc/profile.d/go.sh
+    apt-get clean
+ADD scripts/go.sh /etc/profile.d/
+RUN chmod 755 /etc/profile.d/go.sh
 
 # We setup SSH access & secure root login
 # SSH login fix. Otherwise user is kicked off after login
