@@ -90,11 +90,12 @@ RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifac
     unzip /tmp/spiff_linux_amd64.zip -d /usr/local/bin && \
     chmod 755 /usr/local/bin/spiff && \
     rm /tmp/spiff_linux_amd64.zip && \
-    wget -O /tmp/spruce_linux_amd64.tar.gz "https://github.com/geofffranks/spruce/releases/download/v1.0.1/spruce_${spruce_version}_linux_amd64.tar.gz" && \
+    wget -O /tmp/spruce_linux_amd64.tar.gz "https://github.com/geofffranks/spruce/releases/download/v${spruce_version}/spruce_${spruce_version}_linux_amd64.tar.gz" && \
     tar zxvf /tmp/spruce_linux_amd64.tar.gz && \
-    mv /tmp/spruce /usr/local/bin && \
+    mv /tmp/spruce_${spruce_version}_linux_amd64/spruce /usr/local/bin && \
     chmod 755 /usr/local/bin/spruce && \
     rm /tmp/spruce_linux_amd64.tar.gz && \
+    rm -Rf /tmp/spruce_${spruce_version}_linux_amd64 && \
     wget -O /tmp/cf.deb "https://cli.run.pivotal.io/stable?release=debian64&version=${cf_cli_version}&source=github-rel" && \
     dpkg -i /tmp/cf.deb && \
     rm /tmp/cf.deb && \
