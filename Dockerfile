@@ -8,6 +8,7 @@ ENV bosh_cli_version 1.3177.0
 ENV bosh_init_version 0.0.81
 ENV bosh_gen_version 0.22.0
 ENV spiff_version 1.0.7
+ENV spruce_version 1.0.1
 ENV cf_cli_version 6.15.0
 ENV cf_uaac_version 3.1.6
 ENV bundler_version 1.11.2
@@ -89,6 +90,11 @@ RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifac
     unzip /tmp/spiff_linux_amd64.zip -d /usr/local/bin && \
     chmod 755 /usr/local/bin/spiff && \
     rm /tmp/spiff_linux_amd64.zip && \
+    wget -O /tmp/spruce_linux_amd64.tar.gz "https://github.com/geofffranks/spruce/releases/download/v1.0.1/spruce_${spruce_version}_linux_amd64.tar.gz" && \
+    tar zxvf /tmp/spruce_linux_amd64.tar.gz && \
+    mv /tmp/spruce /usr/local/bin && \
+    chmod 755 /usr/local/bin/spruce && \
+    rm /tmp/spruce_linux_amd64.tar.gz && \
     wget -O /tmp/cf.deb "https://cli.run.pivotal.io/stable?release=debian64&version=${cf_cli_version}&source=github-rel" && \
     dpkg -i /tmp/cf.deb && \
     rm /tmp/cf.deb && \
@@ -102,8 +108,8 @@ RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifac
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'manifest-generator' -r CF-Community -f" --login ${container_login} && \
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Statistics' -r CF-Community -f" --login ${container_login} && \
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'targets' -r CF-Community -f" --login ${container_login} && \
-    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Usage Report' -r CF-Community -f" --login ${container_login}
-
+    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Usage Report' -r CF-Community -f" --login ${container_login} && \
+    rm -Rf /tmp/*
 
 # Cleanup
 RUN apt-get clean && \
