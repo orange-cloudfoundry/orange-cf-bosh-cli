@@ -1,5 +1,0 @@
-#!/bin/bash
-# This script should be placed in /usr/local/bin
-
-check_ssh_security
-/usr/sbin/sshd -D

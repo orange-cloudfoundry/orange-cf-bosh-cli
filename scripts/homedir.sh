@@ -19,4 +19,4 @@ create_dir "stemcells"
 create_dir "releases"
 create_dir "shared"
 
-sudo /usr/local/bin/check_ssh_security
+sudo /usr/local/bin/check_ssh_security loggin

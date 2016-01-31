@@ -30,6 +30,7 @@ RUN apt-get update && \
       s3cmd \
       screen \
       sudo \
+      supervisor \
       vim \
       wget \
       build-essential \
@@ -47,15 +48,17 @@ RUN chmod 755 /etc/profile.d/go.sh
 
 # We setup SSH access & secure root login
 # SSH login fix. Otherwise user is kicked off after login
-ADD scripts/sshd scripts/check_ssh_security /usr/local/bin/
-RUN mkdir -p /var/run/sshd && \
+ADD scripts/supervisord scripts/check_ssh_security /usr/local/bin/
+ADD supervisord/sshd.conf /etc/supervisor/conf.d/
+RUN mkdir -p /var/run/sshd /var/log/supervisor && \
+    sed -i 's/.*\[supervisord\].*/&\nnodaemon=true/' /etc/supervisor/supervisord.conf && \
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
     sed -i 's/PermitRootLogin without-password/PermitRootLogin no/g' /etc/ssh/sshd_config && \
     echo "export VISIBLE=now" >> /etc/profile && \
     echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd && \
     sed -i "s/<username>/$container_login/g" /usr/local/bin/check_ssh_security && \
-    chmod 755 /usr/local/bin/sshd && \
-    chmod 755 /usr/local/bin/check_ssh_security
+    chmod 755 /usr/local/bin/check_ssh_security && \
+    chmod 755 /usr/local/bin/supervisord
 ENV NOTVISIBLE "in users profile"
 
 # Install RVM, bundler, bosh, bosh-gen & uaa client (uaac)
@@ -125,6 +128,6 @@ RUN apt-get clean && \
     find /var/log -type f -delete && \
     rm -Rf /tmp/*
 
-# Launch sshd daemon
+# Launch supervisord daemon
 EXPOSE 22
-CMD ["/usr/local/bin/sshd"]
+CMD /usr/local/bin/supervisord
