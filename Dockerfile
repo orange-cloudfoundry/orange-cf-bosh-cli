@@ -4,7 +4,7 @@ USER root
 ENV container_login bosh
 ENV container_password welcome
 
-ENV bosh_cli_version 1.3177.0
+ENV bosh_cli_version 1.3184.1.0
 ENV bosh_init_version 0.0.81
 ENV bosh_gen_version 0.22.0
 ENV spiff_version 1.0.7
