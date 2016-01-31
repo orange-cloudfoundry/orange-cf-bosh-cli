@@ -1,0 +1,7 @@
+#!/bin/bash
+# This script should be placed in /usr/local/bin
+
+if [ -f /home/<username>/.ssh/id_rsa.pub ]; then
+  sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+  chage -I -1 -m 0 -M 99999 -E -1 <username>
+fi

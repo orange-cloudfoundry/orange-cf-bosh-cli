@@ -47,10 +47,15 @@ RUN chmod 755 /etc/profile.d/go.sh
 
 # We setup SSH access & secure root login
 # SSH login fix. Otherwise user is kicked off after login
+ADD scripts/sshd scripts/check_ssh_security /usr/local/bin/
 RUN mkdir -p /var/run/sshd && \
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
+    sed -i 's/PermitRootLogin without-password/PermitRootLogin no/g' /etc/ssh/sshd_config && \
     echo "export VISIBLE=now" >> /etc/profile && \
-    echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd
+    echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd && \
+    sed -i "s/<username>/$container_login/g" /usr/local/bin/check_ssh_security && \
+    chmod 755 /usr/local/bin/sshd && \
+    chmod 755 /usr/local/bin/check_ssh_security
 ENV NOTVISIBLE "in users profile"
 
 # Install RVM, bundler, bosh, bosh-gen & uaa client (uaac)
@@ -122,4 +127,4 @@ RUN apt-get clean && \
 
 # Launch sshd daemon
 EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/usr/local/bin/sshd"]
