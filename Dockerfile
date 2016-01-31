@@ -63,7 +63,8 @@ RUN command curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bundler --no-ri --no-rdoc -v ${bundler_version}" && \ 
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bosh_cli --no-ri --no-rdoc -v ${bosh_cli_version}" && \
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bosh-gen --no-ri --no-rdoc -v ${bosh_gen_version}" && \
-    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install cf-uaac --no-ri --no-rdoc -v ${cf_uaac_version}"
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install cf-uaac --no-ri --no-rdoc -v ${cf_uaac_version}" && \
+    /bin/bash -l -c "rvm cleanup all"
 
 # Create bosh user & setup profile
 ADD scripts/homedir.sh scripts/cf.sh /etc/profile.d/
