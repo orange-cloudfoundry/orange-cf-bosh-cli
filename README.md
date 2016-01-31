@@ -7,6 +7,7 @@ The tools deployed in this docker image are:
 * `cf client` – The official command line client for Cloud Foundry (https://github.com/cloudfoundry/cli)
 * `cf-uaac client` – CloudFoundry UAA Command Line Client (https://github.com/cloudfoundry/cf-uaac)
 * `spiff` – This is a command line tool and declarative YAML templating system, specially designed for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
+* `spruce` – This is a domain-specific YAML merging tool, for generating BOSH manifests (https://github.com/geofffranks/spruce)
 * `bosh-gen` - Generators for creating and sharing BOSH releases (https://github.com/cloudfoundry-community/bosh-gen)
 * `bosh-init` - A tool used to create and update the Director (its VM and persistent disk) in a BOSH environment (https://github.com/cloudfoundry/bosh-init)
 * `cerstrap` - A simple certificate manager written in Go. Used by many bosh releases (https://github.com/square/certstrap)
@@ -18,7 +19,7 @@ The container expose ssh port (22).
 ## How to get it or build it?
 
 ### How to get it?
-Pull the image from docker hub: <code>docker pull fbonelle/orange-cf-bosh-cli</code>
+Pull the image from docker hub: <code>docker pull orangeopensource/orange-cf-bosh-cli</code>
 
 ### How to build it?
 First, clone this repository: <code>git clone https://github.com/Orange-OpenSource/orange-cf-bosh-cli.git</code>
@@ -53,7 +54,7 @@ static_ip = '10.203.7.100'
 dns_servers = '10.203.6.102'
 http_proxy = 'http:/proxy:3128'
 https_proxy = 'http://proxy:3128'
-docker_image = 'fbonelle/orange-cf-bosh-cli'
+docker_image = 'orangeopensource/orange-cf-bosh-cli'
 docker_tag = 'latest'
 %>
 ---
@@ -127,9 +128,9 @@ properties:
   containers:
   - name: data_container
     image: <%= docker_image %>:<%= docker_tag %>
-    bind_volumes:
+    volumes:
     - /data
-  - name: &user1_bosh_cli user1_bosh_cli_2222
+  - name: &user1_bosh_cli user1_bosh_cli
     image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user1_bosh_cli
     env_vars:
@@ -137,13 +138,13 @@ properties:
     - "https_proxy=<%= https_proxy %>"
     bind_ports:
     - "2222:22"
-    bind_volumes:
+    volumes:
     - /home/bosh
     depends_on:
     - data_container
     volumes_from:
     - data_container
-  - name: &user2_bosh_cli user2_bosh_cli_2223
+  - name: &user2_bosh_cli user2_bosh_cli
     image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user2_bosh_cli
     env_vars:
@@ -151,13 +152,13 @@ properties:
     - "https_proxy=<%= https_proxy %>"
     bind_ports:
     - "2223:22"
-    bind_volumes:
+    volumes:
     - /home/bosh
     depends_on:
     - data_container
     volumes_from:
     - data_container
-  - name: &user3_bosh_cli user3_bosh_cli_2224
+  - name: &user3_bosh_cli user3_bosh_cli
     image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user3_bosh_cli
     env_vars:
@@ -165,13 +166,13 @@ properties:
     - "https_proxy=<%= https_proxy %>"
     bind_ports:
     - "2224:22"
-    bind_volumes:
+    volumes:
     - /home/bosh
     depends_on:
     - data_container
     volumes_from:
     - data_container
-  - name: &user4_bosh_cli user4_bosh_cli_2225
+  - name: &user4_bosh_cli user4_bosh_cli
     image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user4_bosh_cli
     env_vars:
@@ -179,7 +180,7 @@ properties:
     - "https_proxy=<%= https_proxy %>"
     bind_ports:
     - "2225:22"
-    bind_volumes:
+    volumes:
     - /home/bosh
     depends_on:
     - data_container
