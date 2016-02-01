@@ -30,7 +30,7 @@ Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
 ### How to use as standalone container?
 
-If you have a simple docker host, launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run -d -p 2222:22 cf-bosh-cli</code>
+If you have a simple docker host, launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangeopensource/orange-cf-bosh-cli</code>
 
 Then, log into the container with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code>
 
