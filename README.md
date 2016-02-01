@@ -34,7 +34,7 @@ If you have a simple docker host, launch the image. Don't miss to assign an host
 
 Then, log into the container with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code>
 
-The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you can add your ssh public key into the file ~/.ssh/authorized_keys.
+The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you must add your ssh public key into the file ~/.ssh/authorized_keys (RSA format). This last step will make the container secure after each restart/update.
 
 ### How to use it using "Docker Bosh Release"
 
@@ -190,5 +190,5 @@ properties:
 
 Then, log into the container you want with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code> to log into first container.
 
-The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you can add your ssh public key into the file ~/.ssh/authorized_keys.
+The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you must add your ssh public key into the file ~/.ssh/authorized_keys (RSA format). This last step will make the container secure after each restart/update.
 
