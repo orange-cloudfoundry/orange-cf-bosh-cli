@@ -4,7 +4,7 @@ Your are logged into an ubuntu docker container (https://github.com/Orange-OpenS
 Cloud Foundry CF & Bosh cli with theses tools:
   * bosh (<bosh-version>) – Client to interacte with bosh directors (https://bosh.io/docs/bosh-cli.html)
   * cf (<cf-version>) – The official command line client for Cloud Foundry (https://github.com/cloudfoundry/cli)
-  * cf-uaac (<cf-uaac-version>) – CloudFoundry UAA Command Line Client (https://github.com/cloudfoundry/cf-uaac)
+  * uaac (<cf-uaac-version>) – CloudFoundry UAA Command Line Client (https://github.com/cloudfoundry/cf-uaac)
   * spiff (<spiff-version>) – This is a command line tool and declarative YAML templating system, specially designed for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
   * spruce (<spruce-version>) – This is a domain-specific YAML merging tool, for generating BOSH manifests (https://github.com/geofffranks/spruce)
   * bosh-gen (<bosh-gen-version>) - Generators for creating and sharing BOSH releases (https://github.com/cloudfoundry-community/bosh-gen)
