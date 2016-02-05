@@ -13,10 +13,11 @@ function create_dir() {
   fi
 }
 
-create_dir ".bosh"
-create_dir ".bosh_init"
-create_dir "stemcells"
-create_dir "releases"
-create_dir "shared"
-
-sudo /usr/local/bin/check_ssh_security loggin
+if [ "`id -gn`" == "users" ]; then
+  create_dir ".bosh"
+  create_dir ".bosh_init"
+  create_dir "stemcells"
+  create_dir "releases"
+  create_dir "shared"
+  sudo /usr/local/bin/check_ssh_security loggin
+fi
