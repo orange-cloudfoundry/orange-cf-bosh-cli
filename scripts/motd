@@ -13,9 +13,9 @@ Cloud Foundry CF & Bosh cli with theses tools:
   * git (<git-version>) - The git client
 
 Depending how this docker container was started, the standard usage is:
-  * "/home/bosh" should be a volume with persisted data.
-  * "/data" should also be a volume with persisted data, but shared with other instances of this container.
-  * All other paths in the container will be reseted on restart or update.
+  * "/home/bosh" should be a docker volume with persisted data.
+  * "/data" should also be a docker volume with persisted data, but shared with other instances of this container.
+  * All other paths in this container will be reseted on restart or update.
   
 For security reasons:
   1. Add you RSA private key into ~/.ssh/authorized_keys,
