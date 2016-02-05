@@ -1,4 +1,6 @@
 FROM ubuntu:latest
+MAINTAINER François Bonelle <francois.bonelle@orange.com>
+
 USER root
 
 ENV container_login bosh
@@ -51,7 +53,7 @@ RUN chmod 755 /etc/profile.d/go.sh
 ADD scripts/supervisord scripts/check_ssh_security /usr/local/bin/
 ADD supervisord/sshd.conf /etc/supervisor/conf.d/
 RUN mkdir -p /var/run/sshd /var/log/supervisor && \
-    sed -i 's/.*\[supervisord\].*/&\nnodaemon=true/' /etc/supervisor/supervisord.conf && \
+    sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
     sed -i 's/PermitRootLogin without-password/PermitRootLogin no/g' /etc/ssh/sshd_config && \
     echo "export VISIBLE=now" >> /etc/profile && \
@@ -126,7 +128,10 @@ RUN apt-get clean && \
     apt-get autoremove -y && \
     apt-get purge && \
     find /var/log -type f -delete && \
-    rm -Rf /tmp/*
+    rm -Rf /tmp/* && \
+    touch /var/log/lastlog && \
+    chgrp utmp /var/log/lastlog && \
+    chmod 664 /var/log/lastlog
 
 # Launch supervisord daemon
 EXPOSE 22
