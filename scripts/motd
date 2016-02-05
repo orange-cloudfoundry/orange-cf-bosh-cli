@@ -1,0 +1,27 @@
+
+Your are logged into an ubuntu docker container (https://github.com/Orange-OpenSource/orange-cf-bosh-cli).
+
+Cloud Foundry CF & Bosh cli with theses tools:
+  * bosh (<bosh-version>) – Client to interacte with bosh directors (https://bosh.io/docs/bosh-cli.html)
+  * cf (<cf-version>) – The official command line client for Cloud Foundry (https://github.com/cloudfoundry/cli)
+  * cf-uaac (<cf-uaac-version>) – CloudFoundry UAA Command Line Client (https://github.com/cloudfoundry/cf-uaac)
+  * spiff (<spiff-version>) – This is a command line tool and declarative YAML templating system, specially designed for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
+  * spruce (<spruce-version>) – This is a domain-specific YAML merging tool, for generating BOSH manifests (https://github.com/geofffranks/spruce)
+  * bosh-gen (<bosh-gen-version>) - Generators for creating and sharing BOSH releases (https://github.com/cloudfoundry-community/bosh-gen)
+  * bosh-init (<bosh-init-version>) - A tool used to create and update the Director (its VM and persistent disk) in a BOSH environment (https://github.com/cloudfoundry/bosh-init)
+  * cerstrap (<certstrap-version>) - A simple certificate manager written in Go. Used by many bosh releases (https://github.com/square/certstrap)
+  * git (<git-version>) - The git client
+
+Depending how this docker container was started, the standard usage is:
+  * "/home/bosh" should be a volume with persisted data.
+  * "/data" should also be a volume with persisted data, but shared with other instances of this container.
+  * All other paths in the container will be reseted on restart or update.
+  
+For security reasons:
+  1. Add you RSA private key into ~/.ssh/authorized_keys,
+  2. Before logout, ensure you can log with private/public key authentication,
+  3. Password authentication become disabled.
+  4. If you don't do this, your password will be resetted at container restart or update.
+
+If you want to add your own environment variables, please add them to ~/.profile (such as http_proxy, https_proxy, no_proxy...).
+

@@ -3,17 +3,17 @@ MAINTAINER François Bonelle <francois.bonelle@orange.com>
 
 USER root
 
-ENV container_login bosh
-ENV container_password welcome
-
-ENV bosh_cli_version 1.3184.1.0
-ENV bosh_init_version 0.0.81
-ENV bosh_gen_version 0.22.0
-ENV spiff_version 1.0.7
-ENV spruce_version 1.0.1
-ENV cf_cli_version 6.15.0
-ENV cf_uaac_version 3.1.6
-ENV bundler_version 1.11.2
+ENV container_login="bosh" \
+    container_password="welcome" \
+    bosh_cli_version="1.3184.1.0" \
+    bosh_init_version="0.0.81" \
+    bosh_gen_version="0.22.0" \
+    spiff_version="1.0.7" \
+    spruce_version="1.0.1" \
+    cf_cli_version="6.15.0" \
+    cf_uaac_version="3.1.6" \
+    bundler_version="1.11.2" \
+    cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
 
 # Add wget package, update the image and install missing packages
 RUN apt-get update && \
@@ -114,17 +114,24 @@ RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifac
     mkdir -p /home/${container_login}_non_persistent_storage/cf_plugins && \
     chown -R ${container_login}:users /home/${container_login}_non_persistent_storage && \
     chmod 700 /home/${container_login}_non_persistent_storage && \
-    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'CLI-Recorder' -r CF-Community -f" --login ${container_login} && \
-    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Diego-Enabler' -r CF-Community -f" --login ${container_login} && \
-    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'doctor' -r CF-Community -f" --login ${container_login} && \
-    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'manifest-generator' -r CF-Community -f" --login ${container_login} && \
-    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Statistics' -r CF-Community -f" --login ${container_login} && \
-    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'targets' -r CF-Community -f" --login ${container_login} && \
-    su -c "http_proxy=$http_proxy https_proxy=$https_proxy cf install-plugin 'Usage Report' -r CF-Community -f" --login ${container_login} && \
+    su -c "export http_proxy=$http_proxy;export https_proxy=$https_proxy;export IFS=,;for plug in \`echo $cf_plugins\`; do cf install-plugin \"\$plug\" -r CF-Community -f; done" --login ${container_login} --shell /bin/bash && \
     rm -Rf /tmp/*
 
-# Cleanup
-RUN apt-get clean && \
+# Final settings & Cleanup
+ADD scripts/motd /etc/
+RUN GIT_VERSION=`git --version | awk '{print $3}'` && \
+    CERTSTRAP_VERSION=`su -c "certstrap --version | awk '{print \\$3}'" --login bosh` && \
+    sed -i "s/<bosh-version>/$bosh_cli_version/g" /etc/motd && \
+    sed -i "s/<cf-version>/$cf_cli_version/g" /etc/motd && \
+    sed -i "s/<cf-uaac-version>/$cf_uaac_version/g" /etc/motd && \
+    sed -i "s/<spiff-version>/$spiff_version/g" /etc/motd && \
+    sed -i "s/<spruce-version>/$spruce_version/g" /etc/motd && \
+    sed -i "s/<bosh-gen-version>/$bosh_gen_version/g" /etc/motd && \
+    sed -i "s/<bosh-init-version>/$bosh_init_version/g" /etc/motd && \
+    sed -i "s/<certstrap-version>/$CERTSTRAP_VERSION/g" /etc/motd && \
+    sed -i "s/<git-version>/$GIT_VERSION/g" /etc/motd && \
+    chmod 644 /etc/motd && \
+    apt-get clean && \
     apt-get autoremove -y && \
     apt-get purge && \
     find /var/log -type f -delete && \
