@@ -5,13 +5,13 @@ USER root
 
 ENV container_login="bosh" \
     container_password="welcome" \
-    bosh_cli_version="1.3184.1.0" \
+    bosh_cli_version="1.3197.0" \
     bosh_init_version="0.0.81" \
     bosh_gen_version="0.22.0" \
     spiff_version="1.0.7" \
-    spruce_version="1.0.1" \
+    spruce_version="1.0.3" \
     cf_cli_version="6.15.0" \
-    cf_uaac_version="3.1.6" \
+    cf_uaac_version="3.1.7" \
     bundler_version="1.11.2" \
     cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
 
