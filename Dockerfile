@@ -67,8 +67,8 @@ RUN command curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
     curl -L https://get.rvm.io | bash -s stable && \
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm requirements" && \
     apt-get clean && \
-    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm install 2.2" && \
-    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm use 2.2" && \
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm install 2.3" && \
+    /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm use 2.3" && \
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bundler --no-ri --no-rdoc -v ${bundler_version}" && \ 
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bosh_cli --no-ri --no-rdoc -v ${bosh_cli_version}" && \
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy gem install bosh-gen --no-ri --no-rdoc -v ${bosh_gen_version}" && \
