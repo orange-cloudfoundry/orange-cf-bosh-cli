@@ -9,6 +9,7 @@ ENV container_login="bosh" \
     bosh_init_version="0.0.91" \
     bosh_gen_version="0.22.0" \
     spiff_version="1.0.7" \
+    spiff_reloaded_version="1.0.8-ms.4" \
     spruce_version="1.4.0" \
     cf_cli_version="6.18.1" \
     cf_uaac_version="3.2.0" \
@@ -93,12 +94,16 @@ RUN chmod 755 /etc/profile.d/homedir.sh && \
     chmod 700 /home/${container_login} && \
     chown ${container_login}:users /data
 
-# Install bosh-init, spiff, cf-cli, certstrap & several cf cli plugins
+# Install bosh-init, spiff, spiff reloaded, cf-cli, certstrap & several cf cli plugins
 RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifacts/bosh-init-${bosh_init_version}-linux-amd64" && \
     chmod 755 /usr/local/bin/bosh-init && \
     wget -O /tmp/spiff_linux_amd64.zip "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${spiff_version}/spiff_linux_amd64.zip" && \
     unzip /tmp/spiff_linux_amd64.zip -d /usr/local/bin && \
     chmod 755 /usr/local/bin/spiff && \
+    rm /tmp/spiff_linux_amd64.zip && \
+    wget -O /tmp/spiff_linux_amd64.zip "https://github.com/mandelsoft/spiff/releases/download/v${spiff_reloaded_version}/spiff_linux_amd64.zip" && \
+    unzip /tmp/spiff_linux_amd64.zip -d /usr/local/bin && \
+    chmod 755 /usr/local/bin/spiff++ && \
     rm /tmp/spiff_linux_amd64.zip && \
     wget -O /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${spruce_version}/spruce-linux-amd64" && \
     chmod 755 /usr/local/bin/spruce && \
