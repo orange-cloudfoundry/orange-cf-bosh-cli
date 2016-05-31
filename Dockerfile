@@ -18,6 +18,7 @@ ENV container_login="bosh" \
 # Add wget package, update the image and install missing packages
 RUN apt-get update && \
     apt-get install -y wget && \
+    apt-get install -y sudo && \
     echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" > /etc/apt/sources.list.d/git-core-ppa-trusty.list && \
     wget --quiet -O- "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA1715D88E1DF1F24" | sudo apt-key add - && \
     echo "deb http://ppa.launchpad.net/ubuntu-lxc/lxd-stable/ubuntu trusty main" > /etc/apt/sources.list.d/lxd-stable.list && \
@@ -31,7 +32,6 @@ RUN apt-get update && \
       openssl \
       s3cmd \
       screen \
-      sudo \
       supervisor \
       vim \
       wget \
