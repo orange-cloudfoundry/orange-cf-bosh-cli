@@ -5,14 +5,14 @@ USER root
 
 ENV container_login="bosh" \
     container_password="welcome" \
-    bosh_cli_version="1.3215.4.0" \
-    bosh_init_version="0.0.81" \
+    bosh_cli_version="1.3232.0" \
+    bosh_init_version="0.0.91" \
     bosh_gen_version="0.22.0" \
     spiff_version="1.0.7" \
     spruce_version="1.1.2" \
-    cf_cli_version="6.17.0" \
+    cf_cli_version="6.18.1" \
     cf_uaac_version="3.2.0" \
-    bundler_version="1.11.2" \
+    bundler_version="1.12.5" \
     cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
 
 # Add wget package, update the image and install missing packages
