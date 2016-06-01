@@ -125,6 +125,7 @@ RUN GIT_VERSION=`git --version | awk '{print $3}'` && \
     sed -i "s/<cf-version>/$cf_cli_version/g" /etc/motd && \
     sed -i "s/<cf-uaac-version>/$cf_uaac_version/g" /etc/motd && \
     sed -i "s/<spiff-version>/$spiff_version/g" /etc/motd && \
+    sed -i "s/<spiff-reloaded-version>/$spiff_reloaded_version/g" /etc/motd && \	
     sed -i "s/<spruce-version>/$spruce_version/g" /etc/motd && \
     sed -i "s/<bosh-gen-version>/$bosh_gen_version/g" /etc/motd && \
     sed -i "s/<bosh-init-version>/$bosh_init_version/g" /etc/motd && \
