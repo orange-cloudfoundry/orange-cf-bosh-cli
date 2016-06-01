@@ -7,6 +7,7 @@ The tools deployed in this docker image are:
 * `cf client` – The official command line client for Cloud Foundry (https://github.com/cloudfoundry/cli)
 * `cf-uaac client` – CloudFoundry UAA Command Line Client (https://github.com/cloudfoundry/cf-uaac)
 * `spiff` – This is a command line tool and declarative YAML templating system, specially designed for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
+* `spiff++` - Also known as spiff reloaded, spiff++ is a fork of spiff offering a rich set of new features not yet available in spiff (https://github.com/mandelsoft/spiff)
 * `spruce` – This is a domain-specific YAML merging tool, for generating BOSH manifests (https://github.com/geofffranks/spruce)
 * `bosh-gen` - Generators for creating and sharing BOSH releases (https://github.com/cloudfoundry-community/bosh-gen)
 * `bosh-init` - A tool used to create and update the Director (its VM and persistent disk) in a BOSH environment (https://github.com/cloudfoundry/bosh-init)
