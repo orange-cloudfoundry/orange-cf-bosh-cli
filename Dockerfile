@@ -6,12 +6,12 @@ USER root
 ENV container_login="bosh" \
     container_password="welcome" \
     bosh_cli_version="1.3232.0" \
-    bosh_init_version="0.0.91" \
+    bosh_init_version="0.0.92" \
     bosh_gen_version="0.22.0" \
     spiff_version="1.0.7" \
     spiff_reloaded_version="1.0.8-ms.4" \
-    spruce_version="1.4.0" \
-    cf_cli_version="6.18.1" \
+    spruce_version="1.4.2" \
+    cf_cli_version="6.19.0" \
     cf_uaac_version="3.2.0" \
     bundler_version="1.12.5" \
     cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
