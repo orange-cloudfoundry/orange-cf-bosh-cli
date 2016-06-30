@@ -1,9 +1,9 @@
 # Cloud Foundry Bosh Cli deployed using docker
-The `cf-bosh-cli` project helps you deploy bosh cli and associated tools threw docker. Deploying all theses tools takes long time.
+The `cf-bosh-cli` project helps you deploy bosh cli and associated tools through docker. Deploying all theses tools takes long time.
 
 The tools deployed in this docker image are:
 
-* `bosh client` – Client to interacte with bosh directors (https://bosh.io/docs/bosh-cli.html)
+* `bosh client` – Client to interact with bosh directors (https://bosh.io/docs/bosh-cli.html)
 * `cf client` – The official command line client for Cloud Foundry (https://github.com/cloudfoundry/cli)
 * `cf-uaac client` – CloudFoundry UAA Command Line Client (https://github.com/cloudfoundry/cf-uaac)
 * `spiff` – This is a command line tool and declarative YAML templating system, specially designed for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
