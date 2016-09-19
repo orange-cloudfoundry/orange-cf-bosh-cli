@@ -20,10 +20,10 @@ The container expose ssh port (22).
 ## How to get it or build it?
 
 ### How to get it?
-Pull the image from docker hub: <code>docker pull orangeopensource/orange-cf-bosh-cli</code>
+Pull the image from docker hub: <code>docker pull orangecloudfoundry/orange-cf-bosh-cli</code>
 
 ### How to build it?
-First, clone this repository: <code>git clone https://github.com/Orange-OpenSource/orange-cf-bosh-cli.git</code>
+First, clone this repository: <code>git clone https://github.com/orange-cloudfoundry/orange-cf-bosh-cli.git</code>
 
 Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
@@ -31,7 +31,7 @@ Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
 ### How to use as standalone container?
 
-If you have a simple docker host, launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangeopensource/orange-cf-bosh-cli</code>
+If you have a simple docker host, launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangecloudfoundry/orange-cf-bosh-cli</code>
 
 Then, log into the container with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code>
 
@@ -55,7 +55,7 @@ static_ip = '10.203.7.100'
 dns_servers = '10.203.6.102'
 http_proxy = 'http:/proxy:3128'
 https_proxy = 'http://proxy:3128'
-docker_image = 'orangeopensource/orange-cf-bosh-cli'
+docker_image = 'orangecloudfoundry/orange-cf-bosh-cli'
 docker_tag = 'latest'
 %>
 ---
