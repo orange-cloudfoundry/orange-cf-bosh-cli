@@ -5,15 +5,15 @@ USER root
 
 ENV container_login="bosh" \
     container_password="welcome" \
-    bosh_cli_version="1.3232.0" \
-    bosh_init_version="0.0.92" \
+    bosh_cli_version="1.3262.4.0" \
+    bosh_init_version="0.0.96" \
     bosh_gen_version="0.22.0" \
     spiff_version="1.0.7" \
-    spiff_reloaded_version="1.0.8-ms.4" \
-    spruce_version="1.4.4" \
-    cf_cli_version="6.19.0" \
-    cf_uaac_version="3.2.0" \
-    bundler_version="1.12.5" \
+    spiff_reloaded_version="1.0.8-ms.5" \
+    spruce_version="1.8.1" \
+    cf_cli_version="6.21.1" \
+    cf_uaac_version="3.4.0" \
+    bundler_version="1.13.1" \
     cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
 
 # Add wget package, update the image and install missing packages
