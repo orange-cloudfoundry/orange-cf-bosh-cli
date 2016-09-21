@@ -234,7 +234,7 @@ The next step is to add your public key to your container.
 		mkdir .ssh
 	```
     
- * Copy the content of the public key into  "authorized_keys
+ * Copy the content of the public key into  "authorized_keys"
   	```
 		cp  your_key.pub .ssh/authorized_keys
 	```
