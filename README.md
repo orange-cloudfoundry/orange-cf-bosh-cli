@@ -211,6 +211,7 @@ To log on to your docker container :
 ``` ssh -p Port bosh@ipAdresse```
 
 Port : Port attributed to current user
+
 ipAdresse : The IP adresse of the container (you can obtain it after installing doch-boch-cli using the command (```bosh instances``` )
 
 At the first time you log on, you will be asked to change password. After changing it, your connexion will be closed and you will need to log on again with your new password.
@@ -230,7 +231,7 @@ The next step is to add your public key to your container.
  * Log on in your container using your password
  * your current directory is your home directory, you have yo create a folder named ".ssh"
 	```
-		mdkir .ssh
+		mkdir .ssh
 	```
     
  * Copy the content of the public key into  "authorized_keys
