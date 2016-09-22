@@ -249,7 +249,11 @@ sudo touch /home/bosh/.gitconfig
 sudo chmod 777 /home/bosh/.gitconfig
 sudo touch /home/bosh/.bosh_config
 sudo chmod 777 /home/bosh/.bosh_config
+gem install bosh_cli -v 1.3215.4.0 # to  fix "Could not find proper version of bosh_cli (1.3215.4.0) in any of the sources"
 ```
+
+
+
 
 We need to reload ssh configurations:
 
