@@ -245,6 +245,8 @@ sudo chmod go-w ~/
 sudo chmod 700 ~/.ssh
 sudo chmod 600 ~/.ssh/authorized_keys
 sudo chmod 777 shared  stemcells  releases
+sudo touch /home/bosh/.gitconfig
+sudo touch /home/bosh/.bosh_config
 ```
 
 We need to reload ssh configurations:
