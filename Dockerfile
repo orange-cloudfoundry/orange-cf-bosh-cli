@@ -35,6 +35,7 @@ RUN apt-get update && \
       screen \
       supervisor \
       vim \
+      nano \
       build-essential \
       libxml2-dev \
       libsqlite3-dev \
