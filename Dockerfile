@@ -66,7 +66,7 @@ ENV NOTVISIBLE "in users profile"
 
 # Install RVM, bundler, bosh, bosh-gen & uaa client (uaac)
 RUN command curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
-    curl -L https://get.rvm.io | bash -s stable && \
+    curl -L https://get.rvm.io | bash && \
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm requirements" && \
     apt-get clean && \
     /bin/bash -l -c "http_proxy=$http_proxy https_proxy=$https_proxy rvm install 2.3" && \
