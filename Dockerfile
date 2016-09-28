@@ -36,6 +36,9 @@ RUN apt-get update && \
       supervisor \
       vim \
       nano \
+      iputils-ping \
+      netcat \
+      dnsutils \
       build-essential \
       libxml2-dev \
       libsqlite3-dev \
