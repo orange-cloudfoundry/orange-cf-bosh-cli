@@ -229,27 +229,11 @@ The last commande will generate a pair of keys (public and private). You need to
 The next step is to add your public key to your container. 
 
  * Log on in your container using your password
- * your current directory is your home directory, you have yo create a folder named ".ssh"
-	```
-		mkdir .ssh
-	```
-    
- * Copy the content of the public key into  "authorized_keys"
-  	```
-		cp  your_key.pub .ssh/authorized_keys
-	```
-
-After copying the public key into the "authorized_keys" file, we need to ensure that we have the right permission.
+ * Copy the content of the public key (your_key.pub) into "~/.ssh/authorized_keys"
+ * After copying the public key into the "authorized_keys" file, we need to ensure that we have the right permission.
 ```
-sudo chmod 600 ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
 ```
-
-
-
-
-We need to reload ssh configurations:
-
-``` sudo service ssh reload ```
 
 The last step is to log out from your container then try to log on using your private key:
 
