@@ -241,15 +241,7 @@ The next step is to add your public key to your container.
 
 After copying the public key into the "authorized_keys" file, we need to ensure that we have the right permission.
 ```
-sudo chmod go-w ~/
-sudo chmod 700 ~/.ssh
 sudo chmod 600 ~/.ssh/authorized_keys
-sudo chmod 777 shared  stemcells  releases
-sudo touch /home/bosh/.gitconfig
-sudo chmod 777 /home/bosh/.gitconfig
-sudo touch /home/bosh/.bosh_config
-sudo chmod 777 /home/bosh/.bosh_config
-gem install bosh_cli -v 1.3215.4.0 # to  fix "Could not find proper version of bosh_cli (1.3215.4.0) in any of the sources"
 ```
 
 
