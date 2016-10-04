@@ -219,7 +219,7 @@ In the case where your container is restarted or updated, your password will be 
 
 To ensure the persistance of your password, you will need to use Private/Public Key auhtentification.
 
-Log on into your container.
+
 First of all, you need to generate your Private/Public key :
 ```
 ssh-keygen -t RSA
