@@ -232,8 +232,9 @@ The next step is to add your public key to your container.
  * Copy the content of the public key (your_key.pub) into "~/.ssh/authorized_keys"
  * After copying the public key into the "authorized_keys" file, we need to ensure that we have the right permission.
 ```
-chmod 600 ~/.ssh/authorized_keys
 chmod go-w ~/
+chmod 600 ~/.ssh/authorized_keys
+chmod 700 .ssh/
 sudo chown bosh:users /home/bosh
 ```
 
