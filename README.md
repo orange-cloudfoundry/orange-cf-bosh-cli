@@ -233,6 +233,8 @@ The next step is to add your public key to your container.
  * After copying the public key into the "authorized_keys" file, we need to ensure that we have the right permission.
 ```
 chmod 600 ~/.ssh/authorized_keys
+chmod go-w ~/
+sudo chown bosh:users /home/bosh
 ```
 
 The last step is to log out from your container then try to log on using your private key:
