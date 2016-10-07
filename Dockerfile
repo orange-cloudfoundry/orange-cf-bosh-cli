@@ -54,7 +54,7 @@ RUN chmod 755 /etc/profile.d/go.sh
 
 # We setup SSH access & secure root login
 # SSH login fix. Otherwise user is kicked off after login
-ADD scripts/supervisord scripts/check_ssh_security /usr/local/bin/
+ADD scripts/supervisord scripts/check_ssh_security scripts/disable_ssh_password_auth /usr/local/bin/
 ADD supervisord/sshd.conf /etc/supervisor/conf.d/
 RUN mkdir -p /var/run/sshd /var/log/supervisor && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
@@ -62,8 +62,11 @@ RUN mkdir -p /var/run/sshd /var/log/supervisor && \
     sed -i 's/PermitRootLogin without-password/PermitRootLogin no/g' /etc/ssh/sshd_config && \
     echo "export VISIBLE=now" >> /etc/profile && \
     echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd && \
+    sed -i "s/<username>/$container_login/g" /usr/local/bin/supervisord && \
     sed -i "s/<username>/$container_login/g" /usr/local/bin/check_ssh_security && \
+    sed -i "s/<username>/$container_login/g" /usr/local/bin/disable_ssh_password_auth && \
     chmod 755 /usr/local/bin/check_ssh_security && \
+    chmod 755 /usr/local/bin/disable_ssh_password_auth && \
     chmod 755 /usr/local/bin/supervisord
 ENV NOTVISIBLE "in users profile"
 
@@ -88,10 +91,7 @@ RUN chmod 755 /etc/profile.d/homedir.sh && \
     echo "${container_login} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${container_login} && \
     echo "${container_login}:${container_password}" | chpasswd && \
     chage -d 0 ${container_login} && \
-    /bin/bash -c 'mkdir -p /home/${container_login}/{deployments,releases,git,.ssh}' && \
-    chmod 700 /home/${container_login}/.ssh && \
-    touch /home/${container_login}/.ssh/authorized_keys && \
-    chmod 600 /home/${container_login}/.ssh/authorized_keys && \
+    /bin/bash -c 'mkdir -p /home/${container_login}/{deployments,releases,git}' && \
     ln -s /tmp /home/${container_login}/tmp && \
     chown -R ${container_login}:users /home/${container_login} && \
     mkdir -p /data && \
