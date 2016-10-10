@@ -11,8 +11,10 @@ then
   else
     mkdir -p /home/<username>/.ssh
     chmod 700 /home/<username>/.ssh
+	chown <username>:users /home/<username>/.ssh
     echo "$SSH_PUBLIC_KEY" > /home/<username>/.ssh/authorized_keys
     chmod 600 /home/<username>/.ssh/authorized_keys
+	chown <username>:users /home/<username>/.ssh/authorized_keys
     /usr/local/bin/disable_ssh_password_auth
     echo "SSH public key provided threw env variable. Enabling public key auth done."
   fi
@@ -21,12 +23,4 @@ fi
 /usr/local/bin/check_ssh_security container_init
 
 echo "Starting sshd..."
-if [ -d /var/log/supervisor ]
-then
-  rmdir /var/log/supervisor
-  mkdir -p /home/<username>/log/supervisor
-  chmod 777 /home/<username>/log/supervisor
-  ln -sf /home/<username>/log/supervisor /var/log/supervisor
-  touch /home/<username>/log/supervisor/do-not-remove-this-directory
-fi
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
