@@ -47,7 +47,7 @@ Launch the image. Don't miss to assign an host port to the container ssh port (2
 
 Then, log into the container with ssh: <code>ssh -p 2222 -i <path to your rsa private key> bosh@127.0.0.1</code>
 
-The password in this case is completely disabled. By default, the file containing the public key (~/.ssh/authorized_keys) is overwrited after container restart or update. By setting the variable SSH_PUBLIC_KEY_DONT_OVERWRITE=true, this file is not overwrited it it already exist and not empty.
+The password in this case is completely disabled. By default, the file containing the public key (~/.ssh/authorized_keys) is overwrited after container restart or update. By setting the variable SSH_PUBLIC_KEY_DONT_OVERWRITE=true, this file is not overwrited if it already exists and is not empty.
 
 ### How to use it using "Docker Bosh Release"
 
