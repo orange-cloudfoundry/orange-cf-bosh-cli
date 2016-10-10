@@ -21,7 +21,12 @@ fi
 /usr/local/bin/check_ssh_security container_init
 
 echo "Starting sshd..."
-mkdir -p /home/<username>/log/supervisor
-chmod 777 /home/<username>/log/supervisor
-ln -s /home/<username>/log/supervisor /var/log/supervisor
+if [ -d /var/log/supervisor ]
+then
+  rmdir /var/log/supervisor
+  touch /var/log/supervisor/do-not-remove-this-directory
+  mkdir -p /home/<username>/log/supervisor
+  chmod 777 /home/<username>/log/supervisor
+  ln -sf /home/<username>/log/supervisor /var/log/supervisor
+fi
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
