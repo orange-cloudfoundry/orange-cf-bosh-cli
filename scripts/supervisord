@@ -2,15 +2,20 @@
 # This script should be placed in /usr/local/bin
 # Used at container startup
 
-if [ -z "$SSH_PUBLIC_KEY" ] && [ ! -f /home/<username>/.ssh/authorized_keys ]
+if [ -n "$SSH_PUBLIC_KEY" ] && [ ! -s /home/<username>/.ssh/authorized_keys ]
 then
   echo "SSH public key provided threw env variable. Enabling public key auth..."
-  mkdir -p /home/<username>/.ssh
-  chmod 700 /home/<username>/.ssh
-  echo "$SSH_PUBLIC_KEY" > /home/<username>/.ssh/authorized_keys
-  chmod 600 /home/<username>/.ssh/authorized_keys
-  /usr/local/bin/disable_ssh_password_auth
-  echo "SSH public key provided threw env variable. Enabling public key auth done."
+  if [ ! -s /home/<username>/.ssh/authorized_keys ] && [ -n "$SSH_PUBLIC_KEY_DONT_OVERIDE" ] && [ "$SSH_PUBLIC_KEY_DONT_OVERIDE" == "true" ]
+  then
+    echo "SSH_PUBLIC_KEY_DONT_OVERIDE=true, authorized_keys already exist and is not empty. We don't do anything."
+  else
+    mkdir -p /home/<username>/.ssh
+    chmod 700 /home/<username>/.ssh
+    echo "$SSH_PUBLIC_KEY" > /home/<username>/.ssh/authorized_keys
+    chmod 600 /home/<username>/.ssh/authorized_keys
+    /usr/local/bin/disable_ssh_password_auth
+    echo "SSH public key provided threw env variable. Enabling public key auth done."
+  fi
 fi
 
 /usr/local/bin/check_ssh_security container_init
