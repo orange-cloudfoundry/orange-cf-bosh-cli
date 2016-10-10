@@ -29,13 +29,25 @@ Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
 ## How to use it?
 
-### How to use as standalone container?
+### How to use as standalone container (if you have a simple docker host)
 
-If you have a simple docker host, launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangecloudfoundry/orange-cf-bosh-cli</code>
+#### without ssh key provided to the container?
+
+Launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangecloudfoundry/orange-cf-bosh-cli</code>
 
 Then, log into the container with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code>
 
 The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you must add your ssh public key into the file ~/.ssh/authorized_keys (RSA format). This last step will make the container secure after each restart/update (password auth will be disabled).
+
+### With ssh key provided to the container?
+
+It's also possible to add your public key to the container threw an environment variable.
+
+Launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data -e "SSH_PUBLIC_KEY=< put here your ssh-rsa public key >" orangecloudfoundry/orange-cf-bosh-cli</code>
+
+Then, log into the container with ssh: <code>ssh -p 2222 -i <path to your rsa private key> bosh@127.0.0.1</code>
+
+The password in this case is completely disabled. By default, the file containing the public key (~/.ssh/authorized_keys) is overwrited after container restart or update. By setting the variable SSH_PUBLIC_KEY_DONT_OVERWRITE=true, this file is not overwrited it it already exist and not empty.
 
 ### How to use it using "Docker Bosh Release"
 
@@ -145,6 +157,9 @@ properties:
     - data_container
     volumes_from:
     - data_container
+	#This container will be provisioned with a publioc key. The other containers will use standard password authentication
+    env_vars:
+    - "SSH_PUBLIC_KEY=< put here your ssh-rsa public key >"
   - name: &user2_bosh_cli user2_bosh_cli
     image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user2_bosh_cli
@@ -229,13 +244,15 @@ The last commande will generate a pair of keys (public and private). You need to
 The next step is to add your public key to your container. 
 
  * Log on in your container using your password
+ * If the directory ~/.ssh does not exist:
+```
+mkdir -p ~/.ssh
+chmod 700 ~/.
+``` 
  * Copy the content of the public key (your_key.pub) into "~/.ssh/authorized_keys"
  * After copying the public key into the "authorized_keys" file, we need to ensure that we have the right permission.
 ```
-chmod go-w ~/
 chmod 600 ~/.ssh/authorized_keys
-chmod 700 .ssh/
-sudo chown bosh:users /home/bosh
 ```
 
 The last step is to log out from your container then try to log on using your private key:
