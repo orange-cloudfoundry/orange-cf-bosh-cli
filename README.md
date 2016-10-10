@@ -57,6 +57,7 @@ In the following example:
 * We deploy 4 instances of the container.
 * The homedirectory of the bosh account is a private docker volume.
 * The directory /data is a shared docker volume (from the container called "data_container").
+* The first container has a provided public key.
 
 Example of bosh deployment manifest:
 ```
@@ -149,6 +150,8 @@ properties:
     env_vars:
     - "http_proxy=<%= http_proxy %>"
     - "https_proxy=<%= https_proxy %>"
+    #This container will be provisioned with a publioc key. The other containers will use standard password authentication
+    - "SSH_PUBLIC_KEY=< put here your ssh-rsa public key >"
     bind_ports:
     - "2222:22"
     volumes:
@@ -157,9 +160,6 @@ properties:
     - data_container
     volumes_from:
     - data_container
-	#This container will be provisioned with a publioc key. The other containers will use standard password authentication
-    env_vars:
-    - "SSH_PUBLIC_KEY=< put here your ssh-rsa public key >"
   - name: &user2_bosh_cli user2_bosh_cli
     image: <%= docker_image %>:<%= docker_tag %>
     hostname: *user2_bosh_cli
