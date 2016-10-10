@@ -21,4 +21,7 @@ fi
 /usr/local/bin/check_ssh_security container_init
 
 echo "Starting sshd..."
+mkdir -p /home/<username>/log/supervisor
+chmod 777 /home/<username>/log/supervisor
+ln -s /home/<username>/log/supervisor /var/log/supervisor
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
