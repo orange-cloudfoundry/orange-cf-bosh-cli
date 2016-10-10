@@ -15,7 +15,7 @@ The tools deployed in this docker image are:
 * `git client` - The git client
 * `ssh daemon`
 
-The container expose ssh port (22).
+The container expose ssh port (22). Password or key (rsa only) authentication is supported.
 
 ## How to get it or build it?
 
@@ -31,7 +31,7 @@ Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
 ### How to use as standalone container (if you have a simple docker host)
 
-#### without ssh key provided to the container?
+#### Without public ssh key provided to the container?
 
 Launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangecloudfoundry/orange-cf-bosh-cli</code>
 
@@ -39,7 +39,7 @@ Then, log into the container with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code>
 
 The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you must add your ssh public key into the file ~/.ssh/authorized_keys (RSA format). This last step will make the container secure after each restart/update (password auth will be disabled).
 
-### With ssh key provided to the container?
+#### With public ssh key provided to the container?
 
 It's also possible to add your public key to the container threw an environment variable.
 
