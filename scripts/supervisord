@@ -12,7 +12,7 @@ then
     mkdir -p /home/<username>/.ssh
     chmod 700 /home/<username>/.ssh
 	chown <username>:users /home/<username>/.ssh
-    echo "$SSH_PUBLIC_KEY" > /home/<username>/.ssh/authorized_keys
+    echo "ssh-rsa $SSH_PUBLIC_KEY public.key@pushed" > /home/<username>/.ssh/authorized_keys
     chmod 600 /home/<username>/.ssh/authorized_keys
 	chown <username>:users /home/<username>/.ssh/authorized_keys
     /usr/local/bin/disable_ssh_password_auth
