@@ -2,6 +2,8 @@
 # This script should be placed in /usr/local/bin
 # Used at container startup
 
+chown <username>:users /home/<username>
+
 if [ -n "$SSH_PUBLIC_KEY" ] && [ ! -s /home/<username>/.ssh/authorized_keys ]
 then
   echo "SSH public key provided threw env variable. Enabling public key auth..."
