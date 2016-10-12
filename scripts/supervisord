@@ -2,8 +2,7 @@
 # This script should be placed in /usr/local/bin
 # Used at container startup
 
-chown <username>:users /home/<username>
-
+# We push the public key if required
 if [ -n "$SSH_PUBLIC_KEY" ] && [ ! -s /home/<username>/.ssh/authorized_keys ]
 then
   echo "SSH public key provided threw env variable. Enabling public key auth..."
@@ -26,7 +25,9 @@ then
   fi
 fi
 
+# We check ssh security
 /usr/local/bin/check_ssh_security container_init
 
+# We launch ssh daemon
 echo "Starting sshd..."
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
