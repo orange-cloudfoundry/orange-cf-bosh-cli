@@ -12,7 +12,11 @@ then
     mkdir -p /home/<username>/.ssh
     chmod 700 /home/<username>/.ssh
 	chown <username>:users /home/<username>/.ssh
-    echo "ssh-rsa $SSH_PUBLIC_KEY public.key@pushed" > /home/<username>/.ssh/authorized_keys
+	if [[ "$SSH_PUBLIC_KEY" != "ssh-rsa"* ]]
+	then
+	  SSH_PUBLIC_KEY="ssh-rsa $SSH_PUBLIC_KEY public.key@pushed"
+	fi
+    echo "$SSH_PUBLIC_KEY" > /home/<username>/.ssh/authorized_keys
     chmod 600 /home/<username>/.ssh/authorized_keys
 	chown <username>:users /home/<username>/.ssh/authorized_keys
     /usr/local/bin/disable_ssh_password_auth
