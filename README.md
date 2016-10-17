@@ -9,6 +9,7 @@ The tools deployed in this docker image are:
 * `spiff` – This is a command line tool and declarative YAML templating system, specially designed for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
 * `spiff++` - Also known as spiff reloaded, spiff++ is a fork of spiff offering a rich set of new features not yet available in spiff (https://github.com/mandelsoft/spiff)
 * `spruce` – This is a domain-specific YAML merging tool, for generating BOSH manifests (https://github.com/geofffranks/spruce)
+* `terraform` - Terraform provides a common configuration to launch infrastructure (https://www.terraform.io/)
 * `bosh-gen` - Generators for creating and sharing BOSH releases (https://github.com/cloudfoundry-community/bosh-gen)
 * `bosh-init` - A tool used to create and update the Director (its VM and persistent disk) in a BOSH environment (https://github.com/cloudfoundry/bosh-init)
 * `cerstrap` - A simple certificate manager written in Go. Used by many bosh releases (https://github.com/square/certstrap)
