@@ -14,6 +14,7 @@ ENV container_login="bosh" \
     cf_cli_version="6.22.1" \
     cf_uaac_version="3.4.0" \
     bundler_version="1.13.1" \
+    terraform_version="0.7.6" \
     cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
 
 # Add wget package, update the image and install missing packages
@@ -36,6 +37,8 @@ RUN apt-get update && \
       supervisor \
       vim \
       nano \
+      mlocate \
+      net-tools \
       iputils-ping \
       netcat \
       dnsutils \
@@ -114,6 +117,10 @@ RUN wget -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifac
     wget -O /tmp/cf.deb "https://cli.run.pivotal.io/stable?release=debian64&version=${cf_cli_version}&source=github-rel" && \
     dpkg -i /tmp/cf.deb && \
     rm /tmp/cf.deb && \
+    wget -O /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip" && \
+    unzip /tmp/terraform.zip -d /usr/local/bin && \
+    chmod 755 /usr/local/bin/terraform && \
+    rm /tmp/terraform.zip && \
     su -c "http_proxy=$http_proxy https_proxy=$https_proxy go get -v github.com/square/certstrap" --login ${container_login} && \
     mkdir -p /home/${container_login}_non_persistent_storage/cf_plugins && \
     chown -R ${container_login}:users /home/${container_login}_non_persistent_storage && \
