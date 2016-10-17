@@ -140,6 +140,7 @@ RUN GIT_VERSION=`git --version | awk '{print $3}'` && \
     sed -i "s/<spruce-version>/$spruce_version/g" /etc/motd && \
     sed -i "s/<bosh-gen-version>/$bosh_gen_version/g" /etc/motd && \
     sed -i "s/<bosh-init-version>/$bosh_init_version/g" /etc/motd && \
+    sed -i "s/<terraform-version>/$terraform_version/g" /etc/motd && \
     sed -i "s/<certstrap-version>/$CERTSTRAP_VERSION/g" /etc/motd && \
     sed -i "s/<git-version>/$GIT_VERSION/g" /etc/motd && \
     chmod 644 /etc/motd && \
