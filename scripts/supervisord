@@ -3,7 +3,7 @@
 # Used at container startup
 
 # We push the public key if required
-if [ -n "$SSH_PUBLIC_KEY" ] && [ ! -s /home/<username>/.ssh/authorized_keys ]
+if [ -n "$SSH_PUBLIC_KEY" ]
 then
   echo "SSH public key provided threw env variable. Enabling public key auth..."
   if [ ! -s /home/<username>/.ssh/authorized_keys ] && [ -n "$SSH_PUBLIC_KEY_DONT_OVERWRITE" ] && [ "$SSH_PUBLIC_KEY_DONT_OVERWRITE" == "true" ]
