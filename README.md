@@ -205,10 +205,7 @@ properties:
     - data_container
 ```
 
-Then, log into the container you want with ssh: <code>ssh -p 2222 bosh@docker.bosh.release.deployment</code> to log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).
-
-The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you must add your ssh public key into the file ~/.ssh/authorized_keys (RSA format). This last step will make the container secure after each restart/update (password auth will be disabled).
-
+Then, log into the container you want with ssh: <code>ssh -i privateKey -p 2222 bosh@docker.bosh.release.deployment</code> to log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).
 
 
 
