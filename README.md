@@ -212,55 +212,5 @@ The password at first logon is "welcome". Then, you have to change your password
 
 
 
-#  SSH Private/Public key configuration
-
-
-
-In this tutorial, we assume that you installed docker-bosh-cli in a single machine.
-
-If you have multiple user, each one of them will use the same IP address with different port.
- 
-The default user is "bosh" and the default password is "welcome"
-
-To log on to your docker container :
-
-``` ssh -p Port bosh@ipAdresse```
-
-Port : Port attributed to current user
-
-ipAdresse : The IP adresse of the container (you can obtain it after installing docker-boch-cli using the command (```bosh instances``` )
-
-At the first time you log on, you will be asked to change password. After changing it, your connexion will be closed and you will need to log on again with your new password.
-In the case where your container is restarted or updated, your password will be reset to the default password "welcome".
-
-To ensure the persistance of your password, you will need to use Private/Public Key auhtentification.
-
-
-First of all, you need to generate your Private/Public key :
-```
-ssh-keygen -t RSA
-```
-The last commande will generate a pair of keys (public and private). You need to save the private key in a file that will be used to connect to your container.
-
-The next step is to add your public key to your container. 
-
- * Log on in your container using your password
- * If the directory ~/.ssh does not exist:
-```
-mkdir -p ~/.ssh
-chmod 700 ~/.
-``` 
- * Copy the content of the public key (your_key.pub) into "~/.ssh/authorized_keys"
- * After copying the public key into the "authorized_keys" file, we need to ensure that we have the right permission.
-```
-chmod 600 ~/.ssh/authorized_keys
-```
-
-The last step is to log out from your container then try to log on using your private key:
-
-``` ssh -p Port -i yourPrivateKey bosh@ipAdresse ```
-
-
-
 
 
