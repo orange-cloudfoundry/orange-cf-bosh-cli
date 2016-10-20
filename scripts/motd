@@ -20,7 +20,7 @@ Depending how this docker container was started, the standard usage is:
   * All other paths in this container will be reseted on restart or update.
   
 For security reasons:
-  1. Add you RSA private key into ~/.ssh/authorized_keys,
+  1. Add you RSA public key into ~/.ssh/authorized_keys,
   2. Before logout, ensure you can log with private/public key authentication,
   3. Password authentication become disabled.
   4. If you don't do this, your password will be resetted at container restart or update.
