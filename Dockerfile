@@ -5,16 +5,16 @@ USER root
 
 ENV container_login="bosh" \
     container_password="welcome" \
-    bosh_cli_version="1.3262.4.0" \
-    bosh_init_version="0.0.96" \
+    bosh_cli_version="1.3262.24.0" \
+    bosh_init_version="0.0.98" \
     bosh_gen_version="0.22.0" \
     spiff_version="1.0.7" \
-    spiff_reloaded_version="1.0.8-ms.5" \
+    spiff_reloaded_version="1.0.8-ms.6" \
     spruce_version="1.8.1" \
-    cf_cli_version="6.22.1" \
+    cf_cli_version="6.22.2" \
     cf_uaac_version="3.4.0" \
-    bundler_version="1.13.1" \
-    terraform_version="0.7.6" \
+    bundler_version="1.13.6" \
+    terraform_version="0.7.9" \
     cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
 
 # Add wget package, update the image and install missing packages
