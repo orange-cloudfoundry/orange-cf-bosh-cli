@@ -10,11 +10,11 @@ ENV container_login="bosh" \
     bosh_gen_version="0.22.0" \
     spiff_version="1.0.7" \
     spiff_reloaded_version="1.0.8-ms.6" \
-    spruce_version="1.8.3" \
+    spruce_version="1.8.6" \
     cf_cli_version="6.22.2" \
     cf_uaac_version="3.4.0" \
     bundler_version="1.13.6" \
-    terraform_version="0.7.10" \
+    terraform_version="0.7.13" \
     cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
 
 # Add wget package, update the image and install missing packages
