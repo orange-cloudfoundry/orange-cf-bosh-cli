@@ -14,7 +14,7 @@ ENV container_login="bosh" \
     cf_cli_version="6.22.2" \
     cf_uaac_version="3.4.0" \
     bundler_version="1.13.6" \
-    terraform_version="0.8.2" \
+    terraform_version="0.8.5" \
     cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
 
 # Add wget package, update the image and install missing packages
