@@ -1,4 +1,5 @@
-# Cloud Foundry Bosh Cli deployed using docker
+# Cloud Foundry Bosh Cli deployed using docker [![Docker Automated buil](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg?style=plastic)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/) 
+
 The `cf-bosh-cli` project helps you deploy bosh cli and associated tools through docker. Deploying all theses tools takes long time.
 
 The tools deployed in this docker image are:
