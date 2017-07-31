@@ -19,7 +19,7 @@ then
 	fi
     echo "$SSH_PUBLIC_KEY" > /home/<username>/.ssh/authorized_keys
     chmod 600 /home/<username>/.ssh/authorized_keys
-	chown <username>:users /home/<username>/.ssh/authorized_keys
+    chown <username>:users /home/<username>/.ssh/authorized_keys
     /usr/local/bin/disable_ssh_password_auth
     echo "SSH public key provided threw env variable. Enabling public key auth done."
   fi

@@ -1,6 +1,6 @@
 # Cloud Foundry Bosh Cli deployed using docker [![Docker Automated buil](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg?style=plastic)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/) 
 
-The `cf-bosh-cli` project helps you deploy bosh cli and associated tools through docker. Deploying all theses tools takes long time.
+The `cf-bosh-cli` project helps you to deploy bosh cli and associated tools through docker.
 
 The tools deployed in this docker image are:
 
@@ -21,6 +21,8 @@ The tools deployed in this docker image are:
 * `cerstrap` - Simple certificate manager, used by many bosh releases (https://github.com/square/certstrap)
 * `gof3r` - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
 * `jq` - Tool for processing JSON inputs (https://stedolan.github.io/jq/)
+* `ruby` - Ruby Programming Language (https://www.ruby-lang.org/)
+* `go` - Go Programming Language (https://golang.org/)
   
 The container expose ssh port. Password or key (rsa only) authentication is supported.
 
@@ -38,30 +40,32 @@ Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
 ### How to use as standalone container (if you have a simple docker host)
 
-#### Without public ssh key provided to the container ?
+#### Without public ssh key provided to the container
 
-Launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangecloudfoundry/orange-cf-bosh-cli</code>
+Launch the image. Don't miss to assign an host port to the container ssh port (22) :
+<code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangecloudfoundry/orange-cf-bosh-cli</code>
 
-Then, log into the container with ssh: <code>ssh -p 2222 bosh@127.0.0.1</code>
+Then, log into the container with ssh : <code>ssh -p 2222 bosh@127.0.0.1</code>
 
-The password at first logon is "welcome". Then, you have to change your password. When you are logged into the container, you must add your ssh public key into the file ~/.ssh/authorized_keys (RSA format). This last step will make the container secure after each restart/update (password auth will be disabled).
+The password at first logon is "welcome" (you have to change your password). When you are logged into the container, you must add your ssh public key into the file <code>~/.ssh/authorized_keys</code> (RSA format). This last step will make the container secure after each restart/update (password auth will be disabled).
 
-#### With public ssh key provided to the container?
+#### With public ssh key provided to the container
 
 It's also possible to add your public key to the container threw an environment variable.
 
-Launch the image. Don't miss to assign an host port to the container ssh port (22): <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data -e "SSH_PUBLIC_KEY=< put here your ssh-rsa public key >" orangecloudfoundry/orange-cf-bosh-cli</code>
+Launch the image. Don't miss to assign an host port to the container ssh port (22) :
+<code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data -e "SSH_PUBLIC_KEY=< put here your ssh-rsa public key >" orangecloudfoundry/orange-cf-bosh-cli</code>
 
-Then, log into the container with ssh: <code>ssh -p 2222 -i <path to your rsa private key> bosh@127.0.0.1</code>
+Then, log into the container with ssh : <code>ssh -p 2222 -i <path to your rsa private key> bosh@127.0.0.1</code>
 
-The password in this case is completely disabled. By default, the file containing the public key (~/.ssh/authorized_keys) is overwrited after container restart or update. By setting the variable SSH_PUBLIC_KEY_DONT_OVERWRITE=true, this file is not overwrited if it already exists and is not empty.
+The password in this case is completely disabled. By default, the file containing the public key <code>~/.ssh/authorized_keys</code> is overwrited after container restart or update. By setting the variable <code>SSH_PUBLIC_KEY_DONT_OVERWRITE=true</code>, this file is not overwrited if it already exists and is not empty.
 
 ### How to use it using "Docker Bosh Release"
 
 Another option is to deploy the container threw the "Docker Bosh Release" (https://github.com/cloudfoundry-community/docker-boshrelease).
 
 In the following example:
-* We deploy 4 instances of the container.
+* We deploy 1 instance of the container.
 * The homedirectory of the bosh account is a private docker volume.
 * The directory /data is a shared docker volume (from the container called "data_container").
 * The first container has a provided public key.
@@ -197,4 +201,4 @@ properties:
     - data_container
 ```
 
-Then, log into the container you want with ssh: <code>ssh -i privateKey -p 2222 bosh@docker.bosh.release.deployment</code> to log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).
+Then, log into the container you want with ssh : <code>ssh -i privateKey -p 2222 bosh@docker.bosh.release.deployment</code> to log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).

@@ -3,4 +3,4 @@
 # It define default values for go
 
 export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin

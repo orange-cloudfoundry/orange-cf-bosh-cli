@@ -1,33 +1,27 @@
 
 Your are logged into an ubuntu docker container (https://github.com/Orange-OpenSource/orange-cf-bosh-cli),
-which provides different tools:
+which provides different tools :
   * git (<git_version>) - Git client
   * bosh-init (<bosh_init_version>) - Tool used to create and update (its VM and persistent disk) BOSH Director (https://github.com/cloudfoundry/bosh-init)
   * bosh-gen (<bosh_gen_version>) - Generators for creating and sharing BOSH releases (https://github.com/cloudfoundry-community/bosh-gen)
-  * bosh (<bosh_cli_version>) – Bosh directors V1 command line client (https://bosh.io/docs/bosh-cli.html)
-  * bosh2 (<bosh_cli_v2_version>) – Bosh directors V2 command line client (https://bosh.io/docs/cli-v2.html)
+  * bosh1 (<bosh_cli_version>) – Bosh directors V1 CLI (https://bosh.io/docs/bosh-cli.html)
+  * bosh (<bosh_cli_v2_version>) – Bosh directors V2 CLI (https://bosh.io/docs/cli-v2.html)
   * spiff (<spiff_version>) – YAML templating system, for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
   * spiff++ (<spiff_reloaded_version>) – Also known as spiff reloaded, spiff++ is a spiff enhanced fork (https://github.com/mandelsoft/spiff)
   * spruce (<spruce_version>) – YAML templating system, for generating BOSH deployment manifests (https://github.com/geofffranks/spruce)
-  * cf (<cf_cli_version>) – Cloud Foundry command line client (https://github.com/cloudfoundry/cli)
-  * uaac (<cf_uaac_version>) – Cloud Foundry UAA command line client (https://github.com/cloudfoundry/cf-uaac)
+  * cf (<cf_cli_version>) – Cloud Foundry CLI (https://github.com/cloudfoundry/cli)
+  * uaac (<cf_uaac_version>) – Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac)
   * terraform (<terraform_version>) - Provides a common configuration to launch infrastructure (https://www.terraform.io/)
   * terraform-provider-cloudfoundry (<terraform_pcf_version>) - Terraform plugin for Cloudfoundry (https://github.com/orange-cloudfoundry/terraform-provider-cloudfoundry)
-  * fly (<fly_version>) - Concourse command line client (https://github.com/concourse/fly)
-  * credhub (<credhub_version>) - Credhub command line client (https://github.com/cloudfoundry-incubator/credhub-cli)
+  * fly (<fly_version>) - Concourse CLI (https://github.com/concourse/fly)
+  * shield (<shield_version>) - Shield backup CLI (https://github.com/starkandwayne/shield)
+  * credhub (<credhub_version>) - Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli)
   * certstrap (<certstrap_version>) - Simple certificate manager, used by many bosh releases (https://github.com/square/certstrap)
   * gof3r (<gof3r_version>) - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
   * jq (<jq_version>) - Tool for processing JSON inputs (https://stedolan.github.io/jq/)
+  * ruby (<ruby_version>) - Ruby Programming Language (https://www.ruby-lang.org/)
+  * go (<golang_version>) - Go Programming Language (https://golang.org/)
   
-Depending how this docker container was started, the standard usage is:
-  * "/home/bosh" should be a docker volume with persisted data.
-  * "/data" should also be a docker volume with persisted data, but shared with other instances of this container.
+Notes :
+  * "/home/bosh/shared" and "data" are persisted data docker volume, shared with other instances of this container.
   * All other paths in this container will be reseted on restart or update.
-  
-For security reasons:
-  1. Add you RSA public key into ~/.ssh/authorized_keys,
-  2. Before logout, ensure you can log with private/public key authentication,
-  3. Password authentication become disabled.
-  4. If you don't do this, your password will be resetted at container restart or update.
-
-If you want to add your own environment variables, please add them to ~/.profile (such as http_proxy, https_proxy, no_proxy...).
