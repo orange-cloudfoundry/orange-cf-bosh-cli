@@ -95,7 +95,7 @@ RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
     /bin/bash -l -c "http_proxy=${http_proxy} https_proxy=${https_proxy} rvm requirements" && \
     /bin/bash -l -c "http_proxy=${http_proxy} https_proxy=${https_proxy} rvm install ${ruby_version}" && \
     /bin/bash -l -c "http_proxy=${http_proxy} https_proxy=${https_proxy} rvm use ${ruby_version}" && \
-    /bin/bash -l -c "http_proxy=${http_proxy} https_proxy=${https_proxy} gem install bundler --no-ri --no-rdoc -v ${bundler_version}" && \ 
+    /bin/bash -l -c "http_proxy=${http_proxy} https_proxy=${https_proxy} gem install bundler --no-ri --no-rdoc -v ${bundler_version}" && \
     /bin/bash -l -c "http_proxy=${http_proxy} https_proxy=${https_proxy} gem install bosh_cli --no-ri --no-rdoc -v ${bosh_cli_version}" && \
     /bin/bash -l -c "http_proxy=${http_proxy} https_proxy=${https_proxy} gem install bosh-gen --no-ri --no-rdoc -v ${bosh_gen_version}" && \
     /bin/bash -l -c "http_proxy=${http_proxy} https_proxy=${https_proxy} gem install cf-uaac --no-ri --no-rdoc -v ${cf_uaac_version}" && \
@@ -124,9 +124,10 @@ RUN wget -nv -O /tmp/go.tar.gz https://storage.googleapis.com/golang/go${golang_
     wget -nv -O /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${jq_version}/jq-linux64" && chmod 755 /usr/local/bin/jq && \
     printf "\n\n# Interactive Unix filter for command-line" >> /home/${container_login}/.bashrc && \
     git clone --depth 1 https://github.com/junegunn/fzf.git /home/${container_login}/.fzf && chown -R ${container_login}:users /home/${container_login}/.fzf && su - ${container_login} -c "/home/${container_login}/.fzf/install --all" && \
+    printf "if [ -f /home/${container_login}/.fzf.bash ] ; then\n  source /home/${container_login}/.fzf.bash\nfi\n" >> /home/${container_login}/.bashrc && \
     wget -nv -O /usr/local/bin/z.sh https://raw.githubusercontent.com/rupa/z/master/z.sh && \
-    printf "\n# Maintain a jump-list of in use directories\nsource /usr/local/bin/z.sh" >> /home/${container_login}/.bashrc && \
-    printf "\n\n# GIT Completion\nsource /usr/share/bash-completion/completions/git" >> /home/${container_login}/.bashrc && \
+    printf "\n# Maintain a jump-list of in use directories\nsource /usr/local/bin/z.sh\n" >> /home/${container_login}/.bashrc && \
+    printf "\n# GIT Completion\nsource /usr/share/bash-completion/completions/git" >> /home/${container_login}/.bashrc && \
     mkdir -p /home/${container_login}_non_persistent_storage/cf_plugins && chown -R ${container_login}:users /home/${container_login}_non_persistent_storage && chmod 700 /home/${container_login}_non_persistent_storage && \
     su -c "export http_proxy=${http_proxy};export https_proxy=${https_proxy};export IFS=,;for plug in \`echo ${cf_plugins}\`; do cf install-plugin \"\${plug}\" -r CF-Community -f; done" -l ${container_login} -s /bin/bash && \
     rm -fr /tmp/*
@@ -144,11 +145,11 @@ RUN GIT_VERSION=`git --version | awk '{print $3}'` && \
     sed -i "s/<spiff_reloaded_version>/${spiff_reloaded_version}/g" /etc/motd && \
     sed -i "s/<spruce_version>/${spruce_version}/g" /etc/motd && \
     sed -i "s/<cf_cli_version>/${cf_cli_version}/g" /etc/motd && \
-    sed -i "s/<cf_uaac_version>/${cf_uaac_version}/g" /etc/motd && \   
+    sed -i "s/<cf_uaac_version>/${cf_uaac_version}/g" /etc/motd && \
     sed -i "s/<terraform_version>/${terraform_version}/g" /etc/motd && \
     sed -i "s/<terraform_pcf_version>/${terraform_pcf_version}/g" /etc/motd && \
     sed -i "s/<fly_version>/${fly_version}/g" /etc/motd && \
-    sed -i "s/<shield_version>/${shield_version}/g" /etc/motd && \ 
+    sed -i "s/<shield_version>/${shield_version}/g" /etc/motd && \
     sed -i "s/<credhub_version>/${credhub_version}/g" /etc/motd && \
     sed -i "s/<certstrap_version>/${CERTSTRAP_VERSION}/g" /etc/motd && \
     sed -i "s/<gof3r_version>/${gof3r_version}/g" /etc/motd && \
