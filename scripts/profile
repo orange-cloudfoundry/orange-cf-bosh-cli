@@ -1,0 +1,50 @@
+# ~/.profile: executed by the command interpreter for login shells.
+# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
+
+#--- Modify home user (on shared disk)
+export MY_BOSH_USER=`hostname`
+export HOME=/home/<username>/shared/${MY_BOSH_USER}
+
+#--- Create user directory
+if [ ! -d ${HOME} ] ; then
+  mkdir -p ${HOME}
+fi
+
+#--- Init bash env files (".bashrc", ".bash_profile" and ".bash_aliases")
+cp /home/<username>/.bashrc ${HOME}/.bashrc
+echo ". ~/.bashrc" > ${HOME}/.bash_profile
+echo "#--- Alias" > ${HOME}/.bash_aliases
+echo "alias log_bosh='. log_bosh'" >> ${HOME}/.bash_aliases
+echo "alias log-bosh='. log_bosh'" >> ${HOME}/.bash_aliases
+echo "alias bosh2='bosh'" >> ${HOME}/.bash_aliases
+echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
+
+#--- Link Cloud Foundry plugins
+if [ ! -d ${HOME}/.cf ] ; then
+  ln -s /home/<username>/.cf ${HOME}/.cf
+fi
+
+#--- Adapt user prompt and terminal name
+if [ -f /home/<username>/shared/tools/bosh_cli_name ] ; then
+  export BOSH_CLI_NAME=`cat /home/<username>/shared/tools/bosh_cli_name`
+else
+  export BOSH_CLI_NAME="bosh-cli"
+fi
+printf "export PS1='\${debian_chroot:+(\$debian_chroot)}\[\\\033[01;32m\]\h@${BOSH_CLI_NAME}\[\\\033[00m\]:\[\\\033[01;34m\]\w\[\\\033[00m\]$ '\n" >> ${HOME}/.bashrc
+printf  "echo -en \"\\\033]0;\${MY_BOSH_USER}@${BOSH_CLI_NAME}:\${PWD}\\\007\"\n" >> ${HOME}/.bashrc
+
+#--- Redefine GIT config file path
+export XDG_CONFIG_HOME=${HOME}
+
+#--- Redefine command history file path
+export HISTFILE=${HOME}/.bash_history
+
+#--- Redefine Path to binary
+export PATH=.:/home/<username>/shared/${MY_BOSH_USER}/bin:/home/<username>/shared/tools:${PATH}
+
+#--- Load user configuration
+if [ -f ${HOME}/.bashrc ] ; then
+  . ${HOME}/.bashrc
+fi
+
+cd ${HOME}
