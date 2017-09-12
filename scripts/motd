@@ -8,7 +8,7 @@ which provides different tools :
   * bosh (<bosh_cli_v2_version>) - Bosh directors V2 CLI (https://bosh.io/docs/cli-v2.html)
   * spiff (<spiff_version>) - YAML templating system, for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
   * spiff++ (<spiff_reloaded_version>) - Also known as spiff reloaded, spiff++ is a spiff enhanced fork (https://github.com/mandelsoft/spiff)
-  * spruce (<spruce_version>) – YAML templating system, for generating BOSH deployment manifests (https://github.com/geofffranks/spruce)
+  * spruce (<spruce_version>) - YAML templating system, for generating BOSH deployment manifests (https://github.com/geofffranks/spruce)
   * cf (<cf_cli_version>) - Cloud Foundry CLI (https://github.com/cloudfoundry/cli)
   * uaac (<cf_uaac_version>) - Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac)
   * terraform (<terraform_version>) - Provides a common configuration to launch infrastructure (https://www.terraform.io/)
@@ -21,7 +21,7 @@ which provides different tools :
   * jq (<jq_version>) - Tool for processing JSON inputs (https://stedolan.github.io/jq/)
   * ruby (<ruby_version>) - Ruby Programming Language (https://www.ruby-lang.org/)
   * go (<golang_version>) - Go Programming Language (https://golang.org/)
-  
+
 Notes :
   * "/home/bosh/shared" and "data" are persisted data docker volume, shared with other instances of this container.
   * All other paths in this container will be reseted on restart or update.

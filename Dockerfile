@@ -6,16 +6,16 @@ USER root
 ENV bundler_version="1.13.6" \
     bosh_init_version="0.0.103" \
     bosh_gen_version="0.22.0" \
-    bosh_cli_version="1.3262.24.0" \
+    bosh_cli_version="1.3262.26.0" \
     bosh_cli_v2_version="2.0.26" \
     spiff_version="1.0.8" \
     spiff_reloaded_version="1.0.8-ms.6" \
     spruce_version="1.8.9" \
-    cf_cli_version="6.26.0" \
+    cf_cli_version="6.30.0" \
     cf_uaac_version="3.4.0" \
     terraform_version="0.9.8" \
     terraform_pcf_version="0.7.3" \
-    fly_version="3.1.1" \
+    fly_version="3.4.1" \
     shield_version="0.10.3" \
     credhub_version="1.1.0" \
     gof3r_version="0.0.5" \
@@ -34,39 +34,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     echo "deb http://ppa.launchpad.net/ubuntu-lxc/lxd-stable/ubuntu trusty main" > /etc/apt/sources.list.d/lxd-stable.list && \
     wget -q -O- "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD5495F657635B973" | sudo apt-key add - && \
     apt-get update && apt-get install -y --no-install-recommends \
-      openssh-server \
-      curl \
-      git-core \
-      bash-completion \
-      unzip \
-      openssl \
-      iproute2 \
-      less \
-      s3cmd \
-      supervisor \
-      vim \
-      nano \
-      mlocate \
-      net-tools \
-      iputils-ping \
-      netcat \
-      dnsutils \
-      build-essential \
-      libxml2-dev \
-      libsqlite3-dev \
-      libxslt1-dev \
-      libpq-dev \
-      libmysqlclient-dev \
-      libssl-dev \
-      zlib1g-dev \
-      screen \
-      tmux \
-      byobu \
-      apt-transport-https \
-      silversearcher-ag \
-      colordiff && \
-    apt-get upgrade -y && \
-    apt-get clean && apt-get autoremove -y && apt-get purge && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
+        openssh-server openssl supervisor \
+        git-core s3cmd bash-completion curl unzip vim less mlocate nano screen tmux byobu silversearcher-ag colordiff \
+        net-tools iproute2 iputils-ping netcat dnsutils apt-transport-https tcpdump \
+        python-pip python-setuptools python-dev build-essential libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev libssl-dev zlib1g-dev && \
+    apt-get upgrade -y && apt-get clean && apt-get autoremove -y && apt-get purge && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #--- Install Ruby Version Manager and Ruby packages (bundler, bosh-cli, bosh-gen & uaa client)
 RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
@@ -85,28 +57,27 @@ RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
 ADD scripts/supervisord scripts/check_ssh_security scripts/disable_ssh_password_auth /usr/local/bin/
 ADD supervisord/sshd.conf /etc/supervisor/conf.d/
 ADD scripts/homedir.sh scripts/cf.sh scripts/go.sh /etc/profile.d/
-RUN mkdir -p /var/run/sshd /var/log/supervisor && \
+RUN echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd && \
+    sed -i 's/PermitRootLogin without-password/PermitRootLogin no/g' /etc/ssh/sshd_config && \
+    mkdir -p /var/run/sshd /var/log/supervisor && \
     chmod 755 /usr/local/bin/supervisord /usr/local/bin/check_ssh_security /usr/local/bin/disable_ssh_password_auth /etc/profile.d/homedir.sh /etc/profile.d/cf.sh /etc/profile.d/go.sh && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
-    sed -i 's/PermitRootLogin without-password/PermitRootLogin no/g' /etc/ssh/sshd_config && \
-    echo "export VISIBLE=now" >> /etc/profile && \
-    echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd && \
     useradd -m -g users -G sudo,rvm -s /bin/bash ${container_login} && \
+    echo "${container_login}:${container_password}" | chpasswd && \
     sed -i "s/<username>/${container_login}/g" /usr/local/bin/supervisord && \
     sed -i "s/<username>/${container_login}/g" /usr/local/bin/check_ssh_security && \
     sed -i "s/<username>/${container_login}/g" /usr/local/bin/disable_ssh_password_auth && \
     echo "${container_login} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${container_login} && \
-    echo "${container_login}:${container_password}" | chpasswd && \
     chage -d 0 ${container_login} && \
     ln -s /tmp /home/${container_login}/tmp && \
     chown -R ${container_login}:users /home/${container_login} && chmod 700 /home/${container_login} && \
     mkdir -p /data && chown ${container_login}:users /data
 
-ENV NOTVISIBLE "in users profile"
-
 #--- Install ops tools & cf cli plugins
-RUN wget -nv -O /tmp/go.tar.gz https://storage.googleapis.com/golang/go${golang_version}.linux-amd64.tar.gz && tar -xzf /tmp/go.tar.gz -C /usr/local && chmod 755 /etc/profile.d/go.sh && rm -f /tmp/go.tar.gz && \
+ENV NOTVISIBLE "in users profile"
+RUN echo "export VISIBLE=now" >> /etc/profile && \
+    wget -nv -O /tmp/go.tar.gz https://storage.googleapis.com/golang/go${golang_version}.linux-amd64.tar.gz && tar -xzf /tmp/go.tar.gz -C /usr/local && chmod 755 /etc/profile.d/go.sh && rm -f /tmp/go.tar.gz && \
     wget -nv -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifacts/bosh-init-${bosh_init_version}-linux-amd64" && chmod 755 /usr/local/bin/bosh-init && \
     wget -nv -O /usr/local/bin/bosh "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${bosh_cli_v2_version}-linux-amd64" && chmod 755 /usr/local/bin/bosh && \
     wget -nv -O /tmp/spiff_linux_amd64.zip "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${spiff_version}/spiff_linux_amd64.zip" && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && chmod 755 /usr/local/bin/spiff && rm /tmp/spiff_linux_amd64.zip && \
@@ -128,6 +99,8 @@ RUN wget -nv -O /tmp/go.tar.gz https://storage.googleapis.com/golang/go${golang_
     printf "# Interactive filter for command-line\nif [ -f /home/${container_login}/.fzf.bash ] ; then\n  source /home/${container_login}/.fzf.bash\nfi\n" >> /home/${container_login}/.bashrc && \
     mkdir -p /home/${container_login}_non_persistent_storage/cf_plugins && chown -R ${container_login}:users /home/${container_login}_non_persistent_storage && chmod 700 /home/${container_login}_non_persistent_storage && \
     su -c "export http_proxy=${http_proxy};export https_proxy=${https_proxy};export IFS=,;for plug in \`echo ${cf_plugins}\`; do cf install-plugin \"\${plug}\" -r CF-Community -f; done" -l ${container_login} -s /bin/bash && \
+    pip install --upgrade pip && \
+    pip install python-keystoneclient python-novaclient python-swiftclient python-neutronclient python-cinderclient python-glanceclient python-openstackclient && \
     rm -fr /tmp/*
 
 #--- Tools publication on system banner, setup profile & cleanup

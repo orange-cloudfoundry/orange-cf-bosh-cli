@@ -14,8 +14,9 @@ fi
 cp /home/<username>/.bashrc ${HOME}/.bashrc
 echo ". ~/.bashrc" > ${HOME}/.bash_profile
 echo "#--- Alias" > ${HOME}/.bash_aliases
-echo "alias log_bosh='. log_bosh'" >> ${HOME}/.bash_aliases
-echo "alias log-bosh='. log_bosh'" >> ${HOME}/.bash_aliases
+echo "alias log-openstack='. log-openstack'" >> ${HOME}/.bash_aliases
+echo "alias log-bosh='. log-bosh'" >> ${HOME}/.bash_aliases
+echo "alias log_bosh='. log-bosh'" >> ${HOME}/.bash_aliases
 echo "alias bosh2='bosh'" >> ${HOME}/.bash_aliases
 echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
 
@@ -30,8 +31,12 @@ if [ -f /home/<username>/shared/tools/bosh_cli_name ] ; then
 else
   export BOSH_CLI_NAME="bosh-cli"
 fi
+echo "#--- User prompt and terminal name" >> ${HOME}/.bashrc
 printf "export PS1='\${debian_chroot:+(\$debian_chroot)}\[\\\033[01;32m\]\h@${BOSH_CLI_NAME}\[\\\033[00m\]:\[\\\033[01;34m\]\w\[\\\033[00m\]$ '\n" >> ${HOME}/.bashrc
-printf  "echo -en \"\\\033]0;\${MY_BOSH_USER}@${BOSH_CLI_NAME}:\${PWD}\\\007\"\n" >> ${HOME}/.bashrc
+printf  "echo -en \"\\\033]0;\${MY_BOSH_USER}@${BOSH_CLI_NAME}:\${PWD}\\\007\"\n\n" >> ${HOME}/.bashrc
+
+echo "#--- Grep colorization" >> ${HOME}/.bashrc
+echo "export GREP_COLOR='1;30;103'" >> ${HOME}/.bashrc
 
 #--- Redefine GIT config file path
 export XDG_CONFIG_HOME=${HOME}
