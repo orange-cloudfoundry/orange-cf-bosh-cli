@@ -7,7 +7,7 @@ ENV bundler_version="1.13.6" \
     bosh_init_version="0.0.103" \
     bosh_gen_version="0.22.0" \
     bosh_cli_version="1.3262.26.0" \
-    bosh_cli_v2_version="2.0.26" \
+    bosh_cli_v2_version="2.0.36" \
     spiff_version="1.0.8" \
     spiff_reloaded_version="1.0.8-ms.6" \
     spruce_version="1.8.9" \
@@ -16,27 +16,27 @@ ENV bundler_version="1.13.6" \
     terraform_version="0.9.8" \
     terraform_pcf_version="0.7.3" \
     fly_version="3.4.1" \
-    shield_version="0.10.3" \
     credhub_version="1.1.0" \
-    gof3r_version="0.0.5" \
     jq_version="1.5" \
     ruby_version="2.3.3" \
     golang_version="1.8.3" \
     container_login="bosh" \
     container_password="welcome" \
-    cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,targets,Usage Report"
+    cf_plugins="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
 #--- Update image and install tools packages
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-utils wget sudo && \
     echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" > /etc/apt/sources.list.d/git-core-ppa-trusty.list && \
-    wget -q -O- "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA1715D88E1DF1F24" | sudo apt-key add - && \
     echo "deb http://ppa.launchpad.net/ubuntu-lxc/lxd-stable/ubuntu trusty main" > /etc/apt/sources.list.d/lxd-stable.list && \
-    wget -q -O- "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD5495F657635B973" | sudo apt-key add - && \
+    echo "deb http://apt.starkandwayne.com stable main" | tee /etc/apt/sources.list.d/starkandwayne.list && \
+    wget -q -O - "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA1715D88E1DF1F24" | sudo apt-key add - && \
+    wget -q -O - "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD5495F657635B973" | sudo apt-key add - && \
+    wget -q -O - "https://raw.githubusercontent.com/starkandwayne/homebrew-cf/master/public.key" | apt-key add - && \
     apt-get update && apt-get install -y --no-install-recommends \
         openssh-server openssl supervisor \
         git-core s3cmd bash-completion curl unzip vim less mlocate nano screen tmux byobu silversearcher-ag colordiff \
-        net-tools iproute2 iputils-ping netcat dnsutils apt-transport-https tcpdump \
+        net-tools iproute2 iputils-ping netcat dnsutils apt-transport-https tcpdump shield \
         python-pip python-setuptools python-dev build-essential libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev libssl-dev zlib1g-dev && \
     apt-get upgrade -y && apt-get clean && apt-get autoremove -y && apt-get purge && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -85,7 +85,6 @@ RUN echo "export VISIBLE=now" >> /etc/profile && \
     wget -nv -O /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${spruce_version}/spruce-linux-amd64" && chmod 755 /usr/local/bin/spruce && \
     wget -nv -O /tmp/cf.deb "https://cli.run.pivotal.io/stable?release=debian64&version=${cf_cli_version}&source=github-rel" && dpkg -i /tmp/cf.deb && rm /tmp/cf.deb && \
     wget -nv -O /usr/local/bin/fly "https://github.com/concourse/concourse/releases/download/v${fly_version}/fly_linux_amd64" && chmod 755 /usr/local/bin/fly && \
-    wget -nv -O /usr/local/bin/shield "https://github.com/starkandwayne/shield/releases/download/v${shield_version}/shield-linux-amd64" && chmod 755 /usr/local/bin/shield && \
     wget -nv -O /tmp/credhub-linux.tgz "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${credhub_version}/credhub-linux-${credhub_version}.tgz" && tar -xzvf /tmp/credhub-linux.tgz -C /usr/local/bin && chmod 755 /usr/local/bin/credhub && rm /tmp/credhub-linux.tgz && \
     wget -nv -O /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${jq_version}/jq-linux64" && chmod 755 /usr/local/bin/jq && \
     wget -nv -O /usr/local/bin/z.sh https://raw.githubusercontent.com/rupa/z/master/z.sh && chmod 755 /usr/local/bin/z.sh && printf "\n# Maintain a jump-list of in use directories\nif [ -f /usr/local/bin/z.sh ] ; then\n  source /usr/local/bin/z.sh\nfi\n" >> /home/${container_login}/.bashrc && \
@@ -122,10 +121,8 @@ RUN chmod 644 /etc/motd && \
     sed -i "s/<terraform_version>/${terraform_version}/g" /etc/motd && \
     sed -i "s/<terraform_pcf_version>/${terraform_pcf_version}/g" /etc/motd && \
     sed -i "s/<fly_version>/${fly_version}/g" /etc/motd && \
-    sed -i "s/<shield_version>/${shield_version}/g" /etc/motd && \
     sed -i "s/<credhub_version>/${credhub_version}/g" /etc/motd && \
     sed -i "s/<certstrap_version>/${CERTSTRAP_VERSION}/g" /etc/motd && \
-    sed -i "s/<gof3r_version>/${gof3r_version}/g" /etc/motd && \
     sed -i "s/<jq_version>/${jq_version}/g" /etc/motd && \
     sed -i "s/<ruby_version>/${ruby_version}/g" /etc/motd && \
     sed -i "s/<golang_version>/${golang_version}/g" /etc/motd && \

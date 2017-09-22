@@ -1,4 +1,4 @@
-# Cloud Foundry Bosh Cli deployed using docker [![Docker Automated buil](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg?style=plastic)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/) 
+# Cloud Foundry Bosh Cli deployed using docker [![Docker Automated buil](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg?style=plastic)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/)
 
 The `cf-bosh-cli` project helps you to deploy bosh cli and associated tools through docker.
 
@@ -7,13 +7,14 @@ The tools deployed in this docker image are:
 * `git client` - Git client
 * `bosh-init` - Tool used to create and update (its VM and persistent disk) BOSH Director (https://github.com/cloudfoundry/bosh-init)
 * `bosh-gen` - Generators for creating and sharing BOSH releases (https://github.com/cloudfoundry-community/bosh-gen)
-* `bosh client V1` – Bosh directors V1 command line client (https://bosh.io/docs/bosh-cli.html)
-* `bosh client V2` – Bosh directors V2 command line client (https://bosh.io/docs/cli-v2.html)
-* `spiff` – YAML templating system, for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
-* `spiff++` – Also known as spiff reloaded, spiff++ is a spiff enhanced fork (https://github.com/mandelsoft/spiff)
-* `spruce` – YAML templating system, for generating BOSH deployment manifests (https://github.com/geofffranks/spruce)
-* `cf client` – Cloud Foundry command line client (https://github.com/cloudfoundry/cli)
-* `cf-uaac client` – Cloud Foundry UAA command line client (https://github.com/cloudfoundry/cf-uaac)
+* `bosh client V1` - Bosh directors V1 command line client (https://bosh.io/docs/bosh-cli.html)
+* `bosh client V2` - Bosh directors V2 command line client (https://bosh.io/docs/cli-v2.html)
+* `spiff` - YAML templating system, for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
+* `spiff++` - Also known as spiff reloaded, spiff++ is a spiff enhanced fork (https://github.com/mandelsoft/spiff)
+* `spruce` - YAML templating system, for generating BOSH deployment manifests (https://github.com/geofffranks/spruce)
+* `cf client` - Cloud Foundry command line client (https://github.com/cloudfoundry/cli)
+* `cf-uaac client` - Cloud Foundry UAA command line client (https://github.com/cloudfoundry/cf-uaac)
+* `shield` - Shield command line client (backup)(https://github.com/starkandwayne/shield)
 * `terraform` - Provides a common configuration to launch infrastructure (https://www.terraform.io/)
 * `terraform-provider-cloudfoundry` - Terraform plugin for Cloudfoundry (https://github.com/orange-cloudfoundry/terraform-provider-cloudfoundry)
 * `fly` - Concourse command line client (https://github.com/concourse/fly)
@@ -23,7 +24,7 @@ The tools deployed in this docker image are:
 * `jq` - Tool for processing JSON inputs (https://stedolan.github.io/jq/)
 * `ruby` - Ruby Programming Language (https://www.ruby-lang.org/)
 * `go` - Go Programming Language (https://golang.org/)
-  
+
 The container expose ssh port. Password or key (rsa only) authentication is supported.
 
 ## How to get it or build it ?
@@ -54,7 +55,7 @@ The password at first logon is "welcome" (you have to change your password). Whe
 It's also possible to add your public key to the container threw an environment variable.
 
 Launch the image. Don't miss to assign an host port to the container ssh port (22) :
-<code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data -e "SSH_PUBLIC_KEY=< put here your ssh-rsa public key >" orangecloudfoundry/orange-cf-bosh-cli</code>
+<code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data -e "SSH_PUBLIC_KEY=<put here your ssh-rsa public key>" orangecloudfoundry/orange-cf-bosh-cli</code>
 
 Then, log into the container with ssh : <code>ssh -p 2222 -i <path to your rsa private key> bosh@127.0.0.1</code>
 
