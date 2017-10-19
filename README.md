@@ -14,7 +14,7 @@ The tools deployed in this docker image are:
 * `spruce` - YAML templating system, for generating BOSH deployment manifests (https://github.com/geofffranks/spruce)
 * `cf client` - Cloud Foundry command line client (https://github.com/cloudfoundry/cli)
 * `cf-uaac client` - Cloud Foundry UAA command line client (https://github.com/cloudfoundry/cf-uaac)
-* `shield` - Shield command line client (backup)(https://github.com/starkandwayne/shield)
+* `shield` - Shield command line client (backup) (https://github.com/starkandwayne/shield)
 * `terraform` - Provides a common configuration to launch infrastructure (https://www.terraform.io/)
 * `terraform-provider-cloudfoundry` - Terraform plugin for Cloudfoundry (https://github.com/orange-cloudfoundry/terraform-provider-cloudfoundry)
 * `fly` - Concourse command line client (https://github.com/concourse/fly)

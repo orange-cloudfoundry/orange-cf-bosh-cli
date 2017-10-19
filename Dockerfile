@@ -33,11 +33,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     wget -q -O - "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA1715D88E1DF1F24" | sudo apt-key add - && \
     wget -q -O - "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD5495F657635B973" | sudo apt-key add - && \
     wget -q -O - "https://raw.githubusercontent.com/starkandwayne/homebrew-cf/master/public.key" | apt-key add - && \
-    apt-get update && apt-get install -y --no-install-recommends \
-        openssh-server openssl supervisor \
-        git-core s3cmd bash-completion curl unzip vim less mlocate nano screen tmux byobu silversearcher-ag colordiff \
-        net-tools iproute2 iputils-ping netcat dnsutils apt-transport-https tcpdump shield \
-        python-pip python-setuptools python-dev build-essential libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev libssl-dev zlib1g-dev && \
+    apt-get update && apt-get install -y --no-install-recommends openssh-server openssl supervisor \
+    git-core s3cmd bash-completion curl unzip vim less mlocate nano screen tmux byobu silversearcher-ag colordiff \
+    net-tools iproute2 iputils-ping netcat dnsutils apt-transport-https tcpdump mtr-tiny shield \
+    python-pip python-setuptools python-dev build-essential libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev libssl-dev zlib1g-dev && \
     apt-get upgrade -y && apt-get clean && apt-get autoremove -y && apt-get purge && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #--- Install Ruby Version Manager and Ruby packages (bundler, bosh-cli, bosh-gen & uaa client)
