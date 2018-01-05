@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:16.04
 USER root
 
 #--- Packages versions
@@ -6,27 +6,27 @@ ENV BUNDLER_VERSION="1.13.6" \
     BOSH_INIT_VERSION="0.0.103" \
     BOSH_GEN_VERSION="0.22.0" \
     BOSH_CLI_VERSION="1.3262.26.0" \
-    BOSH_CLI_V2_VERSION="2.0.36" \
+    BOSH_CLI_V2_VERSION="2.0.45" \
     SPIFF_VERSION="1.0.8" \
     SPIFF_RELOADED_VERSION="1.0.8-ms.6" \
-    SPRUCE_VERSION="1.8.9" \
-    CF_CLI_VERSION="6.30.0" \
-    CF_UAAC_VERSION="3.4.0" \
-    TERRAFORM_VERSION="0.9.8" \
-    TERRAFORM_PCF_VERSION="0.7.3" \
-    FLY_VERSION="3.4.1" \
-    CREDHUB_VERSION="1.1.0" \
+    SPRUCE_VERSION="1.13.1" \
+    CF_CLI_VERSION="6.33.1" \
+    CF_UAAC_VERSION="4.1.0" \
+    TERRAFORM_VERSION="0.10.2" \
+    TERRAFORM_PCF_VERSION="0.9.1" \
+    FLY_VERSION="3.6.0" \
+    CREDHUB_VERSION="1.5.3" \
     JQ_VERSION="1.5" \
     RUBY_VERSION="2.3.3" \
-    GOLANG_VERSION="1.8.3" \
-    CF_PLUGINS="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,Targets,Usage Report"
+    GOLANG_VERSION="1.8.3"
 
 #--- Update image and install tools packages
 ARG DEBIAN_FRONTEND=noninteractive
 ENV INIT_PACKAGES="ca-certificates apt-utils wget sudo" \
     TOOLS_PACKAGES="openssh-server openssl supervisor git-core shield s3cmd bash-completion curl unzip vim less mlocate nano screen tmux byobu silversearcher-ag colordiff" \
     NET_PACKAGES="net-tools iproute2 iputils-ping netcat dnsutils apt-transport-https tcpdump mtr-tiny" \
-    DEV_PACKAGES="python-pip python-setuptools python-dev build-essential libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev libssl-dev zlib1g-dev"
+    DEV_PACKAGES="python-pip python-setuptools python-dev build-essential libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev libssl-dev zlib1g-dev" \
+    CF_PLUGINS="CLI-Recorder,Diego-Enabler,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
 RUN apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} && \
     echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" > /etc/apt/sources.list.d/git-core-ppa-trusty.list && \
