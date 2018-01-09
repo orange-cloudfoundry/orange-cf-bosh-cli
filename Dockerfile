@@ -30,7 +30,6 @@ ENV INIT_PACKAGES="ca-certificates apt-utils wget sudo" \
 
 RUN apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} && \
     echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" > /etc/apt/sources.list.d/git-core-ppa-trusty.list && \
-    echo "deb http://ppa.launchpad.net/ubuntu-lxc/lxd-stable/ubuntu trusty main" > /etc/apt/sources.list.d/lxd-stable.list && \
     echo "deb http://apt.starkandwayne.com stable main" | tee /etc/apt/sources.list.d/starkandwayne.list && \
     wget "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA1715D88E1DF1F24" -q -O - | sudo apt-key add - && \
     wget "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD5495F657635B973" -q -O - | sudo apt-key add - && \
