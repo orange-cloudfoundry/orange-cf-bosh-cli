@@ -18,7 +18,7 @@ ENV BUNDLER_VERSION="1.13.6" \
     CREDHUB_VERSION="1.5.3" \
     JQ_VERSION="1.5" \
     RUBY_VERSION="2.3.3" \
-    GOLANG_VERSION="1.8.3" \
+    GOLANG_VERSION="1.9.2" \
     KUBECTL_VERSION="1.9.1"
 
 #--- Update image and install tools packages
