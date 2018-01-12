@@ -24,6 +24,7 @@ The tools deployed in this docker image are:
 * `jq` - Tool for processing JSON inputs (https://stedolan.github.io/jq/)
 * `ruby` - Ruby Programming Language (https://www.ruby-lang.org/)
 * `go` - Go Programming Language (https://golang.org/)
+* `kubectl` - Kubernetes command-line tool (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
 
 The container expose ssh port. Password or key (rsa only) authentication is supported.
 
