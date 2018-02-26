@@ -1,29 +1,44 @@
 # Cloud Foundry Bosh Cli deployed using docker [![Docker Automated build](https://img.shields.io/docker/automated/orangecloudfoundry/orange-cf-bosh-cli.svg?style=plastic)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/)
 
-The `cf-bosh-cli` project helps you to deploy bosh cli and associated tools through docker.
+The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker image:
 
-The tools deployed in this docker image are:
+### Programming packages
 
-* `git client` - Git client
-* `bosh-init` - Tool used to create and update (its VM and persistent disk) BOSH Director (https://github.com/cloudfoundry/bosh-init)
-* `bosh-gen` - Generators for creating and sharing BOSH releases (https://github.com/cloudfoundry-community/bosh-gen)
-* `bosh client V1` - Bosh directors V1 command line client (https://bosh.io/docs/bosh-cli.html)
-* `bosh client V2` - Bosh directors V2 command line client (https://bosh.io/docs/cli-v2.html)
-* `spiff` - YAML templating system, for generating BOSH deployment manifests (https://github.com/cloudfoundry-incubator/spiff)
-* `spiff++` - Also known as spiff reloaded, spiff++ is a spiff enhanced fork (https://github.com/mandelsoft/spiff)
-* `spruce` - YAML templating system, for generating BOSH deployment manifests (https://github.com/geofffranks/spruce)
-* `cf client` - Cloud Foundry command line client (https://github.com/cloudfoundry/cli)
-* `cf-uaac client` - Cloud Foundry UAA command line client (https://github.com/cloudfoundry/cf-uaac)
-* `shield` - Shield command line client (backup) (https://github.com/starkandwayne/shield)
-* `terraform` - Provides a common configuration to launch infrastructure (https://www.terraform.io/)
-* `terraform-provider-cloudfoundry` - Terraform plugin for Cloudfoundry (https://github.com/orange-cloudfoundry/terraform-provider-cloudfoundry)
-* `fly` - Concourse command line client (https://github.com/concourse/fly)
-* `credhub` - Credhub command line client (https://github.com/cloudfoundry-incubator/credhub-cli)
-* `cerstrap` - Simple certificate manager, used by many bosh releases (https://github.com/square/certstrap)
-* `gof3r` - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
-* `jq` - Tool for processing JSON inputs (https://stedolan.github.io/jq/)
 * `ruby` - Ruby Programming Language (https://www.ruby-lang.org/)
 * `go` - Go Programming Language (https://golang.org/)
+
+### Generic tools
+* `git` - Git client
+* `spiff` - YAML templating tool, for BOSH deployment manifests generation (https://github.com/cloudfoundry-incubator/spiff)
+* `spiff++` - Also known as spiff reloaded, spiff++ is a spiff enhanced fork (https://github.com/mandelsoft/spiff)
+* `spruce` - YAML templating tool, for BOSH deployment manifests generation (https://github.com/geofffranks/spruce)
+* `jq` - JSON processing tool (https://stedolan.github.io/jq/)
+* `cerstrap` - Simple certificate manager (https://github.com/square/certstrap)
+
+### Bosh deployments tools
+* `bosh-gen` - Generators for BOSH releases creation (https://github.com/cloudfoundry-community/bosh-gen)
+* `bosh1` - Bosh directors V1 CLI (https://bosh.io/docs/bosh-cli.html)
+* `bosh` - Bosh directors V2 CLI (https://bosh.io/docs/cli-v2.html)
+* `cf` - Cloud Foundry CLI (https://github.com/cloudfoundry/cli)
+* `uaac` - Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac)
+* `credhub` - Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli)
+* `fly` - Concourse CLI (https://github.com/concourse/fly)
+* `terraform` - Provides a common configuration to launch infrastructure (https://www.terraform.io/)
+* `terraform-provider-cloudfoundry` - Terraform plugin for Cloudfoundry (https://github.com/orange-cloudfoundry/terraform-provider-cloudfoundry)
+
+### Backup and Storage tools
+* `shield` - Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)
+* `bbr` - Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)
+* `gof3r` - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
+* `mc` - Minio S3 CLI (https://github.com/minio/mc)
+
+### Kubernetes tools
+* `kubectl` - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
+* `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
+
+### BDD tools
+* `mysqlsh` - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)
+* `mongo` - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)
 
 The container expose ssh port. Password or key (rsa only) authentication is supported.
 
