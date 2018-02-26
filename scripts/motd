@@ -20,6 +20,7 @@ which provides different tools :
   * ruby (<ruby_version>) - Ruby Programming Language (https://www.ruby-lang.org/)
   * go (<golang_version>) - Go Programming Language (https://golang.org/)
   * kubectl (<kubectl_version>) - Kubernetes command-line tool (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
+  * helm (<helm_version>) - The Kubernetes Package Manager (https://github.com/kubernetes/helm)
 
 Notes :
   * "/home/bosh/shared" and "data" are persisted data docker volume, shared with other instances of this container.

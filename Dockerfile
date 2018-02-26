@@ -19,7 +19,8 @@ ENV BUNDLER_VERSION="1.13.6" \
     JQ_VERSION="1.5" \
     RUBY_VERSION="2.3.3" \
     GOLANG_VERSION="1.9.2" \
-    KUBECTL_VERSION="1.9.1"
+    KUBECTL_VERSION="1.9.1" \
+    HELM_VERSION="2.8.1"
 
 #--- Update image and install tools packages
 ARG DEBIAN_FRONTEND=noninteractive
@@ -83,6 +84,7 @@ RUN wget "https://s3.amazonaws.com/bosh-init-artifacts/bosh-init-${BOSH_INIT_VER
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && chmod 755 /usr/local/bin/z.sh && printf "\n# Maintain a jump-list of in use directories\nif [ -f /usr/local/bin/z.sh ] ; then\n  source /usr/local/bin/z.sh\nfi\n" >> /home/${CONTAINER_LOGIN}/.bashrc && \
     wget "https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz" -nv -O - | tar -xz -C /usr/local && chmod 755 /etc/profile.d/go.sh && \
     wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && chmod 755 /usr/local/bin/kubectl && \
+    wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp linux-amd64/helm && install /tmp/linux-amd64/helm /usr/local/bin/helm && \
     wget "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" -nv -O - | tar -xz -C /usr/local/bin && chmod 755 /usr/local/bin/credhub && \
     wget "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${SPIFF_VERSION}/spiff_linux_amd64.zip" -nv -O /tmp/spiff_linux_amd64.zip && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && chmod 755 /usr/local/bin/spiff && rm /tmp/spiff_linux_amd64.zip && \
     wget "https://github.com/mandelsoft/spiff/releases/download/v${SPIFF_RELOADED_VERSION}/spiff_linux_amd64.zip" -nv -O /tmp/spiff_linux_amd64.zip && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && chmod 755 /usr/local/bin/spiff++ && rm /tmp/spiff_linux_amd64.zip && \
@@ -126,6 +128,7 @@ RUN chmod 644 /etc/motd && \
     sed -i "s/<ruby_version>/${RUBY_VERSION}/g" /etc/motd && \
     sed -i "s/<golang_version>/${GOLANG_VERSION}/g" /etc/motd && \
     sed -i "s/<kubectl_version>/${KUBECTL_VERSION}/g" /etc/motd && \
+    sed -i "s/<helm_version>/${HELM_VERSION}/g" /etc/motd && \
     chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}/.profile && chmod 644 /home/${CONTAINER_LOGIN}/.profile && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /home/${CONTAINER_LOGIN}/.profile && \
     sed -i "s/<ruby_version>/${RUBY_VERSION}/g" /home/${CONTAINER_LOGIN}/.profile && \
