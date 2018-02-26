@@ -87,13 +87,6 @@ RUN wget "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${S
     wget "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" -nv -O /tmp/mysql-shell.deb && dpkg -i /tmp/mysql-shell.deb && rm /tmp/mysql-shell.deb && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && chmod 755 /usr/local/bin/z.sh && printf "\n# Maintain a jump-list of in use directories\nif [ -f /usr/local/bin/z.sh ] ; then\n  source /usr/local/bin/z.sh\nfi\n" >> /home/${CONTAINER_LOGIN}/.bashrc && \
     wget "https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz" -nv -O - | tar -xz -C /usr/local && chmod 755 /etc/profile.d/go.sh && \
-<<<<<<< HEAD
-=======
-    wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && chmod 755 /usr/local/bin/kubectl && \
-    wget "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" -nv -O - | tar -xz -C /usr/local/bin && chmod 755 /usr/local/bin/credhub && \
-    wget "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${SPIFF_VERSION}/spiff_linux_amd64.zip" -nv -O /tmp/spiff_linux_amd64.zip && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && chmod 755 /usr/local/bin/spiff && rm /tmp/spiff_linux_amd64.zip && \
-    wget "https://github.com/mandelsoft/spiff/releases/download/v${SPIFF_RELOADED_VERSION}/spiff_linux_amd64.zip" -nv -O /tmp/spiff_linux_amd64.zip && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && chmod 755 /usr/local/bin/spiff++ && rm /tmp/spiff_linux_amd64.zip && \
->>>>>>> ed9211ac8541ba11e8704dbf574a5c1b271ddae9
     wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -nv -O /tmp/terraform.zip && unzip -q /tmp/terraform.zip -d /usr/local/bin && chmod 755 /usr/local/bin/terraform && rm /tmp/terraform.zip && \
     export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PCF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
     mkdir -p /home/${CONTAINER_LOGIN}_non_persistent_storage/cf_plugins && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}_non_persistent_storage && chmod 700 /home/${CONTAINER_LOGIN}_non_persistent_storage && \
@@ -134,7 +127,6 @@ RUN chmod 644 /etc/motd && \
     sed -i "s/<fly_version>/${FLY_VERSION}/g" /etc/motd && \
     sed -i "s/<terraform_version>/${TERRAFORM_VERSION}/g" /etc/motd && \
     sed -i "s/<terraform_pcf_version>/${TERRAFORM_PCF_VERSION}/g" /etc/motd && \
-<<<<<<< HEAD
     sed -i "s/<shield_version>/${SHIELD_VERSION}/g" /etc/motd && \
     sed -i "s/<bbr_version>/${BBR_VERSION}/g" /etc/motd && \
     sed -i "s/<gof3r_version>/${GO3FR_VERSION}/g" /etc/motd && \
@@ -142,15 +134,6 @@ RUN chmod 644 /etc/motd && \
     sed -i "s/<helm_version>/${HELM_VERSION}/g" /etc/motd && \
     sed -i "s/<mysql_shell_version>/${MYSQL_SHELL_VERSION}/g" /etc/motd && \
     sed -i "s/<mongodb_shell_version>/${MONGO_SHELL_VERSION}/g" /etc/motd && \
-=======
-    sed -i "s/<fly_version>/${FLY_VERSION}/g" /etc/motd && \
-    sed -i "s/<credhub_version>/${CREDHUB_VERSION}/g" /etc/motd && \
-    sed -i "s/<certstrap_version>/${CERTSTRAP_VERSION}/g" /etc/motd && \
-    sed -i "s/<jq_version>/${JQ_VERSION}/g" /etc/motd && \
-    sed -i "s/<ruby_version>/${RUBY_VERSION}/g" /etc/motd && \
-    sed -i "s/<golang_version>/${GOLANG_VERSION}/g" /etc/motd && \
-    sed -i "s/<kubectl_version>/${KUBECTL_VERSION}/g" /etc/motd && \
->>>>>>> ed9211ac8541ba11e8704dbf574a5c1b271ddae9
     chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}/.profile && chmod 644 /home/${CONTAINER_LOGIN}/.profile && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /home/${CONTAINER_LOGIN}/.profile && \
     find /var/log -type f -delete && touch /var/log/lastlog && chgrp utmp /var/log/lastlog && chmod 664 /var/log/lastlog
