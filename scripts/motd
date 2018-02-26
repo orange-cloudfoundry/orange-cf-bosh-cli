@@ -18,7 +18,6 @@ which provides different tools :
   * fly (<fly_version>) - Concourse CLI (https://github.com/concourse/fly)
   * terraform (<terraform_version>) - Provides a common configuration to launch infrastructure (https://www.terraform.io/)
   * terraform-provider-cloudfoundry (<terraform_pcf_version>) - Terraform plugin for Cloudfoundry (https://github.com/orange-cloudfoundry/terraform-provider-cloudfoundry)
-<<<<<<< HEAD
   * shield (<shield_version>) - Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)
   * bbr (<bbr_version>) - Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)
   * gof3r (<gof3r_version>) - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
@@ -27,15 +26,6 @@ which provides different tools :
   * helm (<helm_version>) - Kubernetes Package Manager (https://docs.helm.sh/)
   * mysqlsh (<mysql_shell_version>) - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)
   * mongo (<mongodb_shell_version>) - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)
-=======
-  * fly (<fly_version>) - Concourse CLI (https://github.com/concourse/fly)
-  * credhub (<credhub_version>) - Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli)
-  * certstrap (<certstrap_version>) - Simple certificate manager, used by many bosh releases (https://github.com/square/certstrap)
-  * jq (<jq_version>) - Tool for processing JSON inputs (https://stedolan.github.io/jq/)
-  * ruby (<ruby_version>) - Ruby Programming Language (https://www.ruby-lang.org/)
-  * go (<golang_version>) - Go Programming Language (https://golang.org/)
-  * kubectl (<kubectl_version>) - Kubernetes command-line tool (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
->>>>>>> ed9211ac8541ba11e8704dbf574a5c1b271ddae9
 
 Notes :
   * "/home/bosh/shared" and "data" are persisted data docker volume, shared with other instances of this container.
