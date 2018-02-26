@@ -30,6 +30,7 @@ The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker
 * `shield` - Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)
 * `bbr` - Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)
 * `gof3r` - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
+<<<<<<< HEAD
 * `mc` - Minio S3 CLI (https://github.com/minio/mc)
 
 ### Kubernetes tools
@@ -39,6 +40,12 @@ The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker
 ### BDD tools
 * `mysqlsh` - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)
 * `mongo` - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)
+=======
+* `jq` - Tool for processing JSON inputs (https://stedolan.github.io/jq/)
+* `ruby` - Ruby Programming Language (https://www.ruby-lang.org/)
+* `go` - Go Programming Language (https://golang.org/)
+* `kubectl` - Kubernetes command-line tool (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
+>>>>>>> ed9211ac8541ba11e8704dbf574a5c1b271ddae9
 
 The container expose ssh port. Password or key (rsa only) authentication is supported.
 
