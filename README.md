@@ -25,6 +25,7 @@ The tools deployed in this docker image are:
 * `ruby` - Ruby Programming Language (https://www.ruby-lang.org/)
 * `go` - Go Programming Language (https://golang.org/)
 * `kubectl` - Kubernetes command-line tool (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
+* `helm` - The Kubernetes Package Manager (https://github.com/kubernetes/helm)
 
 The container expose ssh port. Password or key (rsa only) authentication is supported.
 
