@@ -33,7 +33,7 @@ ENV INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server
     BDD_PACKAGES="libprotobuf9v5 mongodb-clients" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${DEV_PACKAGES} ${BDD_PACKAGES} && \
+RUN apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${BDD_PACKAGES} && \
     apt-get upgrade -y && apt-get clean && apt-get autoremove -y && apt-get purge && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #--- Install Ruby Version Manager and Ruby packages (bundler, bosh-cli, bosh-gen & uaa client)
@@ -71,7 +71,8 @@ RUN echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd &
     rm -fr /tmp/*
 
 #--- Install ops tools & cf cli plugins
-RUN wget "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${SPIFF_VERSION}/spiff_linux_amd64.zip" -nv -O /tmp/spiff_linux_amd64.zip && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && chmod 755 /usr/local/bin/spiff && rm /tmp/spiff_linux_amd64.zip && \
+RUN wget "https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz" -nv -O - | tar -xz -C /usr/local && chmod 755 /etc/profile.d/go.sh && \
+    wget "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${SPIFF_VERSION}/spiff_linux_amd64.zip" -nv -O /tmp/spiff_linux_amd64.zip && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && chmod 755 /usr/local/bin/spiff && rm /tmp/spiff_linux_amd64.zip && \
     wget "https://github.com/mandelsoft/spiff/releases/download/v${SPIFF_RELOADED_VERSION}/spiff_linux_amd64.zip" -nv -O /tmp/spiff_linux_amd64.zip && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && chmod 755 /usr/local/bin/spiff++ && rm /tmp/spiff_linux_amd64.zip && \
     wget "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" -nv -O /usr/local/bin/spruce && chmod 755 /usr/local/bin/spruce && \
     wget "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -nv -O /usr/local/bin/jq && chmod 755 /usr/local/bin/jq && \
@@ -86,7 +87,6 @@ RUN wget "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${S
     wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp linux-amd64/helm && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 755 /usr/local/bin/helm && \
     wget "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" -nv -O /tmp/mysql-shell.deb && dpkg -i /tmp/mysql-shell.deb && rm /tmp/mysql-shell.deb && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && chmod 755 /usr/local/bin/z.sh && printf "\n# Maintain a jump-list of in use directories\nif [ -f /usr/local/bin/z.sh ] ; then\n  source /usr/local/bin/z.sh\nfi\n" >> /home/${CONTAINER_LOGIN}/.bashrc && \
-    wget "https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz" -nv -O - | tar -xz -C /usr/local && chmod 755 /etc/profile.d/go.sh && \
     wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -nv -O /tmp/terraform.zip && unzip -q /tmp/terraform.zip -d /usr/local/bin && chmod 755 /usr/local/bin/terraform && rm /tmp/terraform.zip && \
     export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PCF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
     mkdir -p /home/${CONTAINER_LOGIN}_non_persistent_storage/cf_plugins && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}_non_persistent_storage && chmod 700 /home/${CONTAINER_LOGIN}_non_persistent_storage && \
@@ -105,12 +105,13 @@ RUN wget "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${S
 #--- Provide tools information on system banner, setup profile & cleanup
 ADD scripts/motd /etc/
 ADD scripts/profile /home/${CONTAINER_LOGIN}/.profile
+
 RUN chmod 644 /etc/motd && \
     GIT_VERSION=`git --version | awk '{print $3}'` && \
     CERTSTRAP_VERSION=`/usr/local/bin/certstrap -v | awk '{print $3}'` && \
     GO3FR_VERSION=`gof3r --version 2>&1 | awk '{print $3}'` && \
     MONGO_SHELL_VERSION=`mongo --version 2>&1 | awk '{print $4}'` && \
-    sed -i "s/<ruby_version>/${RUBY_VERSION}/g" /home/${CONTAINER_LOGIN}/.profile && \
+    sed -i "s/<ruby_version>/${RUBY_VERSION}/g" /etc/motd && \
     sed -i "s/<golang_version>/${GOLANG_VERSION}/g" /etc/motd && \
     sed -i "s/<git_version>/${GIT_VERSION}/g" /etc/motd && \
     sed -i "s/<spiff_version>/${SPIFF_VERSION}/g" /etc/motd && \
