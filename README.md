@@ -1,4 +1,4 @@
-# Cloud Foundry Docker Bosh Cli [![Docker Automated build](https://img.shields.io/docker/automated/orangecloudfoundry/orange-cf-bosh-cli.svg?style=plastic)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/)
+# Cloud Foundry Docker Bosh Cli [![Docker Automated build](docker_automated.svg)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/)
 
 The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker image:
 
