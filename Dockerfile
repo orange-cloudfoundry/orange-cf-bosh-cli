@@ -24,16 +24,21 @@ ENV BUNDLER_VERSION="1.13.6" \
     HELM_VERSION="2.8.1" \
     MYSQL_SHELL_VERSION="1.0.11-1"
 
-#--- Update image and install tools packages
+#--- Install tools packages
 ARG DEBIAN_FRONTEND=noninteractive
-ENV INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl" \
-    TOOLS_PACKAGES="supervisor git-core s3cmd bash-completion vim less mlocate nano screen tmux byobu silversearcher-ag colordiff" \
-    NET_PACKAGES="net-tools iproute2 iputils-ping dnsutils ldap-utils netcat apt-transport-https tcpdump mtr-tiny" \
-    DEV_PACKAGES="python-pip python-setuptools python-dev build-essential libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev libssl-dev zlib1g-dev" \
+ENV INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl apt-transport-https" \
+    TOOLS_PACKAGES="supervisor git-core s3cmd bash-completion vim less mlocate nano yarn screen tmux byobu silversearcher-ag colordiff" \
+    NET_PACKAGES="net-tools iproute2 iputils-ping dnsutils ldap-utils netcat tcpdump mtr-tiny" \
+    DEV_PACKAGES="nodejs python-pip python-setuptools python-dev build-essential libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev libssl-dev zlib1g-dev" \
     BDD_PACKAGES="libprotobuf9v5 mongodb-clients" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${BDD_PACKAGES} && \
+RUN apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} && \
+    apt-get upgrade -y && apt-get clean && apt-get autoremove -y && apt-get purge && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list.d/yarn.list  && \
+    apt-get update && apt-get install -y --no-install-recommends ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${BDD_PACKAGES} && \
     apt-get upgrade -y && apt-get clean && apt-get autoremove -y && apt-get purge && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #--- Install Ruby Version Manager and Ruby packages (bundler, bosh-cli, bosh-gen & uaa client)
@@ -111,14 +116,18 @@ RUN chmod 644 /etc/motd && \
     CERTSTRAP_VERSION=`/usr/local/bin/certstrap -v | awk '{print $3}'` && \
     GO3FR_VERSION=`gof3r --version 2>&1 | awk '{print $3}'` && \
     MONGO_SHELL_VERSION=`mongo --version 2>&1 | awk '{print $4}'` && \
+    NODEJS_VERSION=`node -v` && \
+    YARN_VERSION=`yarn -v` && \
     sed -i "s/<ruby_version>/${RUBY_VERSION}/g" /etc/motd && \
     sed -i "s/<golang_version>/${GOLANG_VERSION}/g" /etc/motd && \
+    sed -i "s/<nodejs_version>/${NODEJS_VERSION}/g" /etc/motd && \
     sed -i "s/<git_version>/${GIT_VERSION}/g" /etc/motd && \
     sed -i "s/<spiff_version>/${SPIFF_VERSION}/g" /etc/motd && \
     sed -i "s/<spiff_reloaded_version>/${SPIFF_RELOADED_VERSION}/g" /etc/motd && \
     sed -i "s/<spruce_version>/${SPRUCE_VERSION}/g" /etc/motd && \
     sed -i "s/<jq_version>/${JQ_VERSION}/g" /etc/motd && \
     sed -i "s/<certstrap_version>/${CERTSTRAP_VERSION}/g" /etc/motd && \
+    sed -i "s/<yarn_version>/${YARN_VERSION}/g" /etc/motd && \
     sed -i "s/<bosh_gen_version>/${BOSH_GEN_VERSION}/g" /etc/motd && \
     sed -i "s/<bosh_cli_version>/${BOSH_CLI_VERSION}/g" /etc/motd && \
     sed -i "s/<bosh_cli_v2_version>/${BOSH_CLI_V2_VERSION}/g" /etc/motd && \

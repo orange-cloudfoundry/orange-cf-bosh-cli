@@ -6,6 +6,7 @@ The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker
 
 * `ruby` - Ruby Programming Language (https://www.ruby-lang.org/)
 * `go` - Go Programming Language (https://golang.org/)
+* `node` - NodeJS Programming Language (https://nodejs.org/en/)
 
 ### Generic tools
 * `git` - Git client
@@ -14,6 +15,7 @@ The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker
 * `spruce` - YAML templating tool, for BOSH deployment manifests generation (https://github.com/geofffranks/spruce)
 * `jq` - JSON processing tool (https://stedolan.github.io/jq/)
 * `cerstrap` - Simple certificate manager (https://github.com/square/certstrap)
+* `yarn` - Package manager (https://yarnpkg.com/fr/)
 
 ### Bosh deployments tools
 * `bosh-gen` - Generators for BOSH releases creation (https://github.com/cloudfoundry-community/bosh-gen)
