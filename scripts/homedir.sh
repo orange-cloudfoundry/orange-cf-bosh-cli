@@ -15,7 +15,6 @@ function create_dir() {
 
 if [ "`id -gn`" == "users" ]; then
   create_dir ".bosh"
-  create_dir ".bosh_init"
   create_dir "stemcells"
   create_dir "releases"
   create_dir "shared"

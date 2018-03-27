@@ -14,10 +14,11 @@ fi
 cp /home/<username>/.bashrc ${HOME}/.bashrc
 echo ". ~/.bashrc" > ${HOME}/.bash_profile
 echo "#--- Alias" > ${HOME}/.bash_aliases
-echo "alias log-openstack='. log-openstack'" >> ${HOME}/.bash_aliases
-echo "alias log-bosh='. log-bosh'" >> ${HOME}/.bash_aliases
-echo "alias log_bosh='. log-bosh'" >> ${HOME}/.bash_aliases
 echo "alias bosh2='bosh'" >> ${HOME}/.bash_aliases
+echo "alias log-bosh='. log-bosh'" >> ${HOME}/.bash_aliases
+echo "alias log-credhub='. log-credhub'" >> ${HOME}/.bash_aliases
+echo "alias log-fly='. log-fly'" >> ${HOME}/.bash_aliases
+echo "alias log-openstack='. log-openstack'" >> ${HOME}/.bash_aliases
 echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
 
 #--- Link Cloud Foundry plugins
