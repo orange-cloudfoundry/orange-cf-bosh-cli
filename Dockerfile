@@ -100,7 +100,8 @@ RUN wget "https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.
     export GOPATH=/tmp && export PATH=$PATH:/usr/local/go/bin && \
     go get -v github.com/square/certstrap && mv /tmp/bin/certstrap /usr/local/bin/certstrap && chmod 755 /usr/local/bin/certstrap && rm -fr /tmp/* && \
     go get -v github.com/rlmcpherson/s3gof3r/gof3r && mv /tmp/bin/gof3r /usr/local/bin/gof3r && chmod 755 /usr/local/bin/gof3r && rm -fr /tmp/* && \
-    pip install --upgrade pip && pip install python-keystoneclient python-novaclient python-swiftclient python-neutronclient python-cinderclient python-glanceclient python-openstackclient && \
+    pip install --upgrade pip && \
+    python -m pip install python-keystoneclient python-novaclient python-swiftclient python-neutronclient python-cinderclient python-glanceclient python-openstackclient && \
     git clone --depth 1 https://github.com/junegunn/fzf.git /home/${CONTAINER_LOGIN}/.fzf && \
     chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}/.fzf && \
     su -l ${CONTAINER_LOGIN} -s /bin/bash -c "export http_proxy=${http_proxy};export https_proxy=${https_proxy};/home/${CONTAINER_LOGIN}/.fzf/install --all" && \
