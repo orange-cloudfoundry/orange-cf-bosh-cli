@@ -1,0 +1,81 @@
+#!/bin/bash
+#===========================================================================
+# Log with Bosh cli V2
+#===========================================================================
+
+#--- Colors and styles
+export RED='\033[1;31m'
+export YELLOW='\033[1;33m'
+export GREEN='\033[1;32m'
+export STD='\033[0m'
+export BOLD='\033[1m'
+export REVERSE='\033[7m'
+
+if [ ! -s "${BOSH_CA_CERT}" ] ; then
+  printf "\n%bERROR : CA cert file \"${BOSH_CA_CERT}\" unknown. Connexion failed.%b\n\n" "${RED}" "${STD}"
+else
+  #--- Identify BOSH director
+  flag=0
+  while [ ${flag} = 0 ] ; do
+    flag=1
+    clear
+    printf "%bDirector BOSH :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
+    printf "%b1%b : micro\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b2%b : master\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b : ops\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b4%b : kubo\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b5%b : coab\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b6%b : ondemand\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b7%b : expe\n" "${GREEN}${BOLD}" "${STD}"
+    printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+    case "${choice}" in
+      1) BOSH_TARGET="micro" ; BOSH_CLIENT="admin" ;;
+      2) BOSH_TARGET="master" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
+      3) BOSH_TARGET="ops" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
+      4) BOSH_TARGET="kubo" ; BOSH_CLIENT="admin" ;;
+      5) BOSH_TARGET="coab" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
+      6) BOSH_TARGET="ondemand" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
+      7) BOSH_TARGET="expe" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
+      *) flag=0 ;;
+    esac
+  done
+
+  flag=0
+  while [ ${flag} = 0 ] ; do
+    clear
+    printf "%bEnter \"${BOSH_CLIENT}\" Password on \"${BOSH_TARGET}\" :%b " "${REVERSE}${YELLOW}" "${STD}" ; read -s BOSH_CLIENT_SECRET
+    if [ "${BOSH_CLIENT_SECRET}" != "" ] ; then
+      flag=1
+    fi
+  done
+
+  #--- BOSH variables (used by bosh cli V2)
+  export BOSH_ENVIRONMENT=`host bosh-${BOSH_TARGET}.internal.paas | awk '{print $4}'`
+  export BOSH_CLIENT
+  export BOSH_CLIENT_SECRET
+  export BOSH_CA_CERT
+
+  #--- Login to the director and list active deployments
+  bosh alias-env ${BOSH_TARGET} > /dev/null 2>&1
+  bosh log-in > /dev/null 2>&1
+  if [ $? = 1 ] ; then
+    printf "\n\n%bERROR : Log to bosh director \"${BOSH_TARGET}\" failed whith user \"${BOSH_CLIENT}\".%b\n\n" "${RED}" "${STD}"
+  else
+    #--- Select specific deployment (BOSH_DEPLOYMENT variable)
+    clear
+    deployments=`bosh deployments --column=Name | grep -vE "^Name$|^Succeeded$|^[0-9]* deployments$"`
+    printf "\n%bSelect a specific deployment in the list, or suffix your bosh commands with -d <deployment_name>:%b\n%s" "${REVERSE}${YELLOW}" "${STD}" "${deployments}"
+    printf "\n\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+    if [ "${choice}" != "" ] ; then
+      flag=`echo "${deployments}" | grep "${choice}"`
+      clear
+      if [ "${flag}" = "" ] ; then
+        unset BOSH_DEPLOYMENT
+      else
+        export BOSH_DEPLOYMENT="${choice}"
+        bosh instances
+      fi
+    fi
+  fi
+fi
+printf "\n"

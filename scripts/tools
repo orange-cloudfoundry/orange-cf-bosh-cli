@@ -1,0 +1,27 @@
+#!/bin/bash
+#===========================================================================
+# List available tools
+#===========================================================================
+
+#--- Colors and styles
+export GREEN='\033[0;32m'
+export STD='\033[0m'
+export BOLD='\033[1m'
+export REVERSE='\033[7m'
+
+display() {
+  flag=`which $1`
+  if [ "${flag}" != "" ] ; then
+    printf "%b%-15s%b: %s\n" "${GREEN}${BOLD}" "$1" "${STD}" "$2"
+  fi
+}
+
+clear
+printf "%bTOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
+display "log-bosh" "Bosh CLI V2"
+display "log-cf" "CF CLI"
+display "log-credhub" "Credhub CLI"
+display "log-fly" "Concourse CLI"
+display "log-mc" "Minio S3 CLI"
+display "log-openstack" "Openstack CLI tools"
+printf "\n"

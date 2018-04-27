@@ -5,6 +5,9 @@
 export MY_BOSH_USER=`hostname`
 export HOME=/home/<username>/shared/${MY_BOSH_USER}
 
+#--- Bosh CA cert (on persistant disk)
+export BOSH_CA_CERT="/home/bosh/shared/tools/certs/server-ca.crt"
+
 #--- Create user directory
 if [ ! -d ${HOME} ] ; then
   mkdir -p ${HOME}
@@ -15,11 +18,13 @@ cp /home/<username>/.bashrc ${HOME}/.bashrc
 echo ". ~/.bashrc" > ${HOME}/.bash_profile
 echo "#--- Alias" > ${HOME}/.bash_aliases
 echo "alias bosh2='bosh'" >> ${HOME}/.bash_aliases
+echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
 echo "alias log-bosh='. log-bosh'" >> ${HOME}/.bash_aliases
 echo "alias log-credhub='. log-credhub'" >> ${HOME}/.bash_aliases
+alias fly='fly -t concourse-micro'
 echo "alias log-fly='. log-fly'" >> ${HOME}/.bash_aliases
+echo "alias log-mc='. log-mc'" >> ${HOME}/.bash_aliases
 echo "alias log-openstack='. log-openstack'" >> ${HOME}/.bash_aliases
-echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
 
 #--- Link Cloud Foundry plugins
 if [ ! -d ${HOME}/.cf ] ; then
@@ -27,14 +32,15 @@ if [ ! -d ${HOME}/.cf ] ; then
 fi
 
 #--- Adapt user prompt and terminal name
-if [ -f /home/<username>/shared/tools/bosh_cli_name ] ; then
-  export BOSH_CLI_NAME=`cat /home/<username>/shared/tools/bosh_cli_name`
+if [ -f /home/<username>/shared/tools/bosh_cli_env ] ; then
+  export BOSH_CLI_ENV=`cat /home/<username>/shared/tools/bosh_cli_env`
 else
-  export BOSH_CLI_NAME="bosh-cli"
+  export BOSH_CLI_ENV="bosh-cli"
+  echo "${BOSH_CLI_ENV}" > /home/<username>/shared/tools/bosh_cli_env
 fi
 echo "#--- User prompt and terminal name" >> ${HOME}/.bashrc
-printf "export PS1='\${debian_chroot:+(\$debian_chroot)}\[\\\033[01;32m\]\h@${BOSH_CLI_NAME}\[\\\033[00m\]:\[\\\033[01;34m\]\w\[\\\033[00m\]$ '\n" >> ${HOME}/.bashrc
-printf  "echo -en \"\\\033]0;\${MY_BOSH_USER}@${BOSH_CLI_NAME}:\${PWD}\\\007\"\n\n" >> ${HOME}/.bashrc
+printf "export PS1='\${debian_chroot:+(\$debian_chroot)}\[\\\033[01;32m\]\h@${BOSH_CLI_ENV}\[\\\033[00m\]:\[\\\033[01;34m\]\w\[\\\033[00m\]$ '\n" >> ${HOME}/.bashrc
+printf  "echo -en \"\\\033]0;\${MY_BOSH_USER}@${BOSH_CLI_ENV}:\${PWD}\\\007\"\n\n" >> ${HOME}/.bashrc
 
 echo "#--- Grep colorization" >> ${HOME}/.bashrc
 echo "export GREP_COLOR='1;30;103'" >> ${HOME}/.bashrc

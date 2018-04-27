@@ -73,6 +73,7 @@ RUN echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd &
     echo "${CONTAINER_LOGIN} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${CONTAINER_LOGIN} && \
     chage -d 0 ${CONTAINER_LOGIN} && ln -s /tmp /home/${CONTAINER_LOGIN}/tmp && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && chmod 700 /home/${CONTAINER_LOGIN} && \
     mkdir -p /data && chown ${CONTAINER_LOGIN}:users /data && \
+    mkdir -p /data/shared/tools/certs && chown ${CONTAINER_LOGIN}:users /data/shared/tools && chown ${CONTAINER_LOGIN}:users /data/shared/tools/certs && \
     rm -fr /tmp/*
 
 #--- Install ops tools & cf cli plugins
@@ -110,8 +111,15 @@ RUN wget "https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.
 #--- Provide tools information on system banner, setup profile & cleanup
 ADD scripts/motd /etc/
 ADD scripts/profile /home/${CONTAINER_LOGIN}/.profile
+ADD scripts/tools /data/shared/tools/
+ADD scripts/log-bosh /data/shared/tools/
+ADD scripts/log-cf /data/shared/tools/
+ADD scripts/log-credhub /data/shared/tools/
+ADD scripts/log-fly /data/shared/tools/
+ADD scripts/log-mc /data/shared/tools/
+ADD scripts/log-openstack /data/shared/tools/
 
-RUN chmod 644 /etc/motd && \
+RUN chmod 644 /etc/motd && chmod 755 /data/shared/tools/* && \
     GIT_VERSION=`git --version | awk '{print $3}'` && \
     CERTSTRAP_VERSION=`/usr/local/bin/certstrap -v | awk '{print $3}'` && \
     GO3FR_VERSION=`gof3r --version 2>&1 | awk '{print $3}'` && \

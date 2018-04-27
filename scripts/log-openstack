@@ -1,0 +1,94 @@
+#!/bin/bash
+#===========================================================================
+# Log with Openstack cli tools
+#===========================================================================
+
+#--- Colors and styles
+export RED='\033[1;31m'
+export YELLOW='\033[1;33m'
+export GREEN='\033[1;32m'
+export STD='\033[0m'
+export BOLD='\033[1m'
+export REVERSE='\033[7m'
+
+flagError=0
+
+getCredhub() {
+  #--- Test if parameter exist with non empty value, else get it from credhub
+  if [ "${!1}" = "" ] ; then
+    credhubGet=`credhub g -n $2 2>&1`
+    result=`echo "${credhubGet}" | grep "Credential not found"`
+    if [ "${result}" = "" ] ; then
+      credhubValue=`echo "${credhubGet}" | grep "value: " | awk '{print $2}'`
+      eval $1=`echo "${credhubGet}" | grep "value: " | awk '{print $2}'`
+    else
+      if [ "$3" != "test" ] ; then
+        printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
+      fi
+      flagError=1
+    fi
+  fi
+}
+
+#--- Log to credhub
+status=`env | grep CREDHUB_SECRET`
+if [ "${status}" = "" ] ; then
+  if [ ! -s "${BOSH_CA_CERT}" ] ; then
+    printf "\n%bERROR : CA cert file \"${BOSH_CA_CERT}\" unknown.%b\n\n" "${RED}" "${STD}"
+    flagError=1
+  else
+    export CREDHUB_SERVER="https://credhub.internal.paas:8844"
+    export CREDHUB_CLIENT="director_to_credhub"
+    export CREDHUB_CA_CERT="${BOSH_CA_CERT}"
+    flag=0
+    while [ ${flag} = 0 ] ; do
+      clear
+      printf "%bEnter credhub password :%b " "${REVERSE}${YELLOW}" "${STD}" ; read -s CREDHUB_SECRET
+      if [ "${CREDHUB_SECRET}" != "" ] ; then
+        flag=1
+      fi
+    done
+
+    export CREDHUB_SECRET
+    credhub api > /dev/null 2>&1
+    credhub login > /dev/null 2>&1
+    if [ $? = 1 ] ; then
+      printf "\n%bERROR : Bad credhub password.\nConnexion failed.%b\n\n" "${RED}" "${STD}"
+      flagError=1
+    fi
+  fi
+fi
+
+#--- Log to openstack
+if [ "${flagError}" = "0" ] ; then
+  #--- Common keystone parameters V2/V3
+  getCredhub "OS_AUTH_URL" "/secrets/openstack_auth_url"
+  export OS_AUTH_URL
+  getCredhub "OS_USERNAME" "/secrets/openstack_username"
+  export OS_USERNAME
+  getCredhub "OS_PASSWORD" "/secrets/openstack_password"
+  export OS_PASSWORD
+
+  unset OS_PROJECT_NAME
+  getCredhub "OS_PROJECT_NAME" "/secrets/openstack_project" "test"
+  if [ ${flagError} = 0 ] ; then
+    #--- Specific keystone V3
+    export OS_PROJECT_NAME
+    export OS_IDENTITY_API_VERSION="3"
+    getCredhub "OS_PROJECT_DOMAIN_NAME" "/secrets/openstack_domain"
+    export OS_PROJECT_DOMAIN_NAME
+    export OS_USER_DOMAIN_NAME="${OS_PROJECT_DOMAIN_NAME}"
+  else
+    #--- Specific keystone V2
+    flagError=0
+    getCredhub "OS_TENANT_NAME" "/secrets/openstack_tenant"
+    export OS_TENANT_NAME
+    getCredhub "OS_REGION_NAME" "/secrets/openstack_region"
+    export OS_REGION_NAME
+  fi
+
+  printf "\n\n"
+  if [ ${flagError} = 0 ] ; then
+    openstack
+  fi
+fi
