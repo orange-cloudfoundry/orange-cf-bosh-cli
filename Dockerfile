@@ -4,25 +4,25 @@ USER root
 #--- Packages versions
 ENV BUNDLER_VERSION="1.13.6" \
     RUBY_VERSION="2.3.3" \
-    GOLANG_VERSION="1.8.3" \
+    GOLANG_VERSION="1.10.1" \
     SPIFF_VERSION="1.0.8" \
     SPIFF_RELOADED_VERSION="1.0.8-ms.6" \
-    SPRUCE_VERSION="1.13.1" \
+    SPRUCE_VERSION="1.17.0" \
     JQ_VERSION="1.5" \
     BOSH_GEN_VERSION="0.22.0" \
     BOSH_CLI_VERSION="1.3262.26.0" \
     BOSH_CLI_V2_VERSION="3.0.1" \
-    CF_CLI_VERSION="6.33.1" \
+    CF_CLI_VERSION="6.36.0" \
     CF_UAAC_VERSION="4.1.0" \
-    CREDHUB_VERSION="1.6.0" \
+    CREDHUB_VERSION="1.7.5" \
     FLY_VERSION="3.9.2" \
-    TERRAFORM_VERSION="0.10.2" \
+    TERRAFORM_VERSION="0.11.7" \
     TERRAFORM_PCF_VERSION="0.9.1" \
     SHIELD_VERSION="0.10.9" \
-    BBR_VERSION="1.2.0" \
-    KUBECTL_VERSION="1.9.1" \
-    HELM_VERSION="2.8.1" \
-    MYSQL_SHELL_VERSION="1.0.11-1"
+    BBR_VERSION="1.2.2" \
+    KUBECTL_VERSION="1.10.2" \
+    HELM_VERSION="2.9.0-rc5" \
+    MYSQL_SHELL_VERSION="8.0.11-1"
 
 #--- Install tools packages
 ARG DEBIAN_FRONTEND=noninteractive
@@ -94,7 +94,7 @@ RUN wget "https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.
     wget "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" -nv -O /tmp/mysql-shell.deb && dpkg -i /tmp/mysql-shell.deb && rm /tmp/mysql-shell.deb && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && chmod 755 /usr/local/bin/z.sh && printf "\n# Maintain a jump-list of in use directories\nif [ -f /usr/local/bin/z.sh ] ; then\n  source /usr/local/bin/z.sh\nfi\n" >> /home/${CONTAINER_LOGIN}/.bashrc && \
     wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -nv -O /tmp/terraform.zip && unzip -q /tmp/terraform.zip -d /usr/local/bin && chmod 755 /usr/local/bin/terraform && rm /tmp/terraform.zip && \
-    export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PCF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
+    export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PCF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O - | sed -e 's/tf_version=.*/tf_version=0\.10/')" && \
     mkdir -p /home/${CONTAINER_LOGIN}_non_persistent_storage/cf_plugins && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}_non_persistent_storage && chmod 700 /home/${CONTAINER_LOGIN}_non_persistent_storage && \
     su -l ${CONTAINER_LOGIN} -s /bin/bash -c "export http_proxy=${http_proxy};export https_proxy=${https_proxy};export IFS=,;for plug in \`echo ${CF_PLUGINS}\`; do cf install-plugin \"\${plug}\" -r CF-Community -f; done" && \
     export GOPATH=/tmp && export PATH=$PATH:/usr/local/go/bin && \
