@@ -13,27 +13,19 @@ export REVERSE='\033[7m'
 
 #--- Log to credhub
 export CREDHUB_SERVER="https://credhub.internal.paas:8844"
-export CREDHUB_CLIENT="director_to_credhub"
 export CREDHUB_CA_CERT="${BOSH_CA_CERT}"
 
-if [ ! -s "${CREDHUB_CA_CERT}" ] ; then
-  printf "\n%bERROR : CA cert file \"${CREDHUB_CA_CERT}\" unknown.\nConnexion failed.%b\n\n" "${RED}" "${STD}"
+if [ ! -s "${BOSH_CA_CERT}" ] ; then
+  printf "\n%bERROR : CA cert file \"${BOSH_CA_CERT}\" unknown.%b\n\n" "${RED}" "${STD}"
 else
-  flag=0
-  while [ ${flag} = 0 ] ; do
-    clear
-    printf "%bEnter credhub password :%b " "${REVERSE}${YELLOW}" "${STD}" ; read -s CREDHUB_SECRET
-    if [ "${CREDHUB_SECRET}" != "" ] ; then
-      flag=1
+  flag=`credhub f 2>&1 | grep "not currently authenticated"`
+  if [ "${flag}" != "" ] ; then
+    printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+    credhub login
+    if [ $? != 0 ] ; then
+      printf "\n%bERROR : Bad LDAP authentication.\nConnexion failed.%b\n\n" "${RED}" "${STD}"
+    else
+      printf "\n\n"
     fi
-  done
-
-  export CREDHUB_SECRET
-  credhub api > /dev/null 2>&1
-  credhub login > /dev/null 2>&1
-  if [ $? = 1 ] ; then
-    printf "\n%bERROR : Bad credhub password.\nConnexion failed.%b\n\n" "${RED}" "${STD}"
-  else
-    printf "\n\n"
   fi
 fi
