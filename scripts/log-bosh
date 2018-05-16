@@ -29,36 +29,23 @@ else
     printf "%b7%b : expe\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
-      1) BOSH_TARGET="micro" ; BOSH_CLIENT="admin" ;;
-      2) BOSH_TARGET="master" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
-      3) BOSH_TARGET="ops" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
-      4) BOSH_TARGET="kubo" ; BOSH_CLIENT="admin" ;;
-      5) BOSH_TARGET="coab" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
-      6) BOSH_TARGET="ondemand" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
-      7) BOSH_TARGET="expe" ; BOSH_CLIENT="${MY_BOSH_USER}" ;;
+      1) BOSH_TARGET="micro" ;;
+      2) BOSH_TARGET="master" ;;
+      3) BOSH_TARGET="ops" ;;
+      4) BOSH_TARGET="kubo" ;;
+      5) BOSH_TARGET="coab" ;;
+      6) BOSH_TARGET="ondemand" ;;
+      7) BOSH_TARGET="expe" ;;
       *) flag=0 ;;
     esac
   done
 
-  flag=0
-  while [ ${flag} = 0 ] ; do
-    clear
-    printf "%bEnter \"${BOSH_CLIENT}\" Password on \"${BOSH_TARGET}\" :%b " "${REVERSE}${YELLOW}" "${STD}" ; read -s BOSH_CLIENT_SECRET
-    if [ "${BOSH_CLIENT_SECRET}" != "" ] ; then
-      flag=1
-    fi
-  done
-
-  #--- BOSH variables (used by bosh cli V2)
-  export BOSH_ENVIRONMENT=`host bosh-${BOSH_TARGET}.internal.paas | awk '{print $4}'`
-  export BOSH_CLIENT
-  export BOSH_CLIENT_SECRET
-  export BOSH_CA_CERT
-
   #--- Login to the director and list active deployments
+  export BOSH_ENVIRONMENT=`host bosh-${BOSH_TARGET}.internal.paas | awk '{print $4}'`
   bosh alias-env ${BOSH_TARGET} > /dev/null 2>&1
-  bosh log-in > /dev/null 2>&1
-  if [ $? = 1 ] ; then
+  printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  bosh log-in
+  if [ $? != 0 ] ; then
     printf "\n\n%bERROR : Log to bosh director \"${BOSH_TARGET}\" failed whith user \"${BOSH_CLIENT}\".%b\n\n" "${RED}" "${STD}"
   else
     #--- Select specific deployment (BOSH_DEPLOYMENT variable)

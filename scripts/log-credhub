@@ -18,7 +18,7 @@ if [ $? != 0 ] ; then
   credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
   credhub login
   if [ $? != 0 ] ; then
-    printf "\n%bERROR : Bad LDAP authentication.\nConnexion failed.%b\n\n" "${RED}" "${STD}"
+    printf "\n%bERROR : Bad LDAP authentication.%b\n\n" "${RED}" "${STD}"
     else
       printf "\n\n"
     fi

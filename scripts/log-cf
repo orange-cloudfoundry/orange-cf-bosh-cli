@@ -15,8 +15,7 @@ getCredhub() {
   #--- Test if parameter exist with non empty value, else get it from credhub
   if [ "${!1}" = "" ] ; then
     credhubGet=`credhub g -n $2 2>&1`
-    result=`echo "${credhubGet}" | grep "Credential not found"`
-    if [ "${result}" = "" ] ; then
+    if [ $? = 0 ] ; then
       credhubValue=`echo "${credhubGet}" | grep "value: " | awk '{print $2}'`
       eval $1=`echo "${credhubGet}" | grep "value: " | awk '{print $2}'`
     else
@@ -34,7 +33,7 @@ if [ $? != 0 ] ; then
   credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
   credhub login
   if [ $? != 0 ] ; then
-    printf "\n%bERROR : Bad LDAP authentication.\nConnexion failed.%b\n\n" "${RED}" "${STD}"
+    printf "\n%bERROR : Bad LDAP authentication.%b\n\n" "${RED}" "${STD}"
     flagError=1
   fi
 fi
@@ -53,7 +52,7 @@ if [ "${flagError}" = "0" ] ; then
   getCredhub "SYSTEM_DOMAIN" "/secrets/cloudfoundry_system_domain"
   if [ ${flagError} = 0 ] ; then
     cf login -a https://api.${SYSTEM_DOMAIN} -u ${CF_USER}
-    if [ $? = 1 ] ; then
+    if [ $? != 0 ] ; then
       printf "\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
     else
       printf "\n\n"
