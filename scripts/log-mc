@@ -27,22 +27,15 @@ getCredhub() {
 }
 
 #--- Log to credhub
-export CREDHUB_SERVER="https://credhub.internal.paas:8844"
-export CREDHUB_CA_CERT="${BOSH_CA_CERT}"
 flagError=0
-
-if [ ! -s "${BOSH_CA_CERT}" ] ; then
-  printf "\n%bERROR : CA cert file \"${BOSH_CA_CERT}\" unknown.%b\n\n" "${RED}" "${STD}"
-  flagError=1
-else
-  flag=`credhub f 2>&1 | grep "not currently authenticated"`
-  if [ "${flag}" != "" ] ; then
-    printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
-    credhub login
-    if [ $? != 0 ] ; then
-      printf "\n%bERROR : Bad LDAP authentication.\nConnexion failed.%b\n\n" "${RED}" "${STD}"
-      flagError=1
-    fi
+flag=`credhub f > /dev/null 2>&1`
+if [ $? != 0 ] ; then
+  printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
+  credhub login
+  if [ $? != 0 ] ; then
+    printf "\n%bERROR : Bad LDAP authentication.\nConnexion failed.%b\n\n" "${RED}" "${STD}"
+    flagError=1
   fi
 fi
 
