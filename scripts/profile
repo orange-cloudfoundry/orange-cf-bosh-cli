@@ -17,6 +17,7 @@ fi
 cp /home/<username>/.bashrc ${HOME}/.bashrc
 echo ". ~/.bashrc" > ${HOME}/.bash_profile
 echo "#--- Alias" > ${HOME}/.bash_aliases
+echo "alias f='function __f() { printf \"\n\";find . ! -regex \".*[/]\.git[/]?.*\" -type f -print0 | xargs -0 grep -I -i --color \"\$1\";unset -f __f;printf \"\n\"; }; __f'" >> ${HOME}/.bash_aliases
 echo "alias bosh2='bosh'" >> ${HOME}/.bash_aliases
 echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
 echo "alias log-bosh='. log-bosh'" >> ${HOME}/.bash_aliases

@@ -14,10 +14,9 @@ export REVERSE='\033[7m'
 getCredhub() {
   #--- Test if parameter exist with non empty value, else get it from credhub
   if [ "${!1}" = "" ] ; then
-    credhubGet=`credhub g -n $2 2>&1`
+    credhubGet=`credhub g -n $2 -j | jq .value -r`
     if [ $? = 0 ] ; then
-      credhubValue=`echo "${credhubGet}" | grep "value: " | awk '{print $2}'`
-      eval $1=`echo "${credhubGet}" | grep "value: " | awk '{print $2}'`
+      eval $1=`echo "${credhubGet}"`
     else
       printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
       flagError=1
