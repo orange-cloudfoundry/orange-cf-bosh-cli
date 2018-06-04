@@ -1,33 +1,34 @@
 #!/bin/bash
-# This script should be placed in /usr/local/bin
-# Used at container startup
+#===========================================================================
+# Entry point for docker container startup
+#===========================================================================
 
-# We push the public key if required
-if [ -n "$SSH_PUBLIC_KEY" ]
+#--- Push the public key if required
+if [ -n "${SSH_PUBLIC_KEY}" ]
 then
   echo "SSH public key provided threw env variable. Enabling public key auth..."
-  if [ ! -s /home/<username>/.ssh/authorized_keys ] && [ -n "$SSH_PUBLIC_KEY_DONT_OVERWRITE" ] && [ "$SSH_PUBLIC_KEY_DONT_OVERWRITE" == "true" ]
+  if [ ! -s /home/<username>/.ssh/authorized_keys ] && [ -n "${SSH_PUBLIC_KEY_DONT_OVERWRITE}" ] && [ "${SSH_PUBLIC_KEY_DONT_OVERWRITE}" == "true" ]
   then
-    echo "SSH_PUBLIC_KEY_DONT_OVERWRITE=true, authorized_keys already exist and is not empty. We don't do anything."
+    echo "SSH_PUBLIC_KEY_DONT_OVERWRITE=true, authorized_keys already exist and is not empty."
   else
     mkdir -p /home/<username>/.ssh
     chmod 700 /home/<username>/.ssh
-	chown <username>:users /home/<username>/.ssh
-	if [[ "$SSH_PUBLIC_KEY" != "ssh-rsa"* ]]
-	then
-	  SSH_PUBLIC_KEY="ssh-rsa $SSH_PUBLIC_KEY public.key@pushed"
-	fi
-    echo "$SSH_PUBLIC_KEY" > /home/<username>/.ssh/authorized_keys
-    chmod 600 /home/<username>/.ssh/authorized_keys
-    chown <username>:users /home/<username>/.ssh/authorized_keys
-    /usr/local/bin/disable_ssh_password_auth
-    echo "SSH public key provided threw env variable. Enabling public key auth done."
-  fi
+	  chown <username>:users /home/<username>/.ssh
+    if [[ "${SSH_PUBLIC_KEY}" != "ssh-rsa"* ]]
+    then
+      SSH_PUBLIC_KEY="ssh-rsa ${SSH_PUBLIC_KEY} public.key@pushed"
+    fi
+      echo "${SSH_PUBLIC_KEY}" > /home/<username>/.ssh/authorized_keys
+      chmod 600 /home/<username>/.ssh/authorized_keys
+      chown <username>:users /home/<username>/.ssh/authorized_keys
+      /usr/local/bin/disable_ssh_password_auth
+      echo "SSH public key provided threw env variable. Enabling public key auth done."
+    fi
 fi
 
-# We check ssh security
+#--- Check ssh security
 /usr/local/bin/check_ssh_security container_init
 
-# We launch ssh daemon
+#---  Launch ssh daemon
 echo "Starting sshd..."
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf

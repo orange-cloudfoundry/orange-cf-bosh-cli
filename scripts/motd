@@ -1,6 +1,5 @@
 
-Your are logged into an ubuntu docker container (https://github.com/Orange-OpenSource/orange-cf-bosh-cli),
-which provides different tools :
+Your are logged into an ubuntu docker container (https://github.com/Orange-OpenSource/orange-cf-bosh-cli), which provides several tools :
   * ruby (<ruby_version>) - Ruby Programming Language (https://www.ruby-lang.org/)
   * go (<golang_version>) - Go Programming Language (https://golang.org/)
   * node (<nodejs_version>) - NodeJS Programming Language (https://nodejs.org/en/)
@@ -30,5 +29,5 @@ which provides different tools :
   * mongo (<mongodb_shell_version>) - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)
 
 Notes :
-  * "/home/bosh/shared" and "data" are persisted data docker volume, shared with other instances of this container.
-  * All other paths in this container will be reseted on restart or update.
+  * "/data/shared" is a persistant data docker volume, shared with other container instances.
+  * All other paths in this container instance will be reseted on restart/update.
