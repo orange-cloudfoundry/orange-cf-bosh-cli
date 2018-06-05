@@ -36,6 +36,7 @@ if [ ! -d ${HOME}/.cf ] ; then
   mkdir -p ${HOME}/.cf
 fi
 if [ ! -L ${HOME}/.cf/plugins ] ; then
+  rm -fr ${HOME}/.cf/plugins > /dev/null 2>&1
   ln -s /home/<username>/.cf/plugins ${HOME}/.cf/plugins
 fi
 
