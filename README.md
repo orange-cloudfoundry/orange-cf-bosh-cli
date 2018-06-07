@@ -1,9 +1,7 @@
 # Cloud Foundry Docker Bosh Cli [![Docker Automated build](docker_automated.svg)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/)
-
 The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker image:
 
 ### Programming packages
-
 * `ruby` - Ruby Programming Language (https://www.ruby-lang.org/)
 * `go` - Go Programming Language (https://golang.org/)
 * `node` - NodeJS Programming Language (https://nodejs.org/en/)
@@ -59,7 +57,6 @@ Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 ### How to use as standalone container (if you have a simple docker host)
 
 #### Without public ssh key provided to the container
-
 Launch the image. Don't miss to assign an host port to the container ssh port (22) :
 <code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangecloudfoundry/orange-cf-bosh-cli</code>
 
@@ -68,7 +65,6 @@ Then, log into the container with ssh : <code>ssh -p 2222 bosh@127.0.0.1</code>
 The password at first logon is "welcome" (you have to change your password). When you are logged into the container, you must add your ssh public key into the file <code>~/.ssh/authorized_keys</code> (RSA format). This last step will make the container secure after each restart/update (password auth will be disabled).
 
 #### With public ssh key provided to the container
-
 It's also possible to add your public key to the container threw an environment variable.
 
 Launch the image. Don't miss to assign an host port to the container ssh port (22) :
@@ -79,7 +75,6 @@ Then, log into the container with ssh : <code>ssh -p 2222 -i <path to your rsa p
 The password in this case is completely disabled. By default, the file containing the public key <code>~/.ssh/authorized_keys</code> is overwrited after container restart or update. By setting the variable <code>SSH_PUBLIC_KEY_DONT_OVERWRITE=true</code>, this file is not overwrited if it already exists and is not empty.
 
 ### How to use it using "Docker Bosh Release"
-
 Another option is to deploy the container threw the "Docker Bosh Release" (https://github.com/cloudfoundry-community/docker-boshrelease).
 
 In the following example:
@@ -180,7 +175,7 @@ properties:
     - "http_proxy=<%= http_proxy %>"
     - "https_proxy=<%= https_proxy %>"
     #This container will be provisioned with a publioc key. The other containers will use standard password authentication
-    - "SSH_PUBLIC_KEY=< put here your ssh-rsa public key >"
+    - "SSH_PUBLIC_KEY=<put here your ssh-rsa public key>"
     bind_ports:
     - "2222:22"
     volumes:

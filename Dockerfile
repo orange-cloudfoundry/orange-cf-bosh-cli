@@ -35,8 +35,6 @@ ENV CONTAINER_LOGIN="bosh" CONTAINER_PASSWORD="welcome" \
 
 ADD scripts/supervisord scripts/check_ssh_security scripts/disable_ssh_password_auth scripts/init-ca scripts/log-bosh scripts/log-cf scripts/log-credhub scripts/log-fly scripts/log-mc scripts/log-openstack scripts/tools /usr/local/bin/
 ADD supervisord/sshd.conf /etc/supervisor/conf.d/
-ADD scripts/homedir.sh /etc/profile.d/
-ADD scripts/motd /etc/
 
 RUN echo "=====================================================" && \
     echo "=> Install system tools packages" && \
@@ -63,21 +61,22 @@ RUN echo "=====================================================" && \
     /bin/bash -l -c "gem install cf-uaac --no-ri --no-rdoc -v ${CF_UAAC_VERSION}" && \
     mv /usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin/bosh /usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin/bosh1 && \
     /bin/bash -l -c "rvm cleanup all" && \
-    echo "=====================================================" && \
-    echo "=> Create users accounts, setup ssh and supervisor" && \
-    echo "=====================================================" && \
-    mkdir -p /var/run/sshd /var/log/supervisor && \
+    echo "========================================================" && \
+    echo "=> Create/setup user account, setup ssh and supervisor" && \
+    echo "========================================================" && \
+    mkdir -p /var/run/sshd /var/log/supervisor /data/shared/tools/certs && \
     echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd && \
-    useradd -m -g users -G sudo,rvm -s /bin/bash ${CONTAINER_LOGIN} && echo "${CONTAINER_LOGIN}:${CONTAINER_PASSWORD}" | chpasswd && chage -d 0 ${CONTAINER_LOGIN} && \
+    useradd -m -g users -G sudo,rvm -s /bin/bash ${CONTAINER_LOGIN} && \
+    echo "${CONTAINER_LOGIN}:${CONTAINER_PASSWORD}" | chpasswd && chage -d 0 ${CONTAINER_LOGIN} && \
     echo "${CONTAINER_LOGIN} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${CONTAINER_LOGIN} && \
     sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd && \
-    sed -i 's/PermitRootLogin without-password/PermitRootLogin no/g' /etc/ssh/sshd_config && \
+    sed -i 's/^PermitRootLogin .*/PermitRootLogin no/g' /etc/ssh/sshd_config && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /usr/local/bin/supervisord && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /usr/local/bin/check_ssh_security && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /usr/local/bin/disable_ssh_password_auth && \
-    chown ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && chmod 700 /home/${CONTAINER_LOGIN} && \
-    ln -s /tmp /home/${CONTAINER_LOGIN}/tmp && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && \
+    chmod 700 /home/${CONTAINER_LOGIN} && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && \
+    find /data -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && \
     echo "=====================================================" && \
     echo "=> Install ops tools" && \
     echo "=====================================================" && \
@@ -100,7 +99,8 @@ RUN echo "=====================================================" && \
     wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -nv -O /tmp/terraform.zip && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PCF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O - | sed -e 's/tf_version=.*/tf_version=0\.10/')" && \
     git clone --depth 1 https://github.com/junegunn/fzf.git /home/${CONTAINER_LOGIN}/.fzf && \
-    chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}/.fzf && su -l ${CONTAINER_LOGIN} -s /bin/bash -c "/home/${CONTAINER_LOGIN}/.fzf/install --all" && \
+    chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}/.fzf && \
+    su -l ${CONTAINER_LOGIN} -s /bin/bash -c "/home/${CONTAINER_LOGIN}/.fzf/install --all" && \
     sed -i "/source ~\/.fzf.bash/d" /home/${CONTAINER_LOGIN}/.bashrc && \
     printf "# Interactive filter for command-line\nif [ -f /home/${CONTAINER_LOGIN}/.fzf.bash ] ; then\n  source /home/${CONTAINER_LOGIN}/.fzf.bash\nfi\n" >> /home/${CONTAINER_LOGIN}/.bashrc && \
     echo "=====================================================" && \
@@ -125,13 +125,15 @@ RUN echo "=====================================================" && \
 
 #--- Provide tools information on system banner, setup profile
 ADD scripts/profile /home/${CONTAINER_LOGIN}/.profile
+ADD scripts/motd /etc/
 
-#mkdir -p /data/shared && find /data -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
 RUN echo "=====================================================" && \
     echo "=> Setup user profile and system banner" && \
     echo "=====================================================" && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /home/${CONTAINER_LOGIN}/.profile && \
-    find /home/${CONTAINER_LOGIN} -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && chmod 644 /home/${CONTAINER_LOGIN}/.profile /etc/motd && \
+    chmod 644 /home/${CONTAINER_LOGIN}/.profile /etc/motd && \
+    find /home/${CONTAINER_LOGIN} -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && \
+    find /data -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
     CERTSTRAP_VERSION=`/usr/local/bin/certstrap -v | awk '{print $3}'` && \
     GIT_VERSION=`git --version | awk '{print $3}'` && \
     GO3FR_VERSION=`gof3r --version 2>&1 | awk '{print $3}'` && \

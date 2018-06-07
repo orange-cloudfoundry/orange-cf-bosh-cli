@@ -3,6 +3,9 @@
 # This file is not read by bash, if ~/.bash_profile or ~/.bash_login exists
 #===========================================================================
 
+#--- Check ssh security
+sudo /usr/local/bin/check_ssh_security "user_login"
+
 #--- Modify home user (on shared disk)
 export MY_BOSH_USER=`hostname`
 export HOME=/data/shared/${MY_BOSH_USER}
