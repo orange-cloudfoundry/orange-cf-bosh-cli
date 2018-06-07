@@ -126,12 +126,12 @@ RUN echo "=====================================================" && \
 #--- Provide tools information on system banner, setup profile
 ADD scripts/profile /home/${CONTAINER_LOGIN}/.profile
 
+#mkdir -p /data/shared && find /data -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
 RUN echo "=====================================================" && \
     echo "=> Setup user profile and system banner" && \
     echo "=====================================================" && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /home/${CONTAINER_LOGIN}/.profile && \
     find /home/${CONTAINER_LOGIN} -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && chmod 644 /home/${CONTAINER_LOGIN}/.profile /etc/motd && \
-    mkdir -p /data/shared && find /data -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
     CERTSTRAP_VERSION=`/usr/local/bin/certstrap -v | awk '{print $3}'` && \
     GIT_VERSION=`git --version | awk '{print $3}'` && \
     GO3FR_VERSION=`gof3r --version 2>&1 | awk '{print $3}'` && \
