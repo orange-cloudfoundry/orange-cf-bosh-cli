@@ -46,7 +46,7 @@ else
   printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
   bosh log-in
   if [ $? != 0 ] ; then
-    printf "\n\n%bERROR : Log to bosh director \"${BOSH_TARGET}\" failed whith user \"${BOSH_CLIENT}\".%b\n\n" "${RED}" "${STD}"
+    printf "\n\n%bERROR : Log to bosh director \"${BOSH_TARGET}\" failed.%b\n\n" "${RED}" "${STD}"
   else
     #--- Select specific deployment (BOSH_DEPLOYMENT variable)
     clear

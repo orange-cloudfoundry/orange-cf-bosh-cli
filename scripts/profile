@@ -32,8 +32,12 @@ export CF_COLOR=true
 #export CF_TRACE=${HOME}/.cf/trace.log   #--- Add API requests diagnostic in logs file
 
 #--- Link to Cloud Foundry plugins repository
-if [ ! -d ${HOME}/.cf ] ; then
-  mkdir -p ${HOME}/.cf
+if [ -L ${HOME}/.cf ] ; then
+  rm ${HOME}/.cf
+else
+  if [ ! -d ${HOME}/.cf ] ; then
+    mkdir -p ${HOME}/.cf
+  fi
 fi
 if [ ! -L ${HOME}/.cf/plugins ] ; then
   rm -fr ${HOME}/.cf/plugins > /dev/null 2>&1

@@ -1,7 +1,10 @@
 #!/bin/bash
 #===========================================================================
-# Log with credhub cli
+# Init CA cert for log-* tools
 #===========================================================================
+
+BOSH_CERT_DIR="/data/shared/tools/certs-test"
+BOSH_CA_CERT="${BOSH_CERT_DIR}/server-ca.crt"
 
 #--- Colors and styles
 export RED='\033[1;31m'
@@ -19,7 +22,20 @@ if [ $? != 0 ] ; then
   credhub login
   if [ $? != 0 ] ; then
     printf "\n%bERROR : Bad LDAP authentication.%b\n\n" "${RED}" "${STD}"
-  else
-    printf "\n\n"
+    exit 1
   fi
+fi
+
+#--- Create CA cert file
+if [ ! -d ${BOSH_CERT_DIR} ] ; then
+  mkdir -p ${BOSH_CERT_DIR}
+fi
+
+INTERNAL_CA=`credhub g -n /internalCA -j | jq .value.ca -r`
+if [ $? = 0 ] ; then
+  echo "${INTERNAL_CA}" > ${BOSH_CA_CERT}
+  chmod 600 ${BOSH_CA_CERT}
+  printf "\n\n"
+else
+  printf "\n\n%bERROR : \"/internalCA\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
 fi

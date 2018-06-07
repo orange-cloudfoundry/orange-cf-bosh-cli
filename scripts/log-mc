@@ -1,6 +1,6 @@
 #!/bin/bash
 #===========================================================================
-# Log with mc (minio) cli
+# Log with mc (S3) cli
 #===========================================================================
 
 #--- Colors and styles
@@ -37,16 +37,14 @@ if [ $? != 0 ] ; then
   fi
 fi
 
-#--- Log to minio
+#--- Log to S3
 if [ "${flagError}" = "0" ] ; then
   getCredhub "S3_SECRET_KEY" "/micro-bosh/minio-private-s3/s3_secretkey"
   if [ ${flagError} = 0 ] ; then
     mc config host add minio http://private-s3.internal.paas:9000 private-s3 ${S3_SECRET_KEY} > /dev/null 2>&1
     if [ $? = 1 ] ; then
       printf "\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
-    else
-      mc ls minio
-      printf "\n"
     fi
   fi
 fi
+printf "\n"

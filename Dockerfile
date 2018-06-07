@@ -33,9 +33,10 @@ ENV CONTAINER_LOGIN="bosh" CONTAINER_PASSWORD="welcome" \
     BDD_PACKAGES="libprotobuf9v5 mongodb-clients" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
-ADD scripts/supervisord scripts/check_ssh_security scripts/disable_ssh_password_auth /usr/local/bin/
+ADD scripts/supervisord scripts/check_ssh_security scripts/disable_ssh_password_auth scripts/init-ca scripts/log-bosh scripts/log-cf scripts/log-credhub scripts/log-fly scripts/log-mc scripts/log-openstack scripts/tools /usr/local/bin/
 ADD supervisord/sshd.conf /etc/supervisor/conf.d/
 ADD scripts/homedir.sh /etc/profile.d/
+ADD scripts/motd /etc/
 
 RUN echo "=====================================================" && \
     echo "=> Install system tools packages" && \
@@ -76,7 +77,7 @@ RUN echo "=====================================================" && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /usr/local/bin/check_ssh_security && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /usr/local/bin/disable_ssh_password_auth && \
     chown ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && chmod 700 /home/${CONTAINER_LOGIN} && \
-    ln -s /tmp /home/${CONTAINER_LOGIN}/tmp && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && mkdir -p /data/shared/tools/certs && \
+    ln -s /tmp /home/${CONTAINER_LOGIN}/tmp && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && \
     echo "=====================================================" && \
     echo "=> Install ops tools" && \
     echo "=====================================================" && \
@@ -124,15 +125,13 @@ RUN echo "=====================================================" && \
 
 #--- Provide tools information on system banner, setup profile
 ADD scripts/profile /home/${CONTAINER_LOGIN}/.profile
-ADD scripts/log-bosh scripts/log-cf scripts/log-credhub scripts/log-fly scripts/log-mc scripts/log-openstack scripts/tools /data/shared/tools/
-ADD scripts/motd /etc/
 
 RUN echo "=====================================================" && \
     echo "=> Setup user profile and system banner" && \
     echo "=====================================================" && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /home/${CONTAINER_LOGIN}/.profile && \
     find /home/${CONTAINER_LOGIN} -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && chmod 644 /home/${CONTAINER_LOGIN}/.profile /etc/motd && \
-    find /data -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && chmod 755 /usr/local/bin/* /etc/profile.d/* /data/shared/tools/* && \
+    mkdir -p /data/shared && find /data -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
     CERTSTRAP_VERSION=`/usr/local/bin/certstrap -v | awk '{print $3}'` && \
     GIT_VERSION=`git --version | awk '{print $3}'` && \
     GO3FR_VERSION=`gof3r --version 2>&1 | awk '{print $3}'` && \
