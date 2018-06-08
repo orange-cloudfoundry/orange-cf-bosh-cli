@@ -9,6 +9,7 @@ sudo /usr/local/bin/check_ssh_security "user_login"
 #--- Modify home user (on shared disk)
 export MY_BOSH_USER=`hostname`
 export HOME=/data/shared/${MY_BOSH_USER}
+DATA_SHARED_TOOLS_DIR="/data/shared/tools"
 
 #--- Create user directory
 if [ ! -d ${HOME} ] ; then
@@ -67,6 +68,9 @@ echo "alias os='openstack'" >> ${HOME}/.bash_aliases
 if [ -f /data/shared/tools/bosh_cli_env ] ; then
   export BOSH_CLI_ENV=`cat /data/shared/tools/bosh_cli_env`
 else
+  if [ ! -d /data/shared/tools ] ; then
+    mkdir -p /data/shared/tools
+  fi
   export BOSH_CLI_ENV="bosh-cli"
   echo "${BOSH_CLI_ENV}" > /data/shared/tools/bosh_cli_env
 fi

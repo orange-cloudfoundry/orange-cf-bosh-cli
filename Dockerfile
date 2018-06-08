@@ -64,7 +64,7 @@ RUN echo "=====================================================" && \
     echo "========================================================" && \
     echo "=> Create/setup user account, setup ssh and supervisor" && \
     echo "========================================================" && \
-    mkdir -p /var/run/sshd /var/log/supervisor /data/shared/tools/certs && \
+    mkdir -p /var/run/sshd /var/log/supervisor /data/shared/tools && \
     echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd && \
     useradd -m -g users -G sudo,rvm -s /bin/bash ${CONTAINER_LOGIN} && \
     echo "${CONTAINER_LOGIN}:${CONTAINER_PASSWORD}" | chpasswd && chage -d 0 ${CONTAINER_LOGIN} && \

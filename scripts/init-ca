@@ -3,7 +3,9 @@
 # Init CA cert for log-* tools
 #===========================================================================
 
-BOSH_CERT_DIR="/data/shared/tools/certs-test"
+export CREDHUB_SERVER="https://credhub.internal.paas:8844"
+export CREDHUB_CLIENT="director_to_credhub"
+BOSH_CERT_DIR="/data/shared/tools/certs"
 BOSH_CA_CERT="${BOSH_CERT_DIR}/server-ca.crt"
 
 #--- Colors and styles
@@ -14,21 +16,30 @@ export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
-#--- Log to credhub
-flag=`credhub f > /dev/null 2>&1`
-if [ $? != 0 ] ; then
-  printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
-  credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
-  credhub login
-  if [ $? != 0 ] ; then
-    printf "\n%bERROR : Bad LDAP authentication.%b\n\n" "${RED}" "${STD}"
-    exit 1
-  fi
-fi
-
 #--- Create CA cert file
 if [ ! -d ${BOSH_CERT_DIR} ] ; then
   mkdir -p ${BOSH_CERT_DIR}
+fi
+
+#--- Log to credhub
+flag=`credhub f > /dev/null 2>&1`
+if [ $? != 0 ] ; then
+  flag=0
+  while [ ${flag} = 0 ] ; do
+    clear
+    printf "%bEnter credhub \"${CREDHUB_CLIENT}\" password :%b " "${REVERSE}${YELLOW}" "${STD}" ; read CREDHUB_SECRET
+    if [ "${CREDHUB_SECRET}" != "" ] ; then
+      export CREDHUB_SECRET
+      flag=1
+    fi
+  done
+
+  credhub api > /dev/null 2>&1
+  credhub login > /dev/null 2>&1
+  if [ $? != 0 ] ; then
+    printf "\n%bERROR : Bad credhub password for user \"${CREDHUB_CLIENT}\".%b\n\n" "${RED}" "${STD}"
+    exit 1
+  fi
 fi
 
 INTERNAL_CA=`credhub g -n /internalCA -j | jq .value.ca -r`
