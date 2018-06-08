@@ -64,7 +64,6 @@ RUN echo "=====================================================" && \
     echo "========================================================" && \
     echo "=> Create/setup user account, setup ssh and supervisor" && \
     echo "========================================================" && \
-    mkdir -p /var/run/sshd /var/log/supervisor /data/shared/tools && \
     echo "root:`date +%s | sha256sum | base64 | head -c 32 ; echo`" | chpasswd && \
     useradd -m -g users -G sudo,rvm -s /bin/bash ${CONTAINER_LOGIN} && \
     echo "${CONTAINER_LOGIN}:${CONTAINER_PASSWORD}" | chpasswd && chage -d 0 ${CONTAINER_LOGIN} && \
@@ -75,8 +74,9 @@ RUN echo "=====================================================" && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /usr/local/bin/supervisord && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /usr/local/bin/check_ssh_security && \
     sed -i "s/<username>/${CONTAINER_LOGIN}/g" /usr/local/bin/disable_ssh_password_auth && \
-    chmod 700 /home/${CONTAINER_LOGIN} && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && \
+    mkdir -p /var/run/sshd /var/log/supervisor /data/shared/tools && \
     find /data -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && \
+    chmod 700 /home/${CONTAINER_LOGIN} && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && \
     echo "=====================================================" && \
     echo "=> Install ops tools" && \
     echo "=====================================================" && \
