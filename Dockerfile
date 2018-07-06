@@ -127,6 +127,9 @@ RUN echo "=====================================================" && \
 ADD scripts/profile /home/${CONTAINER_LOGIN}/.profile
 ADD scripts/motd /etc/
 
+# Add Bash completions
+ADD completion/bosh2 /etc/bash_completion.d/
+
 RUN echo "=====================================================" && \
     echo "=> Setup user profile and system banner" && \
     echo "=====================================================" && \
