@@ -34,6 +34,7 @@ ENV CONTAINER_LOGIN="bosh" CONTAINER_PASSWORD="welcome" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
 ADD scripts/supervisord scripts/check_ssh_security scripts/disable_ssh_password_auth scripts/init-ca scripts/log-bosh scripts/log-cf scripts/log-credhub scripts/log-fly scripts/log-mc scripts/log-openstack scripts/tools /usr/local/bin/
+ADD scripts/bosh_completion /etc/bash_completion.d/
 ADD supervisord/sshd.conf /etc/supervisor/conf.d/
 
 RUN echo "=====================================================" && \
@@ -77,6 +78,7 @@ RUN echo "=====================================================" && \
     mkdir -p /var/run/sshd /var/log/supervisor /data/shared/tools && \
     find /data -print0 | xargs -0 chown ${CONTAINER_LOGIN}:users && \
     chmod 700 /home/${CONTAINER_LOGIN} && chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN} && \
+    chmod 644 /etc/bash_completion.d/bosh_completion && \
     echo "=====================================================" && \
     echo "=> Install ops tools" && \
     echo "=====================================================" && \

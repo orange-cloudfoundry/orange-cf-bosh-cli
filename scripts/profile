@@ -17,7 +17,7 @@ if [ ! -d ${HOME} ] ; then
 fi
 
 #--- Bosh CA cert (on persistant disk)
-export BOSH_CA_CERT="/data/shared/tools/certs/server-ca.crt"
+export BOSH_CA_CERT="${DATA_SHARED_TOOLS_DIR}/certs/server-ca.crt"
 
 #--- Redefine GIT config file path
 export XDG_CONFIG_HOME=${HOME}
@@ -49,7 +49,7 @@ if [ ! -L ${HOME}/.cf/plugins ] ; then
 fi
 
 #--- Redefine Path to binary
-export PATH=.:/data/shared/${MY_BOSH_USER}/bin:/data/shared/tools:${PATH}:/usr/local/go/bin:${GOPATH}/bin
+export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${DATA_SHARED_TOOLS_DIR}:${PATH}:/usr/local/go/bin:${GOPATH}/bin
 
 #--- Init ".bash_aliases"
 echo "#--- Aliases" > ${HOME}/.bash_aliases
@@ -65,14 +65,14 @@ echo "alias log-openstack='. log-openstack'" >> ${HOME}/.bash_aliases
 echo "alias os='openstack'" >> ${HOME}/.bash_aliases
 
 #--- Adapt user prompt and terminal name
-if [ -f /data/shared/tools/bosh_cli_env ] ; then
-  export BOSH_CLI_ENV=`cat /data/shared/tools/bosh_cli_env`
+if [ -f ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env ] ; then
+  export BOSH_CLI_ENV=`cat ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env`
 else
-  if [ ! -d /data/shared/tools ] ; then
-    mkdir -p /data/shared/tools
+  if [ ! -d ${DATA_SHARED_TOOLS_DIR} ] ; then
+    mkdir -p ${DATA_SHARED_TOOLS_DIR}
   fi
   export BOSH_CLI_ENV="bosh-cli"
-  echo "${BOSH_CLI_ENV}" > /data/shared/tools/bosh_cli_env
+  echo "${BOSH_CLI_ENV}" > ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env
 fi
 
 echo ". ~/.bashrc" > ${HOME}/.bash_profile
