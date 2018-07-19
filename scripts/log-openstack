@@ -65,8 +65,5 @@ if [ "${flagError}" = "0" ] ; then
     export OS_REGION_NAME
   fi
 
-  printf "\n\n"
-  if [ ${flagError} = 0 ] ; then
-    openstack
-  fi
+  printf "\n"
 fi
