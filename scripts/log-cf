@@ -38,7 +38,7 @@ if [ $? != 0 ] ; then
 fi
 
 #--- Log to CF
-if [ "${flagError}" = "0" ] ; then
+if [ ${flagError} = 0 ] ; then
   flag=0
   while [ ${flag} = 0 ] ; do
     clear
