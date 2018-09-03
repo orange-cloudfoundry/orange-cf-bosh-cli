@@ -53,7 +53,9 @@ else
     deployments=`bosh deployments --column=Name | grep -vE "^Name$|^Succeeded$|^[0-9]* deployments$"`
     printf "\n%bSelect a specific deployment in the list, or suffix your bosh commands with -d <deployment_name>:%b\n%s" "${REVERSE}${YELLOW}" "${STD}" "${deployments}"
     printf "\n\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
-    if [ "${choice}" != "" ] ; then
+    if [ "${choice}" = "" ] ; then
+      unset BOSH_DEPLOYMENT
+    else
       flag=`echo "${deployments}" | grep "${choice}"`
       clear
       if [ "${flag}" = "" ] ; then
