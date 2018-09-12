@@ -30,7 +30,7 @@ ENV CONTAINER_LOGIN="bosh" CONTAINER_PASSWORD="welcome" \
     BDD_PACKAGES="libprotobuf9v5 mongodb-clients" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
-ADD scripts/supervisord scripts/check_ssh_security scripts/disable_ssh_password_auth scripts/init-ca scripts/log-bosh scripts/log-cf scripts/log-credhub scripts/log-fly scripts/log-mc scripts/log-openstack scripts/tools /usr/local/bin/
+ADD scripts/supervisord scripts/check_ssh_security scripts/disable_ssh_password_auth scripts/log-bosh scripts/log-cf scripts/log-credhub scripts/log-fly scripts/log-mc scripts/log-openstack scripts/log-uaa scripts/tools /usr/local/bin/
 ADD scripts/bosh_completion /etc/bash_completion.d/
 ADD supervisord/sshd.conf /etc/supervisor/conf.d/
 
