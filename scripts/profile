@@ -16,8 +16,8 @@ if [ ! -d ${HOME} ] ; then
   mkdir -p ${HOME}
 fi
 
-#--- Bosh CA cert (on persistant disk)
-export BOSH_CA_CERT="${DATA_SHARED_TOOLS_DIR}/certs/server-ca.crt"
+#--- Bosh CA cert
+export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
 
 #--- Redefine GIT config file path
 export XDG_CONFIG_HOME=${HOME}
@@ -54,14 +54,14 @@ export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${DATA_SHARED_TOOLS_DIR}:${PATH}:
 #--- Init ".bash_aliases"
 echo "#--- Aliases" > ${HOME}/.bash_aliases
 echo "alias f='function __f() { printf \"\n\";find . ! -regex \".*[/]\.git[/]?.*\" -type f -print0 | xargs -0 grep -I -i --color \"\$1\";unset -f __f;printf \"\n\"; }; __f'" >> ${HOME}/.bash_aliases
-echo "alias bosh2='bosh'" >> ${HOME}/.bash_aliases
 echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
+echo "alias fly='fly -t concourse-micro'" >> ${HOME}/.bash_aliases
 echo "alias log-bosh='. log-bosh'" >> ${HOME}/.bash_aliases
 echo "alias log-credhub='. log-credhub'" >> ${HOME}/.bash_aliases
-echo "alias fly='fly -t concourse-micro'" >> ${HOME}/.bash_aliases
 echo "alias log-fly='. log-fly'" >> ${HOME}/.bash_aliases
 echo "alias log-mc='. log-mc'" >> ${HOME}/.bash_aliases
 echo "alias log-openstack='. log-openstack'" >> ${HOME}/.bash_aliases
+echo "alias log-uaa='. log-uaa'" >> ${HOME}/.bash_aliases
 echo "alias os='openstack'" >> ${HOME}/.bash_aliases
 
 #--- Adapt user prompt and terminal name

@@ -42,6 +42,8 @@ else
 
   #--- Login to the director and list active deployments
   export BOSH_ENVIRONMENT=`host bosh-${BOSH_TARGET}.internal.paas | awk '{print $4}'`
+  unset BOSH_CLIENT
+  unset BOSH_CLIENT_SECRET
   bosh alias-env ${BOSH_TARGET} > /dev/null 2>&1
   printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
   bosh log-in

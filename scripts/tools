@@ -18,11 +18,11 @@ display() {
 
 clear
 printf "%bTOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
-display "init-ca" "Initialize CA cert for tools"
-display "log-bosh" "Bosh CLI V2"
-display "log-cf" "CF CLI"
-display "log-credhub" "Credhub CLI"
-display "log-fly" "Concourse CLI"
-display "log-mc" "Minio/OBOS S3 CLI"
-display "log-openstack" "Openstack CLI tools"
+display "log-bosh" "Log with bosh CLI V2"
+display "log-cf" "Log with cf CLI"
+display "log-credhub" "Log with credhub CLI"
+display "log-fly" "Log with concourse CLI"
+display "log-mc" "Log with minio/OBOS S3 CLI"
+display "log-openstack" "Log with openstack CLI tools"
+display "log-uaa" "Log with uaa CLI tools"
 printf "\n"

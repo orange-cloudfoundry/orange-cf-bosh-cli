@@ -6,23 +6,20 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV BUNDLER_VERSION="1.13.6" \
     RUBY_VERSION="2.3.3" \
     GOLANG_VERSION="1.10.1" \
-    SPIFF_VERSION="1.0.8" \
-    SPIFF_RELOADED_VERSION="1.0.8-ms.6" \
     SPRUCE_VERSION="1.17.0" \
     JQ_VERSION="1.5" \
     BOSH_GEN_VERSION="0.22.0" \
-    BOSH_CLI_VERSION="1.3262.26.0" \
     BOSH_CLI_V2_VERSION="3.0.1" \
     CF_CLI_VERSION="6.38.0" \
     CF_UAAC_VERSION="4.1.0" \
-    CREDHUB_VERSION="1.7.5" \
+    CREDHUB_VERSION="1.7.7" \
     FLY_VERSION="3.14.1" \
     TERRAFORM_VERSION="0.11.7" \
     TERRAFORM_PCF_VERSION="0.9.1" \
     SHIELD_VERSION="0.10.9" \
     BBR_VERSION="1.2.2" \
     KUBECTL_VERSION="1.10.2" \
-    HELM_VERSION="2.9.1" \
+    HELM_VERSION="2.10.0" \
     MYSQL_SHELL_VERSION="8.0.11-1"
 
 ENV CONTAINER_LOGIN="bosh" CONTAINER_PASSWORD="welcome" \
@@ -57,7 +54,6 @@ RUN echo "=====================================================" && \
     /bin/bash -l -c "rvm install ${RUBY_VERSION}" && \
     /bin/bash -l -c "rvm use ${RUBY_VERSION}" && \
     /bin/bash -l -c "gem install bundler --no-ri --no-rdoc -v ${BUNDLER_VERSION}" && \
-    /bin/bash -l -c "gem install bosh_cli --no-ri --no-rdoc -v ${BOSH_CLI_VERSION}" && \
     /bin/bash -l -c "gem install bosh-gen --no-ri --no-rdoc -v ${BOSH_GEN_VERSION}" && \
     /bin/bash -l -c "gem install cf-uaac --no-ri --no-rdoc -v ${CF_UAAC_VERSION}" && \
     mv /usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin/bosh /usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin/bosh1 && \
@@ -83,8 +79,6 @@ RUN echo "=====================================================" && \
     echo "=> Install ops tools" && \
     echo "=====================================================" && \
     wget "https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz" -nv -O - | tar -xz -C /usr/local && \
-    wget "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${SPIFF_VERSION}/spiff_linux_amd64.zip" -nv -O /tmp/spiff_linux_amd64.zip && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && \
-    wget "https://github.com/mandelsoft/spiff/releases/download/v${SPIFF_RELOADED_VERSION}/spiff_linux_amd64.zip" -nv -O /tmp/spiff_linux_amd64.zip && unzip -q /tmp/spiff_linux_amd64.zip -d /usr/local/bin && \
     wget "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" -nv -O /usr/local/bin/spruce && \
     wget "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -nv -O /usr/local/bin/jq && \
     wget "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_V2_VERSION}-linux-amd64" -nv -O /usr/local/bin/bosh && \
@@ -146,14 +140,11 @@ RUN echo "=====================================================" && \
     sed -i "s/<golang_version>/${GOLANG_VERSION}/g" /etc/motd && \
     sed -i "s/<nodejs_version>/${NODEJS_VERSION}/g" /etc/motd && \
     sed -i "s/<git_version>/${GIT_VERSION}/g" /etc/motd && \
-    sed -i "s/<spiff_version>/${SPIFF_VERSION}/g" /etc/motd && \
-    sed -i "s/<spiff_reloaded_version>/${SPIFF_RELOADED_VERSION}/g" /etc/motd && \
     sed -i "s/<spruce_version>/${SPRUCE_VERSION}/g" /etc/motd && \
     sed -i "s/<jq_version>/${JQ_VERSION}/g" /etc/motd && \
     sed -i "s/<certstrap_version>/${CERTSTRAP_VERSION}/g" /etc/motd && \
     sed -i "s/<yarn_version>/${YARN_VERSION}/g" /etc/motd && \
     sed -i "s/<bosh_gen_version>/${BOSH_GEN_VERSION}/g" /etc/motd && \
-    sed -i "s/<bosh_cli_version>/${BOSH_CLI_VERSION}/g" /etc/motd && \
     sed -i "s/<bosh_cli_v2_version>/${BOSH_CLI_V2_VERSION}/g" /etc/motd && \
     sed -i "s/<cf_cli_version>/${CF_CLI_VERSION}/g" /etc/motd && \
     sed -i "s/<cf_uaac_version>/${CF_UAAC_VERSION}/g" /etc/motd && \
