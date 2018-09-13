@@ -8,8 +8,6 @@ The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker
 
 ### Generic tools
 * `git` - Git client
-* `spiff` - YAML templating tool, for BOSH deployment manifests generation (https://github.com/cloudfoundry-incubator/spiff)
-* `spiff++` - Also known as spiff reloaded, spiff++ is a spiff enhanced fork (https://github.com/mandelsoft/spiff)
 * `spruce` - YAML templating tool, for BOSH deployment manifests generation (https://github.com/geofffranks/spruce)
 * `jq` - JSON processing tool (https://stedolan.github.io/jq/)
 * `cerstrap` - Simple certificate manager (https://github.com/square/certstrap)
@@ -17,7 +15,6 @@ The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker
 
 ### Bosh deployments tools
 * `bosh-gen` - Generators for BOSH releases creation (https://github.com/cloudfoundry-community/bosh-gen)
-* `bosh1` - Bosh directors V1 CLI (https://bosh.io/docs/bosh-cli.html)
 * `bosh` - Bosh directors V2 CLI (https://bosh.io/docs/cli-v2.html)
 * `cf` - Cloud Foundry CLI (https://github.com/cloudfoundry/cli)
 * `uaac` - Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac)
