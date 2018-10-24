@@ -14,6 +14,7 @@ ENV BUNDLER_VERSION="1.13.6" \
     CF_UAAC_VERSION="4.1.0" \
     CREDHUB_VERSION="2.1.0" \
     FLY_VERSION="3.14.1" \
+    DB_DUMPER_VERSION="1.4.1" \
     TERRAFORM_VERSION="0.11.7" \
     TERRAFORM_PCF_VERSION="0.9.1" \
     SHIELD_VERSION="0.10.9" \
@@ -94,6 +95,7 @@ RUN echo "=====================================================" && \
     wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp linux-amd64/helm && mv /tmp/linux-amd64/helm /usr/local/bin/helm && \
     wget "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" -nv -O /tmp/mysql-shell.deb && dpkg -i /tmp/mysql-shell.deb && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && printf "\n# Maintain a jump-list of in use directories\nif [ -f /usr/local/bin/z.sh ] ; then\n  source /usr/local/bin/z.sh\nfi\n" >> /home/${CONTAINER_LOGIN}/.bashrc && \
+    wget "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" -nv -O /tmp/db-dumper-plugin && chmod 755 /tmp/db-dumper-plugin && \
     wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -nv -O /tmp/terraform.zip && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PCF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O - | sed -e 's/tf_version=.*/tf_version=0\.10/')" && \
     git clone --depth 1 https://github.com/junegunn/fzf.git /home/${CONTAINER_LOGIN}/.fzf && \
@@ -105,6 +107,7 @@ RUN echo "=====================================================" && \
     echo "=> Install CF plugins" && \
     echo "=====================================================" && \
     su -l ${CONTAINER_LOGIN} -s /bin/bash -c "export IFS=, ; for plug in \`echo ${CF_PLUGINS}\` ; do cf install-plugin \"\${plug}\" -r CF-Community -f ; done" && \
+    su -l ${CONTAINER_LOGIN} -s /bin/bash -c "cf install-plugin \"/tmp/db-dumper-plugin\" -f " && rm -f /tmp/db-dumper-plugin && \
     echo "=====================================================" && \
     echo "=> Install GO tools" && \
     echo "=====================================================" && \
