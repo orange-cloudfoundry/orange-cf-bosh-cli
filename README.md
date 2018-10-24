@@ -14,10 +14,11 @@ The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker
 * `yarn` - Package manager (https://yarnpkg.com/fr/)
 
 ### Bosh deployments tools
-* `bosh-gen` - Generators for BOSH releases creation (https://github.com/cloudfoundry-community/bosh-gen)
 * `bosh` - Bosh directors V2 CLI (https://bosh.io/docs/cli-v2.html)
+* `bosh-gen` - Generators for BOSH releases creation (https://github.com/cloudfoundry-community/bosh-gen)
 * `cf` - Cloud Foundry CLI (https://github.com/cloudfoundry/cli)
 * `uaac` - Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac)
+* `uaa` - UAA CLI go (https://github.com/starkandwayne/uaa-cli-releases)
 * `credhub` - Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli)
 * `fly` - Concourse CLI (https://github.com/concourse/fly)
 * `terraform` - Provides a common configuration to launch infrastructure (https://www.terraform.io/)

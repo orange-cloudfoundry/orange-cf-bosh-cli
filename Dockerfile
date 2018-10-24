@@ -17,6 +17,7 @@ ENV BUNDLER_VERSION="1.13.6" \
     TERRAFORM_VERSION="0.11.7" \
     TERRAFORM_PCF_VERSION="0.9.1" \
     SHIELD_VERSION="0.10.9" \
+    UAA_VERSION="0.0.1" \
     BBR_VERSION="1.2.2" \
     KUBECTL_VERSION="1.10.2" \
     HELM_VERSION="2.10.0" \
@@ -86,6 +87,7 @@ RUN echo "=====================================================" && \
     wget "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" -nv -O - | tar -xz -C /usr/local/bin && \
     wget "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly_linux_amd64" -nv -O /usr/local/bin/fly && \
     wget "https://github.com/starkandwayne/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && mv shield-linux-amd64 /usr/local/bin/shield && \
+    wget "https://github.com/starkandwayne/uaa-cli-releases/releases/download/v${UAA_VERSION}/uaa-linux-amd64" && mv uaa-linux-amd64 /usr/local/bin/uaa && \
     wget "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" -nv -O - | tar -x -C /tmp releases/bbr && mv /tmp/releases/bbr /usr/local/bin/bbr && \
     wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -nv -O /usr/local/bin/mc && \
     wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && \
@@ -144,10 +146,11 @@ RUN echo "=====================================================" && \
     sed -i "s/<jq_version>/${JQ_VERSION}/g" /etc/motd && \
     sed -i "s/<certstrap_version>/${CERTSTRAP_VERSION}/g" /etc/motd && \
     sed -i "s/<yarn_version>/${YARN_VERSION}/g" /etc/motd && \
-    sed -i "s/<bosh_gen_version>/${BOSH_GEN_VERSION}/g" /etc/motd && \
     sed -i "s/<bosh_cli_v2_version>/${BOSH_CLI_V2_VERSION}/g" /etc/motd && \
+    sed -i "s/<bosh_gen_version>/${BOSH_GEN_VERSION}/g" /etc/motd && \
     sed -i "s/<cf_cli_version>/${CF_CLI_VERSION}/g" /etc/motd && \
     sed -i "s/<cf_uaac_version>/${CF_UAAC_VERSION}/g" /etc/motd && \
+    sed -i "s/<uaa_version>/${UAA_VERSION}/g" /etc/motd && \
     sed -i "s/<credhub_version>/${CREDHUB_VERSION}/g" /etc/motd && \
     sed -i "s/<fly_version>/${FLY_VERSION}/g" /etc/motd && \
     sed -i "s/<terraform_version>/${TERRAFORM_VERSION}/g" /etc/motd && \
