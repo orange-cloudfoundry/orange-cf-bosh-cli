@@ -1,6 +1,6 @@
 #!/bin/bash
 #===========================================================================
-# Log with uaa go cli
+# Log with uaac cli
 #===========================================================================
 
 #--- Colors and styles
@@ -71,9 +71,9 @@ else
   if [ "${flagError}" = "0" ] ; then
     getCredhub "ADMIN_PASSWORD" "${ADMIN_CLIENT_SECRET}"
     if [ ${flagError} = 0 ] ; then
-      uaa target ${UAA_TARGET}
+      uaac target ${UAA_TARGET} --ca-cert ${BOSH_CA_CERT} > /dev/null 2>&1
       if [ $? = 0 ] ; then
-        uaa get-client-credentials-token admin -s ${ADMIN_PASSWORD}
+        uaac token client get admin -s ${ADMIN_PASSWORD}
       else
         printf "\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
       fi
