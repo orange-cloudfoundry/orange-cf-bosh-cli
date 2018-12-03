@@ -14,9 +14,9 @@ export REVERSE='\033[7m'
 getCredhub() {
   #--- Test if parameter exist with non empty value, else get it from credhub
   if [ "${!1}" = "" ] ; then
-    credhubGet=`credhub g -n $2 -j | jq .value -r`
+    credhubGet=$(credhub g -n $2 -j | jq .value -r)
     if [ $? = 0 ] ; then
-      eval $1=`echo "${credhubGet}"`
+      eval $1=$(echo "${credhubGet}")
     else
       printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
       flagError=1
@@ -29,9 +29,9 @@ if [ ! -s "${BOSH_CA_CERT}" ] ; then
 else
   #--- Log to credhub
   flagError=0
-  flag=`credhub f > /dev/null 2>&1`
+  flag=$(credhub f > /dev/null 2>&1)
   if [ $? != 0 ] ; then
-    printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+    printf "\n%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
     credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
     credhub login
     if [ $? != 0 ] ; then
@@ -44,7 +44,6 @@ else
   flag=0
   while [ ${flag} = 0 ] ; do
     flag=1
-    clear
     printf "%bTarget UAA :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
     printf "%b1%b : cf\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b2%b : micro\n" "${GREEN}${BOLD}" "${STD}"
@@ -63,7 +62,7 @@ else
       5) UAA_TARGET="https://192.168.99.154:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-kubo/admin_password" ;;
       6) UAA_TARGET="https://192.168.99.155:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-coab/admin_password" ;;
       7) UAA_TARGET="https://192.168.99.153:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-expe/admin_password" ;;
-      *) flag=0 ;;
+      *) flag=0 ; clear ;;
     esac
   done
 

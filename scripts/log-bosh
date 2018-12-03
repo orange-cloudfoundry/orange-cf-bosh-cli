@@ -18,7 +18,6 @@ else
   flag=0
   while [ ${flag} = 0 ] ; do
     flag=1
-    clear
     printf "%bDirector BOSH :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
     printf "%b1%b : micro\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b2%b : master\n" "${GREEN}${BOLD}" "${STD}"
@@ -36,30 +35,29 @@ else
       5) BOSH_TARGET="coab" ;;
       6) BOSH_TARGET="ondemand" ;;
       7) BOSH_TARGET="expe" ;;
-      *) flag=0 ;;
+      *) flag=0 ; clear ;;
     esac
   done
 
   #--- Login to the director and list active deployments
-  export BOSH_ENVIRONMENT=`host bosh-${BOSH_TARGET}.internal.paas | awk '{print $4}'`
+  export BOSH_ENVIRONMENT=$(host bosh-${BOSH_TARGET}.internal.paas | awk '{print $4}')
   unset BOSH_CLIENT
   unset BOSH_CLIENT_SECRET
   bosh alias-env ${BOSH_TARGET} > /dev/null 2>&1
-  printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  printf "\n%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  bosh logout > /dev/null 2>&1
   bosh log-in
   if [ $? != 0 ] ; then
     printf "\n\n%bERROR : Log to bosh director \"${BOSH_TARGET}\" failed.%b\n\n" "${RED}" "${STD}"
   else
     #--- Select specific deployment (BOSH_DEPLOYMENT variable)
-    clear
-    deployments=`bosh deployments --column=Name | grep -vE "^Name$|^Succeeded$|^[0-9]* deployments$"`
+    deployments=$(bosh deployments --column=Name | grep -vE "^Name$|^Succeeded$|^[0-9]* deployments$")
     printf "\n%bSelect a specific deployment in the list, or suffix your bosh commands with -d <deployment_name>:%b\n%s" "${REVERSE}${YELLOW}" "${STD}" "${deployments}"
     printf "\n\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     if [ "${choice}" = "" ] ; then
       unset BOSH_DEPLOYMENT
     else
-      flag=`echo "${deployments}" | grep "${choice}"`
-      clear
+      flag=$(echo "${deployments}" | grep "${choice}")
       if [ "${flag}" = "" ] ; then
         unset BOSH_DEPLOYMENT
       else

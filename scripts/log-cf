@@ -14,9 +14,9 @@ export REVERSE='\033[7m'
 getCredhub() {
   #--- Test if parameter exist with non empty value, else get it from credhub
   if [ "${!1}" = "" ] ; then
-    credhubGet=`credhub g -n $2 -j | jq .value -r`
+    credhubGet=$(credhub g -n $2 -j | jq .value -r)
     if [ $? = 0 ] ; then
-      eval $1=`echo "${credhubGet}"`
+      eval $1=$(echo "${credhubGet}")
     else
       printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
       flagError=1
@@ -26,9 +26,9 @@ getCredhub() {
 
 #--- Log to credhub
 flagError=0
-flag=`credhub f > /dev/null 2>&1`
+flag=$(credhub f > /dev/null 2>&1)
 if [ $? != 0 ] ; then
-  printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  printf "\n%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
   credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
   credhub login
   if [ $? != 0 ] ; then
@@ -41,9 +41,10 @@ fi
 if [ ${flagError} = 0 ] ; then
   flag=0
   while [ ${flag} = 0 ] ; do
-    clear
-    printf "%bEnter CF User :%b " "${REVERSE}${YELLOW}" "${STD}" ; read CF_USER
-    if [ "${CF_USER}" != "" ] ; then
+    printf "\n%bEnter CF User :%b " "${REVERSE}${YELLOW}" "${STD}" ; read CF_USER
+    if [ "${CF_USER}" = "" ] ; then
+      clear
+    else
       flag=1
     fi
   done
