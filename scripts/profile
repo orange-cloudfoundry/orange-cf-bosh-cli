@@ -62,6 +62,8 @@ echo "alias log-fly='. log-fly'" >> ${HOME}/.bash_aliases
 echo "alias log-mc='. log-mc'" >> ${HOME}/.bash_aliases
 echo "alias log-openstack='. log-openstack'" >> ${HOME}/.bash_aliases
 echo "alias log-uaa='. log-uaa'" >> ${HOME}/.bash_aliases
+echo "alias log-uaac='. log-uaac'" >> ${HOME}/.bash_aliases
+echo "alias switch='. switch'" >> ${HOME}/.bash_aliases
 echo "alias os='openstack'" >> ${HOME}/.bash_aliases
 
 #--- Adapt user prompt and terminal name
