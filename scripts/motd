@@ -21,7 +21,7 @@ Your are logged into an ubuntu docker container (https://github.com/Orange-OpenS
   * bbr (<bbr_version>) - Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)
   * gof3r (<gof3r_version>) - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
   * mc - Minio S3 CLI (https://github.com/minio/mc)
-  * smctl (<peripli_version> - Service Manager CLI (https://github.com/Peripli/service-manager-cli/#service-manager-cli)
+  * smctl (<peripli_version>) - Service Manager CLI (https://github.com/Peripli/service-manager-cli/#service-manager-cli)
   * kubectl (<kubectl_version>) - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
   * helm (<helm_version>) - Kubernetes Package Manager (https://docs.helm.sh/)
   * mysqlsh (<mysql_shell_version>) - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)

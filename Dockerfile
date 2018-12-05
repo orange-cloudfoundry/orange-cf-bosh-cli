@@ -20,10 +20,10 @@ ENV BUNDLER_VERSION="1.13.6" \
     SHIELD_VERSION="0.10.9" \
     UAA_CLI_GO_VERSION="0.0.1" \
     BBR_VERSION="1.3.1" \
+    PERIPLI_VERSION="1.0.0" \
     KUBECTL_VERSION="1.11.3" \
     HELM_VERSION="2.10.0" \
-    PERIPLI_VERSION="1.0.0" \
-    MYSQL_SHELL_VERSION="8.0.13"
+    MYSQL_SHELL_VERSION="8.0.13-1"
 
 ENV CONTAINER_LOGIN="bosh" CONTAINER_PASSWORD="welcome" \
     INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl apt-transport-https" \
@@ -88,9 +88,9 @@ RUN echo "=====================================================" && \
     wget "https://cli.run.pivotal.io/stable?release=debian64&version=${CF_CLI_VERSION}&source=github-rel" -nv -O /tmp/cf.deb && dpkg -i /tmp/cf.deb && \
     wget "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" -nv -O - | tar -xz -C /usr/local/bin && \
     wget "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly_linux_amd64" -nv -O /usr/local/bin/fly && \
-    wget "https://github.com/starkandwayne/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && mv shield-linux-amd64 /usr/local/bin/shield && \
-    wget "https://github.com/starkandwayne/uaa-cli-releases/releases/download/v${UAA_CLI_GO_VERSION}/uaa-linux-amd64" && mv uaa-linux-amd64 /usr/local/bin/uaa && \
-    wget "https://github.com/Peripli/service-manager-cli/releases/download/v${PERIPLI_VERSION}/smctl_linux_x86-64" && mv smctl_linux_x86-64 /usr/local/bin/smctl && \
+    wget "https://github.com/starkandwayne/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" -nv -O /usr/local/bin/shield && \
+    wget "https://github.com/starkandwayne/uaa-cli-releases/releases/download/v${UAA_CLI_GO_VERSION}/uaa-linux-amd64" -nv -O /usr/local/bin/uaa && \
+    wget "https://github.com/Peripli/service-manager-cli/releases/download/v${PERIPLI_VERSION}/smctl_linux_x86-64" -nv -O /usr/local/bin/smctl && \
     wget "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" -nv -O - | tar -x -C /tmp releases/bbr && mv /tmp/releases/bbr /usr/local/bin/bbr && \
     wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -nv -O /usr/local/bin/mc && \
     wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && \
@@ -99,7 +99,7 @@ RUN echo "=====================================================" && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && printf "\n# Maintain a jump-list of in use directories\nif [ -f /usr/local/bin/z.sh ] ; then\n  source /usr/local/bin/z.sh\nfi\n" >> /home/${CONTAINER_LOGIN}/.bashrc && \
     wget "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" -nv -O /tmp/db-dumper-plugin && chmod 755 /tmp/db-dumper-plugin && \
     wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -nv -O /tmp/terraform.zip && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
-    export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O - | sed -e 's/tf_version=.*/tf_version=0\.10/')" && \
+    export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
     git clone --depth 1 https://github.com/junegunn/fzf.git /home/${CONTAINER_LOGIN}/.fzf && \
     chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}/.fzf && \
     su -l ${CONTAINER_LOGIN} -s /bin/bash -c "/home/${CONTAINER_LOGIN}/.fzf/install --all" && \
