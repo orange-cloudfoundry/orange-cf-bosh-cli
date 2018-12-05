@@ -31,6 +31,7 @@ The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker
 * `mc` - Minio S3 CLI (https://github.com/minio/mc)
 
 ### Kubernetes tools
+* `smctl` - Service Manager CLI (https://github.com/Peripli/service-manager-cli/#service-manager-cli)
 * `kubectl` - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
 
@@ -166,9 +167,9 @@ properties:
     image: <%= docker_image %>:<%= docker_tag %>
     volumes:
     - /data
-  - name: &user1_bosh_cli user1_bosh_cli
+  - name: user1_bosh_cli
     image: <%= docker_image %>:<%= docker_tag %>
-    hostname: *user1_bosh_cli
+    hostname: user1_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
     - "https_proxy=<%= https_proxy %>"
@@ -182,28 +183,14 @@ properties:
     - data_container
     volumes_from:
     - data_container
-  - name: &user2_bosh_cli user2_bosh_cli
+  - name: user2_bosh_cli
     image: <%= docker_image %>:<%= docker_tag %>
-    hostname: *user2_bosh_cli
+    hostname: user2_bosh_cli
     env_vars:
     - "http_proxy=<%= http_proxy %>"
     - "https_proxy=<%= https_proxy %>"
     bind_ports:
     - "2223:22"
-    volumes:
-    - /home/bosh
-    depends_on:
-    - data_container
-    volumes_from:
-    - data_container
-  - name: &user3_bosh_cli user3_bosh_cli
-    image: <%= docker_image %>:<%= docker_tag %>
-    hostname: *user3_bosh_cli
-    env_vars:
-    - "http_proxy=<%= http_proxy %>"
-    - "https_proxy=<%= https_proxy %>"
-    bind_ports:
-    - "2224:22"
     volumes:
     - /home/bosh
     depends_on:

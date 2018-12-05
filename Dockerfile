@@ -6,23 +6,24 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV BUNDLER_VERSION="1.13.6" \
     RUBY_VERSION="2.3.3" \
     GOLANG_VERSION="1.10.1" \
-    SPRUCE_VERSION="1.17.0" \
-    JQ_VERSION="1.5" \
+    SPRUCE_VERSION="1.18.2" \
+    JQ_VERSION="1.6" \
     BOSH_GEN_VERSION="0.22.0" \
-    BOSH_CLI_V2_VERSION="3.0.1" \
-    CF_CLI_VERSION="6.38.0" \
+    BOSH_CLI_V2_VERSION="5.4.0" \
+    CF_CLI_VERSION="6.41.0" \
     CF_UAAC_VERSION="4.1.0" \
     CREDHUB_VERSION="2.1.0" \
     FLY_VERSION="3.14.1" \
-    DB_DUMPER_VERSION="1.4.1" \
+    DB_DUMPER_VERSION="1.4.2" \
     TERRAFORM_VERSION="0.11.7" \
-    TERRAFORM_PCF_VERSION="0.9.1" \
+    TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     SHIELD_VERSION="0.10.9" \
-    UAA_VERSION="0.0.1" \
-    BBR_VERSION="1.2.2" \
-    KUBECTL_VERSION="1.10.2" \
+    UAA_CLI_GO_VERSION="0.0.1" \
+    BBR_VERSION="1.3.1" \
+    KUBECTL_VERSION="1.11.3" \
     HELM_VERSION="2.10.0" \
-    MYSQL_SHELL_VERSION="8.0.11-1"
+    PERIPLI_VERSION="1.0.0" \
+    MYSQL_SHELL_VERSION="8.0.13"
 
 ENV CONTAINER_LOGIN="bosh" CONTAINER_PASSWORD="welcome" \
     INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl apt-transport-https" \
@@ -88,7 +89,8 @@ RUN echo "=====================================================" && \
     wget "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" -nv -O - | tar -xz -C /usr/local/bin && \
     wget "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly_linux_amd64" -nv -O /usr/local/bin/fly && \
     wget "https://github.com/starkandwayne/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && mv shield-linux-amd64 /usr/local/bin/shield && \
-    wget "https://github.com/starkandwayne/uaa-cli-releases/releases/download/v${UAA_VERSION}/uaa-linux-amd64" && mv uaa-linux-amd64 /usr/local/bin/uaa && \
+    wget "https://github.com/starkandwayne/uaa-cli-releases/releases/download/v${UAA_CLI_GO_VERSION}/uaa-linux-amd64" && mv uaa-linux-amd64 /usr/local/bin/uaa && \
+    wget "https://github.com/Peripli/service-manager-cli/releases/download/v${PERIPLI_VERSION}/smctl_linux_x86-64" && mv smctl_linux_x86-64 /usr/local/bin/smctl && \
     wget "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" -nv -O - | tar -x -C /tmp releases/bbr && mv /tmp/releases/bbr /usr/local/bin/bbr && \
     wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -nv -O /usr/local/bin/mc && \
     wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && \
@@ -97,7 +99,7 @@ RUN echo "=====================================================" && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && printf "\n# Maintain a jump-list of in use directories\nif [ -f /usr/local/bin/z.sh ] ; then\n  source /usr/local/bin/z.sh\nfi\n" >> /home/${CONTAINER_LOGIN}/.bashrc && \
     wget "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" -nv -O /tmp/db-dumper-plugin && chmod 755 /tmp/db-dumper-plugin && \
     wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -nv -O /tmp/terraform.zip && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
-    export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PCF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O - | sed -e 's/tf_version=.*/tf_version=0\.10/')" && \
+    export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O - | sed -e 's/tf_version=.*/tf_version=0\.10/')" && \
     git clone --depth 1 https://github.com/junegunn/fzf.git /home/${CONTAINER_LOGIN}/.fzf && \
     chown -R ${CONTAINER_LOGIN}:users /home/${CONTAINER_LOGIN}/.fzf && \
     su -l ${CONTAINER_LOGIN} -s /bin/bash -c "/home/${CONTAINER_LOGIN}/.fzf/install --all" && \
@@ -153,14 +155,15 @@ RUN echo "=====================================================" && \
     sed -i "s/<bosh_gen_version>/${BOSH_GEN_VERSION}/g" /etc/motd && \
     sed -i "s/<cf_cli_version>/${CF_CLI_VERSION}/g" /etc/motd && \
     sed -i "s/<cf_uaac_version>/${CF_UAAC_VERSION}/g" /etc/motd && \
-    sed -i "s/<uaa_version>/${UAA_VERSION}/g" /etc/motd && \
+    sed -i "s/<uaa_cli_go_version>/${UAA_CLI_GO_VERSION}/g" /etc/motd && \
     sed -i "s/<credhub_version>/${CREDHUB_VERSION}/g" /etc/motd && \
     sed -i "s/<fly_version>/${FLY_VERSION}/g" /etc/motd && \
     sed -i "s/<terraform_version>/${TERRAFORM_VERSION}/g" /etc/motd && \
-    sed -i "s/<terraform_pcf_version>/${TERRAFORM_PCF_VERSION}/g" /etc/motd && \
+    sed -i "s/<terraform_pcf_version>/${TERRAFORM_PLUGIN_CF_VERSION}/g" /etc/motd && \
     sed -i "s/<shield_version>/${SHIELD_VERSION}/g" /etc/motd && \
     sed -i "s/<bbr_version>/${BBR_VERSION}/g" /etc/motd && \
     sed -i "s/<gof3r_version>/${GO3FR_VERSION}/g" /etc/motd && \
+    sed -i "s/<peripli_version>/${PERIPLI_VERSION}/g" /etc/motd && \
     sed -i "s/<kubectl_version>/${KUBECTL_VERSION}/g" /etc/motd && \
     sed -i "s/<helm_version>/${HELM_VERSION}/g" /etc/motd && \
     sed -i "s/<mysql_shell_version>/${MYSQL_SHELL_VERSION}/g" /etc/motd && \
