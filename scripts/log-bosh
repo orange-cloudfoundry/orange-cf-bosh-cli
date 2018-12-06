@@ -54,6 +54,12 @@ else
       printf "\n\n%bERROR : Bosh director \"${BOSH_TARGET}\" unknown.%b\n\n" "${RED}" "${STD}"
     else
       status=1
+      testToken=$(bosh env > /dev/null 2>&1)
+      if [ $? != 0 ] ; then
+        #--- Token expired, log out
+        bosh log-out > /dev/null 2>&1
+      fi
+
       userConnected=$(bosh env | grep "not logged in")
       if [ "${userConnected}" != "" ] ; then
         #--- Log into the director and list active deployments
