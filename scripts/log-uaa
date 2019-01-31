@@ -12,15 +12,12 @@ export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
 getCredhub() {
-  #--- Test if parameter exist with non empty value, else get it from credhub
-  if [ "${!1}" = "" ] ; then
-    credhubGet=$(credhub g -n $2 -j | jq .value -r)
-    if [ $? = 0 ] ; then
-      eval $1=$(echo "${credhubGet}")
-    else
-      printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
-      flagError=1
-    fi
+  credhubGet=$(credhub g -n $2 -j | jq .value -r)
+  if [ $? = 0 ] ; then
+    eval $1=$(echo "${credhubGet}")
+  else
+    printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
+    flagError=1
   fi
 }
 
@@ -40,39 +37,37 @@ else
     fi
   fi
 
-  #--- Identify UAA
-  flag=0
-  while [ ${flag} = 0 ] ; do
-    flag=1
-    printf "%bTarget UAA :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-    printf "%b1%b : cf\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b2%b : micro\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : master\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b4%b : ops\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b5%b : kubo\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b6%b : coab\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b7%b : expe\n" "${GREEN}${BOLD}" "${STD}"
-    printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
-    case "${choice}" in
-      1) getCredhub "SYSTEM_DOMAIN" "/secrets/cloudfoundry_system_domain"
-         UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; ADMIN_CLIENT_SECRET="/bosh-master/cf/uaa_admin_client_secret" ;;
-      2) UAA_TARGET="https://192.168.10.10:8443" ; ADMIN_CLIENT_SECRET="/secrets/bosh_admin_password" ;;
-      3) UAA_TARGET="https://192.168.116.158:8443" ; ADMIN_CLIENT_SECRET="/micro-bosh/bosh-master/admin_password" ;;
-      4) UAA_TARGET="https://192.168.99.152:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-ops/admin_password" ;;
-      5) UAA_TARGET="https://192.168.99.154:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-kubo/admin_password" ;;
-      6) UAA_TARGET="https://192.168.99.155:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-coab/admin_password" ;;
-      7) UAA_TARGET="https://192.168.99.153:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-expe/admin_password" ;;
-      *) flag=0 ; clear ;;
-    esac
-  done
-
   #--- Log to uaa
   if [ "${flagError}" = "0" ] ; then
+    #--- Identify UAA
+    flag=0
+    while [ ${flag} = 0 ] ; do
+      flag=1
+      printf "%bTarget UAA :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
+      printf "%b1%b : cf\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b2%b : micro\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b3%b : master\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b4%b : ops\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b5%b : kubo\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b6%b : coab\n" "${GREEN}${BOLD}" "${STD}"
+      printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+      case "${choice}" in
+        1) getCredhub "SYSTEM_DOMAIN" "/secrets/cloudfoundry_system_domain"
+          UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; ADMIN_CLIENT="admin" ; ADMIN_CLIENT_SECRET="/bosh-master/cf/uaa_admin_client_secret" ;;
+        2) UAA_TARGET="https://192.168.10.10:8443" ; ADMIN_CLIENT="admin" ; ADMIN_CLIENT_SECRET="/secrets/bosh_admin_password" ;;
+        3) UAA_TARGET="https://192.168.116.158:8443" ; ADMIN_CLIENT="uaa_admin" ; ADMIN_CLIENT_SECRET="/micro-bosh/bosh-master/uaa_admin_client_secret" ;;
+        4) UAA_TARGET="https://192.168.99.152:8443" ; ADMIN_CLIENT="uaa_admin" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-ops/uaa_admin_client_secret" ;;
+        5) UAA_TARGET="https://192.168.99.154:8443" ; ADMIN_CLIENT="uaa_admin" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-kubo/uaa_admin_client_secret" ;;
+        6) UAA_TARGET="https://192.168.99.155:8443" ; ADMIN_CLIENT="uaa_admin" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-coab/uaa_admin_client_secret" ;;
+        *) flag=0 ; clear ;;
+      esac
+    done
+
     getCredhub "ADMIN_PASSWORD" "${ADMIN_CLIENT_SECRET}"
     if [ ${flagError} = 0 ] ; then
       uaa target ${UAA_TARGET}
       if [ $? = 0 ] ; then
-        uaa get-client-credentials-token admin -s ${ADMIN_PASSWORD}
+        uaa get-client-credentials-token ${ADMIN_CLIENT} -s ${ADMIN_PASSWORD}
       else
         printf "\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
       fi
