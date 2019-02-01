@@ -52,6 +52,7 @@ RUN echo "=====================================================" && \
     echo "=> Install Ruby tools" && \
     echo "=====================================================" && \
     curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
+    curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - && \
     curl -sSL https://get.rvm.io | bash -s stable && \
     /bin/bash -l -c "rvm requirements" && \
     /bin/bash -l -c "rvm install ${RUBY_VERSION}" && \

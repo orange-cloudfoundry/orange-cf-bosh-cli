@@ -41,17 +41,17 @@ The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker
 
 The container expose ssh port. Password or key (rsa only) authentication is supported.
 
-## How to get it or build it ?
+## How to get it or build it
 
-### How to get it ?
+### How to get it
 Pull the image from docker hub: <code>docker pull orangecloudfoundry/orange-cf-bosh-cli</code>
 
-### How to build it ?
+### How to build it
 First, clone this repository: <code>git clone https://github.com/orange-cloudfoundry/orange-cf-bosh-cli.git</code>
 
 Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
-## How to use it ?
+## How to use it
 
 ### How to use as standalone container (if you have a simple docker host)
 
