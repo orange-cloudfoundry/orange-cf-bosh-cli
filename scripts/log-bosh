@@ -26,8 +26,8 @@ else
     printf "%b1%b : micro\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b2%b : master\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b3%b : ops\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b4%b : kubo\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b5%b : coab\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b4%b : coab\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b5%b : kubo\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b6%b : ondemand\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b7%b : expe\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
@@ -35,8 +35,8 @@ else
       1) BOSH_TARGET="micro" ;;
       2) BOSH_TARGET="master" ;;
       3) BOSH_TARGET="ops" ;;
-      4) BOSH_TARGET="kubo" ;;
-      5) BOSH_TARGET="coab" ;;
+      4) BOSH_TARGET="coab" ;;
+      5) BOSH_TARGET="kubo" ;;
       6) BOSH_TARGET="ondemand" ;;
       7) BOSH_TARGET="expe" ;;
       *) flag=0 ; clear ;;
