@@ -6,7 +6,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV BUNDLER_VERSION="1.13.6" \
     RUBY_VERSION="2.3.3" \
     GOLANG_VERSION="1.10.1" \
-    SPRUCE_VERSION="1.18.2" \
+    SPRUCE_VERSION="1.20.0" \
     JQ_VERSION="1.6" \
     BOSH_GEN_VERSION="0.22.0" \
     BOSH_CLI_V2_VERSION="5.4.0" \
@@ -19,11 +19,11 @@ ENV BUNDLER_VERSION="1.13.6" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     SHIELD_VERSION="0.10.9" \
     UAA_CLI_GO_VERSION="0.0.1" \
-    BBR_VERSION="1.3.1" \
+    BBR_VERSION="1.5.0" \
     PERIPLI_VERSION="1.0.0" \
-    KUBECTL_VERSION="1.11.3" \
+    KUBECTL_VERSION="1.13.3" \
     HELM_VERSION="2.10.0" \
-    MYSQL_SHELL_VERSION="8.0.13-1"
+    MYSQL_SHELL_VERSION="8.0.16-1"
 
 ENV CONTAINER_LOGIN="bosh" CONTAINER_PASSWORD="welcome" \
     INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl apt-transport-https" \
