@@ -47,12 +47,12 @@ else
     while [ ${flag} = 0 ] ; do
       flag=1
       printf "%bTarget UAA :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-      printf "%b1%b : cf\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b2%b : micro\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b3%b : master\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b4%b : ops\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b5%b : kubo\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b6%b : coab\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b1%b : cf (master-depls/cf)\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b2%b : micro (micro-depls/credhub-ha)\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b3%b : master (micro-depls/bosh-master)\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b4%b : ops (master-depls/bosh-ops)\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b5%b : kubo (master-depls/bosh-kubo)\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b6%b : coab (master-depls/bosh-coab)\n" "${GREEN}${BOLD}" "${STD}"
       printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
       case "${choice}" in
         1) getCredhub "SYSTEM_DOMAIN" "/secrets/cloudfoundry_system_domain"
@@ -68,13 +68,14 @@ else
 
     getCredhub "ADMIN_PASSWORD" "${ADMIN_CLIENT_SECRET}"
     if [ ${flagError} = 0 ] ; then
+      uaac token delete --all
       uaac target ${UAA_TARGET} --ca-cert ${BOSH_CA_CERT} > /dev/null 2>&1
       if [ $? = 0 ] ; then
         uaac token client get admin -s ${ADMIN_PASSWORD}
       else
         printf "\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
       fi
-    fi
+    f
   fi
 fi
 printf "\n"

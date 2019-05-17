@@ -1,6 +1,6 @@
 #!/bin/bash
 #===========================================================================
-# Switch to Bosh deployment within bosh director
+# Switch to Bosh deployment within the same bosh director
 #===========================================================================
 
 #--- Colors and styles
@@ -11,8 +11,8 @@ export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
-result=$(bosh env | grep "not logged in" 2>&1)
-if [ "${result}" != "" ] ; then
+result=$(bosh env > /dev/null 2>&1)
+if [ ${result} != 0 ] ; then
   printf "\n\n%bERROR : You are not connected to bosh director.%b\n\n" "${RED}" "${STD}"
 else
   #--- Select specific deployment (BOSH_DEPLOYMENT variable)

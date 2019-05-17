@@ -4,12 +4,11 @@
 #===========================================================================
 
 #--- Check ssh security
-sudo /usr/local/bin/check_ssh_security "user_login"
+sudo /usr/local/bin/check_ssh_security.sh "user_login"
 
 #--- Modify home user (on shared disk)
 export MY_BOSH_USER=`hostname`
 export HOME=/data/shared/${MY_BOSH_USER}
-DATA_SHARED_TOOLS_DIR="/data/shared/tools"
 
 #--- Create user directory
 if [ ! -d ${HOME} ] ; then
@@ -24,9 +23,6 @@ export XDG_CONFIG_HOME=${HOME}
 
 #--- Redefine command history file path
 export HISTFILE=${HOME}/.bash_history
-
-#--- GO environment
-export GOPATH=${HOME}/go
 
 #--- CF cli environment
 export CF_COLOR=true
@@ -45,28 +41,31 @@ else
 fi
 if [ ! -L ${HOME}/.cf/plugins ] ; then
   rm -fr ${HOME}/.cf/plugins > /dev/null 2>&1
-  ln -s /home/<username>/.cf/plugins ${HOME}/.cf/plugins
+  ln -s /home/bosh/.cf/plugins ${HOME}/.cf/plugins
 fi
 
 #--- Redefine Path to binary
-export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${DATA_SHARED_TOOLS_DIR}:${PATH}:/usr/local/go/bin:${GOPATH}/bin
+export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${PATH}
 
 #--- Init ".bash_aliases"
 echo "#--- Aliases" > ${HOME}/.bash_aliases
 echo "alias f='function __f() { printf \"\n\";find . ! -regex \".*[/]\.git[/]?.*\" -type f -print0 | xargs -0 grep -I -i --color \"\$1\";unset -f __f;printf \"\n\"; }; __f'" >> ${HOME}/.bash_aliases
 echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
 echo "alias fly='fly -t concourse-micro'" >> ${HOME}/.bash_aliases
-echo "alias log-bosh='. log-bosh'" >> ${HOME}/.bash_aliases
-echo "alias log-credhub='. log-credhub'" >> ${HOME}/.bash_aliases
-echo "alias log-fly='. log-fly'" >> ${HOME}/.bash_aliases
-echo "alias log-mc='. log-mc'" >> ${HOME}/.bash_aliases
-echo "alias log-openstack='. log-openstack'" >> ${HOME}/.bash_aliases
-echo "alias log-uaa='. log-uaa'" >> ${HOME}/.bash_aliases
-echo "alias log-uaac='. log-uaac'" >> ${HOME}/.bash_aliases
-echo "alias switch='. switch'" >> ${HOME}/.bash_aliases
+echo "alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'" >> ${HOME}/.bash_aliases
+echo "alias log-bosh='. log-bosh.sh'" >> ${HOME}/.bash_aliases
+echo "alias log-cf='. log-cf.sh'" >> ${HOME}/.bash_aliases
+echo "alias log-credhub='. log-credhub.sh'" >> ${HOME}/.bash_aliases
+echo "alias log-fly='. log-fly.sh'" >> ${HOME}/.bash_aliases
+echo "alias log-mc='. log-mc.sh'" >> ${HOME}/.bash_aliases
+echo "alias log-openstack='. log-openstack.sh'" >> ${HOME}/.bash_aliases
+echo "alias log-uaac='. log-uaac.sh'" >> ${HOME}/.bash_aliases
+echo "alias switch='. switch.sh'" >> ${HOME}/.bash_aliases
+echo "alias tools='. tools.sh'" >> ${HOME}/.bash_aliases
 echo "alias os='openstack'" >> ${HOME}/.bash_aliases
 
 #--- Adapt user prompt and terminal name
+DATA_SHARED_TOOLS_DIR="/data/shared/tools"
 if [ -f ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env ] ; then
   export BOSH_CLI_ENV=`cat ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env`
 else
@@ -78,7 +77,7 @@ else
 fi
 
 echo ". ~/.bashrc" > ${HOME}/.bash_profile
-cp /home/<username>/.bashrc ${HOME}/.bashrc
+cp /home/bosh/.bashrc ${HOME}/.bashrc
 
 echo "#--- User prompt and terminal name" >> ${HOME}/.bashrc
 printf "export PS1='\${debian_chroot:+(\$debian_chroot)}\[\\\033[01;32m\]\h@${BOSH_CLI_ENV}\[\\\033[00m\]:\[\\\033[01;34m\]\w\[\\\033[00m\]$ '\n" >> ${HOME}/.bashrc

@@ -10,21 +10,19 @@ export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
 display() {
-  flag=$(which $1)
-  if [ "${flag}" != "" ] ; then
-    printf "%b%-15s%b: %s\n" "${GREEN}${BOLD}" "$1" "${STD}" "$2"
-  fi
+  printf "%b%-15s%b: %s\n" "${GREEN}${BOLD}" "$1" "${STD}" "$2"
 }
 
 clear
 printf "%bTOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
+display "f" "String search in the sub-trees"
+display "gitlog" "Display git commits in nice format"
 display "log-bosh" "Log with bosh CLI V2"
 display "log-cf" "Log with cf CLI"
 display "log-credhub" "Log with credhub CLI"
 display "log-fly" "Log with concourse CLI"
 display "log-mc" "Log with minio/OBOS S3 CLI"
 display "log-openstack" "Log with openstack CLI tools"
-display "log-uaa" "Log with uaa go CLI tools"
 display "log-uaac" "Log with uaac ruby CLI tools"
-display "switch" "Switch to bosh deployment"
+display "switch" "Switch to new bosh deployment in the same director"
 printf "\n"
