@@ -1,5 +1,5 @@
 # Cloud Foundry Docker Bosh Cli [![Docker Automated build](docker_automated.svg)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/)
-The `cf-bosh-cli` project helps you to deploy bosh cli with tools through docker image:
+The `cf-bosh-cli` project helps you to deploy several cli tools through docker image:
 
 ### Generic tools
 * `git` - Git client
@@ -40,7 +40,7 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 Pull the image from docker hub: <code>docker pull orangecloudfoundry/orange-cf-bosh-cli</code>
 
 ### How to build it
-First, clone this repository: <code>git clone https://github.com/orange-cloudfoundry/orange-cf-bosh-cli.git</code>
+Clone the repository: <code>git clone https://github.com/orange-cloudfoundry/orange-cf-bosh-cli.git</code>
 
 Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
@@ -48,23 +48,14 @@ Then, build the image: <code>docker build -t cf-bosh-cli .</code>
 
 ### How to use as standalone container (if you have a simple docker host)
 
-#### Without public ssh key provided to the container
-Launch the image. Don't miss to assign an host port to the container ssh port (22) :
-<code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data orangecloudfoundry/orange-cf-bosh-cli</code>
-
-Then, log into the container with ssh : <code>ssh -p 2222 bosh@localhost</code>
-
-The password at first logon is "welcome" (you have to change this password). When you are logged into the container, you must add your ssh public key into the file <code>~/.ssh/authorized_keys</code> (RSA format). This last step will make the container secure after each restart/update (password auth will be disabled).
-
 #### With public ssh key provided to the container
-It's also possible to add your public key to the container threw an environment variable.
 
 Launch the image. Don't miss to assign an host port to the container ssh port (22) :
-<code>docker run --name cf-bosh-cli -d -p 2222:22 -v /home/bosh -v /data -e "SSH_PUBLIC_KEY=<put here your ssh-rsa public key>" orangecloudfoundry/orange-cf-bosh-cli</code>
+<code>docker run --name bosh-cli -d -p 2222:22 -v /home/bosh -v /data -e "SSH_PUBLIC_KEY=<path to your public ssh-rsa key>" orangecloudfoundry/orange-cf-bosh-cli</code>
 
 Then, log into the container with ssh : <code>ssh -p 2222 -i <path to your rsa private key> bosh@localhost</code>
 
-The password in this case is completely disabled. By default, the file containing the public key <code>~/.ssh/authorized_keys</code> is overwrited after container restart or update.
+The password is completely disabled. By default, the file containing the public key <code>~/.ssh/authorized_keys</code> is overwrited after container restart or update.
 
 ### How to use it using "Docker Bosh Release"
 Another option is to deploy the container threw the "Docker Bosh Release" (https://github.com/cloudfoundry-community/docker-boshrelease).
@@ -163,7 +154,7 @@ properties:
     env_vars:
     - "SSH_PUBLIC_KEY=<put here your ssh-rsa public key>"
     bind_ports:
-    - "????:22"
+    - "2222:22"
     volumes:
     - /home/bosh
     depends_on:
@@ -177,7 +168,7 @@ properties:
     env_vars:
     - "SSH_PUBLIC_KEY=<put here your ssh-rsa public key>"
     bind_ports:
-    - "????:22"
+    - "2223:22"
     volumes:
     - /home/bosh
     depends_on:
@@ -186,4 +177,4 @@ properties:
     - data_container
 ```
 
-Then, log into the container you want with ssh : <code>ssh -i privateKey -p 2222 bosh@docker.bosh.release.deployment</code> to log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).
+Then, log into the container you want with ssh : <code>ssh -i <path to your rsa private key> -p 2222 bosh@docker.bosh.release.deployment</code> to log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).

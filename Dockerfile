@@ -57,10 +57,15 @@ RUN printf '\n=====================================================\n=> Install 
     /bin/bash -l -c "rvm cleanup all" && \
     printf '\n=====================================================\n=> Setup bosh account, ssh and supervisor\n=====================================================\n' && \
     echo "root:$(date +%s | sha256sum | base64 | head -c 32 ; echo)" | chpasswd && \
-    useradd -m -g users -G sudo,rvm -s /bin/bash bosh && echo "bosh:welcome" | chpasswd && chage -d 0 bosh && echo "bosh ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/bosh && \
+    useradd -m -g users -G sudo,rvm -s /bin/bash bosh && echo "bosh ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/bosh && \
+    echo "bosh:$(date +%s | sha256sum | base64 | head -c 32 ; echo)" | chpasswd && \
     mkdir -p /var/run/sshd /var/log/supervisor /data/shared && \
     sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd && \
     sed -i 's/^PermitRootLogin .*/PermitRootLogin no/g' /etc/ssh/sshd_config && \
+    sed -i 's/^.*ChallengeResponseAuthentication yes.*/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config && \
+    sed -i 's/^.*PasswordAuthentication yes.*/PasswordAuthentication no/g' /etc/ssh/sshd_config && \
+    sed -i 's/^.*UsePAM yes.*/UsePAM no/g' /etc/ssh/sshd_config && \
+    sed -i 's/^.*PubkeyAuthentication no.*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
     printf '\n=====================================================\n=> Install ops tools\n=====================================================\n' && \
     pip install --upgrade pip && \
