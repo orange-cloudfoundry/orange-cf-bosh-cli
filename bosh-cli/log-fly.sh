@@ -59,7 +59,7 @@ if [ ${flagError} = 0 ] ; then
     if [ "${FLY_PASSWORD}" = "" ] ; then
       flag=0
       while [ ${flag} = 0 ] ; do
-        printf "\n%bEnter concourse \"atc\" Password :%b " "${REVERSE}${YELLOW}" "${STD}" ; read -s FLY_PASSWORD
+        printf "\n%bEnter concourse \"atc\" password :%b " "${REVERSE}${YELLOW}" "${STD}" ; read -s FLY_PASSWORD
         if [ "${FLY_PASSWORD}" != "" ] ; then
           flag=1
         fi
@@ -68,7 +68,7 @@ if [ ${flagError} = 0 ] ; then
     fly login -c https://elpaaso-concourse-micro.${OPS_DOMAIN} -k -u atc -p ${FLY_PASSWORD} -n ${TEAM}
     if [ $? != 0 ] ; then
       FLY_PASSWORD=""
-      printf "\n\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
+      printf "\n\n%bERROR : Connexion failed. Bad \"atc\" password.%b\n\n" "${RED}" "${STD}"
     else
       fly builds
       printf "\n"

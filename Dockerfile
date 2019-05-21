@@ -7,8 +7,8 @@ ENV START_SCRIPT="/usr/local/bin/supervisord.sh" \
     INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl apt-transport-https" \
     TOOLS_PACKAGES="supervisor git-core s3cmd bash-completion vim less mlocate nano screen tmux byobu silversearcher-ag colordiff" \
     NET_PACKAGES="netbase net-tools iproute2 iputils-ping dnsutils ldap-utils netcat tcpdump mtr-tiny" \
-    DEV_PACKAGES="nodejs python-pip python-setuptools python-dev build-essential libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev libssl-dev zlib1g-dev libcurl4-openssl-dev" \
-    RUBY_PACKAGES="autoconf automake bison libffi-dev libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
+    DEV_PACKAGES="nodejs python-pip python-dev build-essential libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
+    RUBY_PACKAGES="autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
     BDD_PACKAGES="libprotobuf9v5 mongodb-clients" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
@@ -62,14 +62,13 @@ RUN printf '\n=====================================================\n=> Install 
     mkdir -p /var/run/sshd /var/log/supervisor /data/shared && \
     sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd && \
     sed -i 's/^PermitRootLogin .*/PermitRootLogin no/g' /etc/ssh/sshd_config && \
-    sed -i 's/^.*ChallengeResponseAuthentication yes.*/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config && \
+    sed -i 's/^ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config && \
+    sed -i 's/^PubkeyAuthentication .*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && \
     sed -i 's/^.*PasswordAuthentication yes.*/PasswordAuthentication no/g' /etc/ssh/sshd_config && \
-    sed -i 's/^.*UsePAM yes.*/UsePAM no/g' /etc/ssh/sshd_config && \
-    sed -i 's/^.*PubkeyAuthentication no.*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
     printf '\n=====================================================\n=> Install ops tools\n=====================================================\n' && \
-    pip install --upgrade pip && \
-    python -m pip install python-keystoneclient python-novaclient python-swiftclient python-neutronclient python-cinderclient python-glanceclient python-openstackclient && \
+    python -m pip install --upgrade pip && python -m pip install --upgrade setuptools && \
+    python -m pip install python-openstackclient python-keystoneclient python-novaclient python-neutronclient python-cinderclient python-glanceclient python-swiftclient && \
     wget "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" -nv -O /usr/local/bin/spruce && \
     wget "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -nv -O /usr/local/bin/jq && \
     wget "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_VERSION}-linux-amd64" -nv -O /usr/local/bin/bosh && \
@@ -81,7 +80,7 @@ RUN printf '\n=====================================================\n=> Install 
     wget "https://github.com/Peripli/service-manager-cli/releases/download/v${PERIPLI_VERSION}/smctl_linux_x86-64" -nv -O /usr/local/bin/smctl && \
     wget "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" -nv -O - | tar -x -C /tmp releases/bbr && mv /tmp/releases/bbr /usr/local/bin/bbr && \
     wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -nv -O /usr/local/bin/mc && \
-    wget "https://github.com/rlmcpherson/s3gof3r/releases/download/v${S3GOFR_VERSION}/gof3r_${S3GOFR_VERSION}_linux_amd64.tar.gz" -nv -O - | tar -xz -C /usr/local/bin && \
+    wget "https://github.com/rlmcpherson/s3gof3r/releases/download/v${S3GOFR_VERSION}/gof3r_${S3GOFR_VERSION}_linux_amd64.tar.gz" -nv -O - | tar -xz -C /tmp && mv /tmp/gof3r_${S3GOFR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
     wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && \
     wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp linux-amd64/helm && mv /tmp/linux-amd64/helm /usr/local/bin/helm && \
     wget "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" -nv -O /tmp/mysql-shell.deb && dpkg -i /tmp/mysql-shell.deb && \

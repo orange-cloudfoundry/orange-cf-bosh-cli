@@ -56,7 +56,7 @@ else
       printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
       case "${choice}" in
         1) getCredhub "SYSTEM_DOMAIN" "/secrets/cloudfoundry_system_domain"
-          UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; ADMIN_CLIENT_SECRET="/bosh-master/cf/uaa_admin_client_secret" ;;
+           UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; ADMIN_CLIENT_SECRET="/bosh-master/cf/uaa_admin_client_secret" ;;
         2) UAA_TARGET="https://192.168.10.10:8443" ; ADMIN_CLIENT_SECRET="/secrets/bosh_admin_password" ;;
         3) UAA_TARGET="https://192.168.116.158:8443" ; ADMIN_CLIENT_SECRET="/micro-bosh/bosh-master/admin_password" ;;
         4) UAA_TARGET="https://192.168.99.152:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-ops/admin_password" ;;
@@ -68,14 +68,14 @@ else
 
     getCredhub "ADMIN_PASSWORD" "${ADMIN_CLIENT_SECRET}"
     if [ ${flagError} = 0 ] ; then
-      uaac token delete --all
+      uaac token delete --all > /dev/null 2>&1
       uaac target ${UAA_TARGET} --ca-cert ${BOSH_CA_CERT} > /dev/null 2>&1
       if [ $? = 0 ] ; then
         uaac token client get admin -s ${ADMIN_PASSWORD}
       else
         printf "\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
       fi
-    f
+    fi
   fi
 fi
 printf "\n"
