@@ -11,8 +11,8 @@ export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
-result=$(bosh env > /dev/null 2>&1)
-if [ "${result}" != "0" ] ; then
+bosh env > /dev/null 2>&1
+if [ $? != 0 ] ; then
   printf "\n\n%bERROR : You are not connected to bosh director.%b\n\n" "${RED}" "${STD}"
 else
   #--- Select specific deployment (BOSH_DEPLOYMENT variable)
@@ -27,7 +27,7 @@ else
     fi
   else
     printf "\n%bSelect a specific deployment in the list:%b\n%s" "${REVERSE}${YELLOW}" "${STD}" "${deployments}"
-    printf "\n\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+    printf "\n\n%bYour choice (<Enter> to select none) :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     if [ "${choice}" = "" ] ; then
       unset BOSH_DEPLOYMENT
     else

@@ -46,12 +46,12 @@ else
   #--- Check if bosh dns exists
   export BOSH_ENVIRONMENT=$(host bosh-${BOSH_TARGET}.internal.paas | awk '{print $4}')
   if [ "${BOSH_ENVIRONMENT}" = "found:" ] ; then
-    printf "\n\n%bERROR : Bosh director \"${BOSH_TARGET}\" unknown.%b\n\n" "${RED}" "${STD}"
+    printf "\n\n%bERROR : Bosh director \"${BOSH_TARGET}\" unknown (no dns record).%b\n\n" "${RED}" "${STD}"
   else
     #--- Check if bosh director vm is available
     nc -vz -w 1 ${BOSH_ENVIRONMENT} 25250 > /dev/null 2>&1
     if [ $? != 0 ] ; then
-      printf "\n\n%bERROR : Bosh director \"${BOSH_TARGET}\" unknown.%b\n\n" "${RED}" "${STD}"
+      printf "\n\n%bERROR : Bosh director \"${BOSH_TARGET}\" unreachable.%b\n\n" "${RED}" "${STD}"
     else
       status=1
       testToken=$(bosh env > /dev/null 2>&1)
@@ -79,7 +79,7 @@ fi
 if [ ${status} = 1 ] ; then
   deployments=$(bosh deployments --column=Name | grep -vE "^Name$|^Succeeded$|^[0-9]* deployments$")
   printf "\n%bSelect a specific deployment in the list, or suffix your bosh commands with -d <deployment_name>:%b\n%s" "${REVERSE}${YELLOW}" "${STD}" "${deployments}"
-  printf "\n\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+  printf "\n\n%bYour choice (<Enter> to select none) :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
   if [ "${choice}" = "" ] ; then
     unset BOSH_DEPLOYMENT
   else
