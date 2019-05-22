@@ -16,7 +16,7 @@ display() {
 clear
 printf "%bTOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
 display "bbr" "Bosh backup and restore cli"
-display "f" "String search in sub-trees"
+display "f" "Search for a string in sub-trees"
 display "gitlog" "Display git commits in nice format"
 display "go3fr" "S3 cli"
 display "helm" "Kubernetes package manager cli"

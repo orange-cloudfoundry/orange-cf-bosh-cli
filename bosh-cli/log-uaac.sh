@@ -11,16 +11,13 @@ export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
-getCredhub() {
-  #--- Test if parameter exist with non empty value, else get it from credhub
-  if [ "${!1}" = "" ] ; then
-    credhubGet=$(credhub g -n $2 -j | jq .value -r)
-    if [ $? = 0 ] ; then
-      eval $1=$(echo "${credhubGet}")
-    else
-      printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
-      flagError=1
-    fi
+#--- Get a parameter value in credhub
+getCredhubValue() {
+  value=$(credhub g -n $1 | grep 'value:' | awk '{print $2}')
+  if [ "${value}" = "" ] ; then
+    printf "\n\n%bERROR : Propertie \"$1\" unknown in \"credhub\".%b\n\n" "${RED}" "${STD}"
+  else
+    echo "${value}"
   fi
 }
 
@@ -51,27 +48,26 @@ else
       printf "%b2%b : micro (micro-depls/credhub-ha)\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b3%b : master (micro-depls/bosh-master)\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b4%b : ops (master-depls/bosh-ops)\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b5%b : kubo (master-depls/bosh-kubo)\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b6%b : coab (master-depls/bosh-coab)\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b5%b : coab (master-depls/bosh-coab)\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b6%b : kubo (master-depls/bosh-kubo)\n" "${GREEN}${BOLD}" "${STD}"
       printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
       case "${choice}" in
-        1) getCredhub "SYSTEM_DOMAIN" "/secrets/cloudfoundry_system_domain"
-           UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; ADMIN_CLIENT_SECRET="/bosh-master/cf/uaa_admin_client_secret" ;;
-        2) UAA_TARGET="https://192.168.10.10:8443" ; ADMIN_CLIENT_SECRET="/secrets/bosh_admin_password" ;;
-        3) UAA_TARGET="https://192.168.116.158:8443" ; ADMIN_CLIENT_SECRET="/micro-bosh/bosh-master/admin_password" ;;
-        4) UAA_TARGET="https://192.168.99.152:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-ops/admin_password" ;;
-        5) UAA_TARGET="https://192.168.99.154:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-kubo/admin_password" ;;
-        6) UAA_TARGET="https://192.168.99.155:8443" ; ADMIN_CLIENT_SECRET="/bosh-master/bosh-coab/admin_password" ;;
+        1) SYSTEM_DOMAIN=$(getCredhubValue "/secrets/cloudfoundry_system_domain")
+           UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; UAA_USER="admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/bosh-master/cf/uaa_admin_client_secret") ;;
+        2) UAA_TARGET="https://192.168.10.10:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/micro-bosh/uaa_admin_client_secret") ;;
+        3) UAA_TARGET="https://192.168.116.158:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/micro-bosh/bosh-master/uaa_admin_client_secret") ;;
+        4) UAA_TARGET="https://192.168.99.152:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/bosh-master/bosh-ops/uaa_admin_client_secret") ;;
+        5) UAA_TARGET="https://192.168.99.155:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/bosh-master/bosh-coab/uaa_admin_client_secret") ;;
+        6) UAA_TARGET="https://192.168.99.154:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/bosh-master/bosh-kubo/uaa_admin_client_secret") ;;
         *) flag=0 ; clear ;;
       esac
     done
 
-    getCredhub "ADMIN_PASSWORD" "${ADMIN_CLIENT_SECRET}"
     if [ ${flagError} = 0 ] ; then
       uaac token delete --all > /dev/null 2>&1
       uaac target ${UAA_TARGET} --ca-cert ${BOSH_CA_CERT} > /dev/null 2>&1
       if [ $? = 0 ] ; then
-        uaac token client get admin -s ${ADMIN_PASSWORD}
+        uaac token client get ${UAA_USER} -s ${ADMIN_CLIENT_SECRET}
       else
         printf "\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
       fi
