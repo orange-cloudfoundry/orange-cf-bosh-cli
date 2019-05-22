@@ -50,9 +50,7 @@ export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${PATH}
 #--- Init ".bash_aliases"
 echo "#--- Aliases" > ${HOME}/.bash_aliases
 echo "alias f='function __f() { printf \"\n\";find . ! -regex \".*[/]\.git[/]?.*\" -type f -print0 | xargs -0 grep -I -i --color \"\$1\";unset -f __f;printf \"\n\"; }; __f'" >> ${HOME}/.bash_aliases
-echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases" >> ${HOME}/.bash_aliases
-echo "alias dps='docker ps -a'" >> ${HOME}/.bash_aliases
-echo "alias drm='docker rm \$(docker ps -qa --filter \"status=exited\") > /dev/null 2>&1'" >> ${HOME}/.bash_aliases
+echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
 echo "alias fly='fly -t concourse-micro'" >> ${HOME}/.bash_aliases
 echo "alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'" >> ${HOME}/.bash_aliases
 echo "alias log-bosh='. log-bosh.sh'" >> ${HOME}/.bash_aliases
@@ -65,11 +63,8 @@ echo "alias log-uaac='. log-uaac.sh'" >> ${HOME}/.bash_aliases
 echo "alias show-cert='function __scrt() { openssl x509 -noout -in \$1 -subject -issuer -dates; }; __scrt'" >> ${HOME}/.bash_aliases
 echo "alias show-csr='function __scsr() { openssl req -noout -text -in \$1; }; __scsr'" >> ${HOME}/.bash_aliases
 echo "alias switch='. switch.sh'" >> ${HOME}/.bash_aliases
-echo "alias tcp-port-status=\"netstat -nat | awk '{if (NR!=1 && NR!=2) {print \\\$6\\\" \\\"\\\$5}}' | sort | uniq -c | sort +1 -2 +0nr -1\"" >> ${HOME}/.bash_aliases
-echo "alias tcp-status=\"netstat -nat | awk '{if (NR!=1 && NR!=2) {print \\\$6\\\" \\\"\\\$5}}' | sed -e \\\"s+:.*+ +\\\" | sort | uniq -c | sort +1 -2 +0nr -1\"" >> ${HOME}/.bash_aliases
 echo "alias tools='. tools.sh'" >> ${HOME}/.bash_aliases
 echo "alias os='openstack'" >> ${HOME}/.bash_aliases
-
 
 #--- Adapt user prompt and terminal name
 DATA_SHARED_TOOLS_DIR="/data/shared/tools"

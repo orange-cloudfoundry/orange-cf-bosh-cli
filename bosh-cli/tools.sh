@@ -10,14 +10,12 @@ export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
 display() {
-  printf "%b%-15s%b: %s\n" "${GREEN}${BOLD}" "$1" "${STD}" "$2"
+  printf "%b%-18s%b: %s\n" "${GREEN}${BOLD}" "$1" "${STD}" "$2"
 }
 
 clear
 printf "%bTOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
 display "bbr" "Bosh backup and restore cli"
-display "dps" "Show docker containers status"
-display "drm" "Delete docker containers with exited status"
 display "f" "Search for a string in sub-trees"
 display "gitlog" "Display git commits in nice format"
 display "go3fr" "S3 cli"
@@ -37,7 +35,5 @@ display "show-csr" "Show certificate signing request"
 display "smctl" "Service Manager instance cli"
 display "spruce" "Commandline yaml processor"
 display "switch" "Switch to new bosh deployment in the same director"
-display "tcp-port-status" "Tcp connexion status by port and state"
-display "tcp-status" "Tcp connexion status by state"
 display "terraform" "Terraform cli"
 printf "\n"
