@@ -60,9 +60,14 @@ echo "alias log-fly='. log-fly.sh'" >> ${HOME}/.bash_aliases
 echo "alias log-mc='. log-mc.sh'" >> ${HOME}/.bash_aliases
 echo "alias log-openstack='. log-openstack.sh'" >> ${HOME}/.bash_aliases
 echo "alias log-uaac='. log-uaac.sh'" >> ${HOME}/.bash_aliases
+echo "alias show-cert='function __scrt() { openssl x509 -noout -in \$1 -subject -issuer -dates; }; __scrt'" >> ${HOME}/.bash_aliases
+echo "alias show-csr='function __scsr() { openssl req -noout -text -in \$1; }; __scsr'" >> ${HOME}/.bash_aliases
 echo "alias switch='. switch.sh'" >> ${HOME}/.bash_aliases
+echo "alias tcp-port-status=\"netstat -nat | awk '{if (NR!=1 && NR!=2) {print \\\$6\\\" \\\"\\\$5}}' | sort | uniq -c | sort +1 -2 +0nr -1\"" >> ${HOME}/.bash_aliases
+echo "alias tcp-status=\"netstat -nat | awk '{if (NR!=1 && NR!=2) {print \\\$6\\\" \\\"\\\$5}}' | sed -e \\\"s+:.*+ +\\\" | sort | uniq -c | sort +1 -2 +0nr -1\"" >> ${HOME}/.bash_aliases
 echo "alias tools='. tools.sh'" >> ${HOME}/.bash_aliases
 echo "alias os='openstack'" >> ${HOME}/.bash_aliases
+
 
 #--- Adapt user prompt and terminal name
 DATA_SHARED_TOOLS_DIR="/data/shared/tools"
