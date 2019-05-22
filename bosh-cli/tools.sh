@@ -16,6 +16,8 @@ display() {
 clear
 printf "%bTOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
 display "bbr" "Bosh backup and restore cli"
+display "dps" "Show docker containers status"
+display "drm" "Delete docker containers with exited status"
 display "f" "Search for a string in sub-trees"
 display "gitlog" "Display git commits in nice format"
 display "go3fr" "S3 cli"
