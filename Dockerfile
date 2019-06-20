@@ -80,9 +80,12 @@ RUN printf '\n=====================================================\n=> Install 
     wget "https://github.com/Peripli/service-manager-cli/releases/download/v${PERIPLI_VERSION}/smctl_linux_x86-64" -nv -O /usr/local/bin/smctl && \
     wget "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" -nv -O - | tar -x -C /tmp releases/bbr && mv /tmp/releases/bbr /usr/local/bin/bbr && \
     wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -nv -O /usr/local/bin/mc && \
+    wget "https://raw.githubusercontent.com/minio/mc/master/autocomplete/bash_complete" -nv -O /etc/bash_completion.d/mc && \
     wget "https://github.com/rlmcpherson/s3gof3r/releases/download/v${S3GOFR_VERSION}/gof3r_${S3GOFR_VERSION}_linux_amd64.tar.gz" -nv -O - | tar -xz -C /tmp && mv /tmp/gof3r_${S3GOFR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
     wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && \
+    /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
     wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp linux-amd64/helm && mv /tmp/linux-amd64/helm /usr/local/bin/helm && \
+    /usr/local/bin/helm completion bash > /etc/bash_completion.d/kubectl && \
     wget "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" -nv -O /tmp/mysql-shell.deb && dpkg -i /tmp/mysql-shell.deb && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && printf '\n# Maintain a jump-list of in use directories\nif [ -f /usr/local/bin/z.sh ] ; then\n  source /usr/local/bin/z.sh\nfi\n' >> /home/bosh/.bashrc && \
     wget "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" -nv -O /tmp/db-dumper-plugin && chmod 755 /tmp/db-dumper-plugin && \

@@ -50,6 +50,7 @@ export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${PATH}
 #--- Init ".bash_aliases"
 echo "#--- Aliases" > ${HOME}/.bash_aliases
 echo "alias f='function __f() { printf \"\n\";find . ! -regex \".*[/]\.git[/]?.*\" -type f -print0 | xargs -0 grep -I -i --color \"\$1\";unset -f __f;printf \"\n\"; }; __f'" >> ${HOME}/.bash_aliases
+echo "alias credhub-get='function __cg() { log-credhub ; credhub get -n \$1 -j | jq .value -r; }; __cg'" >> ${HOME}/.bash_aliases
 echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
 echo "alias fly='fly -t concourse-micro'" >> ${HOME}/.bash_aliases
 echo "alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'" >> ${HOME}/.bash_aliases
@@ -60,6 +61,8 @@ echo "alias log-fly='. log-fly.sh'" >> ${HOME}/.bash_aliases
 echo "alias log-mc='. log-mc.sh'" >> ${HOME}/.bash_aliases
 echo "alias log-openstack='. log-openstack.sh'" >> ${HOME}/.bash_aliases
 echo "alias log-uaac='. log-uaac.sh'" >> ${HOME}/.bash_aliases
+echo "alias mc-config='. mc-config.sh'" >> ${HOME}/.bash_aliases
+echo "alias prune-workers='for W in $(fly workers | grep "stalled" | awk '{print $1}') ; do fly prune-worker -w $W ; done'" >> ${HOME}/.bash_aliases
 echo "alias show-cert='function __scrt() { openssl x509 -noout -in \$1 -subject -issuer -dates; }; __scrt'" >> ${HOME}/.bash_aliases
 echo "alias show-csr='function __scsr() { openssl req -noout -text -in \$1; }; __scsr'" >> ${HOME}/.bash_aliases
 echo "alias switch='. switch.sh'" >> ${HOME}/.bash_aliases
@@ -87,6 +90,19 @@ printf "echo -en \"\\\033]0;\${MY_BOSH_USER}@${BOSH_CLI_ENV}:\${PWD}\\\007\"\n\n
 
 echo "#--- Grep colorization" >> ${HOME}/.bashrc
 echo "export GREP_COLOR='1;30;103'" >> ${HOME}/.bashrc
+
+#--- Fly cli auto-completion
+_fly_compl() {
+  #--- All arguments except the first one
+  args=("${COMP_WORDS[@]:1:$COMP_CWORD}")
+  #--- Only split on newlines
+  local IFS=$'\n'
+  #--- Call completion (note that the first element of COMP_WORDS is the executable itself)
+  COMPREPLY=($(GO_FLAGS_COMPLETION=1 ${COMP_WORDS[0]} "${args[@]}"))
+  return 0
+}
+
+complete -F _fly_compl fly
 
 #--- Load user configuration
 if [ -f ${HOME}/.bashrc ] ; then
