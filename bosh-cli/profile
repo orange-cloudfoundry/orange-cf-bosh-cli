@@ -1,6 +1,6 @@
 #===========================================================================
 # ~/.profile: Executed by the command interpreter for login shells
-# This file is not read by bash, if ~/.bash_profile or ~/.bash_login exists
+# This file is not read by bash, if ~/.bash_profile or ~/.bash_login exist
 #===========================================================================
 
 #--- Check ssh security
@@ -15,7 +15,10 @@ if [ ! -d ${HOME} ] ; then
   mkdir -p ${HOME}
 fi
 
-#--- Bosh CA cert
+#--- Copy bash user configuration
+cp /home/bosh/.bashrc ${HOME}/.bashrc
+
+#--- CA certs
 export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
 
 #--- Redefine GIT config file path
@@ -26,10 +29,6 @@ export HISTFILE=${HOME}/.bash_history
 
 #--- CF cli environment
 export CF_COLOR=true
-#export CF_STAGING_TIMEOUT=15            #--- Time wait for buildpack loading (in minutes)
-#export CF_STARTUP_TIMEOUT=5             #--- Time wait for instance starting (in minutes)
-#export CF_TRACE=true                    #--- API for diagnostic print on stdout
-#export CF_TRACE=${HOME}/.cf/trace.log   #--- Add API requests diagnostic in logs file
 
 #--- Link to Cloud Foundry plugins repository
 if [ -L ${HOME}/.cf ] ; then
@@ -47,28 +46,6 @@ fi
 #--- Redefine Path to binary
 export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${PATH}
 
-#--- Init ".bash_aliases"
-echo "#--- Aliases" > ${HOME}/.bash_aliases
-echo "alias f='function __f() { printf \"\n\";find . ! -regex \".*[/]\.git[/]?.*\" -type f -print0 | xargs -0 grep -I -i --color \"\$1\";unset -f __f;printf \"\n\"; }; __f'" >> ${HOME}/.bash_aliases
-echo "alias credhub-get='function __cg() { log-credhub ; credhub get -n \$1 -j | jq .value -r; }; __cg'" >> ${HOME}/.bash_aliases
-echo "alias diff='colordiff'" >> ${HOME}/.bash_aliases
-echo "alias fly='fly -t concourse-micro'" >> ${HOME}/.bash_aliases
-echo "alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'" >> ${HOME}/.bash_aliases
-echo "alias log-bosh='. log-bosh.sh'" >> ${HOME}/.bash_aliases
-echo "alias log-cf='. log-cf.sh'" >> ${HOME}/.bash_aliases
-echo "alias log-credhub='. log-credhub.sh'" >> ${HOME}/.bash_aliases
-echo "alias log-fly='. log-fly.sh'" >> ${HOME}/.bash_aliases
-echo "alias log-mc='. log-mc.sh'" >> ${HOME}/.bash_aliases
-echo "alias log-openstack='. log-openstack.sh'" >> ${HOME}/.bash_aliases
-echo "alias log-uaac='. log-uaac.sh'" >> ${HOME}/.bash_aliases
-echo "alias mc-config='. mc-config.sh'" >> ${HOME}/.bash_aliases
-echo "alias prune-workers='for W in $(fly workers | grep "stalled" | awk '{print $1}') ; do fly prune-worker -w $W ; done'" >> ${HOME}/.bash_aliases
-echo "alias show-cert='function __scrt() { openssl x509 -noout -in \$1 -subject -issuer -dates; }; __scrt'" >> ${HOME}/.bash_aliases
-echo "alias show-csr='function __scsr() { openssl req -noout -text -in \$1; }; __scsr'" >> ${HOME}/.bash_aliases
-echo "alias switch='. switch.sh'" >> ${HOME}/.bash_aliases
-echo "alias tools='. tools.sh'" >> ${HOME}/.bash_aliases
-echo "alias os='openstack'" >> ${HOME}/.bash_aliases
-
 #--- Adapt user prompt and terminal name
 DATA_SHARED_TOOLS_DIR="/data/shared/tools"
 if [ -f ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env ] ; then
@@ -81,18 +58,64 @@ else
   echo "${BOSH_CLI_ENV}" > ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env
 fi
 
-echo ". ~/.bashrc" > ${HOME}/.bash_profile
-cp /home/bosh/.bashrc ${HOME}/.bashrc
+#--- Init user aliases
+cat > ${HOME}/.bash_aliases <<'EOF'
+#--- Aliases
+alias f='function __f() { printf "\n";find . ! -regex ".*[/]\.git[/]?.*" -type f -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "\n"; }; __f'
+alias config-mc='. config-mc.sh'
+alias credhub-get='function __cg() { log-credhub ; credhub get -n $1 -j | jq .value -r; }; __cg'
+alias diff='colordiff'
+alias fly='fly -t concourse-micro'
+alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'
+alias log-bosh='. log-bosh.sh'
+alias log-cf='. log-cf.sh'
+alias log-credhub='. log-credhub.sh'
+alias log-fly='. log-fly.sh'
+alias log-k8s='. log-k8s.sh'
+alias log-mc='. log-mc.sh'
+alias log-openstack='. log-openstack.sh'
+alias log-uaac='. log-uaac.sh'
+alias prune-workers='for W in $(fly workers | grep "stalled" | awk "{print \$1}") ; do fly prune-worker -w $W ; done ; fly workers'
+alias show-cert='function __scrt() { openssl x509 -noout -in $1 -subject -issuer -dates; }; __scrt'
+alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
+alias switch='. switch.sh'
+alias tools='. tools.sh'
+alias os='openstack'
+EOF
 
-echo "#--- User prompt and terminal name" >> ${HOME}/.bashrc
-printf "export PS1='\${debian_chroot:+(\$debian_chroot)}\[\\\033[01;32m\]\h@${BOSH_CLI_ENV}\[\\\033[00m\]:\[\\\033[01;34m\]\w\[\\\033[00m\]$ '\n" >> ${HOME}/.bashrc
-printf "echo -en \"\\\033]0;\${MY_BOSH_USER}@${BOSH_CLI_ENV}:\${PWD}\\\007\"\n\n" >> ${HOME}/.bashrc
+#--- Init bash profile
+cat > ${HOME}/.bash_profile <<'EOF'
+#--- Load user configuration
+. ~/.bashrc
 
-echo "#--- Grep colorization" >> ${HOME}/.bashrc
-echo "export GREP_COLOR='1;30;103'" >> ${HOME}/.bashrc
+#--- Colors and styles
+export GREEN='\033[1;32m'
+export BLUE='\033[1;34m'
+export CYAN='\033[1;36m'
+export STD='\033[0m'
+
+#--- User prompt and terminal name
+parse_git_branch()
+{
+  local BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
+  if [ ! -z "${BRANCH}" ] ; then
+    echo "(${BRANCH})"
+  else
+    echo ""
+  fi
+}
+
+export PS1="${GREEN}\h@${BOSH_CLI_ENV}${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
+echo -en "\033]0;${MY_BOSH_USER}@${BOSH_CLI_ENV}\007"
+
+#--- Grep colorization
+export GREP_COLOR='1;30;103'
+
+#--- Bosh dynamic completion
+eval "$(/home/bosh/bosh-complete-linux bash-source)"
 
 #--- Fly cli auto-completion
-_fly_compl() {
+_fly_bash_autocomplete() {
   #--- All arguments except the first one
   args=("${COMP_WORDS[@]:1:$COMP_CWORD}")
   #--- Only split on newlines
@@ -102,11 +125,33 @@ _fly_compl() {
   return 0
 }
 
-complete -F _fly_compl fly
+complete -F _fly_bash_autocomplete fly
 
-#--- Load user configuration
-if [ -f ${HOME}/.bashrc ] ; then
-  . ${HOME}/.bashrc
+#--- Minio cli auto-completion
+_mc_bash_autocomplete() {
+  local cur opts base
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} --compgen )
+  COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+  return 0
+}
+
+complete -F _mc_bash_autocomplete mc -q
+
+#--- Maintain a jump-list of in use directories
+if [ -f /usr/local/bin/z.sh ] ; then
+  source /usr/local/bin/z.sh
 fi
+
+#--- Interactive filter for command-line
+if [ -f /home/bosh/.fzf.bash ] ; then
+  source /home/bosh/.fzf.bash
+fi
+
+EOF
+
+#--- Load user bash profile
+. ${HOME}/.bash_profile
 
 cd ${HOME}

@@ -26,13 +26,14 @@ getValue() {
     echo "${value}"
   fi
 }
+
 #--- Get a parameter in credhub
 getCredhubValue() {
   value=$(credhub g -n $1 | grep 'value:' | awk '{print $2}')
-  if [ $? != 0 ] ; then
-    display "ERROR" "Propertie \"$1\" unknown in \"credhub\""
-  else
+  if [ $? = 0 ] ; then
     echo "${value}"
+  else
+    display "ERROR" "Propertie \"$1\" unknown in \"credhub\""
   fi
 }
 

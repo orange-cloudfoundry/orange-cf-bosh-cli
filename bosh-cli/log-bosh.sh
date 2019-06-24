@@ -13,7 +13,6 @@ export REVERSE='\033[7m'
 
 unset BOSH_CLIENT
 unset BOSH_CLIENT_SECRET
-status=0
 
 if [ ! -s "${BOSH_CA_CERT}" ] ; then
   printf "\n%bERROR : CA cert file \"${BOSH_CA_CERT}\" unknown.%b\n\n" "${RED}" "${STD}"
@@ -53,7 +52,6 @@ else
     if [ $? != 0 ] ; then
       printf "\n\n%bERROR : Bosh director \"${BOSH_TARGET}\" unreachable.%b\n\n" "${RED}" "${STD}"
     else
-      status=1
       testToken=$(bosh env > /dev/null 2>&1)
       if [ $? != 0 ] ; then
         #--- Token expired, log out
@@ -64,32 +62,29 @@ else
       if [ "${userConnected}" != "" ] ; then
         #--- Log into the director and list active deployments
         bosh alias-env ${BOSH_TARGET} > /dev/null 2>&1
-        printf "\n%bCF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+        printf "\n%bLDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
         bosh log-in
         if [ $? != 0 ] ; then
           printf "\n\n%bERROR : Log to bosh director \"${BOSH_TARGET}\" failed.%b\n\n" "${RED}" "${STD}"
-          status=0
+        else
+          deployments=$(bosh deployments --column=Name | grep -vE "^Name$|^Succeeded$|^[0-9]* deployments$")
+          printf "\n%bSelect a specific deployment in the list, or suffix your bosh commands with -d <deployment_name>:%b\n%s" "${REVERSE}${YELLOW}" "${STD}" "${deployments}"
+          printf "\n\n%bYour choice (<Enter> to select none) :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+          if [ "${choice}" = "" ] ; then
+            unset BOSH_DEPLOYMENT
+          else
+            flag=$(echo "${deployments}" | grep "${choice}")
+            if [ "${flag}" = "" ] ; then
+              unset BOSH_DEPLOYMENT
+            else
+              export BOSH_DEPLOYMENT="${choice}"
+              bosh instances
+            fi
+          fi
         fi
       fi
     fi
   fi
 fi
 
-#--- Select specific deployment
-if [ ${status} = 1 ] ; then
-  deployments=$(bosh deployments --column=Name | grep -vE "^Name$|^Succeeded$|^[0-9]* deployments$")
-  printf "\n%bSelect a specific deployment in the list, or suffix your bosh commands with -d <deployment_name>:%b\n%s" "${REVERSE}${YELLOW}" "${STD}" "${deployments}"
-  printf "\n\n%bYour choice (<Enter> to select none) :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
-  if [ "${choice}" = "" ] ; then
-    unset BOSH_DEPLOYMENT
-  else
-    flag=$(echo "${deployments}" | grep "${choice}")
-    if [ "${flag}" = "" ] ; then
-      unset BOSH_DEPLOYMENT
-    else
-      export BOSH_DEPLOYMENT="${choice}"
-      bosh instances
-    fi
-  fi
-fi
 printf "\n"

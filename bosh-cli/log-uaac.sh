@@ -11,13 +11,14 @@ export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
-#--- Get a parameter value in credhub
+#--- Get a propertie value in credhub
 getCredhubValue() {
-  value=$(credhub g -n $1 | grep 'value:' | awk '{print $2}')
-  if [ "${value}" = "" ] ; then
-    printf "\n\n%bERROR : Propertie \"$1\" unknown in \"credhub\".%b\n\n" "${RED}" "${STD}"
-  else
+  value=$(credhub g -n $1 | grep 'value: ' | awk '{print $2}')
+  if [ $? = 0 ] ; then
     echo "${value}"
+  else
+    printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
+    flagError=1
   fi
 }
 
@@ -28,7 +29,7 @@ else
   flagError=0
   flag=$(credhub f > /dev/null 2>&1)
   if [ $? != 0 ] ; then
-    printf "\n%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+    printf "\n%bEnter LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
     credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
     credhub login
     if [ $? != 0 ] ; then

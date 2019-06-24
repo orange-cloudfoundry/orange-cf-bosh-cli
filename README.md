@@ -1,7 +1,10 @@
 # Cloud Foundry Docker Bosh Cli [![Docker Automated build](docker_automated.svg)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/)
 The `cf-bosh-cli` project helps you to deploy several cli tools through docker image:
 
+## Installed tools
+
 ### Generic tools
+* `apg` - Automated Password Generator
 * `git` - Git client
 * `jq` - JSON processing tool (https://stedolan.github.io/jq/)
 * `spruce` - YAML templating tool, for BOSH deployment manifests generation (https://github.com/geofffranks/spruce)

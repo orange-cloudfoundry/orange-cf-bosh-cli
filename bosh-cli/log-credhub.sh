@@ -14,7 +14,7 @@ export REVERSE='\033[7m'
 #--- Log to credhub
 flag=$(credhub f > /dev/null 2>&1)
 if [ $? != 0 ] ; then
-  printf "%bEnter CF LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  printf "%bEnter LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
   credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
   credhub login
   if [ $? != 0 ] ; then
