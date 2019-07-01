@@ -150,6 +150,7 @@ properties:
     - "/data"
     volumes:
     - "/etc/ssl/certs:/etc/ssl/certs:ro"
+    - "/var/vcap/data/tmp/bosh-cli:/var/tmp/bosh-cli:ro"
 
   - name: user1_bosh_cli
     image: <%= docker_image %>:<%= docker_tag %>
