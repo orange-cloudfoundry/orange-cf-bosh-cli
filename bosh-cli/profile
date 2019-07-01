@@ -6,6 +6,15 @@
 #--- Check ssh security
 sudo /usr/local/bin/check_ssh_security.sh "user_login"
 
+#--- Load docker injected variables
+. /var/tmp/bosh-cli/bosh-cli.env
+
+#--- CA certs
+export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
+
+#--- CF cli environment
+export CF_COLOR=true
+
 #--- Modify home user (on shared disk)
 export MY_BOSH_USER=`hostname`
 export HOME=/data/shared/${MY_BOSH_USER}
@@ -18,17 +27,11 @@ fi
 #--- Copy bash user configuration
 cp /home/bosh/.bashrc ${HOME}/.bashrc
 
-#--- CA certs
-export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
-
 #--- Redefine GIT config file path
 export XDG_CONFIG_HOME=${HOME}
 
 #--- Redefine command history file path
 export HISTFILE=${HOME}/.bash_history
-
-#--- CF cli environment
-export CF_COLOR=true
 
 #--- Link to Cloud Foundry plugins repository
 if [ -L ${HOME}/.cf ] ; then
@@ -46,41 +49,40 @@ fi
 #--- Redefine Path to binary
 export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${PATH}
 
-#--- Adapt user prompt and terminal name
-DATA_SHARED_TOOLS_DIR="/data/shared/tools"
-if [ -f ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env ] ; then
-  export BOSH_CLI_ENV=`cat ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env`
-else
-  if [ ! -d ${DATA_SHARED_TOOLS_DIR} ] ; then
-    mkdir -p ${DATA_SHARED_TOOLS_DIR}
-  fi
-  export BOSH_CLI_ENV="bosh-cli"
-  echo "${BOSH_CLI_ENV}" > ${DATA_SHARED_TOOLS_DIR}/bosh_cli_env
-fi
-
 #--- Init user aliases
 cat > ${HOME}/.bash_aliases <<'EOF'
-#--- Aliases
-alias f='function __f() { printf "\n";find . ! -regex ".*[/]\.git[/]?.*" -type f -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "\n"; }; __f'
-alias config-mc='. config-mc.sh'
-alias credhub-get='function __cg() { log-credhub ; credhub get -n $1 -j | jq .value -r; }; __cg'
-alias diff='colordiff'
-alias fly='fly -t concourse-micro'
+#--- Git aliases
+alias co='function __gco() { git checkout $1 ; git pull --rebase; }; __gco'
+alias commit='function __gcm() { git add . ; git commit -m "$1" ; unset -f __gcm; }; __gcm'
 alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'
+alias init-git='. init-git.sh'
+alias prune='git fetch --prune'
+alias pull='git pull --rebase'
+alias push='git pull --rebase ; git push'
+
+#--- Cli log aliases
 alias log-bosh='. log-bosh.sh'
 alias log-cf='. log-cf.sh'
 alias log-credhub='. log-credhub.sh'
 alias log-fly='. log-fly.sh'
 alias log-k8s='. log-k8s.sh'
-alias log-mc='. log-mc.sh'
 alias log-openstack='. log-openstack.sh'
 alias log-uaac='. log-uaac.sh'
+
+#--- Tools aliases
+alias credhub-get='function __cg() { log-credhub ; credhub get -n $1 -j | jq .value -r; }; __cg'
+alias diff='colordiff'
+alias f='function __f() { printf "\n";find . ! -regex ".*[/]\.git[/]?.*" -type f -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "\n"; }; __f'
+alias fly='fly -t concourse-micro'
+alias init-mc='. init-mc.sh'
+alias os='openstack'
+alias proxy='. proxy.sh'
 alias prune-workers='for W in $(fly workers | grep "stalled" | awk "{print \$1}") ; do fly prune-worker -w $W ; done ; fly workers'
 alias show-cert='function __scrt() { openssl x509 -noout -in $1 -subject -issuer -dates; }; __scrt'
 alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
 alias switch='. switch.sh'
+alias tn='function __tn() { echo -ne "\033]0;$@\007";unset -f __t;printf "\n"; }; __tn'
 alias tools='. tools.sh'
-alias os='openstack'
 EOF
 
 #--- Init bash profile
@@ -94,7 +96,7 @@ export BLUE='\033[1;34m'
 export CYAN='\033[1;36m'
 export STD='\033[0m'
 
-#--- User prompt and terminal name
+#--- Set user prompt
 parse_git_branch()
 {
   local BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
@@ -105,8 +107,10 @@ parse_git_branch()
   fi
 }
 
-export PS1="${GREEN}\h@${BOSH_CLI_ENV}${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
-echo -en "\033]0;${MY_BOSH_USER}@${BOSH_CLI_ENV}\007"
+export PS1="${GREEN}\h@${SITE_NAME}${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
+
+#--- Set terminal name (can change with "t" alias)
+echo -en "\033]0;${MY_BOSH_USER}@${SITE_NAME}\007"
 
 #--- Grep colorization
 export GREP_COLOR='1;30;103'

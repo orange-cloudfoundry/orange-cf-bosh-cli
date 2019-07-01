@@ -3,8 +3,7 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Packages list
-ENV START_SCRIPT="/usr/local/bin/supervisord.sh" \
-    INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl apt-transport-https" \
+ENV INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl apt-transport-https" \
     TOOLS_PACKAGES="supervisor git-core s3cmd bash-completion apg vim less mlocate nano screen tmux byobu silversearcher-ag colordiff" \
     NET_PACKAGES="netbase net-tools iproute2 iputils-ping dnsutils ldap-utils netcat tcpdump mtr-tiny" \
     DEV_PACKAGES="nodejs python-pip python-dev build-essential libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \

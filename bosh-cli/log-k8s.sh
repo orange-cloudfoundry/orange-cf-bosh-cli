@@ -17,8 +17,7 @@ getCredhubValue() {
   if [ $? = 0 ] ; then
     echo "${value}"
   else
-    printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}"
-    flagError=1
+    printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}" ; flagError=1
   fi
 }
 
@@ -28,10 +27,10 @@ flag=$(credhub f > /dev/null 2>&1)
 if [ $? != 0 ] ; then
   printf "\n%bEnter LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
   credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
-  credhub login
+  printf "username: " ; read LDAP_USER
+  credhub login -u ${LDAP_USER}
   if [ $? != 0 ] ; then
-    printf "\n%bERROR : Bad LDAP authentication.%b\n\n" "${RED}" "${STD}"
-    flagError=1
+    printf "\n%bERROR : Bad LDAP authentication with \"${LDAP_USER}\" account.%b\n\n" "${RED}" "${STD}" ; flagError=1
   fi
 fi
 

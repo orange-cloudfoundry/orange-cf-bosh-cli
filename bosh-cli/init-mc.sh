@@ -93,7 +93,7 @@ mc config host rm s3
 s3_endpoint="http://private-s3.internal.paas:9000"
 s3_access_key="private-s3"
 s3_secret_key="$(getCredhubValue "/micro-bosh/minio-private-s3/s3_secretkey")"
-configureHost "minio-s3" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}"
+configureHost "minio" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}"
 
 #--- Add host config for minio-prometheus
 s3_endpoint="http://$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_endpoint)"

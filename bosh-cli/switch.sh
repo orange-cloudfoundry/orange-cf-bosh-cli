@@ -1,6 +1,6 @@
 #!/bin/bash
 #===========================================================================
-# Switch to Bosh deployment within the same bosh director
+# Switch to bosh deployment within the same bosh director
 #===========================================================================
 
 #--- Colors and styles
