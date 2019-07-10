@@ -29,11 +29,11 @@ getValue() {
 
 #--- Get a parameter in credhub
 getCredhubValue() {
-  value=$(credhub g -n $1 | grep 'value:' | awk '{print $2}')
-  if [ $? = 0 ] ; then
-    echo "${value}"
+  value=$(credhub g -n $2 | grep 'value:' | awk '{print $2}')
+  if [ "${value}" = "" ] ; then
+    printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}" ; flagError=1
   else
-    display "ERROR" "Propertie \"$1\" unknown in \"credhub\""
+    eval "$1=${value}"
   fi
 }
 
@@ -57,7 +57,6 @@ configureHost() {
     display "ERROR"  "Secret key \"${secretKey}\" unknown"
   fi
 
-echo "$#"
   if [[ $# = 5 ]] ; then
     options="--api S3v2"
   else
@@ -92,7 +91,7 @@ mc config host rm s3
 #--- Add host config for minio-S3
 s3_endpoint="http://private-s3.internal.paas:9000"
 s3_access_key="private-s3"
-s3_secret_key="$(getCredhubValue "/micro-bosh/minio-private-s3/s3_secretkey")"
+getCredhubValue "s3_secret_key" "/micro-bosh/minio-private-s3/s3_secretkey"
 configureHost "minio" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}"
 
 #--- Add host config for minio-prometheus
@@ -102,18 +101,18 @@ s3_secret_key="$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_secre
 configureHost "minio-prometheus" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}"
 
 #--- Add host config for minio-shield (only vsphere)
-iaas_type="$(getCredhubValue "/secrets/iaas_type")"
+getCredhubValue "iaas_type" "/secrets/iaas_type"
 if [ "${iaas_type}" = "vsphere" ] ; then
   s3_endpoint="http://storage.orange.com"
   s3_access_key="private-s3"
-  s3_secret_key="$(getCredhubValue "/secrets/shield_s3_secret_access_key")"
+  getCredhubValue "s3_secret_key" "/secrets/shield_s3_secret_access_key"
   configureHost "minio-shield" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}"
 fi
 
 #--- Add host config for obos
 s3_endpoint="https://storage.orange.com"
-s3_access_key="$(getCredhubValue "/secrets/shield_obos_access_key_id")"
-s3_secret_key="$(getCredhubValue "/secrets/shield_obos_secret_access_key")"
+getCredhubValue "s3_access_key" "/secrets/shield_obos_access_key_id"
+getCredhubValue "s3_secret_key" "/secrets/shield_obos_secret_access_key"
 configureHost "obos" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v2"
 
 #--- Display configurations

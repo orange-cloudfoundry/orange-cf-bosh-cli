@@ -12,22 +12,20 @@ export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
 #--- Log to CF
-if [ ${flagError} = 0 ] ; then
-  flag=0
-  while [ ${flag} = 0 ] ; do
-    printf "\n%bEnter CF User :%b " "${REVERSE}${YELLOW}" "${STD}" ; read CF_USER
-    if [ "${CF_USER}" = "" ] ; then
-      clear
-    else
-      flag=1
-    fi
-  done
-
-  #--- Log to cf
-  cf login -a https://api.${SYSTEM_DOMAIN} -u ${CF_USER}
-  if [ $? = 0 ] ; then
-    printf "\n\n"
+flag=0
+while [ ${flag} = 0 ] ; do
+  printf "\n%bEnter CF User :%b " "${REVERSE}${YELLOW}" "${STD}" ; read CF_USER
+  if [ "${CF_USER}" = "" ] ; then
+    clear
   else
-    printf "\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
+    flag=1
   fi
+done
+
+#--- Log to cf
+cf login -a https://api.${SYSTEM_DOMAIN} -u ${CF_USER}
+if [ $? = 0 ] ; then
+  printf "\n\n"
+else
+  printf "\n%bERROR : Connexion failed.%b\n\n" "${RED}" "${STD}"
 fi

@@ -11,13 +11,13 @@ export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
-#--- Get a propertie value in credhub
+#--- Get a parameter in credhub
 getCredhubValue() {
-  value=$(credhub g -n $1 | grep 'value: ' | awk '{print $2}')
-  if [ $? = 0 ] ; then
-    echo "${value}"
-  else
+  value=$(credhub g -n $2 | grep 'value:' | awk '{print $2}')
+  if [ "${value}" = "" ] ; then
     printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}" ; flagError=1
+  else
+    eval "$1=${value}"
   fi
 }
 
@@ -27,16 +27,15 @@ if [ ! -s "${BOSH_CA_CERT}" ] ; then
   printf "\n%bERROR : CA cert file \"${BOSH_CA_CERT}\" unknown.%b\n\n" "${RED}" "${STD}" ; flagError=1
 fi
 
-#--- Log to credhub and get properties
+#--- Log to credhub
 if [ ${flagError} = 0 ] ; then
   flag=$(credhub f > /dev/null 2>&1)
   if [ $? != 0 ] ; then
     printf "\n%bEnter LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
-    credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
     printf "username: " ; read LDAP_USER
-    credhub login -u ${LDAP_USER}
+    credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
     if [ $? != 0 ] ; then
-      printf "\n%bERROR : Bad LDAP authentication with \"${LDAP_USER}\" account.%b\n\n" "${RED}" "${STD}" ; flagError=1
+      printf "\n%bERROR : LDAP authentication failed with \"${LDAP_USER}\" account.%b\n\n" "${RED}" "${STD}" ; flagError=1
     fi
   fi
 fi
@@ -56,12 +55,12 @@ if [ ${flagError} = 0 ] ; then
     printf "%b6%b : kubo (master-depls/bosh-kubo)\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
-      1) UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; UAA_USER="admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/bosh-master/cf/uaa_admin_client_secret") ;;
-      2) UAA_TARGET="https://192.168.10.10:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/micro-bosh/uaa_admin_client_secret") ;;
-      3) UAA_TARGET="https://192.168.116.158:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/micro-bosh/bosh-master/uaa_admin_client_secret") ;;
-      4) UAA_TARGET="https://192.168.99.152:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/bosh-master/bosh-ops/uaa_admin_client_secret") ;;
-      5) UAA_TARGET="https://192.168.99.155:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/bosh-master/bosh-coab/uaa_admin_client_secret") ;;
-      6) UAA_TARGET="https://192.168.99.154:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET=$(getCredhubValue "/bosh-master/bosh-kubo/uaa_admin_client_secret") ;;
+      1) UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; UAA_USER="admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/cf/uaa_admin_client_secret" ;;
+      2) UAA_TARGET="https://192.168.10.10:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/micro-bosh/uaa_admin_client_secret" ;;
+      3) UAA_TARGET="https://192.168.116.158:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/micro-bosh/bosh-master/uaa_admin_client_secret" ;;
+      4) UAA_TARGET="https://192.168.99.152:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-ops/uaa_admin_client_secret" ;;
+      5) UAA_TARGET="https://192.168.99.155:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-coab/uaa_admin_client_secret" ;;
+      6) UAA_TARGET="https://192.168.99.154:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-kubo/uaa_admin_client_secret" ;;
       *) flag=0 ; clear ;;
     esac
   done

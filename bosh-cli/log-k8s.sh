@@ -11,13 +11,13 @@ export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
-#--- Get a propertie value in credhub
+#--- Get a parameter in credhub
 getCredhubValue() {
-  value=$(credhub g -n $1 | grep 'value: ' | awk '{print $2}')
-  if [ $? = 0 ] ; then
-    echo "${value}"
-  else
+  value=$(credhub g -n $2 | grep 'value:' | awk '{print $2}')
+  if [ "${value}" = "" ] ; then
     printf "\n\n%bERROR : \"$2\" credhub value unknown.%b\n\n" "${RED}" "${STD}" ; flagError=1
+  else
+    eval "$1=${value}"
   fi
 }
 
@@ -26,11 +26,10 @@ flagError=0
 flag=$(credhub f > /dev/null 2>&1)
 if [ $? != 0 ] ; then
   printf "\n%bEnter LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
-  credhub api --server=https://credhub.internal.paas:8844 > /dev/null 2>&1
   printf "username: " ; read LDAP_USER
-  credhub login -u ${LDAP_USER}
+  credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
   if [ $? != 0 ] ; then
-    printf "\n%bERROR : Bad LDAP authentication with \"${LDAP_USER}\" account.%b\n\n" "${RED}" "${STD}" ; flagError=1
+    printf "\n%bERROR : LDAP authentication failed with \"${LDAP_USER}\" account.%b\n\n" "${RED}" "${STD}" ; flagError=1
   fi
 fi
 
@@ -71,7 +70,7 @@ if [ ${flagError} = 0 ] ; then
     if [ $? != 0 ] ; then
       printf "\n\n%bERROR : Config cluster failed.%b\n\n" "${RED}" "${STD}"
     else
-      CFCR_PASSWORD="$(getCredhubValue "/${CFCR_DEPLOYMENT}/cfcr/kubo-admin-password")"
+      getCredhubValue "CFCR_PASSWORD" "/${CFCR_DEPLOYMENT}/cfcr/kubo-admin-password"
       if [ ${flagError} = 0 ] ; then
         kubectl config set-credentials ${CFCR_ALIAS}-admin --token=${CFCR_PASSWORD}
         if [ $? != 0 ] ; then

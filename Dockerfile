@@ -13,15 +13,15 @@ ENV INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server
 
 #--- Packages versions
 ENV BBR_VERSION="1.5.0" \
-    BOSH_CLI_VERSION="5.4.0" \
+    BOSH_CLI_VERSION="5.5.1" \
     BOSH_CLI_COMPLETION_VERSION="1.1.0" \
     BOSH_GEN_VERSION="0.101.1" \
     BUNDLER_VERSION="1.17.3" \
-    CF_CLI_VERSION="6.44.1" \
+    CF_CLI_VERSION="6.45.0" \
     CF_UAAC_VERSION="4.1.0" \
     CREDHUB_VERSION="2.2.1" \
     DB_DUMPER_VERSION="1.4.2" \
-    FLY_VERSION="3.14.1" \
+    FLY_VERSION="5.3.0" \
     HELM_VERSION="2.14.0" \
     JQ_VERSION="1.6" \
     KUBECTL_VERSION="1.14.1" \
@@ -68,13 +68,14 @@ RUN printf '\n=====================================================\n=> Install 
     printf '\n=====================================================\n=> Install ops tools\n=====================================================\n' && \
     python -m pip install --upgrade pip && python -m pip install --upgrade setuptools && \
     python -m pip install python-openstackclient python-keystoneclient python-novaclient python-neutronclient python-cinderclient python-glanceclient python-swiftclient && \
+    python -m pip install pynsxv && \
     wget "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" -nv -O /usr/local/bin/spruce && \
     wget "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -nv -O /usr/local/bin/jq && \
     wget "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_VERSION}-linux-amd64" -nv -O /usr/local/bin/bosh && \
     wget "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_CLI_COMPLETION_VERSION}/bosh-complete-linux" -nv -O /home/bosh/bosh-complete-linux && chmod 755 /home/bosh/bosh-complete-linux && \
     wget "https://cli.run.pivotal.io/stable?release=debian64&version=${CF_CLI_VERSION}&source=github-rel" -nv -O /tmp/cf.deb && dpkg -i /tmp/cf.deb && \
     wget "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" -nv -O - | tar -xz -C /usr/local/bin && \
-    wget "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly_linux_amd64" -nv -O /usr/local/bin/fly && \
+    wget "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" -nv -O - | tar -xz -C /usr/local/bin && \
     wget "https://github.com/starkandwayne/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" -nv -O /usr/local/bin/shield && \
     wget "https://github.com/Peripli/service-manager-cli/releases/download/v${PERIPLI_VERSION}/smctl_linux_x86-64" -nv -O /usr/local/bin/smctl && \
     wget "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" -nv -O - | tar -x -C /tmp releases/bbr && mv /tmp/releases/bbr /usr/local/bin/bbr && \
