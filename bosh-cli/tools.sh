@@ -30,6 +30,7 @@ display "log-k8s" "Log with kubernetes cli (kubectl, helm)"
 display "log-openstack" "Log with openstack cli"
 display "log-uaac" "Log with uaac cli"
 display "prune-workers" "Prune concourse stalled workers (used with log-fly)"
+display "pynsxv" "nsx-v cli"
 display "shield" "Shield cli"
 display "terraform" "Terraform cli"
 

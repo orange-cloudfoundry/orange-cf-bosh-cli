@@ -5,6 +5,7 @@
 
 #--- Colors and styles
 export RED='\033[1;31m'
+export YELLOW='\033[1;33m'
 export GREEN='\033[1;32m'
 export STD='\033[0m'
 export BOLD='\033[1m'
@@ -46,7 +47,8 @@ if [ ${flagError} = 0 ] ; then
     printf "%b5%b : ops-depls\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b6%b : coab-depls\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b7%b : kubo-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b8%b : utils\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b8%b : cloudflare-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b9%b : utils\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
       1) TEAM="main" ;;
@@ -56,7 +58,8 @@ if [ ${flagError} = 0 ] ; then
       5) TEAM="ops-depls" ;;
       6) TEAM="coab-depls" ;;
       7) TEAM="kubo-depls" ;;
-      8) TEAM="utils" ;;
+      8) TEAM="cloudflare-depls" ;;
+      9) TEAM="utils" ;;
       *) flag=0 ; clear ;;
     esac
   done
