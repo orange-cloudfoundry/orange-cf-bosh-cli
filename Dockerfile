@@ -84,7 +84,7 @@ RUN printf '\n=====================================================\n=> Install 
     wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && chmod 775 /usr/local/bin/kubectl && \
     /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
     wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp linux-amd64/helm && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 775 /usr/local/bin/helm && \
-    /usr/local/bin/helm completion bash > /etc/bash_completion.d/kubectl && \
+    /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
     wget "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" -nv -O /tmp/mysql-shell.deb && dpkg -i /tmp/mysql-shell.deb && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && \
     wget "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" -nv -O /tmp/db-dumper-plugin && chmod 755 /tmp/db-dumper-plugin && \
