@@ -32,7 +32,7 @@ ENV BBR_VERSION="1.5.0" \
     SPRUCE_VERSION="1.20.0" \
     S3GOFR_VERSION="0.5.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
-    TERRAFORM_VERSION="0.11.7"
+    TERRAFORM_VERSION="0.11.14"
 
 ADD bosh-cli/*.sh /usr/local/bin/
 ADD bosh-cli/profile /tmp/profile
