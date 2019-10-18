@@ -25,8 +25,12 @@ parse_git_branch()
 proxyStatus=`env | grep -i "http_proxy"`
 if [ "${proxyStatus}" = "" ] ; then
   printf "%bActivate \"internet-proxy\"%b\n" "${YELLOW}${BOLD}" "${STD}"
-  export http_proxy=http://system-internet-http-proxy.internal.paas:3128
+  export http_proxy="http://system-internet-http-proxy.internal.paas:3128"
+  export no_proxy="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,.intraorange,.ftgroup,.francetelecom.fr"
   export https_proxy=${http_proxy}
+  export HTTP_PROXY=${http_proxy}
+  export HTTPS_PROXY=${http_proxy}
+  export NO_PROXY=${no_proxy}
   export PS1="${GREEN}\h@${SITE_NAME}${YELLOW}[proxy]${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
 else
   printf "%bDeactivate \"internet-proxy\"%b\n" "${YELLOW}${BOLD}" "${STD}"

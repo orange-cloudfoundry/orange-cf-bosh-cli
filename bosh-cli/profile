@@ -78,6 +78,7 @@ alias init-mc='. init-mc.sh'
 alias init-pynsxv='. init-pynsxv.sh'
 alias os='openstack'
 alias proxy='. proxy.sh'
+alias toggle-proxy='. proxy.sh'
 alias prune-workers='fly prune-worker -a'
 alias pynsxv='pynsxv -i $HOME/.nsx.ini'
 alias show-cert='function __scrt() { openssl x509 -noout -in $1 -subject -issuer -dates; }; __scrt'
@@ -93,10 +94,10 @@ cat > ${HOME}/.bash_profile <<'EOF'
 . ~/.bashrc
 
 #--- Colors and styles
-export GREEN='\033[1;32m'
-export BLUE='\033[1;34m'
-export CYAN='\033[1;36m'
-export STD='\033[0m'
+export GREEN='\[\033[1;32m\]'
+export BLUE='\[\033[1;34m\]'
+export CYAN='\[\033[1;36m\]'
+export STD='\[\033[0m\]'
 
 #--- Set user prompt
 parse_git_branch()

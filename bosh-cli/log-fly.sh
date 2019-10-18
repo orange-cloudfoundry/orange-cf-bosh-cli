@@ -67,7 +67,7 @@ if [ ${flagError} = 0 ] ; then
   #--- Log to concourse and display builds
   fly -t concourse login -c https://elpaaso-concourse.${OPS_DOMAIN} -u ${FLY_USER} -p ${FLY_PASSWORD} -n ${TEAM}
   if [ $? = 0 ] ; then
-    fly -t concourse builds
+    fly -t concourse workers
     printf "\n"
   else
     printf "\n\n%bERROR : Fly login failed.%b\n\n" "${RED}" "${STD}"

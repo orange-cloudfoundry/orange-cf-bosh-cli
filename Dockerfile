@@ -12,27 +12,27 @@ ENV INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
 #--- Packages versions
-ENV BBR_VERSION="1.5.0" \
-    BOSH_CLI_VERSION="5.5.1" \
-    BOSH_CLI_COMPLETION_VERSION="1.1.0" \
+ENV BBR_VERSION="1.5.2" \
+    BOSH_CLI_VERSION="6.0.0" \
+    BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
     BUNDLER_VERSION="1.17.3" \
-    CF_CLI_VERSION="6.45.0" \
-    CF_UAAC_VERSION="4.1.0" \
-    CREDHUB_VERSION="2.5.2" \
+    CF_CLI_VERSION="6.46.1" \
+    CF_UAAC_VERSION="4.2.0" \
+    CREDHUB_VERSION="2.5.3" \
     DB_DUMPER_VERSION="1.4.2" \
     FLY_VERSION="5.3.0" \
     HELM_VERSION="2.14.0" \
     JQ_VERSION="1.6" \
-    KUBECTL_VERSION="1.14.1" \
+    KUBECTL_VERSION="1.15.4" \
     MYSQL_SHELL_VERSION="8.0.16-1" \
     PERIPLI_VERSION="1.0.0" \
     RUBY_VERSION="2.5.1" \
-    SHIELD_VERSION="0.10.9" \
-    SPRUCE_VERSION="1.20.0" \
+    SHIELD_VERSION="8.5.0" \
+    SPRUCE_VERSION="1.22.0" \
     S3GOFR_VERSION="0.5.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
-    TERRAFORM_VERSION="0.11.7"
+    TERRAFORM_VERSION="0.11.14"
 
 ADD bosh-cli/*.sh /usr/local/bin/
 ADD bosh-cli/profile /tmp/profile
@@ -76,7 +76,7 @@ RUN printf '\n=====================================================\n=> Install 
     wget "https://cli.run.pivotal.io/stable?release=debian64&version=${CF_CLI_VERSION}&source=github-rel" -nv -O /tmp/cf.deb && dpkg -i /tmp/cf.deb && \
     wget "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" -nv -O - | tar -xz -C /usr/local/bin && \
     wget "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" -nv -O - | tar -xz -C /usr/local/bin && \
-    wget "https://github.com/starkandwayne/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" -nv -O /usr/local/bin/shield && \
+    wget "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" -nv -O /usr/local/bin/shield && \
     wget "https://github.com/Peripli/service-manager-cli/releases/download/v${PERIPLI_VERSION}/smctl_linux_x86-64" -nv -O /usr/local/bin/smctl && \
     wget "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" -nv -O - | tar -x -C /tmp releases/bbr && mv /tmp/releases/bbr /usr/local/bin/bbr && \
     wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -nv -O /usr/local/bin/mc && \
@@ -84,7 +84,7 @@ RUN printf '\n=====================================================\n=> Install 
     wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && chmod 775 /usr/local/bin/kubectl && \
     /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
     wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp linux-amd64/helm && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 775 /usr/local/bin/helm && \
-    /usr/local/bin/helm completion bash > /etc/bash_completion.d/kubectl && \
+    /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
     wget "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" -nv -O /tmp/mysql-shell.deb && dpkg -i /tmp/mysql-shell.deb && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && \
     wget "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" -nv -O /tmp/db-dumper-plugin && chmod 755 /tmp/db-dumper-plugin && \

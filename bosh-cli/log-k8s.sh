@@ -42,18 +42,18 @@ if [ ${flagError} = 0 ] ; then
     printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
     printf "%b1%b : micro\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b2%b : master\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : ops\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b : services\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
       1) CFCR_DEPLOYMENT="micro-bosh" ; CFCR_CLUSTER="micro" ;;
       2) CFCR_DEPLOYMENT="bosh-master" ; CFCR_CLUSTER="master" ;;
-      3) CFCR_DEPLOYMENT="bosh-kubo" ; CFCR_CLUSTER="ops" ;;
+      3) CFCR_DEPLOYMENT="bosh-kubo" ; CFCR_CLUSTER="serv" ;;
       *) flag=0 ; clear ;;
     esac
   done
 
   #--- Check if bosh dns exists
-  CFCR_HOST="cfcr-api-${CFCR_CLUSTER}.internal.paas"
+  CFCR_HOST="cfcr-api-k8s-${CFCR_CLUSTER}.internal.paas"
   CFCR_ALIAS="cfcr-${CFCR_CLUSTER}"
   flag_host="$(host ${CFCR_HOST} | awk '{print $4}')"
   if [ "${flag_host}" = "found:" ] ; then
