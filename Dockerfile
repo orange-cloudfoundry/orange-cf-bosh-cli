@@ -4,10 +4,10 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Packages list
 ENV INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl apt-transport-https" \
-    TOOLS_PACKAGES="supervisor git-core s3cmd bash-completion apg vim less mlocate nano screen tmux byobu silversearcher-ag colordiff" \
+    TOOLS_PACKAGES="supervisor git-core bash-completion apg whois vim less mlocate nano screen s3cmd tmux byobu silversearcher-ag colordiff" \
     NET_PACKAGES="netbase net-tools iproute2 iputils-ping dnsutils ldap-utils netcat tcpdump mtr-tiny" \
     DEV_PACKAGES="nodejs python-pip python-dev build-essential libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
-    RUBY_PACKAGES="autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
+    RUBY_PACKAGES="ruby autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
     BDD_PACKAGES="libprotobuf9v5 mongodb-clients" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
