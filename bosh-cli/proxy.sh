@@ -34,7 +34,7 @@ if [ "${proxyStatus}" = "" ] ; then
   export PS1="${GREEN}\h@${SITE_NAME}${YELLOW}[proxy]${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
 else
   printf "%bDeactivate \"internet-proxy\"%b\n" "${YELLOW}${BOLD}" "${STD}"
-  unset http_proxy
-  unset https_proxy
+  unset http_proxy https_proxy no_proxy
+  unset HTTP_PROXY HTTPS_PROXY NO_PROXY
   export PS1="${GREEN}\h@${SITE_NAME}${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
 fi
