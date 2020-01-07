@@ -67,19 +67,22 @@ alias log-credhub='. log-credhub.sh'
 alias log-fly='. log-fly.sh'
 alias log-k8s='. log-k8s.sh'
 alias log-openstack='. log-openstack.sh'
+alias log-shield='. log-shield.sh'
 alias log-uaac='. log-uaac.sh'
 
 #--- Tools aliases
-alias credhub-get='function __cg() { log-credhub ; credhub get -n $1 -j | jq .value -r; }; __cg'
+alias bt='function __bt() { bosh task $1 --debug | grep -vE "BEGIN|SELECT|UPDATE|COMMIT|Renewing lock"; }; __bt'
+alias cg='function __cg() { log-credhub ; credhub get -n $1 -j | jq .value -r; }; __cg'
 alias diff='colordiff'
 alias f='function __f() { printf "\n";find . ! -regex ".*[/]\.git[/]?.*" -type f -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "\n"; }; __f'
+alias gp='apg -MCLN -n 1 -m 30'
 alias fly='fly -t concourse'
 alias init-mc='. init-mc.sh'
 alias init-pynsxv='. init-pynsxv.sh'
 alias os='openstack'
 alias proxy='. proxy.sh'
 alias toggle-proxy='. proxy.sh'
-alias prune-workers='fly prune-worker -a'
+alias pw='fly prune-worker -a'
 alias pynsxv='pynsxv -i $HOME/.nsx.ini'
 alias show-cert='function __scrt() { openssl x509 -noout -in $1 -subject -issuer -dates; }; __scrt'
 alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
@@ -111,6 +114,10 @@ parse_git_branch()
 }
 
 export PS1="${GREEN}\h@${SITE_NAME}${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
+
+#--- Set locales
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US
 
 #--- Set terminal name (can change with "t" alias)
 echo -en "\033]0;${MY_BOSH_USER}@${SITE_NAME}\007"
@@ -146,7 +153,7 @@ _mc_bash_autocomplete() {
 
 complete -F _mc_bash_autocomplete mc -q
 
-#--- Maintain a jump-list of in use directories
+#--- Jump-list of in use directories
 if [ -f /usr/local/bin/z.sh ] ; then
   source /usr/local/bin/z.sh
 fi

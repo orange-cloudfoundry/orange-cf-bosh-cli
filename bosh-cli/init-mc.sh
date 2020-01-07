@@ -9,19 +9,11 @@ export YELLOW='\033[1;33m'
 export STD='\033[0m'
 export REVERSE='\033[7m'
 
-#--- Display information
-display() {
-  case "$1" in
-    "INFO")  printf "\n%b%s...%b\n" "${REVERSE}${YELLOW}" "$2" "${STD}" ;;
-    "ERROR") printf "\n%bERROR: %s.%b\n\n" "${REVERSE}${RED}" "$2" "${STD}" ; exit 1 ;;
-  esac
-}
-
 #--- Get a parameter in specified yaml file
 getValue() {
   value=$(bosh int $1 --path $2)
   if [ $? != 0 ] ; then
-    display "ERROR" "Propertie \"$2\" unknown in \"$1\""
+    printf "\n\n%bERROR : Propertie \"$2\" unknown in \"$1\".%b\n\n" "${RED}" "${STD}" ; flagError=1
   else
     echo "${value}"
   fi
@@ -39,91 +31,68 @@ getCredhubValue() {
 
 #--- Configure host in minio cli
 configureHost() {
-  alias="$1"
-  endpoint="$2"
-  accessKey="$3"
-  secretKey="$4"
+  if [ ${flagError} = 0 ] ; then
+    alias="$1"
+    endpoint="$2"
+    accessKey="$3"
+    secretKey="$4"
+    api="-api S3$5"
 
-  if [ "${alias}" = "" ] ; then
-    display "ERROR"  "Alias \"${alias}\" unknown"
-  fi
-  if [ "${endpoint}" = "" ] ; then
-    display "ERROR"  "Endpoint \"${endpoint}\" unknown"
-  fi
-  if [ "${accessKey}" = "" ] ; then
-    display "ERROR"  "Acces key \"${accessKey}\" unknown"
-  fi
-  if [ "${secretKey}" = "" ] ; then
-    display "ERROR"  "Secret key \"${secretKey}\" unknown"
-  fi
-
-  if [[ $# = 5 ]] ; then
-    options="--api S3v2"
-  else
-    options="--api S3v4"
-  fi
-
-  #--- Configure mc host
-  display "INFO"  "Add \"${alias}\" configuration..."
-  mc config host rm ${alias}
-  echo "mc config host add ${alias} ${endpoint} ${accessKey} ${secretKey} ${options}"
-  mc config host add ${alias} ${endpoint} ${accessKey} ${secretKey} ${options}
-  if [ $? != 0 ] ; then
-    display "ERROR"  "\"${alias}\" minio config failed"
+    #--- Configure mc host
+    printf "\n%bAdd \"${alias}\" configuration...%b\n" "${REVERSE}${YELLOW}" "${STD}"
+    mc config host rm ${alias}
+    echo "mc config host add ${alias} ${endpoint} ${accessKey} ${secretKey} ${api}"
+    mc config host add ${alias} ${endpoint} ${accessKey} ${secretKey} ${api}
+    if [ $? != 0 ] ; then
+      printf "\n\n%bERROR : \"${alias}\" config failed.%b\n\n" "${RED}" "${STD}"
+    fi
   fi
 }
 
 #--- Check prerequisistes
-SHARED_SECRETS=~/bosh/secrets/shared/secrets.yml
-if [ ! -s ${SHARED_SECRETS} ] ; then
-  display "ERROR" "File \"${SHARED_SECRETS}\" unavailable"
-fi
-
+flagError=0
 PROMETHEUS_CREDENTIAL_FILE=~/bosh/secrets/master-depls/prometheus/secrets/secrets.yml
 if [ ! -s ${PROMETHEUS_CREDENTIAL_FILE} ] ; then
-  display "ERROR" "File \"${PROMETHEUS_CREDENTIAL_FILE}\" unavailable"
+  printf "\n\n%bERROR : File \"${PROMETHEUS_CREDENTIAL_FILE}\" unavailable.%b\n\n" "${RED}" "${STD}" ; flagError=1
 fi
 
-#--- Log to credhub
-log-credhub.sh
+if [ ${flagError} = 0 ] ; then
+  #--- Log to credhub
+  log-credhub.sh
 
-#--- Delete unused mc aliases
-display "INFO"  "Remove unused aliases..."
-mc config host rm gcs
-mc config host rm play
-mc config host rm s3
+  #--- Delete unused mc aliases
+  printf "\n%bRemove unused aliases...%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  mc config host rm local
+  mc config host rm gcs
+  mc config host rm play
+  mc config host rm s3
 
-#--- Add host config for minio-private-s3
-s3_endpoint="http://private-s3.internal.paas:9000"
-s3_access_key="private-s3"
-getCredhubValue "s3_secret_key" "/micro-bosh/minio-private-s3/s3_secretkey"
-configureHost "minio" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}"
-
-#--- Add host config for minio-prometheus (thanos metrics)
-s3_endpoint="http://$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_endpoint)"
-s3_access_key="$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_access_key)"
-s3_secret_key="$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_secret_key)"
-configureHost "prometheus" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}"
-
-#--- Add host config for shied backup (minio-shield for vsphere)
-getCredhubValue "iaas_type" "/secrets/iaas_type"
-if [ "${iaas_type}" = "vsphere" ] ; then
-  s3_endpoint="http://storage.orange.com"
+  #--- Add host config for minio-private-s3 (bosh releases / buildpacks / packages)
+  s3_endpoint="http://private-s3.internal.paas:9000"
   s3_access_key="private-s3"
-  getCredhubValue "s3_secret_key" "/secrets/shield_s3_secret_access_key"
-else
-  s3_endpoint="https://$(getValue ${SHARED_SECRETS} /secrets/shield/s3_host)"
-  s3_access_key="$(getValue ${SHARED_SECRETS} /secrets/shield/s3_access_key_id)"
-  s3_secret_key="$(getValue ${SHARED_SECRETS} /secrets/shield/s3_secret_access_key)"
+  getCredhubValue "s3_secret_key" "/micro-bosh/minio-private-s3/s3_secretkey"
+  configureHost "minio" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v2"
+
+  #--- Add host config for minio-prometheus (thanos metrics)
+  s3_endpoint="http://$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_endpoint)"
+  s3_access_key="$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_access_key)"
+  s3_secret_key="$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_secret_key)"
+  configureHost "prometheus" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v2"
+
+  #--- Add host config for shield local backup
+  s3_endpoint="https://shield-s3.internal.paas"
+  s3_access_key="shield-s3"
+  getCredhubValue "s3_secret_key" "/bosh-master/shieldv8/s3_secretkey"
+  configureHost "shield_local" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v4"
+
+  #--- Add host config for shield remote backup
+  getCredhubValue "s3_endpoint" "/secrets/backup_remote_s3_host"
+  s3_endpoint="https://${s3_endpoint}"
+  getCredhubValue "s3_access_key" "/secrets/backup_remote_s3_access_key_id"
+  getCredhubValue "s3_secret_key" "/secrets/backup_remote_s3_secret_access_key"
+  configureHost "shield_remote" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v4"
+
+  #--- Display configurations
+  printf "\n%bmc configuration...%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  mc config host ls
 fi
-configureHost "shield" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}"
-
-#--- Add host config for shield backup
-s3_endpoint="https://storage.orange.com"
-getCredhubValue "s3_access_key" "/secrets/shield_obos_access_key_id"
-getCredhubValue "s3_secret_key" "/secrets/shield_obos_secret_access_key"
-configureHost "shield_v2" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v2"
-
-#--- Display configurations
-display "INFO"  "mc configuration..."
-mc config host ls

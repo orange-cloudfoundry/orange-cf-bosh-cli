@@ -15,7 +15,7 @@ export REVERSE='\033[7m'
 flagError=0
 flag=$(credhub f > /dev/null 2>&1)
 if [ $? != 0 ] ; then
-  printf "\n%bEnter LDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  printf "\n%bLDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
   printf "username: " ; read LDAP_USER
   credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
   if [ $? != 0 ] ; then

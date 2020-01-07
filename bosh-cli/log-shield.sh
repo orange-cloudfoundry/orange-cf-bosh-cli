@@ -1,6 +1,6 @@
 #!/bin/bash
 #===========================================================================
-# Log with openstack cli tools
+# Log with shield cli
 #===========================================================================
 
 #--- Colors and styles
@@ -33,33 +33,28 @@ if [ $? != 0 ] ; then
   fi
 fi
 
-#--- Log to openstack
-if [ "${flagError}" = "0" ] ; then
-  #--- Common keystone parameters V2/V3
-  getCredhubValue "OS_AUTH_URL" "/secrets/openstack_auth_url"
-  getCredhubValue "OS_USERNAME" "/secrets/openstack_username"
-  getCredhubValue "OS_PASSWORD" "/secrets/openstack_password"
-  export OS_AUTH_URL
-  export OS_USERNAME
-  export OS_PASSWORD
+#--- Log to CF
+if [ ${flagError} = 0 ] ; then
+  export SHIELD_CORE="paas-templates"
+  getCredhubValue "OPS_DOMAIN" "/secrets/cloudfoundry_ops_domain"
 
-  unset OS_PROJECT_NAME
-  getCredhubValue "OS_PROJECT_NAME" "/secrets/openstack_project"
   if [ ${flagError} = 0 ] ; then
-    #--- Specific keystone V3
-    export OS_PROJECT_NAME
-    export OS_IDENTITY_API_VERSION="3"
-    getCredhubValue "OS_PROJECT_DOMAIN_NAME" "/secrets/openstack_domain"
-    export OS_PROJECT_DOMAIN_NAME
-    export OS_USER_DOMAIN_NAME="${OS_PROJECT_DOMAIN_NAME}"
-  else
-    #--- Specific keystone V2
-    flagError=0
-    getCredhubValue "OS_TENANT_NAME" "/secrets/openstack_tenant"
-    getCredhubValue "OS_REGION_NAME" "/secrets/openstack_region"
-    export OS_TENANT_NAME
-    export OS_REGION_NAME
+    shield api -k https://shieldv8-webui.${OPS_DOMAIN} paas-templates
+    if [ $? != 0 ] ; then
+      printf "\n\n%bERROR : Config shield api failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
+    fi
   fi
 
-  printf "\n"
+  if [ ${flagError} = 0 ] ; then
+    getCredhubValue "ADMIN_PASSWORD" "/bosh-master/shieldv8/failsafe-password"
+  fi
+
+  if [ ${flagError} = 0 ] ; then
+    shield login -u admin -p ${ADMIN_PASSWORD}
+    if [ $? != 0 ] ; then
+      printf "\n\n%bERROR : Shield login failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
+    fi
+  fi
 fi
+
+printf "\n"

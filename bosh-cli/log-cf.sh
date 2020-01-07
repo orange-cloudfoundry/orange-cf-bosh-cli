@@ -14,7 +14,7 @@ export REVERSE='\033[7m'
 #--- Log to CF
 flag=0
 while [ ${flag} = 0 ] ; do
-  printf "\n%bEnter CF User :%b " "${REVERSE}${YELLOW}" "${STD}" ; read CF_USER
+  printf "\n%bCF User :%b " "${REVERSE}${YELLOW}" "${STD}" ; read CF_USER
   if [ "${CF_USER}" = "" ] ; then
     clear
   else

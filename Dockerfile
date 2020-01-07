@@ -3,58 +3,61 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Packages list
-ENV INIT_PACKAGES="apt-utils ca-certificates sudo wget curl unzip openssh-server openssl apt-transport-https" \
-    TOOLS_PACKAGES="supervisor git-core bash-completion apg whois vim less mlocate nano screen s3cmd tmux byobu silversearcher-ag colordiff" \
-    NET_PACKAGES="netbase net-tools iproute2 iputils-ping dnsutils ldap-utils netcat tcpdump mtr-tiny" \
-    DEV_PACKAGES="nodejs python-pip python-dev build-essential libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
-    RUBY_PACKAGES="ruby autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
+ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
+    TOOLS_PACKAGES="apg bash-completion colordiff less locales mlocate nano nodejs python-pip s3cmd silversearcher-ag supervisor tmux vim whois zsh" \
+    NET_PACKAGES="dnsutils iproute2 iputils-ping ldap-utils mtr-tiny netbase netcat net-tools tcpdump" \
+    DEV_PACKAGES="python-dev build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
+    GIT_PACKAGES="software-properties-common python-software-properties" \
+    RUBY_PACKAGES="bzip2 gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
     BDD_PACKAGES="libprotobuf9v5 mongodb-clients" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
-#--- Packages versions
+#--- Cli versions
 ENV BBR_VERSION="1.5.2" \
     BOSH_CLI_VERSION="6.0.0" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
-    BUNDLER_VERSION="1.17.3" \
-    CF_CLI_VERSION="6.46.1" \
+    CF_CLI_VERSION="6.47.2" \
     CF_UAAC_VERSION="4.2.0" \
     CREDHUB_VERSION="2.5.3" \
     DB_DUMPER_VERSION="1.4.2" \
     FLY_VERSION="5.3.0" \
-    HELM_VERSION="2.14.0" \
+    HELM_VERSION="3.0.0" \
     JQ_VERSION="1.6" \
     KUBECTL_VERSION="1.15.4" \
+    K9S_VERSION="0.11.0" \
     MYSQL_SHELL_VERSION="8.0.16-1" \
     PERIPLI_VERSION="1.0.0" \
-    RUBY_VERSION="2.5.1" \
-    SHIELD_VERSION="8.5.0" \
+    RUBY_BUNDLER_VERSION="1.17.3" \
+    RUBY_VERSION="2.6" \
+    SHIELD_VERSION="8.6.2" \
     SPRUCE_VERSION="1.22.0" \
     S3GOFR_VERSION="0.5.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
-    TERRAFORM_VERSION="0.11.14"
+    TERRAFORM_VERSION="0.11.14" \
+    VELERO_VERSION="1.2.0"
 
 ADD bosh-cli/*.sh /usr/local/bin/
 ADD bosh-cli/profile /tmp/profile
 ADD bosh-cli/sshd.conf /etc/supervisor/conf.d/
 
-RUN printf '\n=====================================================\n=> Install system packages\n=====================================================\n' && \
-    apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} ${BDD_PACKAGES} && apt-get upgrade -y && \
-    printf '=====================================================\n=> Install Install NodeJS and yarn\n=====================================================\n' && \
+RUN printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
+    apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${GIT_PACKAGES} ${RUBY_PACKAGES} ${BDD_PACKAGES} && apt-get upgrade -y && \
+    printf '=====================================================\n Install git\n=====================================================\n' && \
+    add-apt-repository ppa:git-core/ppa && apt-get update && apt-get install -y git && \
+    printf '=====================================================\n Install NodeJS and yarn\n=====================================================\n' && \
     curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list.d/yarn.list && \
     apt-get update && apt-get install -y --no-install-recommends yarn && apt-get upgrade -y && \
     apt-get autoremove -y && apt-get clean && apt-get purge && rm -fr /var/lib/apt/lists/* && \
-    printf '\n=====================================================\n=> Install Ruby tools\n=====================================================\n' && \
-    curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
-    curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - && \
-    curl -sSL https://get.rvm.io | bash -s stable && \
-    /bin/bash -l -c "rvm mount -r https://rvm_io.global.ssl.fastly.net/binaries/ubuntu/16.04/x86_64/ruby-${RUBY_VERSION}.tar.bz2 ; rvm install ${RUBY_VERSION} ; rvm use ${RUBY_VERSION}" && \
-    /bin/bash -l -c "gem install bundler -v ${BUNDLER_VERSION} --no-ri --no-rdoc" && \
-    /bin/bash -l -c "gem install bosh-gen -v ${BOSH_GEN_VERSION} --no-ri --no-rdoc" && \
-    /bin/bash -l -c "gem install cf-uaac -v ${CF_UAAC_VERSION} --no-ri --no-rdoc" && \
+    printf '\n=====================================================\n Install Ruby tools\n=====================================================\n' && \
+    curl -sSL https://rvm.io/mpapis.asc | gpg --import - && curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - && curl -sSL https://get.rvm.io | bash -s stable && \
+    /bin/bash -l -c "source /etc/profile.d/rvm.sh ; rvm install ${RUBY_VERSION}" && \
+    /bin/bash -l -c "gem install bundler -v ${RUBY_BUNDLER_VERSION} --no-document" && \
+    /bin/bash -l -c "gem install bosh-gen -v ${BOSH_GEN_VERSION} --no-document" && \
+    /bin/bash -l -c "gem install cf-uaac -v ${CF_UAAC_VERSION} --no-document" && \
     /bin/bash -l -c "rvm cleanup all" && \
-    printf '\n=====================================================\n=> Setup bosh account, ssh and supervisor\n=====================================================\n' && \
+    printf '\n=====================================================\n Setup bosh account, ssh and supervisor\n=====================================================\n' && \
     echo "root:$(date +%s | sha256sum | base64 | head -c 32 ; echo)" | chpasswd && \
     useradd -m -g users -G sudo,rvm -s /bin/bash bosh && echo "bosh ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/bosh && \
     echo "bosh:$(date +%s | sha256sum | base64 | head -c 32 ; echo)" | chpasswd && \
@@ -65,7 +68,7 @@ RUN printf '\n=====================================================\n=> Install 
     sed -i 's/^PubkeyAuthentication .*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && \
     sed -i 's/^.*PasswordAuthentication yes.*/PasswordAuthentication no/g' /etc/ssh/sshd_config && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
-    printf '\n=====================================================\n=> Install ops tools\n=====================================================\n' && \
+    printf '\n=====================================================\n Install ops tools\n=====================================================\n' && \
     python -m pip install --upgrade pip && python -m pip install --upgrade setuptools && \
     python -m pip install python-openstackclient python-keystoneclient python-novaclient python-neutronclient python-cinderclient python-glanceclient python-swiftclient && \
     python -m pip install pynsxv && \
@@ -78,27 +81,29 @@ RUN printf '\n=====================================================\n=> Install 
     wget "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" -nv -O - | tar -xz -C /usr/local/bin && \
     wget "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" -nv -O /usr/local/bin/shield && \
     wget "https://github.com/Peripli/service-manager-cli/releases/download/v${PERIPLI_VERSION}/smctl_linux_x86-64" -nv -O /usr/local/bin/smctl && \
+    wget "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_${K9S_VERSION}_Linux_x86_64.tar.gz" -nv -O - | tar -xz -C /usr/local/bin && \
+    wget "https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp velero-v${VELERO_VERSION}-linux-amd64/velero && mv /tmp/velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin/velero && \
     wget "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" -nv -O - | tar -x -C /tmp releases/bbr && mv /tmp/releases/bbr /usr/local/bin/bbr && \
     wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -nv -O /usr/local/bin/mc && \
     wget "https://github.com/rlmcpherson/s3gof3r/releases/download/v${S3GOFR_VERSION}/gof3r_${S3GOFR_VERSION}_linux_amd64.tar.gz" -nv -O - | tar -xz -C /tmp && mv /tmp/gof3r_${S3GOFR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
-    wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && chmod 775 /usr/local/bin/kubectl && \
-    /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
-    wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp linux-amd64/helm && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 775 /usr/local/bin/helm && \
-    /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
+    wget "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -nv -O /usr/local/bin/kubectl && \
+    chmod 755 /usr/local/bin/kubectl && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
+    wget "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" -nv -O - | tar -xz -C /tmp linux-amd64/helm && mv /tmp/linux-amd64/helm /usr/local/bin/helm && \
+    chmod 755 /usr/local/bin/helm && /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
     wget "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" -nv -O /tmp/mysql-shell.deb && dpkg -i /tmp/mysql-shell.deb && \
     wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -nv -O /usr/local/bin/z.sh && \
     wget "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" -nv -O /tmp/db-dumper-plugin && chmod 755 /tmp/db-dumper-plugin && \
     wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -nv -O /tmp/terraform.zip && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
     git clone --depth 1 https://github.com/junegunn/fzf.git /home/bosh/.fzf && chown -R bosh:users /home/bosh/.fzf && su -l bosh -s /bin/bash -c "/home/bosh/.fzf/install --all" && \
-    printf '=====================================================\n=> Install CF plugins\n=====================================================\n' && \
+    printf '=====================================================\n Install CF plugins\n=====================================================\n' && \
     su -l bosh -s /bin/bash -c "export IFS=, ; for plug in \$(echo ${CF_PLUGINS}) ; do cf install-plugin \"\${plug}\" -r CF-Community -f ; done" && \
     su -l bosh -s /bin/bash -c "cf install-plugin /tmp/db-dumper-plugin -f" && rm -f /tmp/db-dumper-plugin && \
-    printf '\n=====================================================\n=> Setup system banner\n=====================================================\n' && \
+    printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     GIT_VERSION=$(git --version | awk '{print $3}') && \
-    APG_VERSION=$(apg -v 2>&1 | grep 'version ' | awk '{print $2}') && \
-    MINIO_VERSION=$(mc --version 2>&1 | awk '{print $3}') && \
-    MONGO_SHELL_VERSION=$(mongo --version 2>&1 | awk '{print $4}') && \
+    APG_VERSION=$(apg -v | grep 'version ' | awk '{print $2}') && \
+    MC_VERSION=$(mc --version | awk '{print $3}') && \
+    MONGO_SHELL_VERSION=$(mongo --version | awk '{print $4}') && \
     printf '\nYour are logged into an ubuntu docker container, which provides several tools :\n' > /etc/motd && \
     printf 'Generic tools:\n' >> /etc/motd && \
     printf "  * apg (${APG_VERSION}) - Automated Password Generator\n" >> /etc/motd && \
@@ -106,7 +111,7 @@ RUN printf '\n=====================================================\n=> Install 
     printf "  * cf (${CF_CLI_VERSION}) - Cloud Foundry CLI (https://github.com/cloudfoundry/cli)\n" >> /etc/motd && \
     printf "  * credhub (${CREDHUB_VERSION}) - Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli)\n" >> /etc/motd && \
     printf "  * fly (${FLY_VERSION}) - Concourse CLI (https://github.com/concourse/fly)\n" >> /etc/motd && \
-    printf "  * git (${GIT_VERSION}) - Git client\n" >> /etc/motd && \
+    printf "  * git (${GIT_VERSION}) - Git CLI\n" >> /etc/motd && \
     printf "  * jq (${JQ_VERSION}) - JSON processing Tool (https://stedolan.github.io/jq/)\n" >> /etc/motd && \
     printf "  * spruce (${SPRUCE_VERSION}) - YAML templating tool (https://github.com/geofffranks/spruce)\n" >> /etc/motd && \
     printf "  * terraform (${TERRAFORM_VERSION}) - Provides a common configuration to launch infrastructure (https://www.terraform.io/)\n" >> /etc/motd && \
@@ -116,17 +121,20 @@ RUN printf '\n=====================================================\n=> Install 
     printf "  * gof3r (${S3GOFR_VERSION}) - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)\n" >> /etc/motd && \
     printf "  * mysqlsh (${MYSQL_SHELL_VERSION}) - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)\n" >> /etc/motd && \
     printf "  * mongo (${MONGO_SHELL_VERSION}) - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)\n" >> /etc/motd && \
-    printf "  * mc (${MINIO_VERSION}) - Minio S3 CLI (https://github.com/minio/mc)\n" >> /etc/motd && \
+    printf "  * mc (${MC_VERSION}) - Minio S3 CLI (https://github.com/minio/mc)\n" >> /etc/motd && \
     printf "  * shield (${SHIELD_VERSION}) - Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)\n" >> /etc/motd && \
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  * helm (${HELM_VERSION}) - Kubernetes Package Manager (https://docs.helm.sh/)\n" >> /etc/motd && \
     printf "  * kubectl (${KUBECTL_VERSION}) - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)\n" >> /etc/motd && \
+    printf "  * k9s (${K9S_VERSION}) - Kubernetes CLI (https://github.com/derailed/k9s)\n" >> /etc/motd && \
     printf "  * smctl (${PERIPLI_VERSION}) - Service Manager CLI (https://github.com/Peripli/service-manager-cli/#service-manager-cli)\n" >> /etc/motd && \
+    printf "  * velero (${VELERO_VERSION}) - Kubernetes CLI for cluster resources backup/restore (https://github.com/vmware-tanzu/velero)\n" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
     printf '  * "tools" command tells you about the available tools.\n' >> /etc/motd && \
     printf '  * "/data/shared" is a persistant data docker volume, shared with other container instances.\n' >> /etc/motd && \
     printf '  * All other paths in this container will be reseted on restart/update (do not save data on it).\n\n' >> /etc/motd && \
-    printf '\n=====================================================\n=> Set rights and cleanup docker image\n=====================================================\n' && \
+    printf '\n=====================================================\n Configure system and cleanup docker image\n=====================================================\n' && \
+    locale-gen en_US.UTF-8 && \
     chmod 755 /usr/local/bin/* /etc/profile.d/* && chmod 644 /etc/motd && \
     mv /tmp/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \
     touch /var/log/lastlog && chgrp utmp /var/log/lastlog && chmod 664 /var/log/lastlog && \
