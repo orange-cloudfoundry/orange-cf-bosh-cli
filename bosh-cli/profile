@@ -7,7 +7,9 @@
 sudo /usr/local/bin/check_ssh_security.sh "user_login"
 
 #--- Load docker injected variables
-. /var/tmp/bosh-cli/bosh-cli.env
+if [ -f /var/tmp/bosh-cli/bosh-cli.env ] ; then
+  . /var/tmp/bosh-cli/bosh-cli.env
+fi
 
 #--- CA certs
 export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
@@ -89,6 +91,9 @@ alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
 alias switch='. switch.sh'
 alias tn='function __tn() { echo -ne "\033]0;$@\007";unset -f __t;printf "\n"; }; __tn'
 alias tools='. tools.sh'
+
+#--- OSB cmdb aliases
+alias cf_labels_service='function __cfls () { SN=$1 ; SG=$(cf service ${SN} --guid) ; cf curl "/v3/service_instances?label_selector=backing_service_instance_guid==${SG}" | jq .resources[].metadata; }; __cfls'
 EOF
 
 #--- Init bash profile
