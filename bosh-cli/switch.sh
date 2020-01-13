@@ -3,14 +3,6 @@
 # Switch to bosh deployment within the same bosh director
 #===========================================================================
 
-#--- Colors and styles
-export RED='\033[1;31m'
-export YELLOW='\033[1;33m'
-export GREEN='\033[1;32m'
-export STD='\033[0m'
-export BOLD='\033[1m'
-export REVERSE='\033[7m'
-
 bosh env > /dev/null 2>&1
 if [ $? != 0 ] ; then
   printf "\n\n%bERROR : You are not connected to bosh director.%b\n\n" "${RED}" "${STD}"

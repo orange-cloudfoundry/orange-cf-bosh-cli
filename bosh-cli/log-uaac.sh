@@ -3,14 +3,6 @@
 # Log with uaac cli
 #===========================================================================
 
-#--- Colors and styles
-export RED='\033[1;31m'
-export YELLOW='\033[1;33m'
-export GREEN='\033[1;32m'
-export STD='\033[0m'
-export BOLD='\033[1m'
-export REVERSE='\033[7m'
-
 #--- Get a parameter in credhub
 getCredhubValue() {
   value=$(credhub g -n $2 | grep 'value:' | awk '{print $2}')

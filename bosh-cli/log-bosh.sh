@@ -7,14 +7,6 @@
 # --uaa, -u         : Use uaa client to log with bosh director
 #===========================================================================
 
-#--- Colors and styles
-export RED='\033[1;31m'
-export GREEN='\033[1;32m'
-export YELLOW='\033[1;33m'
-export STD='\033[0m'
-export BOLD='\033[1m'
-export REVERSE='\033[7m'
-
 #--- Unset uaa bosh login credentials
 unset BOSH_CLIENT BOSH_CLIENT_SECRET
 

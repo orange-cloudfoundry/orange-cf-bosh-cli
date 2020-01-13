@@ -3,12 +3,6 @@
 # Init pynsxv cli configuration
 #===========================================================================
 
-#--- Colors and styles
-export RED='\033[1;31m'
-export YELLOW='\033[1;33m'
-export STD='\033[0m'
-export REVERSE='\033[7m'
-
 #--- Display information
 display() {
   case "$1" in

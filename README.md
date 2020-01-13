@@ -5,35 +5,31 @@ The `cf-bosh-cli` project helps you to deploy several cli tools through docker i
 
 ### Generic tools
 * `apg` - Automated Password Generator
-* `git` - Git client
-* `jq` - JSON processing tool (https://stedolan.github.io/jq/)
-* `spruce` - YAML templating tool, for BOSH deployment manifests generation (https://github.com/geofffranks/spruce)
-* `yarn` - Package manager (https://yarnpkg.com/fr/)
-
-### Bosh deployments tools
 * `bosh` - Bosh directors V2 CLI (https://bosh.io/docs/cli-v2.html)
 * `bosh-gen` - Generators for BOSH releases creation (https://github.com/cloudfoundry-community/bosh-gen)
 * `cf` - Cloud Foundry CLI (https://github.com/cloudfoundry/cli)
-* `uaac` - Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac)
 * `credhub` - Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli)
 * `fly` - Concourse CLI (https://github.com/concourse/fly)
+* `git` - Git client
+* `jq` - JSON processing tool (https://stedolan.github.io/jq/)
+* `spruce` - YAML templating tool, for BOSH deployment manifests generation (https://github.com/geofffranks/spruce)
 * `terraform` - Provides a common configuration to launch infrastructure (https://www.terraform.io/)
-* `terraform-provider-cloudfoundry` - Terraform plugin for Cloudfoundry (https://github.com/orange-cloudfoundry/terraform-provider-cloudfoundry)
+* `uaac` - Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac)
+* `yarn` - Package manager (https://yarnpkg.com/fr/)
 
-### Backup and Storage tools
+### Admin tools
 * `bbr` - Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)
 * `gof3r` - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
 * `mc` - Minio S3 CLI (https://github.com/minio/mc)
+* `mongo` - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)
+* `mysqlsh` - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)
 * `shield` - Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)
 
 ### Kubernetes tools
-* `kubectl` - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
-* `smctl` - Service Manager CLI (https://github.com/Peripli/service-manager-cli/#service-manager-cli)
-
-### BDD tools
-* `mysqlsh` - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)
-* `mongo` - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)
+* `kubectl` - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
+* `k9s` - Kubernetes CLI (https://github.com/derailed/k9s)
+* `velero` - Kubernetes CLI for cluster resources backup/restore (https://github.com/vmware-tanzu/velero)
 
 The container expose ssh port. Password or key (rsa only) authentication is supported.
 
@@ -182,3 +178,5 @@ properties:
 ```
 
 Then, log into the container you want with ssh : <code>ssh -i <path to your rsa private key> -p 2222 bosh@docker.bosh.release.deployment</code> to log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).
+
+You can see cli/tools/aliases list by using the `tools` command form your  shell interface.

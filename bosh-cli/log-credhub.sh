@@ -5,13 +5,6 @@
 # --uaa, -u       : Use uaa client to log with credhub
 #===========================================================================
 
-#--- Colors and styles
-export RED='\033[1;31m'
-export GREEN='\033[1;32m'
-export YELLOW='\033[1;33m'
-export STD='\033[0m'
-export REVERSE='\033[7m'
-
 #--- Check scripts options
 usage() {
   printf "\n%bUSAGE:" "${RED}${BOLD}"
@@ -28,6 +21,22 @@ while [ ${nbParameters} -gt 0 ] ; do
     *) usage ;;
   esac
 done
+
+#--- Delete credhub context when changing user type (LDAP/UAA)
+if [ -f ~/.credhub/config.json ] ; then
+  flagRefreshToken=$(cat ~/.credhub/config.json | jq '.RefreshToken' | sed -e "s+\"++g")
+  if [ ${flag_use_uaa} = 1 ] ; then
+    if [ "${flagRefreshToken}" != "" ] ; then
+      #--- LDAP user is connected
+      rm -f ~/.credhub/config.json > /dev/null 2>&1
+    fi
+  else
+    if [ "${flagRefreshToken}" = "" ] ; then
+      #--- UAA user is connected
+      rm -f ~/.credhub/config.json > /dev/null 2>&1
+    fi
+  fi
+fi
 
 #--- Log to credhub
 if [ ${flagError} = 0 ] ; then

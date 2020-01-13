@@ -3,14 +3,6 @@
 # Internet-proxy activation/deactivation
 #===========================================================================
 
-#--- Colors and styles
-export GREEN='\033[1;32m'
-export BLUE='\033[1;34m'
-export CYAN='\033[1;36m'
-export YELLOW='\033[1;33m'
-export STD='\033[0m'
-export BOLD='\033[1m'
-
 #--- Set user prompt
 parse_git_branch()
 {
@@ -31,10 +23,10 @@ if [ "${proxyStatus}" = "" ] ; then
   export HTTP_PROXY=${http_proxy}
   export HTTPS_PROXY=${http_proxy}
   export NO_PROXY=${no_proxy}
-  export PS1="${GREEN}\h@${SITE_NAME}${YELLOW}[proxy]${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
+  export PS1="\[\033[32m\]\h@${SITE_NAME}\[\033[33m\][proxy]\[\033[36m\]\$(parse_git_branch)\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ "
 else
   printf "%bDeactivate \"internet-proxy\"%b\n" "${YELLOW}${BOLD}" "${STD}"
   unset http_proxy https_proxy no_proxy
   unset HTTP_PROXY HTTPS_PROXY NO_PROXY
-  export PS1="${GREEN}\h@${SITE_NAME}${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
+  export PS1="\[\033[32m\]\h@${SITE_NAME}\[\033[36m\]\$(parse_git_branch)\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ "
 fi

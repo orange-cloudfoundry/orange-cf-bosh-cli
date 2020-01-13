@@ -54,7 +54,7 @@ export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${PATH}
 #--- Init user aliases
 cat > ${HOME}/.bash_aliases <<'EOF'
 #--- Git aliases
-alias co='function __gco() { git checkout $1 ; git pull --rebase; }; __gco'
+alias checkout='function __gco() { git checkout $1 ; git pull --rebase; }; __gco'
 alias commit='function __gcm() { git add . ; git commit -m "$1" ; unset -f __gcm; }; __gcm'
 alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'
 alias init-git='. init-git.sh'
@@ -73,18 +73,18 @@ alias log-shield='. log-shield.sh'
 alias log-uaac='. log-uaac.sh'
 
 #--- Tools aliases
-alias bt='function __bt() { bosh task $1 --debug | grep -vE "BEGIN|SELECT|UPDATE|COMMIT|Renewing lock"; }; __bt'
-alias cg='function __cg() { log-credhub ; credhub get -n $1 -j | jq .value -r; }; __cg'
+alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE "BEGIN|SELECT|UPDATE|COMMIT|Renewing lock"; }; __bt'
+alias credhub-get='function __cg() { log-credhub ; credhub get -n $1 -j | jq .value -r; }; __cg'
 alias diff='colordiff'
 alias f='function __f() { printf "\n";find . ! -regex ".*[/]\.git[/]?.*" -type f -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "\n"; }; __f'
-alias gp='apg -MCLN -n 1 -m 30'
+alias generate-password='apg -MCLN -n 1 -m 30'
 alias fly='fly -t concourse'
 alias init-mc='. init-mc.sh'
 alias init-pynsxv='. init-pynsxv.sh'
 alias os='openstack'
 alias proxy='. proxy.sh'
 alias toggle-proxy='. proxy.sh'
-alias pw='fly prune-worker -a'
+alias prune-workers='fly prune-worker -a'
 alias pynsxv='pynsxv -i $HOME/.nsx.ini'
 alias show-cert='function __scrt() { openssl x509 -noout -in $1 -subject -issuer -dates; }; __scrt'
 alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
@@ -92,8 +92,6 @@ alias switch='. switch.sh'
 alias tn='function __tn() { echo -ne "\033]0;$@\007";unset -f __t;printf "\n"; }; __tn'
 alias tools='. tools.sh'
 
-#--- OSB cmdb aliases
-alias cf_labels_service='function __cfls () { SN=$1 ; SG=$(cf service ${SN} --guid) ; cf curl "/v3/service_instances?label_selector=backing_service_instance_guid==${SG}" | jq .resources[].metadata; }; __cfls'
 EOF
 
 #--- Init bash profile
@@ -102,10 +100,15 @@ cat > ${HOME}/.bash_profile <<'EOF'
 . ~/.bashrc
 
 #--- Colors and styles
-export GREEN='\[\033[1;32m\]'
-export BLUE='\[\033[1;34m\]'
-export CYAN='\[\033[1;36m\]'
-export STD='\[\033[0m\]'
+export RED='\033[31m'
+export GREEN='\033[32m'
+export YELLOW='\033[33m'
+export BLUE='\033[34m'
+export CYAN='\033[36m'
+
+export STD='\033[0m'
+export BOLD='\033[1m'
+export REVERSE='\033[7m'
 
 #--- Set user prompt
 parse_git_branch()
@@ -118,7 +121,7 @@ parse_git_branch()
   fi
 }
 
-export PS1="${GREEN}\h@${SITE_NAME}${CYAN}\$(parse_git_branch)${STD}:${BLUE}\w${STD}\$ "
+export PS1="\[\033[32m\]\h@${SITE_NAME}\[\033[36m\]\$(parse_git_branch)\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ "
 
 #--- Set locales
 export LANG=en_US.UTF-8
@@ -166,6 +169,11 @@ fi
 #--- Interactive filter for command-line
 if [ -f /home/bosh/.fzf.bash ] ; then
   source /home/bosh/.fzf.bash
+fi
+
+#--- Load OSB-CMDB bash functions
+if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
+  source /usr/local/bin/cf-cli-cmdb-functions.bash
 fi
 
 EOF

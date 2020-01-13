@@ -3,12 +3,6 @@
 # Init git cli configuration
 #===========================================================================
 
-#--- Colors and styles
-export YELLOW='\033[1;33m'
-export STD='\033[0m'
-export BOLD='\033[1m'
-export REVERSE='\033[7m'
-
 configureGit() {
   flag=$(echo "${GIT_OPTIONS}" | grep " $1 ")
   if [ "${flag}" = "" ] ; then

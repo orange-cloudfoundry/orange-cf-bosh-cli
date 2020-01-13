@@ -32,7 +32,6 @@ ENV BBR_VERSION="1.5.2" \
     RUBY_VERSION="2.6" \
     RUBY_PATH_VERSION="2.6.3" \
     SHIELD_VERSION="8.6.2" \
-    SMCTL_VERSION="1.0.0" \
     SPRUCE_VERSION="1.22.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
@@ -84,7 +83,6 @@ RUN printf '\n=====================================================\n Install sy
     curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
     curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
     curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
-    curl -sSLo /usr/local/bin/smctl "https://github.com/Peripli/service-manager-cli/releases/download/v${SMCTL_VERSION}/smctl_linux_x86-64" && \
     curl -sSL "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_${K9S_VERSION}_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     curl -sSL "https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin/velero && \
     curl -sSL "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" | tar -x -C /tmp && mv /tmp/releases/bbr /usr/local/bin/bbr && \
@@ -96,8 +94,10 @@ RUN printf '\n=====================================================\n Install sy
     curl -sSLo /usr/local/bin/z.sh "https://raw.githubusercontent.com/rupa/z/master/z.sh" && \
     curl -sSLo /tmp/db-dumper-plugin "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" && chmod 755 /tmp/db-dumper-plugin && \
     curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
+    curl -sSLo /usr/local/bin/cf-cli-cmdb-functions.bash https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts/blob/master/cf-cli-cmdb-functions.bash && \
     export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
     git clone --depth 1 https://github.com/junegunn/fzf.git /home/bosh/.fzf && chown -R bosh:users /home/bosh/.fzf && su -l bosh -s /bin/bash -c "/home/bosh/.fzf/install --all" && \
+    git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
     printf '=====================================================\n Install CF plugins\n=====================================================\n' && \
     su -l bosh -s /bin/bash -c "export IFS=, ; for plug in \$(echo ${CF_PLUGINS}) ; do cf install-plugin \"\${plug}\" -r CF-Community -f ; done" && \
     su -l bosh -s /bin/bash -c "cf install-plugin /tmp/db-dumper-plugin -f" && rm -f /tmp/db-dumper-plugin && \
@@ -117,14 +117,13 @@ RUN printf '\n=====================================================\n Install sy
     printf 'Admin tools:\n' >> /etc/motd && \
     printf "  bbr (${BBR_VERSION}) - Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)\n" >> /etc/motd && \
     printf "  gof3r (${GO3FR_VERSION}) - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)\n" >> /etc/motd && \
-    printf "  mysqlsh (${MYSQL_SHELL_VERSION}) - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)\n" >> /etc/motd && \
     printf "  mongo (${MONGO_SHELL_VERSION}) - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)\n" >> /etc/motd && \
+    printf "  mysqlsh (${MYSQL_SHELL_VERSION}) - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)\n" >> /etc/motd && \
     printf "  shield (${SHIELD_VERSION}) - Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)\n" >> /etc/motd && \
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  helm (${HELM_VERSION}) - Kubernetes Package Manager (https://docs.helm.sh/)\n" >> /etc/motd && \
     printf "  kubectl (${KUBECTL_VERSION}) - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)\n" >> /etc/motd && \
     printf "  k9s (${K9S_VERSION}) - Kubernetes CLI (https://github.com/derailed/k9s)\n" >> /etc/motd && \
-    printf "  smctl (${SMCTL_VERSION}) - Service Manager CLI (https://github.com/Peripli/service-manager-cli/#service-manager-cli)\n" >> /etc/motd && \
     printf "  velero (${VELERO_VERSION}) - Kubernetes CLI for cluster resources backup/restore (https://github.com/vmware-tanzu/velero)\n" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
     printf '  "tools" command tells you about the available tools.\n' >> /etc/motd && \
