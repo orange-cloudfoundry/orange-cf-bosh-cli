@@ -73,6 +73,13 @@ if [ ${flagError} = 0 ] ; then
   s3_secret_key="$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_secret_key)"
   configureHost "prometheus" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v2"
 
+  #--- Add host config for cloudfoundry minio-blobstore (cloudfoundry buildpacks)
+  s3_endpoint="http://cf-datastores.internal.paas:80"
+  s3_access_key="$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_access_key)"
+  getCredhubValue "s3_access_key" "/bosh-master/cloudfoundry-datastores/cf_blobstore_s3_accesskey"
+  getCredhubValue "s3_secret_key" "/bosh-master/cloudfoundry-datastores/cf_blobstore_s3_secretkey"
+  configureHost "cf_blobstore" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v2"
+
   #--- Add host config for shield local backup
   s3_endpoint="https://shield-s3.internal.paas"
   s3_access_key="shield-s3"
