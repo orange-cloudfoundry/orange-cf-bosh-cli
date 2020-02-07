@@ -59,8 +59,8 @@ alias commit='function __gcm() { git add . ; git commit -m "$1" ; unset -f __gcm
 alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'
 alias init-git='. init-git.sh'
 alias prune='git fetch --prune'
-alias pull='git pull --rebase'
-alias push='git pull --rebase ; git push'
+alias pull='git pull --rebase ; git fetch --prune'
+alias push='git pull --rebase ;  ; git fetch --prune ; git push'
 
 #--- Cli log aliases
 alias log-bosh='. log-bosh.sh'
