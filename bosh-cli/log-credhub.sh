@@ -24,7 +24,7 @@ done
 
 #--- Delete credhub context when changing user type (LDAP/UAA)
 if [ -f ~/.credhub/config.json ] ; then
-  flagRefreshToken=$(cat ~/.credhub/config.json | jq '.RefreshToken' | sed -e "s+\"++g")
+  flagRefreshToken=$(cat ~/.credhub/config.json | jq -r '.RefreshToken')
   if [ ${flag_use_uaa} = 1 ] ; then
     if [ "${flagRefreshToken}" != "" ] ; then
       #--- LDAP user is connected
