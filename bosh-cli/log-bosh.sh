@@ -57,6 +57,7 @@ if [ ${flagError} = 0 ] ; then
       printf "%b4%b : coab\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b5%b : kubo\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b6%b : remote-r2\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b7%b : remote-r3\n" "${GREEN}${BOLD}" "${STD}"
       printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
       case "${choice}" in
         1) BOSH_TARGET="micro" ;;
@@ -65,6 +66,7 @@ if [ ${flagError} = 0 ] ; then
         4) BOSH_TARGET="coab" ;;
         5) BOSH_TARGET="kubo" ;;
         6) BOSH_TARGET="remote-r2" ;;
+        7) BOSH_TARGET="remote-r3" ;;
         *) flag=0 ; clear ;;
       esac
     done

@@ -46,6 +46,7 @@ if [ ${flagError} = 0 ] ; then
     printf "%b5%b : coab (master-depls/bosh-coab)\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b6%b : kubo (master-depls/bosh-kubo)\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b7%b : remote-r2 (master-depls/bosh-remote-r2)\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b8%b : remote-r3 (master-depls/bosh-remote-r3)\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
       1) UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; UAA_USER="admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/cf/uaa_admin_client_secret" ;;
@@ -55,6 +56,7 @@ if [ ${flagError} = 0 ] ; then
       5) UAA_TARGET="https://192.168.99.155:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-coab/uaa_admin_client_secret" ;;
       6) UAA_TARGET="https://192.168.99.154:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-kubo/uaa_admin_client_secret" ;;
       7) UAA_TARGET="https://192.168.99.153:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r2/uaa_admin_client_secret" ;;
+      8) UAA_TARGET="https://192.168.99.156:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r3/uaa_admin_client_secret" ;;
       *) flag=0 ; clear ;;
     esac
   done

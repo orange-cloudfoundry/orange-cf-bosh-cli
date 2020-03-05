@@ -32,15 +32,17 @@ if [ ${flagError} = 0 ] ; then
   while [ ${flag} = 0 ] ; do
     flag=1
     printf "\n%bTeam concourse :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-    printf "%b1%b : main\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b2%b : upload\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : micro-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b4%b : master-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b5%b : ops-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b6%b : coab-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b7%b : kubo-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b8%b : cloudflare-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b9%b : utils\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b1%b  : main\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b2%b  : upload\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b  : micro-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b4%b  : master-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b5%b  : ops-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b6%b  : coab-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b7%b  : kubo-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b8%b  : remote-r2-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b9%b  : remote-r3-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b10%b : cloudflare-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b11%b : utils\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
       1) TEAM="main" ;;
@@ -50,8 +52,10 @@ if [ ${flagError} = 0 ] ; then
       5) TEAM="ops-depls" ;;
       6) TEAM="coab-depls" ;;
       7) TEAM="kubo-depls" ;;
-      8) TEAM="cloudflare-depls" ;;
-      9) TEAM="utils" ;;
+      8) TEAM="remote-r2-depls" ;;
+      9) TEAM="remote-r3-depls" ;;
+      10) TEAM="cloudflare-depls" ;;
+      11) TEAM="utils" ;;
       *) flag=0 ; clear ;;
     esac
   done

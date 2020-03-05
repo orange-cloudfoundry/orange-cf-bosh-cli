@@ -12,30 +12,30 @@ ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-se
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
 #--- Cli versions
-ENV BBR_VERSION="1.5.2" \
-    BOSH_CLI_VERSION="6.0.0" \
+ENV BBR_VERSION="1.7.0" \
+    BOSH_CLI_VERSION="6.2.1" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
     CF_CLI_VERSION="6.49.0" \
-    CF_CLI7_VERSION="7.0.0-beta.28" \
+    CF_CLI7_VERSION="7.0.0-beta.30" \
     CF_UAAC_VERSION="4.2.0" \
-    CREDHUB_VERSION="2.5.3" \
+    CREDHUB_VERSION="2.7.0" \
     DB_DUMPER_VERSION="1.4.2" \
     FLY_VERSION="5.8.0" \
     GO3FR_VERSION="0.5.0" \
-    HELM_VERSION="3.0.0" \
+    HELM_VERSION="3.1.1" \
     JQ_VERSION="1.6" \
     KUBECTL_VERSION="1.15.4" \
-    K9S_VERSION="0.13.8" \
+    K9S_VERSION="0.17.4" \
     MYSQL_SHELL_VERSION="8.0.16-1" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6" \
     RUBY_PATH_VERSION="2.6.3" \
-    SHIELD_VERSION="8.6.2" \
-    SPRUCE_VERSION="1.22.0" \
+    SHIELD_VERSION="8.6.3" \
+    SPRUCE_VERSION="1.25.2" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    VELERO_VERSION="1.2.0"
+    VELERO_VERSION="1.3.0"
 
 #--- Set ruby env for COA
 ENV PATH="/usr/local/rvm/gems/ruby-${RUBY_PATH_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_PATH_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_PATH_VERSION}/bin:${PATH}" \
@@ -51,7 +51,7 @@ RUN printf '\n=====================================================\n Install sy
     curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list.d/yarn.list && \
     apt-get update && apt-get install -y --no-install-recommends yarn && \
     apt-get upgrade -y && apt-get autoremove -y && apt-get clean && apt-get purge && \
-    printf '\n=====================================================\n Install Ruby tools\n=====================================================\n' && \
+    printf '\n=====================================================\n Install ruby tools\n=====================================================\n' && \
     curl -sSL https://rvm.io/mpapis.asc | gpg --import - && curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - && curl -sSL https://get.rvm.io | bash -s stable && \
     /bin/bash -l -c "source /etc/profile.d/rvm.sh ; rvm install ${RUBY_VERSION}" && \
     /bin/bash -l -c "gem install bundler -v ${RUBY_BUNDLER_VERSION} --no-document" && \
@@ -69,38 +69,39 @@ RUN printf '\n=====================================================\n Install sy
     sed -i 's/^PubkeyAuthentication .*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && \
     sed -i 's/^.*PasswordAuthentication yes.*/PasswordAuthentication no/g' /etc/ssh/sshd_config && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
+    printf '\n=====================================================\n Install python tools\n=====================================================\n' && \
+    printf '\n=> Update PIP\n' && python -m pip install --upgrade pip && python -m pip install --upgrade setuptools && \
+    printf '\n=> Add OPENSTACK-CLI\n' && python -m pip install python-openstackclient && \
+    printf '\n=> Add NSXV-CLI\n' && python -m pip install pynsxv && \
     printf '\n=====================================================\n Install ops tools\n=====================================================\n' && \
-    python -m pip install --upgrade pip && python -m pip install --upgrade setuptools && \
-    python -m pip install python-openstackclient && python -m pip install pynsxv && \
-    curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
-    curl -sSLo /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
-    curl -sSLo /usr/local/bin/bosh "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_VERSION}-linux-amd64" && \
-    curl -sSLo /home/bosh/bosh-complete-linux "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_CLI_COMPLETION_VERSION}/bosh-complete-linux" && chmod 755 /home/bosh/bosh-complete-linux && \
-    curl -sSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI_VERSION}&source=github" | tar -xz -C /tmp && mv /tmp/cf /usr/local/bin/cf && \
-    curl -sSLo /usr/share/bash-completion/completions/cf "https://raw.githubusercontent.com/cloudfoundry/cli/master/ci/installers/completion/cf"  && \
-    curl -sSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI7_VERSION}&source=github" | tar -xz -C /tmp && mv /tmp/cf7 /usr/local/bin/cf7 && \
-    curl -sSLo /usr/share/bash-completion/completions/cf7 "https://raw.githubusercontent.com/cloudfoundry/cli/master/ci/installers/completion/cf7"  && \
-    curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
-    curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
-    curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
-    curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_${K9S_VERSION}_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
-    curl -sSL "https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin/velero && \
-    curl -sSL "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" | tar -x -C /tmp && mv /tmp/releases/bbr /usr/local/bin/bbr && \
-    curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
-    curl -sSL "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/gof3r_${GO3FR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
-    curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && chmod 755 /usr/local/bin/kubectl && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
-    curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 755 /usr/local/bin/helm && /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
-    curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb"  && dpkg -i /tmp/mysql-shell.deb && \
-    curl -sSLo /usr/local/bin/z.sh "https://raw.githubusercontent.com/rupa/z/master/z.sh" && \
-    curl -sSLo /tmp/db-dumper-plugin "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" && chmod 755 /tmp/db-dumper-plugin && \
-    curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
-    curl -sSLo /usr/local/bin/cf-cli-cmdb-functions.bash https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts/blob/master/cf-cli-cmdb-functions.bash && \
-    export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
-    git clone --depth 1 https://github.com/junegunn/fzf.git /home/bosh/.fzf && chown -R bosh:users /home/bosh/.fzf && su -l bosh -s /bin/bash -c "/home/bosh/.fzf/install --all" && \
-    git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
-    printf '=====================================================\n Install CF plugins\n=====================================================\n' && \
-    su -l bosh -s /bin/bash -c "export IFS=, ; for plug in \$(echo ${CF_PLUGINS}) ; do cf install-plugin \"\${plug}\" -r CF-Community -f ; done" && \
-    su -l bosh -s /bin/bash -c "cf install-plugin /tmp/db-dumper-plugin -f" && rm -f /tmp/db-dumper-plugin && \
+    printf '\n=> Add BBR-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" | tar -x -C /tmp && mv /tmp/releases/bbr /usr/local/bin/bbr && \
+    printf '\n=> Add BOSH-CLI\n' && curl -sSLo /usr/local/bin/bosh "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_VERSION}-linux-amd64" && \
+    printf '\n=> Add BOSH-CLI completion\n' && curl -sSLo /home/bosh/bosh-complete-linux "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_CLI_COMPLETION_VERSION}/bosh-complete-linux" && chmod 755 /home/bosh/bosh-complete-linux && \
+    printf '\n=> Add CF-CLI\n' && curl -sSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI_VERSION}&source=github" | tar -xz -C /tmp && mv /tmp/cf /usr/local/bin/cf && \
+    printf '\n=> Add CF-CLI completion\n' && curl -sSLo /usr/share/bash-completion/completions/cf "https://raw.githubusercontent.com/cloudfoundry/cli/master/ci/installers/completion/cf"  && \
+    printf '\n=> Add CF7-CLI\n' && curl -sSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI7_VERSION}&source=github" | tar -xz -C /tmp && mv /tmp/cf7 /usr/local/bin/cf7 && \
+    printf '\n=> Add CF7-CLI completion\n' && curl -sSLo /usr/share/bash-completion/completions/cf7 "https://raw.githubusercontent.com/cloudfoundry/cli/master/ci/installers/completion/cf7"  && \
+    printf '\n=> Add CREDHUB-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
+    printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
+    printf '\n=> Add FZF-CLI\n' && git clone --depth 1 https://github.com/junegunn/fzf.git /home/bosh/.fzf && chown -R bosh:users /home/bosh/.fzf && su -l bosh -s /bin/bash -c "/home/bosh/.fzf/install --all" && \
+    printf '\n=> Add GO3FR-CLI\n' && curl -sSL "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/gof3r_${GO3FR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
+    printf '\n=> Add HELM-CLI\n' && curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 755 /usr/local/bin/helm && \
+    printf '\n=> Add HELM-CLI completion\n' && /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
+    printf '\n=> Add JQ-CLI\n' && curl -sSLo /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
+    printf '\n=> Add KUBECTL-CLI\n' && curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && chmod 755 /usr/local/bin/kubectl && \
+    printf '\n=> Add KUBECTL-CLI completion\n' && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
+    printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
+    printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
+    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
+    printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
+    printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
+    printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
+    printf '\n=> Add VELERO-CLI\n' && curl -sSL "https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin/velero && \
+    printf '\n=> Add Z-CLI\n' && curl -sSLo /usr/local/bin/z.sh "https://raw.githubusercontent.com/rupa/z/master/z.sh" && \
+    printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
+    printf '\n=> Add DB-DUMPER-PLUGIN\n' && curl -sSLo /tmp/db-dumper-plugin "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" && chmod 755 /tmp/db-dumper-plugin && su -l bosh -s /bin/bash -c "cf install-plugin /tmp/db-dumper-plugin -f" && rm -f /tmp/db-dumper-plugin && \
+    printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plug in \$(echo ${CF_PLUGINS}) ; do cf install-plugin \"\${plug}\" -r CF-Community -f ; done" && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     GIT_VERSION=$(git --version | awk '{print $3}') && MONGO_SHELL_VERSION=$(mongo --version | grep "MongoDB shell version" | awk '{print $4}') && \
     printf '\nYour are logged into an ubuntu docker container, which provides several tools :\n' > /etc/motd && \

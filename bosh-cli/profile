@@ -61,6 +61,7 @@ alias init-git='. init-git.sh'
 alias prune='git fetch --prune'
 alias pull='git pull --rebase ; git fetch --prune'
 alias push='git pull --rebase ;  ; git fetch --prune ; git push'
+alias status='git status'
 
 #--- Cli log aliases
 alias log-bosh='. log-bosh.sh'
