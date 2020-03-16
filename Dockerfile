@@ -13,7 +13,7 @@ ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-se
 
 #--- Cli versions
 ENV BBR_VERSION="1.7.0" \
-    BOSH_CLI_VERSION="6.2.1" \
+    BOSH_CLI_VERSION="6.1.1" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
     CF_CLI_VERSION="6.49.0" \
