@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Packages list
 ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core less locales nano nodejs python-pip s3cmd silversearcher-ag supervisor tmux vim zsh" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core less locales nano nodejs python-pip python3-openstackclient s3cmd silversearcher-ag supervisor tmux vim" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois" \
     DEV_PACKAGES="python-dev build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
@@ -71,7 +71,6 @@ RUN printf '\n=====================================================\n Install sy
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
     printf '\n=====================================================\n Install python tools\n=====================================================\n' && \
     printf '\n=> Update PIP\n' && python -m pip install --upgrade pip && python -m pip install --upgrade setuptools && \
-    printf '\n=> Add OPENSTACK-CLI\n' && python -m pip install python-openstackclient && \
     printf '\n=> Add NSXV-CLI\n' && python -m pip install pynsxv && \
     printf '\n=====================================================\n Install ops tools\n=====================================================\n' && \
     printf '\n=> Add BBR-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" | tar -x -C /tmp && mv /tmp/releases/bbr /usr/local/bin/bbr && \
