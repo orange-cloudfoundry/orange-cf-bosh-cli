@@ -2,16 +2,16 @@
 #===========================================================================
 # Set/unset internet/intranet proxy
 # Parameters :
-# --intranet, -i : Set intranet proxy
-# --internet, -w : Set internet proxy
+# --intranet, -a : Set intranet proxy
+# --internet, -e : Set internet proxy
 #===========================================================================
 
 #--- Check scripts options
 usage() {
   printf "\n%bUSAGE:" "${RED}"
   printf "\n  proxy [OPTIONS]\n\nOPTIONS:"
-  printf "\n  %-40s %s" "--intranet, -i " "Set intranet proxy"
-  printf "\n  %-40s %s" "--internet, -w" "Set internet proxy"
+  printf "\n  %-40s %s" "--intranet, -a " "Set intranet proxy"
+  printf "\n  %-40s %s" "--internet, -e" "Set internet proxy"
   printf "%b\n\n" "${STD}"
   flagError=1
 }
@@ -32,20 +32,20 @@ PROXY=""
 proxyStatus=`env | grep -i "http_proxy"`
 
 case "$1" in
-  "-i"|"--intranet")
+  "-a"|"--intranet")
       PROXY_TYPE="intranet"
       PROXY="http://intranet-http-proxy.internal.paas:3129"
-      NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas"
-      shift ; shift ;;
+      NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas" ;;
 
-  "-w"|"--internet")
+  "-e"|"--internet")
     PROXY_TYPE="internet"
     PROXY="http://system-internet-http-proxy.internal.paas:3128"
-    NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,.intraorange,.ftgroup,.francetelecom.fr"
-    shift ; shift ;;
+    NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,.intraorange,.ftgroup,.francetelecom.fr" ;;
 
   "") if [ "${proxyStatus}" = "" ] ; then
-        usage
+        PROXY_TYPE="internet"
+        PROXY="http://system-internet-http-proxy.internal.paas:3128"
+        NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,.intraorange,.ftgroup,.francetelecom.fr"
       fi ;;
 
   *) usage ;;
