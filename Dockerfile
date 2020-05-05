@@ -12,8 +12,8 @@ ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-se
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
 #--- Cli versions
-ENV BBR_VERSION="1.7.0" \
-    BOSH_CLI_VERSION="6.1.1" \
+ENV BBR_VERSION="1.7.2" \
+    BOSH_CLI_VERSION="6.2.1" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
     CF_CLI_VERSION="6.49.0" \
@@ -26,12 +26,14 @@ ENV BBR_VERSION="1.7.0" \
     HELM_VERSION="3.1.1" \
     JQ_VERSION="1.6" \
     KUBECTL_VERSION="1.15.4" \
+    K14S_KAPP_VERSION="0.25.0" \
+    K14S_YTT_VERSION="0.27.1" \
     K9S_VERSION="0.18.1" \
     MYSQL_SHELL_VERSION="8.0.16-1" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6" \
     RUBY_PATH_VERSION="2.6.3" \
-    SHIELD_VERSION="8.6.3" \
+    SHIELD_VERSION="8.7.2" \
     SPRUCE_VERSION="1.25.2" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
@@ -89,6 +91,8 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add JQ-CLI\n' && curl -sSLo /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
     printf '\n=> Add KUBECTL-CLI\n' && curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && chmod 755 /usr/local/bin/kubectl && \
     printf '\n=> Add KUBECTL-CLI completion\n' && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
+    printf '\n=> Add K14S-KAPP-CLI\n' && curl -sSLo /usr/local/bin/kapp "https://github.com/k14s/kapp/releases/download/v${K14S_KAPP_VERSION}/kapp-linux-amd64" && \
+    printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
     printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
@@ -123,7 +127,9 @@ RUN printf '\n=====================================================\n Install sy
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  helm (${HELM_VERSION}) - Kubernetes Package Manager (https://docs.helm.sh/)\n" >> /etc/motd && \
     printf "  kubectl (${KUBECTL_VERSION}) - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)\n" >> /etc/motd && \
+    printf "  kapp (${K14S_KAPP_VERSION}) - Kubernetes YAML Tool (https://github.com/k14s/kapp)\n" >> /etc/motd && \
     printf "  k9s (${K9S_VERSION}) - Kubernetes CLI (https://github.com/derailed/k9s)\n" >> /etc/motd && \
+    printf "  ytt (${K14S_YTT_VERSION}) - YAML Templating Tool (https://github.com/k14s/ytt)\n" >> /etc/motd && \
     printf "  velero (${VELERO_VERSION}) - Kubernetes CLI for cluster resources backup/restore (https://github.com/vmware-tanzu/velero)\n" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
     printf '  "tools" command tells you about the available tools.\n' >> /etc/motd && \

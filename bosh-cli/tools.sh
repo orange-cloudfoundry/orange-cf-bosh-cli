@@ -16,9 +16,11 @@ display "switch" "Switch to bosh deployment in the same bosh director"
 
 printf "\n%bKUBERNETES TOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
 display "helm" "Kubernetes package manager cli"
+display "kapp" "Kubernetes yaml tool"
 display "kubectl" "Cluster manager cli (used with log-k8s)"
 display "k9s" "Cluster manager cli (used with log-k8s)"
 display "log-k8s" "Log with kubernetes cli (kubectl, helm)"
+display "ytt" "YAML templating tool"
 display "velero" "Cluster resources, persistent volumes backup/restore (used with log-k8s)"
 
 printf "\n%bOTHER CLI TOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
