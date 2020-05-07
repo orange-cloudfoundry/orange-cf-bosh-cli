@@ -3,6 +3,19 @@
 # Log with uaac cli
 #===========================================================================
 
+#--- Micro-bos credentials file
+MICRO_BOSH_CREDENTIALS="${HOME}/bosh/secrets/bootstrap/micro-bosh/creds.yml"
+
+#--- Get a parameter in specified yaml file
+getValue() {
+  value=$(bosh int $1 --path $2 2> /dev/null)
+  if [ $? != 0 ] ; then
+    printf "\n%bERROR: Propertie \"$2\" unknown in \"$1\".%b\n\n" "${REVERSE}${RED}" "${STD}" ; flagError=1
+  else
+    printf "${value}"
+  fi
+}
+
 #--- Get a parameter in credhub
 getCredhubValue() {
   value=$(credhub g -n $2 | grep 'value:' | awk '{print $2}')
@@ -17,6 +30,10 @@ getCredhubValue() {
 flagError=0
 if [ ! -s "${BOSH_CA_CERT}" ] ; then
   printf "\n%bERROR : CA cert file \"${BOSH_CA_CERT}\" unknown.%b\n\n" "${RED}" "${STD}" ; flagError=1
+fi
+
+if [ ! -s ${MICRO_BOSH_CREDENTIALS} ] ; then
+  printf "\n%bFile \"${MICRO_BOSH_CREDENTIALS}\" unavailable.%b\n\n" "${REVERSE}${RED}" "${STD}" ; flagError=1
 fi
 
 #--- Log to credhub
@@ -39,24 +56,24 @@ if [ ${flagError} = 0 ] ; then
   while [ ${flag} = 0 ] ; do
     flag=1
     printf "%bTarget UAA :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-    printf "%b1%b : cf (master-depls/cf)\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b2%b : micro (micro-depls/credhub-ha)\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : master (micro-depls/bosh-master)\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b4%b : ops (master-depls/bosh-ops)\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b5%b : coab (master-depls/bosh-coab)\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b6%b : kubo (master-depls/bosh-kubo)\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b7%b : remote-r2 (master-depls/bosh-remote-r2)\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b8%b : remote-r3 (master-depls/bosh-remote-r3)\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b1%b : micro-bosh\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b2%b : bosh-master\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b : bosh-ops\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b4%b : bosh-coab\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b5%b : bosh-remote-r2\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b6%b : bosh-remote-r3\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b7%b : bosh-kubo\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b8%b : cf (master-depls/cf)\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
-      1) UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; UAA_USER="admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/cf/uaa_admin_client_secret" ;;
-      2) UAA_TARGET="https://192.168.10.10:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/micro-bosh/uaa_admin_client_secret" ;;
-      3) UAA_TARGET="https://192.168.116.158:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/micro-bosh/bosh-master/uaa_admin_client_secret" ;;
-      4) UAA_TARGET="https://192.168.99.152:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-ops/uaa_admin_client_secret" ;;
-      5) UAA_TARGET="https://192.168.99.155:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-coab/uaa_admin_client_secret" ;;
-      6) UAA_TARGET="https://192.168.99.154:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-kubo/uaa_admin_client_secret" ;;
-      7) UAA_TARGET="https://192.168.99.153:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r2/uaa_admin_client_secret" ;;
-      8) UAA_TARGET="https://192.168.99.156:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r3/uaa_admin_client_secret" ;;
+      1) UAA_TARGET="https://192.168.10.10:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET="$(getValue ${MICRO_BOSH_CREDENTIALS} /uaa_admin_client_secret)" ;;
+      2) UAA_TARGET="https://192.168.116.158:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/micro-bosh/bosh-master/uaa_admin_client_secret" ;;
+      3) UAA_TARGET="https://192.168.99.152:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-ops/uaa_admin_client_secret" ;;
+      4) UAA_TARGET="https://192.168.99.155:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-coab/uaa_admin_client_secret" ;;
+      5) UAA_TARGET="https://192.168.99.153:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r2/uaa_admin_client_secret" ;;
+      6) UAA_TARGET="https://192.168.99.156:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r3/uaa_admin_client_secret" ;;
+      7) UAA_TARGET="https://192.168.99.154:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-kubo/uaa_admin_client_secret" ;;
+      8) UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; UAA_USER="admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/cf/uaa_admin_client_secret" ;;
       *) flag=0 ; clear ;;
     esac
   done
