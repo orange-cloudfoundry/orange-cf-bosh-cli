@@ -37,9 +37,9 @@ if [ ${flagError} = 0 ] ; then
     printf "%b3%b : services\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
-      1) CFCR_DEPLOYMENT="micro-bosh" ; CFCR_CLUSTER="micro" ;;
-      2) CFCR_DEPLOYMENT="bosh-master" ; CFCR_CLUSTER="master" ;;
-      3) CFCR_DEPLOYMENT="bosh-kubo" ; CFCR_CLUSTER="serv" ;;
+      1) CFCR_DIRECTOR="micro-bosh" ; CFCR_DEPLOYMENT="cfcr" ; CFCR_CLUSTER="micro" ;;
+      2) CFCR_DIRECTOR="bosh-master" ; CFCR_DEPLOYMENT="cfcr" ; CFCR_CLUSTER="master" ;;
+      3) CFCR_DIRECTOR="bosh-coab" ; CFCR_DEPLOYMENT="10-cfcr" ; CFCR_CLUSTER="serv" ;;
       *) flag=0 ; clear ;;
     esac
   done
@@ -57,12 +57,13 @@ if [ ${flagError} = 0 ] ; then
     if [ ! -d ${CRT_DIR} ] ; then
       mkdir ${CRT_DIR}
     fi
-    bosh int <(credhub get -n "/${CFCR_DEPLOYMENT}/cfcr/tls-kubernetes" --output-json) --path=/value/ca > ${CRT_DIR}/${CFCR_CLUSTER}.crt
+    /bosh-coab/10-cfcr/tls-kubernetes
+    bosh int <(credhub get -n "/${CFCR_DIRECTOR}/${CFCR_DEPLOYMENT}/tls-kubernetes" --output-json) --path=/value/ca > ${CRT_DIR}/${CFCR_CLUSTER}.crt
     kubectl config set-cluster ${CFCR_ALIAS} --server="https://${CFCR_HOST}" --certificate-authority=${CRT_DIR}/${CFCR_CLUSTER}.crt --embed-certs=true
     if [ $? != 0 ] ; then
       printf "\n\n%bERROR : Config cluster failed.%b\n\n" "${RED}" "${STD}"
     else
-      getCredhubValue "CFCR_PASSWORD" "/${CFCR_DEPLOYMENT}/cfcr/kubo-admin-password"
+      getCredhubValue "CFCR_PASSWORD" "/${CFCR_DIRECTOR}/${CFCR_DEPLOYMENT}/kubo-admin-password"
       if [ ${flagError} = 0 ] ; then
         kubectl config set-credentials ${CFCR_ALIAS}-admin --token=${CFCR_PASSWORD}
         if [ $? != 0 ] ; then
