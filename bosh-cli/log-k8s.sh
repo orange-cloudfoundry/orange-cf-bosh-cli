@@ -57,7 +57,7 @@ if [ ${flagError} = 0 ] ; then
     if [ ! -d ${CRT_DIR} ] ; then
       mkdir ${CRT_DIR}
     fi
-    /bosh-coab/10-cfcr/tls-kubernetes
+
     bosh int <(credhub get -n "/${CFCR_DIRECTOR}/${CFCR_DEPLOYMENT}/tls-kubernetes" --output-json) --path=/value/ca > ${CRT_DIR}/${CFCR_CLUSTER}.crt
     kubectl config set-cluster ${CFCR_ALIAS} --server="https://${CFCR_HOST}" --certificate-authority=${CRT_DIR}/${CFCR_CLUSTER}.crt --embed-certs=true
     if [ $? != 0 ] ; then
