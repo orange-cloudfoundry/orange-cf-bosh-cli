@@ -20,6 +20,7 @@ display "kapp" "Kubernetes yaml tool"
 display "kubectl" "Cluster manager cli (used with log-k8s)"
 display "k9s" "Cluster manager cli (used with log-k8s)"
 display "log-k8s" "Log with kubernetes cli (kubectl, helm)"
+display "svcat" "Service Catalog cli"
 display "ytt" "YAML templating tool"
 display "velero" "Cluster resources, persistent volumes backup/restore (used with log-k8s)"
 

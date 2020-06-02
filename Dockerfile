@@ -16,7 +16,7 @@ ENV BBR_VERSION="1.7.2" \
     BOSH_CLI_VERSION="6.2.1" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
-    CF_CLI_VERSION="6.49.0" \
+    CF_CLI_VERSION="6.51.0" \
     CF_CLI7_VERSION="7.0.0-beta.30" \
     CF_UAAC_VERSION="4.2.0" \
     CREDHUB_VERSION="2.7.0" \
@@ -25,16 +25,17 @@ ENV BBR_VERSION="1.7.2" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.1.1" \
     JQ_VERSION="1.6" \
+    K14S_KAPP_VERSION="0.28.0" \
+    K14S_YTT_VERSION="0.27.2" \
+    K9S_VERSION="0.20.2" \
     KUBECTL_VERSION="1.15.4" \
-    K14S_KAPP_VERSION="0.25.0" \
-    K14S_YTT_VERSION="0.27.1" \
-    K9S_VERSION="0.18.1" \
-    MYSQL_SHELL_VERSION="8.0.16-1" \
+    MYSQL_SHELL_VERSION="8.0.20-1" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6" \
     RUBY_PATH_VERSION="2.6.3" \
     SHIELD_VERSION="8.7.2" \
-    SPRUCE_VERSION="1.25.2" \
+    SPRUCE_VERSION="1.25.3" \
+    SVCAT_VERSION="0.3.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     VELERO_VERSION="1.3.0"
@@ -95,9 +96,10 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
-    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu16.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu18.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
     printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
     printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
+    printf '\n=> Add SVCAT-CLI\n' && curl -sSLo /usr/local/bin/svcat "https://download.svcat.sh/cli/v${SVCAT_VERSION}/linux/amd64/svcat" && \
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
     printf '\n=> Add VELERO-CLI\n' && curl -sSL "https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin/velero && \
@@ -110,31 +112,31 @@ RUN printf '\n=====================================================\n Install sy
     printf '\nYour are logged into an ubuntu docker container, which provides several tools :\n' > /etc/motd && \
     printf 'Generic tools:\n' >> /etc/motd && \
     printf "  bosh (${BOSH_CLI_VERSION}) - Bosh CLI (https://bosh.io/docs/cli-v2.html)\n" >> /etc/motd && \
-    printf "  cf (${CF_CLI_VERSION}) - Cloud Foundry CLI (https://github.com/cloudfoundry/cli)\n" >> /etc/motd && \
-    printf "  credhub (${CREDHUB_VERSION}) - Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli)\n" >> /etc/motd && \
-    printf "  fly (${FLY_VERSION}) - Concourse CLI (https://github.com/concourse/fly)\n" >> /etc/motd && \
+    printf "  cf (${CF_CLI_VERSION}) - Cloud Foundry CLI (https://github.com/cloudfoundry/cli/)\n" >> /etc/motd && \
+    printf "  credhub (${CREDHUB_VERSION}) - Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli/)\n" >> /etc/motd && \
+    printf "  fly (${FLY_VERSION}) - Concourse CLI (https://github.com/concourse/fly/)\n" >> /etc/motd && \
     printf "  git (${GIT_VERSION}) - Git CLI\n" >> /etc/motd && \
     printf "  jq (${JQ_VERSION}) - JSON processing Tool (https://stedolan.github.io/jq/)\n" >> /etc/motd && \
-    printf "  spruce (${SPRUCE_VERSION}) - YAML templating tool (https://github.com/geofffranks/spruce)\n" >> /etc/motd && \
-    printf "  terraform (${TERRAFORM_VERSION}) - Provides a common configuration to launch infrastructure (https://www.terraform.io/)\n" >> /etc/motd && \
-    printf "  uaac (${CF_UAAC_VERSION}) - Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac)\n" >> /etc/motd && \
+    printf "  spruce (${SPRUCE_VERSION}) - YAML templating tool (https://github.com/geofffranks/spruce/)\n" >> /etc/motd && \
+    printf "  terraform (${TERRAFORM_VERSION}) - Manage infrastructure creation by configuration (https://www.terraform.io/)\n" >> /etc/motd && \
+    printf "  uaac (${CF_UAAC_VERSION}) - Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac/)\n" >> /etc/motd && \
     printf 'Admin tools:\n' >> /etc/motd && \
     printf "  bbr (${BBR_VERSION}) - Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)\n" >> /etc/motd && \
-    printf "  gof3r (${GO3FR_VERSION}) - Client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)\n" >> /etc/motd && \
+    printf "  gof3r (${GO3FR_VERSION}) - Client for fast, parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)\n" >> /etc/motd && \
     printf "  mongo (${MONGO_SHELL_VERSION}) - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)\n" >> /etc/motd && \
     printf "  mysqlsh (${MYSQL_SHELL_VERSION}) - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)\n" >> /etc/motd && \
     printf "  shield (${SHIELD_VERSION}) - Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)\n" >> /etc/motd && \
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  helm (${HELM_VERSION}) - Kubernetes Package Manager (https://docs.helm.sh/)\n" >> /etc/motd && \
     printf "  kubectl (${KUBECTL_VERSION}) - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)\n" >> /etc/motd && \
-    printf "  kapp (${K14S_KAPP_VERSION}) - Kubernetes YAML Tool (https://github.com/k14s/kapp)\n" >> /etc/motd && \
-    printf "  k9s (${K9S_VERSION}) - Kubernetes CLI (https://github.com/derailed/k9s)\n" >> /etc/motd && \
-    printf "  ytt (${K14S_YTT_VERSION}) - YAML Templating Tool (https://github.com/k14s/ytt)\n" >> /etc/motd && \
-    printf "  velero (${VELERO_VERSION}) - Kubernetes CLI for cluster resources backup/restore (https://github.com/vmware-tanzu/velero)\n" >> /etc/motd && \
+    printf "  kapp (${K14S_KAPP_VERSION}) - Kubernetes YAML Tool (https://github.com/k14s/kapp/)\n" >> /etc/motd && \
+    printf "  k9s (${K9S_VERSION}) - Kubernetes CLI (https://github.com/derailed/k9s/)\n" >> /etc/motd && \
+    printf "  svcat (${SVCAT_VERSION}) - Kubernetes Service Catalog CLI (https://github.com/kubernetes-sigs/service-catalog/)\n" >> /etc/motd && \
+    printf "  ytt (${K14S_YTT_VERSION}) - YAML Templating Tool (https://github.com/k14s/ytt/)\n" >> /etc/motd && \
+    printf "  velero (${VELERO_VERSION}) - Kubernetes CLI for Cluster Resources Backup/Restore (https://github.com/vmware-tanzu/velero/)\n" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
-    printf '  "tools" command tells you about the available tools.\n' >> /etc/motd && \
-    printf '  "/data/shared" is a persistant data docker volume, shared with other container instances.\n' >> /etc/motd && \
-    printf '  All other paths in this container will be reseted on restart/update (do not save data on it).\n\n' >> /etc/motd && \
+    printf '  "tools" command gives available tools.\n' >> /etc/motd && \
+    printf '  All path except "/data/shared" are not persistant (do not save data on it).\n\n' >> /etc/motd && \
     printf '\n=====================================================\n Configure system and cleanup docker image\n=====================================================\n' && \
     locale-gen en_US.UTF-8 && \
     mv /tmp/bosh-cli/*.sh /usr/local/bin/ && mv /tmp/bosh-cli/sshd.conf /etc/supervisor/conf.d/ && mv /tmp/bosh-cli/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \
