@@ -6,7 +6,7 @@
 #--- Log to CF
 flag=0
 while [ ${flag} = 0 ] ; do
-  printf "\n%bCF User :%b " "${REVERSE}${YELLOW}" "${STD}" ; read CF_USER
+  printf "\n%bCF User :%b " "${REVERSE}${GREEN}" "${STD}" ; read CF_USER
   if [ "${CF_USER}" = "" ] ; then
     clear
   else

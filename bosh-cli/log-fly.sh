@@ -7,7 +7,7 @@
 flagError=0
 flag=$(credhub f > /dev/null 2>&1)
 if [ $? != 0 ] ; then
-  printf "\n%bLDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  printf "\n%bLDAP user and password :%b\n" "${REVERSE}${GREEN}" "${STD}"
   printf "username: " ; read LDAP_USER
   credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
   if [ $? != 0 ] ; then
@@ -38,11 +38,10 @@ if [ ${flagError} = 0 ] ; then
     printf "%b4%b  : master-depls\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b5%b  : ops-depls\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b6%b  : coab-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b7%b  : kubo-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b8%b  : remote-r2-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b9%b  : remote-r3-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b10%b : cloudflare-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b11%b : utils\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b7%b  : remote-r2-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b8%b  : remote-r3-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b9%b  : cloudflare-depls\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b10%b : utils\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
       1) TEAM="main" ;;
@@ -51,11 +50,10 @@ if [ ${flagError} = 0 ] ; then
       4) TEAM="master-depls" ;;
       5) TEAM="ops-depls" ;;
       6) TEAM="coab-depls" ;;
-      7) TEAM="kubo-depls" ;;
-      8) TEAM="remote-r2-depls" ;;
-      9) TEAM="remote-r3-depls" ;;
-      10) TEAM="cloudflare-depls" ;;
-      11) TEAM="utils" ;;
+      7) TEAM="remote-r2-depls" ;;
+      8) TEAM="remote-r3-depls" ;;
+      9) TEAM="cloudflare-depls" ;;
+      10) TEAM="utils" ;;
       *) flag=0 ; clear ;;
     esac
   done

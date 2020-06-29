@@ -55,18 +55,16 @@ if [ ${flagError} = 0 ] ; then
       printf "%b2%b : master\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b3%b : ops\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b4%b : coab\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b5%b : kubo\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b6%b : remote-r2\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b7%b : remote-r3\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b5%b : remote-r2\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b6%b : remote-r3\n" "${GREEN}${BOLD}" "${STD}"
       printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
       case "${choice}" in
         1) BOSH_TARGET="micro" ;;
         2) BOSH_TARGET="master" ;;
         3) BOSH_TARGET="ops" ;;
         4) BOSH_TARGET="coab" ;;
-        5) BOSH_TARGET="kubo" ;;
-        6) BOSH_TARGET="remote-r2" ;;
-        7) BOSH_TARGET="remote-r3" ;;
+        5) BOSH_TARGET="remote-r2" ;;
+        6) BOSH_TARGET="remote-r3" ;;
         *) flag=0 ; clear ;;
       esac
     done
@@ -95,7 +93,7 @@ if [ ${flagError} = 0 ] ; then
       isUserNotConnected=$(bosh env | grep "not logged in")
       if [ "${isUserNotConnected}" != "" ] ; then
         if [ ${flag_use_uaa} = 1 ] ; then
-          printf "\n%buaa \"admin\" client password :%b " "${REVERSE}${YELLOW}" "${STD}" ; read BOSH_CLIENT_SECRET
+          printf "\n%buaa \"admin\" client password :%b " "${REVERSE}${GREEN}" "${STD}" ; read BOSH_CLIENT_SECRET
           if [ "${BOSH_CLIENT_SECRET}" = "" ] ; then
             printf "\n\n%bERROR : Empty password.%b\n\n" "${RED}" "${STD}"
             flagError=1
@@ -104,7 +102,7 @@ if [ ${flagError} = 0 ] ; then
             export BOSH_CLIENT_SECRET
           fi
         else
-          printf "\n%bLDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+          printf "\n%bLDAP user and password :%b\n" "${REVERSE}${GREEN}" "${STD}"
         fi
 
         #--- Log to bosh director

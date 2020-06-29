@@ -17,7 +17,7 @@ getCredhubValue() {
 flagError=0
 flag=$(credhub f > /dev/null 2>&1)
 if [ $? != 0 ] ; then
-  printf "\n%bLDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  printf "\n%bLDAP user and password :%b\n" "${REVERSE}${GREEN}" "${STD}"
   printf "username: " ; read LDAP_USER
   credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
   if [ $? != 0 ] ; then
@@ -37,19 +37,19 @@ if [ ${flagError} = 0 ] ; then
     printf "%b3%b : services\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
-      1) CFCR_DIRECTOR="micro-bosh" ; CFCR_DEPLOYMENT="cfcr" ; CFCR_CLUSTER="micro" ;;
-      2) CFCR_DIRECTOR="bosh-master" ; CFCR_DEPLOYMENT="cfcr" ; CFCR_CLUSTER="master" ;;
-      3) CFCR_DIRECTOR="bosh-coab" ; CFCR_DEPLOYMENT="10-cfcr" ; CFCR_CLUSTER="serv" ;;
+      1) K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="cfcr" ; K8S_CLUSTER="micro" ;;
+      2) K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="cfcr" ; K8S_CLUSTER="master" ;;
+      3) K8S_DIRECTOR="bosh-coab" ; K8S_DEPLOYMENT="10-cfcr" ; K8S_CLUSTER="serv" ;;
       *) flag=0 ; clear ;;
     esac
   done
 
   #--- Check if bosh dns exists
-  CFCR_HOST="cfcr-api-k8s-${CFCR_CLUSTER}.internal.paas"
-  CFCR_ALIAS="cfcr-${CFCR_CLUSTER}"
-  flag_host="$(host ${CFCR_HOST} | awk '{print $4}')"
+  K8S_HOST="cfcr-api-k8s-${K8S_CLUSTER}.internal.paas"
+  K8S_ALIAS="cfcr-${K8S_CLUSTER}"
+  flag_host="$(host ${K8S_HOST} | awk '{print $4}')"
   if [ "${flag_host}" = "found:" ] ; then
-    printf "\n\n%bERROR : Kubernetes cluster endpoint \"${CFCR_HOST}\" unknown (no dns record).%b\n\n" "${RED}" "${STD}"
+    printf "\n\n%bERROR : Kubernetes cluster endpoint \"${K8S_HOST}\" unknown (no dns record).%b\n\n" "${RED}" "${STD}"
   else
     #--- Set kubernetes configuration
     printf "\n"
@@ -58,18 +58,18 @@ if [ ${flagError} = 0 ] ; then
       mkdir ${CRT_DIR}
     fi
 
-    bosh int <(credhub get -n "/${CFCR_DIRECTOR}/${CFCR_DEPLOYMENT}/tls-kubernetes" --output-json) --path=/value/ca > ${CRT_DIR}/${CFCR_CLUSTER}.crt
-    kubectl config set-cluster ${CFCR_ALIAS} --server="https://${CFCR_HOST}" --certificate-authority=${CRT_DIR}/${CFCR_CLUSTER}.crt --embed-certs=true
+    bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-kubernetes" --output-json) --path=/value/ca > ${CRT_DIR}/${K8S_CLUSTER}.crt
+    kubectl config set-cluster ${K8S_ALIAS} --server="https://${K8S_HOST}" --certificate-authority=${CRT_DIR}/${K8S_CLUSTER}.crt --embed-certs=true
     if [ $? != 0 ] ; then
       printf "\n\n%bERROR : Config cluster failed.%b\n\n" "${RED}" "${STD}"
     else
-      getCredhubValue "CFCR_PASSWORD" "/${CFCR_DIRECTOR}/${CFCR_DEPLOYMENT}/kubo-admin-password"
+      getCredhubValue "K8S_PASSWORD" "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/kubo-admin-password"
       if [ ${flagError} = 0 ] ; then
-        kubectl config set-credentials ${CFCR_ALIAS}-admin --token=${CFCR_PASSWORD}
+        kubectl config set-credentials ${K8S_ALIAS}-admin --token=${K8S_PASSWORD}
         if [ $? != 0 ] ; then
           printf "\n\n%bERROR : Config cluster credentials failed.%b\n\n" "${RED}" "${STD}"
         else
-          kubectl config set-context ${CFCR_ALIAS} --cluster=${CFCR_ALIAS} --user=${CFCR_ALIAS}-admin
+          kubectl config set-context ${K8S_ALIAS} --cluster=${K8S_ALIAS} --user=${K8S_ALIAS}-admin
           if [ $? != 0 ] ; then
             printf "\n\n%bERROR : Config cluster context failed.%b\n\n" "${RED}" "${STD}"
           else
@@ -77,7 +77,7 @@ if [ ${flagError} = 0 ] ; then
             svcat install plugin
 
             #--- Log to kubernetes cluster
-            kubectl config use-context ${CFCR_ALIAS}
+            kubectl config use-context ${K8S_ALIAS}
 
             #--- Display cluster nodes
             printf "\n\n%bCluster nodes:%b\n" "${YELLOW}${REVERSE}" "${STD}"

@@ -26,6 +26,7 @@ ENV BBR_VERSION="1.7.2" \
     HELM_VERSION="3.1.1" \
     JQ_VERSION="1.6" \
     K14S_KAPP_VERSION="0.28.0" \
+    K14S_KLBD_VERSION="0.23.0" \
     K14S_YTT_VERSION="0.27.2" \
     K9S_VERSION="0.20.2" \
     KUBECTL_VERSION="1.15.4" \
@@ -93,6 +94,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add KUBECTL-CLI\n' && curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && chmod 755 /usr/local/bin/kubectl && \
     printf '\n=> Add KUBECTL-CLI completion\n' && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
     printf '\n=> Add K14S-KAPP-CLI\n' && curl -sSLo /usr/local/bin/kapp "https://github.com/k14s/kapp/releases/download/v${K14S_KAPP_VERSION}/kapp-linux-amd64" && \
+    printf '\n=> Add K14S-KLBD-CLI\n' && curl -sSLo /usr/local/bin/klbd "https://github.com/k14s/kbld/releases/download/v${K14S_KLBD_VERSION}/kbld-linux-amd64" && \
     printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
@@ -129,7 +131,8 @@ RUN printf '\n=====================================================\n Install sy
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  helm (${HELM_VERSION}) - Kubernetes Package Manager (https://docs.helm.sh/)\n" >> /etc/motd && \
     printf "  kubectl (${KUBECTL_VERSION}) - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)\n" >> /etc/motd && \
-    printf "  kapp (${K14S_KAPP_VERSION}) - Kubernetes YAML Tool (https://github.com/k14s/kapp/)\n" >> /etc/motd && \
+    printf "  kapp (${K14S_KAPP_VERSION}) - Kubernetes YAML tool (https://github.com/k14s/kapp/)\n" >> /etc/motd && \
+    printf "  klbd (${K14S_KLBD_VERSION}) - Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)\n" >> /etc/motd && \
     printf "  k9s (${K9S_VERSION}) - Kubernetes CLI (https://github.com/derailed/k9s/)\n" >> /etc/motd && \
     printf "  svcat (${SVCAT_VERSION}) - Kubernetes Service Catalog CLI (https://github.com/kubernetes-sigs/service-catalog/)\n" >> /etc/motd && \
     printf "  ytt (${K14S_YTT_VERSION}) - YAML Templating Tool (https://github.com/k14s/ytt/)\n" >> /etc/motd && \

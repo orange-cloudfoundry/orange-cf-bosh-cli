@@ -44,7 +44,7 @@ if [ ${flagError} = 0 ] ; then
   if [ $? != 0 ] ; then
     if [ ${flag_use_uaa} = 1 ] ; then
       #--- Log to credhub with uaa client
-      printf "\n%b\"bosh_credhub_secrets\" password (from shared/secrets.yml) :%b " "${REVERSE}${YELLOW}" "${STD}" ; read CREDHUB_CLIENT_SECRET
+      printf "\n%b\"bosh_credhub_secrets\" password (from shared/secrets.yml) :%b " "${REVERSE}${GREEN}" "${STD}" ; read CREDHUB_CLIENT_SECRET
       if [ "${CREDHUB_CLIENT_SECRET}" = "" ] ; then
         printf "\n\n%bERROR : Empty password.%b\n\n" "${RED}" "${STD}"
       else
@@ -55,7 +55,7 @@ if [ ${flagError} = 0 ] ; then
       fi
     else
       #--- Log to credhub with ldap account
-      printf "\n%bLDAP user and password :%b\n" "${REVERSE}${YELLOW}" "${STD}"
+      printf "\n%bLDAP user and password :%b\n" "${REVERSE}${GREEN}" "${STD}"
       printf "username: " ; read LDAP_USER
       credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
       if [ $? != 0 ] ; then
