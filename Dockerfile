@@ -113,30 +113,30 @@ RUN printf '\n=====================================================\n Install sy
     GIT_VERSION=$(git --version | awk '{print $3}') && MONGO_SHELL_VERSION=$(mongo --version | grep "MongoDB shell version" | awk '{print $4}') && \
     printf '\nYour are logged into an ubuntu docker container, which provides several tools :\n' > /etc/motd && \
     printf 'Generic tools:\n' >> /etc/motd && \
-    printf "  bosh (${BOSH_CLI_VERSION}) - Bosh CLI (https://bosh.io/docs/cli-v2.html)\n" >> /etc/motd && \
-    printf "  cf (${CF_CLI_VERSION}) - Cloud Foundry CLI (https://github.com/cloudfoundry/cli/)\n" >> /etc/motd && \
-    printf "  credhub (${CREDHUB_VERSION}) - Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli/)\n" >> /etc/motd && \
-    printf "  fly (${FLY_VERSION}) - Concourse CLI (https://github.com/concourse/fly/)\n" >> /etc/motd && \
-    printf "  git (${GIT_VERSION}) - Git CLI\n" >> /etc/motd && \
-    printf "  jq (${JQ_VERSION}) - JSON processing Tool (https://stedolan.github.io/jq/)\n" >> /etc/motd && \
-    printf "  spruce (${SPRUCE_VERSION}) - YAML templating tool (https://github.com/geofffranks/spruce/)\n" >> /etc/motd && \
-    printf "  terraform (${TERRAFORM_VERSION}) - Manage infrastructure creation by configuration (https://www.terraform.io/)\n" >> /etc/motd && \
-    printf "  uaac (${CF_UAAC_VERSION}) - Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac/)\n" >> /etc/motd && \
+    printf "  %-20s %s\n" "bosh (${BOSH_CLI_VERSION})" "Bosh CLI (https://bosh.io/docs/cli-v2.html)" >> /etc/motd && \
+    printf "  %-20s %s\n" "cf (${CF_CLI_VERSION})" "Cloud Foundry CLI (https://github.com/cloudfoundry/cli/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "credhub (${CREDHUB_VERSION})" "Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "fly (${FLY_VERSION})" "Concourse CLI (https://github.com/concourse/fly/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "git (${GIT_VERSION})" "Git CLI" >> /etc/motd && \
+    printf "  %-20s %s\n" "jq (${JQ_VERSION})" "JSON processing Tool (https://stedolan.github.io/jq/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "spruce (${SPRUCE_VERSION})" "YAML templating tool (https://github.com/geofffranks/spruce/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "terraform (${TERRAFORM_VERSION})" "Manage infrastructure creation by configuration (https://www.terraform.io/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "uaac (${CF_UAAC_VERSION})" "Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac/)" >> /etc/motd && \
     printf 'Admin tools:\n' >> /etc/motd && \
-    printf "  bbr (${BBR_VERSION}) - Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)\n" >> /etc/motd && \
-    printf "  gof3r (${GO3FR_VERSION}) - Client for fast, parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)\n" >> /etc/motd && \
-    printf "  mongo (${MONGO_SHELL_VERSION}) - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)\n" >> /etc/motd && \
-    printf "  mysqlsh (${MYSQL_SHELL_VERSION}) - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)\n" >> /etc/motd && \
-    printf "  shield (${SHIELD_VERSION}) - Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)\n" >> /etc/motd && \
+    printf "  %-20s %s\n" "bbr (${BBR_VERSION})" "Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "gof3r (${GO3FR_VERSION})" "Client for parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "mongo (${MONGO_SHELL_VERSION})" "MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "mysqlsh (${MYSQL_SHELL_VERSION})" "MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
     printf 'Kubernetes tools:\n' >> /etc/motd && \
-    printf "  helm (${HELM_VERSION}) - Kubernetes Package Manager (https://docs.helm.sh/)\n" >> /etc/motd && \
-    printf "  kubectl (${KUBECTL_VERSION}) - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)\n" >> /etc/motd && \
-    printf "  kapp (${K14S_KAPP_VERSION}) - Kubernetes YAML tool (https://github.com/k14s/kapp/)\n" >> /etc/motd && \
-    printf "  klbd (${K14S_KLBD_VERSION}) - Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)\n" >> /etc/motd && \
-    printf "  k9s (${K9S_VERSION}) - Kubernetes CLI (https://github.com/derailed/k9s/)\n" >> /etc/motd && \
-    printf "  svcat (${SVCAT_VERSION}) - Kubernetes Service Catalog CLI (https://github.com/kubernetes-sigs/service-catalog/)\n" >> /etc/motd && \
-    printf "  ytt (${K14S_YTT_VERSION}) - YAML Templating Tool (https://github.com/k14s/ytt/)\n" >> /etc/motd && \
-    printf "  velero (${VELERO_VERSION}) - Kubernetes CLI for Cluster Resources Backup/Restore (https://github.com/vmware-tanzu/velero/)\n" >> /etc/motd && \
+    printf "  %-20s %s\n" "helm (${HELM_VERSION})" "Kubernetes Package Manager (https://docs.helm.sh/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "kapp (${K14S_KAPP_VERSION})" "Kubernetes YAML tool (https://github.com/k14s/kapp/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "klbd (${K14S_KLBD_VERSION})" "Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "svcat (${SVCAT_VERSION})" "Kubernetes Service Catalog CLI (https://github.com/kubernetes-sigs/service-catalog/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "ytt (${K14S_YTT_VERSION})" "YAML Templating Tool (https://github.com/k14s/ytt/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "velero (${VELERO_VERSION})" "Kubernetes CLI for Cluster Resources Backup/Restore (https://github.com/vmware-tanzu/velero/)" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
     printf '  "tools" command gives available tools.\n' >> /etc/motd && \
     printf '  All path except "/data/shared" are not persistant (do not save data on it).\n\n' >> /etc/motd && \
