@@ -65,7 +65,7 @@ if [ ${flagError} = 0 ] ; then
       if [ ${flagError} = 0 ] ; then
         if [ "${choice}" = "4" ] ; then
           CFCR_PASSWORD="$(credhub g -n /${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/kubo-admin-password -j | jq .value -r)"
-          kubectl config set-credentials ${K8S_ALIAS}-admin --token=${CFCR_PASSWORD}
+          kubectl config set-credentials "admin" --token=${CFCR_PASSWORD}
         else
           kubectl config set-credentials "admin" --client-key ${CRT_DIR}/k8s_${K8S_CLUSTER}_key.pem --client-certificate ${CRT_DIR}/k8s_${K8S_CLUSTER}_cert.pem --embed-certs
         fi
