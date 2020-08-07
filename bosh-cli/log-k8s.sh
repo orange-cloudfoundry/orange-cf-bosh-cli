@@ -77,11 +77,11 @@ if [ ${flagError} = 0 ] ; then
           if [ $? != 0 ] ; then
             printf "\n\n%bERROR : Config cluster context failed.%b\n\n" "${RED}" "${STD}"
           else
-            #--- Install svcat plugin for kubectl
-            svcat install plugin
-
             #--- Log to kubernetes cluster
             kubectl config use-context "${K8S_ALIAS}"
+
+            #--- Install svcat plugin for kubectl
+            svcat install plugin
 
             #--- Display cluster nodes
             printf "\n\n%bCluster nodes:%b\n" "${YELLOW}${REVERSE}" "${STD}"
