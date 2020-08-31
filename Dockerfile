@@ -23,13 +23,13 @@ ENV BBR_VERSION="1.7.2" \
     DB_DUMPER_VERSION="1.4.2" \
     FLY_VERSION="6.4.0" \
     GO3FR_VERSION="0.5.0" \
-    HELM_VERSION="3.1.1" \
+    HELM_VERSION="3.3.0" \
     JQ_VERSION="1.6" \
     K14S_KAPP_VERSION="0.28.0" \
     K14S_KLBD_VERSION="0.23.0" \
     K14S_YTT_VERSION="0.27.2" \
     K9S_VERSION="0.20.2" \
-    KUBECTL_VERSION="1.15.4" \
+    KUBECTL_VERSION="1.18.5" \
     MYSQL_SHELL_VERSION="8.0.20-1" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6" \
@@ -39,7 +39,7 @@ ENV BBR_VERSION="1.7.2" \
     SVCAT_VERSION="0.3.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    VELERO_VERSION="1.3.0"
+    VELERO_VERSION="1.4.0"
 
 #--- Set ruby env for COA
 ENV PATH="/usr/local/rvm/gems/ruby-${RUBY_PATH_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_PATH_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_PATH_VERSION}/bin:${PATH}" \
