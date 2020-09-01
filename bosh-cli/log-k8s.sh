@@ -24,7 +24,7 @@ if [ ${flagError} = 0 ] ; then
     printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
     printf "%b1%b : micro\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b2%b : master\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : k8s services\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b : services\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
       1) K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="k8s" ; K8S_CLUSTER="micro" ;;
