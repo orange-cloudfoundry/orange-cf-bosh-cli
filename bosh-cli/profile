@@ -60,7 +60,7 @@ alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow
 alias init-git='. init-git.sh'
 alias prune='git fetch --prune'
 alias pull='git pull --rebase ; git fetch --prune'
-alias push='git pull --rebase ;  ; git fetch --prune ; git push'
+alias push='git pull --rebase ; git fetch --prune ; git push'
 alias status='git status'
 
 #--- Cli log aliases
