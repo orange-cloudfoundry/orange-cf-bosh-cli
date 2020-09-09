@@ -36,7 +36,7 @@ if [ ${flagError} = 0 ] ; then
 
   #--- Check if bosh dns exists
   K8S_ALIAS="k8s-${K8S_CLUSTER}"
-  K8S_API_ENDPOINT="cfcr-api-k8s-${K8S_CLUSTER}.internal.paas"
+  K8S_API_ENDPOINT="k8s-${K8S_CLUSTER}-api.internal.paas"
   flag_host="$(host ${K8S_API_ENDPOINT} | awk '{print $4}')"
   if [ "${flag_host}" = "found:" ] ; then
     printf "\n\n%bERROR : Kubernetes cluster endpoint \"${K8S_API_ENDPOINT}\" unknown (no dns record).%b\n\n" "${RED}" "${STD}"
