@@ -82,7 +82,7 @@ alias dsh='function __dsh() { docker exec -it $1 sh; }; __dsh'
 #--- Tools aliases
 alias bosh-clean-prometheus-tasks='for var in $(bosh tasks | grep "queued" | grep "prometheus" | awk "{print $1}") ; do bosh cancel-task $var ; done'
 alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
-alias credhub-get='function __cg() { log-credhub ; credhub get -n $1 -j | jq .value -r; }; __cg'
+alias credhub-get='function __cg() { log-credhub -i ; credhub get -n $1 -j | jq .value -r; }; __cg'
 alias diff='colordiff'
 alias f='function __f() { printf "%100s\n"|tr " " "=";find . ! -regex ".*[/]\.git[/]?.*" -type f,l -not -xtype l -not -xtype d -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "%100s\n"|tr " " "="; }; __f'
 alias fly='fly -t concourse'

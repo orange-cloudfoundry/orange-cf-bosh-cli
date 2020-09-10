@@ -30,6 +30,7 @@ ENV BBR_VERSION="1.7.2" \
     K14S_YTT_VERSION="0.27.2" \
     K9S_VERSION="0.20.2" \
     KUBECTL_VERSION="1.18.8" \
+    KUSTOMIZE_VERSION="3.8.2" \
     MYSQL_SHELL_VERSION="8.0.20-1" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6" \
@@ -93,6 +94,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add JQ-CLI\n' && curl -sSLo /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
     printf '\n=> Add KUBECTL-CLI\n' && curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && chmod 755 /usr/local/bin/kubectl && \
     printf '\n=> Add KUBECTL-CLI completion\n' && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && \
+    printf '\n=> Add KUSTOMIZE-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/kustomize /usr/local/bin/kustomize && \
     printf '\n=> Add K14S-KAPP-CLI\n' && curl -sSLo /usr/local/bin/kapp "https://github.com/k14s/kapp/releases/download/v${K14S_KAPP_VERSION}/kapp-linux-amd64" && \
     printf '\n=> Add K14S-KLBD-CLI\n' && curl -sSLo /usr/local/bin/klbd "https://github.com/k14s/kbld/releases/download/v${K14S_KLBD_VERSION}/kbld-linux-amd64" && \
     printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
@@ -133,6 +135,7 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kapp (${K14S_KAPP_VERSION})" "Kubernetes YAML tool (https://github.com/k14s/kapp/)" >> /etc/motd && \
     printf "  %-20s %s\n" "klbd (${K14S_KLBD_VERSION})" "Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
     printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
     printf "  %-20s %s\n" "svcat (${SVCAT_VERSION})" "Kubernetes Service Catalog CLI (https://github.com/kubernetes-sigs/service-catalog/)" >> /etc/motd && \
     printf "  %-20s %s\n" "ytt (${K14S_YTT_VERSION})" "YAML Templating Tool (https://github.com/k14s/ytt/)" >> /etc/motd && \

@@ -3,6 +3,7 @@
 # Log with credhub cli
 # Parameters :
 # --uaa, -u       : Use uaa client to log with credhub
+# -i              : Interactif (needed for credhub-get)
 #===========================================================================
 
 #--- Check scripts options
@@ -18,6 +19,7 @@ flagError=0 ; flag_use_uaa=0 ; nbParameters=$#
 while [ ${nbParameters} -gt 0 ] ; do
   case "$1" in
     "-u"|"--uaa") flag_use_uaa=1 ; shift ; nbParameters=$# ;;
+    "-i") shift ; nbParameters=$# ;;
     *) usage ;;
   esac
 done
