@@ -28,7 +28,12 @@ The `cf-bosh-cli` project helps you to deploy several cli tools through docker i
 ### Kubernetes tools
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
 * `kubectl` - Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
+* `kapp` - Kubernetes YAML tool (https://github.com/k14s/kapp/)
+* `klbd` - Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)
+* `kustomize` Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)
 * `k9s` - Kubernetes CLI (https://github.com/derailed/k9s)
+* `svcat` - Kubernetes Service Catalog CLI (https://github.com/kubernetes-sigs/service-catalog/)
+* `ytt` - YAML Templating Tool (https://github.com/k14s/ytt/)
 * `velero` - Kubernetes CLI for cluster resources backup/restore (https://github.com/vmware-tanzu/velero)
 
 The container expose ssh port. Password or key (rsa only) authentication is supported.
@@ -179,4 +184,4 @@ properties:
 
 Then, log into the container you want with ssh : <code>ssh -i <path to your rsa private key> -p 2222 bosh@docker.bosh.release.deployment</code> to log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).
 
-You can see cli/tools/aliases list by using the `tools` command form your  shell interface.
+You can see cli/tools/aliases list by using the `tools` command from your shell interface.
