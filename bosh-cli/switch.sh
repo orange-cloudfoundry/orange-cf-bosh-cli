@@ -18,7 +18,7 @@ else
       bosh instances
     fi
   else
-    printf "\n%bSelect a specific deployment in the list:%b\n%s" "${REVERSE}${YELLOW}" "${STD}" "${deployments}"
+    printf "\n%bSelect a specific deployment in the list:%b\n%s" "${REVERSE}${GREEN}" "${STD}" "${deployments}"
     printf "\n\n%bYour choice (<Enter> to select all) :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     if [ "${choice}" = "" ] ; then
       unset BOSH_DEPLOYMENT

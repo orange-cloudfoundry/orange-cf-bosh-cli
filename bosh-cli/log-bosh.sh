@@ -119,7 +119,7 @@ if [ ${flagError} = 0 ] ; then
       if [ ${flagError} = 0 ] ; then
         if [ ${flag_interactive} = 1 ] ; then
           deployments=$(bosh deployments --column=Name | grep -vE "^Name$|^Succeeded$|^[0-9]* deployments$")
-          printf "\n%bSelect a specific deployment in the list, or suffix your bosh commands with -d <deployment_name>:%b\n%s" "${REVERSE}${YELLOW}" "${STD}" "${deployments}"
+          printf "\n%bSelect a specific deployment in the list, or suffix your bosh commands with -d <deployment_name>:%b\n%s" "${REVERSE}${GREEN}" "${STD}" "${deployments}"
           printf "\n\n%bYour choice (<Enter> to select all) :%b " "${GREEN}${BOLD}" "${STD}" ; read BOSH_DEPLOYMENT
 
           if [ "${BOSH_DEPLOYMENT}" = "" ] ; then
