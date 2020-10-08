@@ -80,5 +80,5 @@ if [ ${flagError} = 0 ] ; then
     fi
   fi
 fi
-
-printf "\n"
+token="$(kubectl describe secret -n kube-system $(kubectl get secret -n kube-system | grep admin | awk '{print $1}') | grep "token:" | sed -e "s+token: *++g")"
+printf "\n%bk8s token:%b\n${token}\n" "${YELLOW}${REVERSE}" "${STD}"

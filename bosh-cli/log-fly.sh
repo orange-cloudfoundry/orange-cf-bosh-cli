@@ -41,7 +41,6 @@ if [ ${flagError} = 0 ] ; then
     printf "%b7%b  : remote-r3-depls\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b8%b  : utils\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b9%b  : cloudflare-depls\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b10%b : kubo-depls\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
       1) TEAM="main" ;;
@@ -53,7 +52,6 @@ if [ ${flagError} = 0 ] ; then
       7) TEAM="remote-r3-depls" ;;
       8) TEAM="utils" ;;
       9) TEAM="cloudflare-depls" ;;
-      10) TEAM="kubo-depls" ;;
       *) flag=0 ; clear ;;
     esac
   done
