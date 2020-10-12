@@ -49,7 +49,7 @@ if [ ! -L ${HOME}/.cf/plugins ] ; then
 fi
 
 #--- Redefine Path to binary
-export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${PATH}
+export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${PATH}:${HOME}/bosh/template/admin
 
 #--- Init user aliases
 cat > ${HOME}/.bash_aliases <<'EOF'
