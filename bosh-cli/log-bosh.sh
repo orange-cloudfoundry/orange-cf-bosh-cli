@@ -129,6 +129,7 @@ if [ ${flagError} = 0 ] ; then
             if [ "${flag}" = "" ] ; then
               unset BOSH_DEPLOYMENT
             else
+              export BOSH_TARGET
               export BOSH_DEPLOYMENT
               bosh instances
             fi
