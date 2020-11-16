@@ -49,7 +49,7 @@ if [ ! -L ${HOME}/.cf/plugins ] ; then
 fi
 
 #--- Redefine Path to binary
-export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${PATH}:${HOME}/bosh/template/admin
+export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${HOME}/bosh/template/admin:${PATH}
 
 #--- Init user aliases
 cat > ${HOME}/.bash_aliases <<'EOF'
@@ -57,21 +57,21 @@ cat > ${HOME}/.bash_aliases <<'EOF'
 alias checkout='function __gco() { git checkout $1 ; git pull --rebase; }; __gco'
 alias commit='function __gcm() { git add . ; git commit -m "$1" ; unset -f __gcm; }; __gcm'
 alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'
-alias init-git='. init-git.sh'
+alias init-git='. /usr/local/bin/init-git.sh'
 alias prune='git fetch --prune'
 alias pull='git pull --rebase ; git fetch --prune'
 alias push='git pull --rebase ; git fetch --prune ; git push'
 alias status='git status'
 
 #--- Cli log aliases
-alias log-bosh='. log-bosh.sh'
-alias log-cf='. log-cf.sh'
-alias log-credhub='. log-credhub.sh'
-alias log-fly='. log-fly.sh'
-alias log-k8s='. log-k8s.sh'
-alias log-openstack='. log-openstack.sh'
-alias log-shield='. log-shield.sh'
-alias log-uaac='. log-uaac.sh'
+alias log-bosh='. /usr/local/bin/log-bosh.sh'
+alias log-cf='. /usr/local/bin/log-cf.sh'
+alias log-credhub='. /usr/local/bin/log-credhub.sh'
+alias log-fly='. /usr/local/bin/log-fly.sh'
+alias log-k8s='. /usr/local/bin/log-k8s.sh'
+alias log-openstack='. /usr/local/bin/log-openstack.sh'
+alias log-shield='. /usr/local/bin/log-shield.sh'
+alias log-uaac='. /usr/local/bin/log-uaac.sh'
 
 #--- Docker aliases
 alias dim='docker images'
@@ -87,18 +87,18 @@ alias diff='colordiff'
 alias f='function __f() { printf "%100s\n"|tr " " "=";find . ! -regex ".*[/]\.git[/]?.*" -type f,l -not -xtype l -not -xtype d -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "%100s\n"|tr " " "="; }; __f'
 alias fly='fly -t concourse'
 alias generate-password='apg -MCLN -n 1 -m 30'
-alias init-mc='. init-mc.sh'
-alias init-pynsxv='. init-pynsxv.sh'
+alias init-mc='. /usr/local/bin/init-mc.sh'
+alias init-pynsxv='. /usr/local/bin/init-pynsxv.sh'
 alias os='openstack'
-alias proxy='. proxy.sh'
-alias toggle-proxy='. proxy.sh'
+alias proxy='. /usr/local/bin/proxy.sh'
+alias toggle-proxy='. /usr/local/bin/proxy.sh'
 alias prune-workers='fly prune-worker -a'
 alias pynsxv='pynsxv -i $HOME/.nsx.ini'
 alias show-cert='function __scrt() { openssl x509 -text -in $1; }; __scrt'
 alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
-alias switch='. switch.sh'
+alias switch='. /usr/local/bin/switch.sh'
 alias tn='function __tn() { echo -ne "\033]0;$@\007";unset -f __t;printf "\n"; }; __tn'
-alias tools='. tools.sh'
+alias tools='. /usr/local/bin/tools.sh'
 
 EOF
 
