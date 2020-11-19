@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as orange_cli
 USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -27,14 +27,13 @@ ENV BBR_VERSION="1.8.1" \
     JQ_VERSION="1.6" \
     K14S_KAPP_VERSION="0.34.0" \
     K14S_KLBD_VERSION="0.27.0" \
-    K14S_YTT_VERSION="0.34.0" \
+    K14S_YTT_VERSION="0.30.0" \
     K9S_VERSION="0.23.3" \
     KUBECTL_VERSION="1.18.8" \
     KUSTOMIZE_VERSION="3.8.6" \
     MYSQL_SHELL_VERSION="8.0.21-1" \
     RUBY_BUNDLER_VERSION="1.17.3" \
-    RUBY_VERSION="2.6" \
-    RUBY_PATH_VERSION="2.6.3" \
+    RUBY_VERSION="2.6.5" \
     SHIELD_VERSION="8.7.3" \
     SPRUCE_VERSION="1.27.0" \
     SVCAT_VERSION="0.3.0" \
@@ -43,9 +42,9 @@ ENV BBR_VERSION="1.8.1" \
     VELERO_VERSION="1.4.0"
 
 #--- Set ruby env for COA
-ENV PATH="/usr/local/rvm/gems/ruby-${RUBY_PATH_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_PATH_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_PATH_VERSION}/bin:${PATH}" \
-    GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_PATH_VERSION}" \
-    GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_PATH_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_PATH_VERSION}@global"
+ENV PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:${PATH}" \
+    GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
+    GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global"
 
 ADD bosh-cli/* /tmp/bosh-cli/
 
@@ -155,3 +154,16 @@ RUN printf '\n=====================================================\n Install sy
 #--- Launch supervisord daemon
 CMD /usr/local/bin/supervisord.sh
 EXPOSE 22
+
+
+# test image
+# ============================================================================
+FROM orange_cli AS tests
+ADD tests/* /tmp/tests/
+RUN /tmp/tests/check-available-cli-from-usr-bin.sh
+RUN /tmp/tests/check-available-cli-from-usr-local-bin.sh
+RUN /tmp/tests/check-available-cli-from-other-locations.sh
+
+# export runtime image
+# ============================================================================
+FROM orange_cli
