@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 as orange_cli
+FROM ubuntu:18.04 AS orange_cli
 USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -100,8 +100,8 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
     printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu18.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
-    printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
     printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
+    printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
     printf '\n=> Add SVCAT-CLI\n' && curl -sSLo /usr/local/bin/svcat "https://download.svcat.sh/cli/v${SVCAT_VERSION}/linux/amd64/svcat" && \
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
@@ -155,15 +155,9 @@ RUN printf '\n=====================================================\n Install sy
 CMD /usr/local/bin/supervisord.sh
 EXPOSE 22
 
-
-# test image
-# ============================================================================
+#--- Test image
 FROM orange_cli AS tests
-ADD tests/* /tmp/tests/
-RUN /tmp/tests/check-available-cli-from-usr-bin.sh
-RUN /tmp/tests/check-available-cli-from-usr-local-bin.sh
-RUN /tmp/tests/check-available-cli-from-other-locations.sh
+RUN /usr/local/bin/check-available-clis.sh
 
-# export runtime image
-# ============================================================================
+#--- Export bosh-cli image
 FROM orange_cli
