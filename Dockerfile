@@ -32,6 +32,7 @@ ENV BBR_VERSION="1.8.1" \
     KUBECTL_VERSION="1.18.8" \
     KUSTOMIZE_VERSION="3.8.6" \
     MYSQL_SHELL_VERSION="8.0.21-1" \
+    REDIS_CLI_VERSION="6.0.9" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6.5" \
     SHIELD_VERSION="8.7.3" \
@@ -100,6 +101,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
     printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu18.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    printf '\n=> Add REDIS-CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis-cli && chmod 755 /usr/local/bin/redis-cli && \
     printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
     printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
     printf '\n=> Add SVCAT-CLI\n' && curl -sSLo /usr/local/bin/svcat "https://download.svcat.sh/cli/v${SVCAT_VERSION}/linux/amd64/svcat" && \
@@ -128,6 +130,7 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "gof3r (${GO3FR_VERSION})" "Client for parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)" >> /etc/motd && \
     printf "  %-20s %s\n" "mongo (${MONGO_SHELL_VERSION})" "MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)" >> /etc/motd && \
     printf "  %-20s %s\n" "mysqlsh (${MYSQL_SHELL_VERSION})" "MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "redis-cli (${REDIS_CLI_VERSION})" "Redis CLI (https://redis.io/topics/rediscli)" >> /etc/motd && \
     printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "helm (${HELM_VERSION})" "Kubernetes Package Manager (https://docs.helm.sh/)" >> /etc/motd && \

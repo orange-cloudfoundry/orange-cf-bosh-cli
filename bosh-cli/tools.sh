@@ -4,7 +4,7 @@
 #===========================================================================
 
 display() {
-  printf "%b%-18s%b: %s\n" "${GREEN}${BOLD}" "$1" "${STD}" "$2"
+  printf "%b%-28s%b: %s\n" "${GREEN}${BOLD}" "$1" "${STD}" "$2"
 }
 
 clear
@@ -37,6 +37,7 @@ display "log-openstack" "Log with openstack cli"
 display "log-shield" "Log with shield cli"
 display "log-uaac" "Log with uaac cli"
 display "mc" "minio cli (exec init-mc once before)"
+display "micro-bosh" "micro-bosh ssh access"
 display "prune-workers" "Prune concourse stalled workers (used with log-fly)"
 display "pynsxv" "nsx-v cli (exec init-pynsxv once before)"
 display "shield" "Shield cli (used with log-shield)"
