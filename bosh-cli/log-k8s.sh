@@ -68,6 +68,9 @@ if [ ${flagError} = 0 ] ; then
             #--- Log to kubernetes cluster
             kubectl config use-context "${K8S_ALIAS}"
 
+            #--- Add svcat auto-completion
+            source <(svcat completion bash)
+
             #--- Install svcat plugin for kubectl
             svcat install plugin
 

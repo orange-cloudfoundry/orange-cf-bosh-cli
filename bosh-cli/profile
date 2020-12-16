@@ -172,9 +172,6 @@ _mc_bash_autocomplete() {
 
 complete -F _mc_bash_autocomplete mc -q
 
-#--- svcat auto-completion
-source <(svcat completion bash)
-
 #--- Load OSB-CMDB bash functions
 if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
   source /usr/local/bin/cf-cli-cmdb-functions.bash
