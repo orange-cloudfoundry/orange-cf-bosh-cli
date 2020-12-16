@@ -23,6 +23,7 @@ The `cf-bosh-cli` project helps you to deploy several cli tools through docker i
 * `mc` - Minio S3 CLI (https://github.com/minio/mc)
 * `mongo` - MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)
 * `mysqlsh` - MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)
+* `redis` - Redis CLI (https://redis.io/topics/rediscli/)
 * `shield` - Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)
 
 ### Kubernetes tools

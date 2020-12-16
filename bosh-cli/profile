@@ -144,10 +144,10 @@ echo -en "\033]0;${MY_BOSH_USER}@${SITE_NAME}\007"
 #--- Grep colorization
 export GREP_COLORS="fn=1;34:se=1;34:mt=1;33"
 
-#--- Bosh dynamic completion
+#--- bosh cli auto-completion
 eval "$(/home/bosh/bosh-complete-linux bash-source)"
 
-#--- Fly cli auto-completion
+#--- fly cli auto-completion
 _fly_bash_autocomplete() {
   #--- All arguments except the first one
   args=("${COMP_WORDS[@]:1:$COMP_CWORD}")
@@ -160,7 +160,7 @@ _fly_bash_autocomplete() {
 
 complete -F _fly_bash_autocomplete fly
 
-#--- Minio cli auto-completion
+#--- minio cli auto-completion
 _mc_bash_autocomplete() {
   local cur opts base
   COMPREPLY=()
@@ -172,15 +172,8 @@ _mc_bash_autocomplete() {
 
 complete -F _mc_bash_autocomplete mc -q
 
-#--- Jump-list of in use directories
-if [ -f /usr/local/bin/z.sh ] ; then
-  source /usr/local/bin/z.sh
-fi
-
-#--- Interactive filter for command-line
-if [ -f /home/bosh/.fzf.bash ] ; then
-  source /home/bosh/.fzf.bash
-fi
+#--- svcat auto-completion
+source <(svcat completion bash)
 
 #--- Load OSB-CMDB bash functions
 if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
