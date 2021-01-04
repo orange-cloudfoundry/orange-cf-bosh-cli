@@ -1,56 +1,55 @@
-FROM ubuntu:18.04 AS orange_cli
+FROM ubuntu:20.04 AS orange_cli
 USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
-#--- Packages list
-ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core less locales nano nodejs python-pip python3-openstackclient s3cmd silversearcher-ag supervisor tmux vim" \
-    NET_PACKAGES="dnsutils iproute2 iputils-ping ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois" \
-    DEV_PACKAGES="python-dev build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
-    RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
-    BDD_PACKAGES="mongodb-clients" \
-    CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
-
-#--- Cli versions
+#--- Clis versions
 ENV BBR_VERSION="1.8.1" \
     BOSH_CLI_VERSION="6.4.0" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
     CF_CLI_VERSION="6.53.0" \
-    CF_CLI7_VERSION="7.1.0" \
+    CF_CLI7_VERSION="7.2.0" \
     CF_UAAC_VERSION="4.2.0" \
     CREDHUB_VERSION="2.9.0" \
     DB_DUMPER_VERSION="1.4.2" \
     FLY_VERSION="6.7.2" \
     GO3FR_VERSION="0.5.0" \
-    HELM_VERSION="3.4.0" \
+    HELM_VERSION="3.4.2" \
     JQ_VERSION="1.6" \
-    K14S_KAPP_VERSION="0.34.0" \
+    K14S_KAPP_VERSION="0.35.0" \
     K14S_KLBD_VERSION="0.27.0" \
     K14S_YTT_VERSION="0.30.0" \
-    K9S_VERSION="0.23.3" \
+    K9S_VERSION="0.24.2" \
     KUBECTL_VERSION="1.18.8" \
-    KUSTOMIZE_VERSION="3.8.6" \
-    MYSQL_SHELL_VERSION="8.0.21-1" \
+    KUSTOMIZE_VERSION="3.9.1" \
+    MYSQL_SHELL_VERSION="8.0.22-1" \
     REDIS_CLI_VERSION="6.0.9" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6.5" \
     SHIELD_VERSION="8.7.3" \
     SPRUCE_VERSION="1.27.0" \
-    SVCAT_VERSION="0.3.0" \
+    SVCAT_VERSION="0.3.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     VELERO_VERSION="1.4.0"
 
-#--- Set ruby env for COA
-ENV PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:${PATH}" \
+#--- Packages list, ruby env for COA and cf plugins
+ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core less locales nano nodejs python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tmux vim" \
+    NET_PACKAGES="dnsutils iproute2 iputils-ping ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois" \
+    DEV_PACKAGES="python-dev build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
+    RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
+    BDD_PACKAGES="mongodb-clients" \
+    PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:${PATH}" \
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
-    GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global"
+    GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
+    CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
 ADD bosh-cli/* /tmp/bosh-cli/
 
 RUN printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
     apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} ${BDD_PACKAGES} && apt-get upgrade -y && \
+    cp /usr/bin/chardetect3 /usr/local/bin/chardetect && \
     printf '=====================================================\n Install NodeJS and yarn\n=====================================================\n' && \
     curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && \
     curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list.d/yarn.list && \
@@ -74,9 +73,6 @@ RUN printf '\n=====================================================\n Install sy
     sed -i 's/^PubkeyAuthentication .*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && \
     sed -i 's/^.*PasswordAuthentication yes.*/PasswordAuthentication no/g' /etc/ssh/sshd_config && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
-    printf '\n=====================================================\n Install python tools\n=====================================================\n' && \
-    printf '\n=> Update PIP\n' && python -m pip install --upgrade pip && python -m pip install --upgrade setuptools && \
-    printf '\n=> Add NSXV-CLI\n' && python -m pip install pynsxv && \
     printf '\n=====================================================\n Install ops tools\n=====================================================\n' && \
     printf '\n=> Add BBR-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" | tar -x -C /tmp && mv /tmp/releases/bbr /usr/local/bin/bbr && \
     printf '\n=> Add BOSH-CLI\n' && curl -sSLo /usr/local/bin/bosh "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_VERSION}-linux-amd64" && \
@@ -99,7 +95,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
-    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu18.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu20.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
     printf '\n=> Add REDIS-CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis-cli && chmod 755 /usr/local/bin/redis-cli && \
     printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
     printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \

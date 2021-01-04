@@ -8,7 +8,7 @@ printf "\n====================================================\n=> Check if ruby
 ruby -e 'puts "Ruby is installed"'
 
 printf "\n====================================================\n=> Check if python is available...\n====================================================\n"
-pip --version
+python3 --version
 
 printf "\n====================================================\n=> Check if expected system tools are available...\n====================================================\n"
 chardetect --version
@@ -31,7 +31,6 @@ printf '\n=> Check K14S-KLBD-CLI\n' ; klbd --version
 printf '\n=> Check K14S-YTT-CLI\n' ; ytt --version
 printf '\n=> Check K9S-CLI\n' ; k9s version --short
 printf '\n=> Check MINIO-CLI\n' ; mc --version
-printf '\n=> Check PY-NSXV-CLI\n' ; pynsxv --help > /dev/null
 printf '\n=> Check MYSQL-SHELL-CLI\n' ; mysqlsh --version
 printf '\n=> Check SHIELD-CLI\n' ; shield --version
 printf '\n=> Check SPRUCE-CLI\n' ; spruce --version
