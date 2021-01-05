@@ -101,7 +101,6 @@ if [ ${flagError} = 0 ] ; then
             printf "\n\n%bERROR : Set cluster \"${K8S_CLUSTER}\" context failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
           else
             kubectl config use-context "${K8S_CLUSTER}" > /dev/null 2>&1
-            token="$(kubectl describe secret -n kube-system $(kubectl get secret -n kube-system | grep admin | awk '{print $1}') | grep "token:" | sed -e "s+token: *++g")"
           fi
         fi
       fi
@@ -117,8 +116,6 @@ if [ ${flagError} = 0 ] ; then
       bosh -d ${K8S_DEPLOYMENT} scp ${instance}:/var/vcap/store/k3s-server/kubeconfig.yml ${KUBECONFIG} > /dev/null 2>&1
       if [ $? != 0 ] ; then
         printf "\n\n%bERROR : Get cluster configuration failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
-      else
-        token="$(bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/k3s_token" --output-json) --path=/value)"
       fi
     fi
   fi
@@ -126,8 +123,14 @@ fi
 
 #--- Install svcat plugin and auto-completion for kubectl
 if [ ${flagError} = 0 ] ; then
-  #--- Display token (used for web ui portals)
-  printf "\n%bk8s token:%b\n${token}\n" "${YELLOW}${REVERSE}" "${STD}"
+  #--- Display admin token (used for web ui portals)
+  admin_token_name="$(kubectl -n kube-system get secret | grep admin | awk '{print $1}')"
+  if [ "${admin_token_name}" = "" ] ; then
+    printf "\n%bk8s token:%b\nNo \"admin\" token available for cluster \"${K8S_CLUSTER}\".\n" "${YELLOW}${REVERSE}" "${STD}"
+  else
+    token="$(kubectl -n kube-system describe secret ${admin_token_name} | grep "token:" | sed -e "s+token: *++g")"
+    printf "\n%bk8s token:%b\n${token}\n" "${YELLOW}${REVERSE}" "${STD}"
+  fi
 
   #--- Display cluster nodes
   printf "\n%bCluster nodes:%b\n" "${YELLOW}${REVERSE}" "${STD}"
