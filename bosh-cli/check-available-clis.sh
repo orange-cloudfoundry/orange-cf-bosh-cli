@@ -18,7 +18,6 @@ printf "\n====================================================\n=> Check if expe
 printf '\n=> Check BBR-CLI\n' ; bbr --version
 printf '\n=> Check BOSH-CLI\n' ; bosh --version
 printf '\n=> Check CF-CLI\n' ; cf --version
-printf '\n=> Check CF7-CLI\n' ; cf7 --version
 printf '\n=> Check CREDHUB-CLI\n' ; credhub --version
 printf '\n=> Check FLY-CLI\n' ; fly --version
 printf '\n=> Check GO3FR-CLI\n' ; go3fr --version
@@ -36,7 +35,6 @@ printf '\n=> Check SHIELD-CLI\n' ; shield --version
 printf '\n=> Check SPRUCE-CLI\n' ; spruce --version
 printf '\n=> Check SVCAT-CLI\n' ; svcat --help > /dev/null
 printf '\n=> Check TERRAFORM-CLI\n' ; terraform --version
-printf '\n=> Check VELERO-CLI\n' ; velero version --client-only
 
 printf "\n====================================================\n=> Check complete.\n"
 set +e

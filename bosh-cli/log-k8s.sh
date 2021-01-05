@@ -3,6 +3,28 @@
 # Log to kubernetes clusters for clis (kubectl, helm, k9s)
 #===========================================================================
 
+#--- Log to bosh director
+logToBosh() {
+  case "$1" in
+    "micro-bosh") director_dns_name="bosh-micro" ; credhub_bosh_password="/secrets/bosh_admin_password" ;;
+    "bosh-master") director_dns_name="$1" ; credhub_bosh_password="/micro-bosh/$1/admin_password" ;;
+    *) director_dns_name="$1" ; credhub_bosh_password="/bosh-master/$1/admin_password" ;;
+  esac
+  export BOSH_ENVIRONMENT=$(host ${director_dns_name}.internal.paas | awk '{print $4}')
+  flag=$(credhub f | grep "${credhub_bosh_password}")
+  if [ "${flag}" = "" ] ; then
+    printf "\n%bERROR: bosh director \"$1\" password unknown.%b\n\n" "${REVERSE}${RED}" "${STD}" ; flagError=1
+  else
+    export BOSH_CLIENT_SECRET="$(credhub g -n ${credhub_bosh_password} -j | jq -r '.value')"
+    bosh alias-env $1 > /dev/null 2>&1
+    bosh logout > /dev/null 2>&1
+    bosh -n log-in > /dev/null 2>&1
+    if [ $? = 1 ] ; then
+      printf "\n%bERROR: Log to \"$1\" director failed.%b\n\n" "${REVERSE}${RED}" "${STD}" ; flagError=1
+    fi
+  fi
+}
+
 #--- Log to credhub
 flagError=0
 flag=$(credhub f > /dev/null 2>&1)
@@ -15,73 +37,99 @@ if [ $? != 0 ] ; then
   fi
 fi
 
-#--- Log to CF
+#--- Log to K8S
 if [ ${flagError} = 0 ] ; then
-  #--- Identify kubernetes cluster
+  #--- Install svcat plugin and auto-completion for kubectl
+  unset KUBECONFIG
+  if [ ! -f ${HOME}/.kube/plugins/svcat/svcat ] ; then
+    svcat install plugin > /dev/null 2>&1
+  fi
+  source <(svcat completion bash)
+
+  #--- Select kubernetes cluster
   flag=0
   while [ ${flag} = 0 ] ; do
     flag=1
     printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-    printf "%b1%b : micro\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b2%b : master\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : services\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b1%b : k8s micro\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b2%b : k8s master\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b : k8s services\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b4%b : k3s core-connectivity\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b5%b : k3s gitops-management\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b6%b : k3s rundeck\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
-      1) K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="k8s" ; K8S_CLUSTER="micro" ;;
-      2) K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="k8s" ; K8S_CLUSTER="master" ;;
-      3) K8S_DIRECTOR="bosh-coab" ; K8S_DEPLOYMENT="10-k8s" ; K8S_CLUSTER="serv" ;;
+      1) K8S_TYPE="k8s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="k8s" ; K8S_CLUSTER="k8s-micro" ;;
+      2) K8S_TYPE="k8s" ; K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="k8s" ; K8S_CLUSTER="k8s-master" ;;
+      3) K8S_TYPE="k8s" ; K8S_DIRECTOR="bosh-coab" ; K8S_DEPLOYMENT="10-k8s" ; K8S_CLUSTER="k8s-serv" ;;
+      4) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CLUSTER="core-connectivity" ;;
+      5) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="00-gitops-management" ; K8S_CLUSTER="gitops-management" ;;
+      6) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="rundeck" ; K8S_CLUSTER="rundeck" ;;
       *) flag=0 ; clear ;;
     esac
   done
 
-  #--- Check if bosh dns exists
-  K8S_ALIAS="k8s-${K8S_CLUSTER}"
-  K8S_API_ENDPOINT="k8s-${K8S_CLUSTER}-api.internal.paas"
-  flag_host="$(host ${K8S_API_ENDPOINT} | awk '{print $4}')"
-  if [ "${flag_host}" = "found:" ] ; then
-    printf "\n\n%bERROR : Kubernetes cluster endpoint \"${K8S_API_ENDPOINT}\" unknown (no dns record).%b\n\n" "${RED}" "${STD}"
-  else
-    #--- Set kubernetes configuration
-    printf "\n"
-    CRT_DIR=~/.crt
-    if [ ! -d ${CRT_DIR} ] ; then
-      mkdir ${CRT_DIR}
-    fi
-
-    bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-ca" --output-json) --path=/value/ca > ${CRT_DIR}/k8s_${K8S_CLUSTER}_ca.pem
-    bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/certificate > ${CRT_DIR}/k8s_${K8S_CLUSTER}_cert.pem
-    bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/private_key > ${CRT_DIR}/k8s_${K8S_CLUSTER}_key.pem
-
-    kubectl config set-cluster "${K8S_ALIAS}" --server="https://${K8S_API_ENDPOINT}" --certificate-authority="${CRT_DIR}/k8s_${K8S_CLUSTER}_ca.pem" --embed-certs=true
-    if [ $? != 0 ] ; then
-      printf "\n\n%bERROR : Config cluster failed.%b\n\n" "${RED}" "${STD}"
+  if [ "${K8S_TYPE}" = "k8s" ] ; then
+    #--- Check if bosh dns exists
+    K8S_API_ENDPOINT="${K8S_CLUSTER}-api.internal.paas"
+    flag_host="$(host ${K8S_API_ENDPOINT} | awk '{print $4}')"
+    if [ "${flag_host}" = "found:" ] ; then
+      printf "\n\n%bERROR : Kubernetes cluster endpoint \"${K8S_API_ENDPOINT}\" unknown (no dns record).%b\n\n" "${RED}" "${STD}" ; flagError=1
     else
-      if [ ${flagError} = 0 ] ; then
-        kubectl config set-credentials "admin" --client-key ${CRT_DIR}/k8s_${K8S_CLUSTER}_key.pem --client-certificate ${CRT_DIR}/k8s_${K8S_CLUSTER}_cert.pem --embed-certs
+      #--- Set kubernetes configuration
+      printf "\n"
+      CRT_DIR=${HOME}/.kube/certs
+      if [ ! -d ${CRT_DIR} ] ; then
+        mkdir -p ${CRT_DIR} > /dev/null 2>&1
+      fi
+
+      bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-ca" --output-json) --path=/value/ca > ${CRT_DIR}/${K8S_CLUSTER}_ca.pem
+      bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/certificate > ${CRT_DIR}/${K8S_CLUSTER}_cert.pem
+      bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/private_key > ${CRT_DIR}/${K8S_CLUSTER}_key.pem
+      export KUBECONFIG=${HOME}/.kube/config
+
+      kubectl config set-cluster "${K8S_CLUSTER}" --server="https://${K8S_API_ENDPOINT}" --certificate-authority="${CRT_DIR}/${K8S_CLUSTER}_ca.pem" --embed-certs=true > /dev/null 2>&1
+      if [ $? != 0 ] ; then
+        printf "\n\n%bERROR : Set cluster \"${K8S_CLUSTER}\" configuration failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
+      else
+        kubectl config set-credentials "admin" --client-key ${CRT_DIR}/${K8S_CLUSTER}_key.pem --client-certificate ${CRT_DIR}/${K8S_CLUSTER}_cert.pem --embed-certs > /dev/null 2>&1
         if [ $? != 0 ] ; then
-          printf "\n\n%bERROR : Config cluster credentials failed.%b\n\n" "${RED}" "${STD}"
+          printf "\n\n%bERROR : Set cluster \"${K8S_CLUSTER}\" credentials failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
         else
-          kubectl config set-context "${K8S_ALIAS}" --cluster="${K8S_ALIAS}" --user="admin"
+          kubectl config set-context "${K8S_CLUSTER}" --cluster="${K8S_CLUSTER}" --user="admin" > /dev/null 2>&1
           if [ $? != 0 ] ; then
-            printf "\n\n%bERROR : Config cluster context failed.%b\n\n" "${RED}" "${STD}"
+            printf "\n\n%bERROR : Set cluster \"${K8S_CLUSTER}\" context failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
           else
-            #--- Log to kubernetes cluster
-            kubectl config use-context "${K8S_ALIAS}"
-
-            #--- Add svcat auto-completion
-            source <(svcat completion bash)
-
-            #--- Install svcat plugin for kubectl
-            svcat install plugin
-
-            #--- Display cluster nodes
-            printf "\n\n%bCluster nodes:%b\n" "${YELLOW}${REVERSE}" "${STD}"
-            kubectl get nodes
+            kubectl config use-context "${K8S_CLUSTER}" > /dev/null 2>&1
+            token="$(kubectl describe secret -n kube-system $(kubectl get secret -n kube-system | grep admin | awk '{print $1}') | grep "token:" | sed -e "s+token: *++g")"
           fi
         fi
       fi
     fi
+  else
+    #--- Get k3s cluster configuration
+    export BOSH_CLIENT="admin"
+    export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
+    logToBosh "${K8S_DIRECTOR}"
+    if [ ${flagError} = 0 ] ; then
+      export KUBECONFIG=${HOME}/.kube/${K8S_CLUSTER}.yml
+      instance="$(bosh -d ${K8S_DEPLOYMENT} is | grep "server/" | awk '{print $1}')"
+      bosh -d ${K8S_DEPLOYMENT} scp ${instance}:/var/vcap/store/k3s-server/kubeconfig.yml ${KUBECONFIG} > /dev/null 2>&1
+      if [ $? != 0 ] ; then
+        printf "\n\n%bERROR : Get cluster configuration failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
+      else
+        token="$(bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/k3s_token" --output-json) --path=/value)"
+      fi
+    fi
   fi
 fi
-token="$(kubectl describe secret -n kube-system $(kubectl get secret -n kube-system | grep admin | awk '{print $1}') | grep "token:" | sed -e "s+token: *++g")"
-printf "\n%bk8s token:%b\n${token}\n" "${YELLOW}${REVERSE}" "${STD}"
+
+#--- Install svcat plugin and auto-completion for kubectl
+if [ ${flagError} = 0 ] ; then
+  #--- Display token (used for web ui portals)
+  printf "\n%bk8s token:%b\n${token}\n" "${YELLOW}${REVERSE}" "${STD}"
+
+  #--- Display cluster nodes
+  printf "\n%bCluster nodes:%b\n" "${YELLOW}${REVERSE}" "${STD}"
+  kubectl get nodes
+fi
