@@ -39,11 +39,9 @@ fi
 
 #--- Log to K8S
 if [ ${flagError} = 0 ] ; then
-  #--- Install svcat plugin and auto-completion for kubectl
+  #--- Install svcat plugin and auto-completion for kubectl (need to unset KUBECONFIG for using default path ${HOME}/.kube)
   unset KUBECONFIG
-  if [ ! -f ${HOME}/.kube/plugins/svcat/svcat ] ; then
-    svcat install plugin > /dev/null 2>&1
-  fi
+  svcat install plugin > /dev/null 2>&1
   source <(svcat completion bash)
 
   #--- Select kubernetes cluster
