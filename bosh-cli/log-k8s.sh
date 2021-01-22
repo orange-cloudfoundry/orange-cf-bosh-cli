@@ -49,20 +49,20 @@ if [ ${flagError} = 0 ] ; then
   while [ ${flag} = 0 ] ; do
     flag=1
     printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-    printf "%b1%b : k8s master\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b2%b : k8s services\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : k3s core connectivity\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b4%b : k3s ci\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b5%b : k3s gitops management\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b6%b : k3s rundeck\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b1%b : k3s core connectivity\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b2%b : k3s ci\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b : k3s gitops management\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b4%b : k3s rundeck\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b5%b : k8s master\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b6%b : k8s services\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
-      1) K8S_TYPE="k8s" ; K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="k8s" ; K8S_CLUSTER="k8s-master" ;;
-      2) K8S_TYPE="k8s" ; K8S_DIRECTOR="bosh-coab" ; K8S_DEPLOYMENT="10-k8s" ; K8S_CLUSTER="k8s-serv" ;;
-      3) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CLUSTER="core-connectivity" ;;
-      4) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CLUSTER="ci" ;;
-      5) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="00-gitops-management" ; K8S_CLUSTER="gitops-management" ;;
-      6) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="rundeck" ; K8S_CLUSTER="rundeck" ;;
+      1) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CLUSTER="core-connectivity" ;;
+      2) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CLUSTER="ci" ;;
+      3) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="00-gitops-management" ; K8S_CLUSTER="gitops-management" ;;
+      4) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="rundeck" ; K8S_CLUSTER="rundeck" ;;
+      5) K8S_TYPE="k8s" ; K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="k8s" ; K8S_CLUSTER="k8s-master" ;;
+      6) K8S_TYPE="k8s" ; K8S_DIRECTOR="bosh-coab" ; K8S_DEPLOYMENT="10-k8s" ; K8S_CLUSTER="k8s-serv" ;;
       *) flag=0 ; clear ;;
     esac
   done
