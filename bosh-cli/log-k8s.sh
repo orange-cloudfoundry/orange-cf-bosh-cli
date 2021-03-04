@@ -67,6 +67,10 @@ if [ ${flagError} = 0 ] ; then
     esac
   done
 
+  if [ ! -d ${HOME}/.kube ] ; then
+    mkdir ${HOME}/.kube > /dev/null 2>&1
+  fi
+
   if [ "${K8S_TYPE}" = "k8s" ] ; then
     #--- Check if bosh dns exists
     K8S_API_ENDPOINT="${K8S_CLUSTER}-api.internal.paas"
@@ -78,7 +82,7 @@ if [ ${flagError} = 0 ] ; then
       printf "\n"
       CRT_DIR=${HOME}/.kube/certs
       if [ ! -d ${CRT_DIR} ] ; then
-        mkdir -p ${CRT_DIR} > /dev/null 2>&1
+        mkdir ${CRT_DIR} > /dev/null 2>&1
       fi
 
       bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-ca" --output-json) --path=/value/ca > ${CRT_DIR}/${K8S_CLUSTER}_ca.pem
