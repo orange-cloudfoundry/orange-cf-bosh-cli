@@ -49,13 +49,13 @@ if [ ${flagError} = 0 ] ; then
   while [ ${flag} = 0 ] ; do
     flag=1
     printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-    printf "%b1%b : k3s core connectivity\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b2%b : k3s ci\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : k3s gitops management\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b4%b : k3s rundeck\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b1%b  : k3s core connectivity\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b2%b  : k3s ci\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b  : k3s gitops management\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b4%b  : k3s rundeck\n" "${GREEN}${BOLD}" "${STD}"
     if [ "${SITE_NAME}" = "fe-int" ] ; then
-      printf "%b5%b : k3s logs\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b6%b : k3s sandbox\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b5%b  : k3s logs\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b6%b  : k3s sandbox\n" "${GREEN}${BOLD}" "${STD}"
     fi
     printf "%b10%b : k8s services\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
