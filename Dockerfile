@@ -1,10 +1,10 @@
-FROM ubuntu:20.04 AS orange_cli
+FROM ubuntu:20.10 AS orange_cli
 USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV BBR_VERSION="1.8.1" \
-    BOSH_CLI_VERSION="6.4.0" \
+ENV BBR_VERSION="1.9.1" \
+    BOSH_CLI_VERSION="6.4.1" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
     CF_CLI_VERSION="7.2.0" \
@@ -13,16 +13,17 @@ ENV BBR_VERSION="1.8.1" \
     DB_DUMPER_VERSION="1.4.2" \
     FLY_VERSION="6.7.2" \
     GO3FR_VERSION="0.5.0" \
-    HELM_VERSION="3.4.2" \
+    HELM_VERSION="3.5.3" \
     JQ_VERSION="1.6" \
-    K14S_KAPP_VERSION="0.35.0" \
-    K14S_KLBD_VERSION="0.27.0" \
-    K14S_YTT_VERSION="0.30.0" \
+    K14S_KAPP_VERSION="0.36.0" \
+    K14S_KLBD_VERSION="0.29.0" \
+    K14S_YTT_VERSION="0.31.0" \
     K9S_VERSION="0.24.2" \
     KUBECTL_VERSION="1.18.8" \
-    KUSTOMIZE_VERSION="3.9.1" \
-    MYSQL_SHELL_VERSION="8.0.22-1" \
-    REDIS_CLI_VERSION="6.0.9" \
+    KUSTOMIZE_VERSION="4.0.5" \
+    MONGO_SHELL_VERSION="4.0.23" \
+    MYSQL_SHELL_VERSION="8.0.23-1" \
+    REDIS_CLI_VERSION="6.2.1" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6.5" \
     SHIELD_VERSION="8.7.3" \
@@ -37,7 +38,6 @@ ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-se
     NET_PACKAGES="dnsutils iproute2 iputils-ping ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois" \
     DEV_PACKAGES="python-dev build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
-    BDD_PACKAGES="mongodb-clients" \
     PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:${PATH}" \
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
@@ -46,8 +46,7 @@ ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-se
 ADD bosh-cli/* /tmp/bosh-cli/
 
 RUN printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
-    apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} ${BDD_PACKAGES} && apt-get upgrade -y && \
-    cp /usr/bin/chardetect3 /usr/local/bin/chardetect && \
+    apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} && apt-get upgrade -y && \
     printf '=====================================================\n Install NodeJS and yarn\n=====================================================\n' && \
     curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && \
     curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list.d/yarn.list && \
@@ -91,18 +90,18 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
-    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu20.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
-    printf '\n=> Add REDIS-CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis-cli && chmod 755 /usr/local/bin/redis-cli && \
+    printf '\n=> Add MONGO_SHELL_VERSION\n' && curl -sSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}.tgz" | tar -xz -C /tmp && cd /tmp/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}/bin && mv mongo mongostat mongotop /usr/local/bin && \
+    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu20.10_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    printf '\n=> Add REDIS-CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
     printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
     printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
     printf '\n=> Add SVCAT-CLI\n' && curl -sSLo /usr/local/bin/svcat "https://download.svcat.sh/cli/v${SVCAT_VERSION}/linux/amd64/svcat" && \
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
-    printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
     printf '\n=> Add DB-DUMPER-PLUGIN\n' && curl -sSLo /tmp/db-dumper-plugin "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" && chmod 755 /tmp/db-dumper-plugin && su -l bosh -s /bin/bash -c "cf install-plugin /tmp/db-dumper-plugin -f" && rm -f /tmp/db-dumper-plugin && \
     printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plug in \$(echo ${CF_PLUGINS}) ; do cf install-plugin \"\${plug}\" -r CF-Community -f ; done" && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
-    GIT_VERSION=$(git --version | awk '{print $3}') && MONGO_SHELL_VERSION=$(mongo --version | grep "MongoDB shell version" | awk '{print $4}') && \
+    GIT_VERSION=$(git --version | awk '{print $3}') && \
     printf '\nYour are logged into an ubuntu docker container, which provides several tools :\n' > /etc/motd && \
     printf 'Generic tools:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "bosh (${BOSH_CLI_VERSION})" "Bosh CLI (https://bosh.io/docs/cli-v2.html)" >> /etc/motd && \
@@ -119,7 +118,7 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "gof3r (${GO3FR_VERSION})" "Client for parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)" >> /etc/motd && \
     printf "  %-20s %s\n" "mongo (${MONGO_SHELL_VERSION})" "MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)" >> /etc/motd && \
     printf "  %-20s %s\n" "mysqlsh (${MYSQL_SHELL_VERSION})" "MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "redis-cli (${REDIS_CLI_VERSION})" "Redis CLI (https://redis.io/topics/rediscli)" >> /etc/motd && \
+    printf "  %-20s %s\n" "redis (${REDIS_CLI_VERSION})" "Redis CLI (https://redis.io/topics/rediscli)" >> /etc/motd && \
     printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "helm (${HELM_VERSION})" "Kubernetes Package Manager (https://docs.helm.sh/)" >> /etc/motd && \
@@ -142,11 +141,14 @@ RUN printf '\n=====================================================\n Install sy
     rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/* && find /var/log -type f -delete && \
     touch /var/log/lastlog && chgrp utmp /var/log/lastlog && chmod 664 /var/log/lastlog
 
+#--- Temporarly exclude osb-cmdb script (to reintegrate before next packaging)
+#    printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
+
 #--- Launch supervisord daemon
 CMD /usr/local/bin/supervisord.sh
 EXPOSE 22
 
-#--- Test image
+#--- Test clis/tools availability
 FROM orange_cli AS tests
 RUN /usr/local/bin/check-available-clis.sh
 

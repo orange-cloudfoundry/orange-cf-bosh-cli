@@ -34,11 +34,8 @@ configureGit "core.autocrlf" "input"
 configureGit "core.preloadindex" "true"
 
 configureGit "credential.helper" "cache --timeout=86400"
-
 configureGit "http.postbuffer" "524288000"
-
 configureGit "grep.linenumber" "true"
-
 configureGit "push.default" "tracking"
 
 #--- Display configurations

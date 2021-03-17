@@ -46,7 +46,7 @@ if [ ${flagError} = 0 ] ; then
   if [ $? != 0 ] ; then
     if [ ${flag_use_uaa} = 1 ] ; then
       #--- Log to credhub with uaa client
-      printf "\n%b\"bosh_credhub_secrets\" password (from shared/secrets.yml) :%b " "${REVERSE}${GREEN}" "${STD}" ; read CREDHUB_CLIENT_SECRET
+      printf "\n%b\"bosh_credhub_secrets\" password :%b " "${REVERSE}${GREEN}" "${STD}" ; read -s CREDHUB_CLIENT_SECRET
       if [ "${CREDHUB_CLIENT_SECRET}" = "" ] ; then
         printf "\n\n%bERROR : Empty password.%b\n\n" "${RED}" "${STD}"
       else

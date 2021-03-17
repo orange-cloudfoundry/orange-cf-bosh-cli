@@ -61,11 +61,17 @@ if [ ${flagError} = 0 ] ; then
   mc config host rm play
   mc config host rm s3
 
-  #--- Add host config for minio-private-s3 (bosh releases / buildpacks / packages)
+  #--- Add host config for minio-private-s3 bosh (bosh releases / buildpacks / packages)
   s3_endpoint="http://private-s3.internal.paas:9000"
   s3_access_key="private-s3"
   getCredhubValue "s3_secret_key" "/micro-bosh/minio-private-s3/s3_secretkey"
-  configureHost "minio" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v2"
+  configureHost "minio-bosh" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v2"
+
+  #--- Add host config for minio-private-s3 k8s (bosh releases / buildpacks / packages)
+  s3_endpoint="https://minio-k8s.${OPS_DOMAIN}"
+  s3_access_key="private-s3"
+  getCredhubValue "s3_secret_key" "/micro-bosh/k8s-minio/minio-secret-key"
+  configureHost "minio-k8s" "${s3_endpoint}" "${s3_access_key}" "${s3_secret_key}" "v2"
 
   #--- Add host config for minio-prometheus (thanos metrics)
   s3_endpoint="http://$(getValue ${PROMETHEUS_CREDENTIAL_FILE} /secrets/thanos_s3_endpoint)"
