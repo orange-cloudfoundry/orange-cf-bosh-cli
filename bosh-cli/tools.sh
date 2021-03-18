@@ -28,11 +28,13 @@ display "velero" "Cluster resources, persistent volumes backup/restore (used wit
 
 printf "\n%bOTHER CLI TOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
 display "credhub-get" "Get credhub propertie value"
+display "govc" "vSphere cli"
 display "go3fr" "Parallelized and pipelined streaming access to S3 bucket cli"
 display "init-mc" "Init mc config for minio access"
 display "log-cf" "Log with cf cli"
 display "log-credhub" "Log with credhub cli"
 display "log-fly" "Log with concourse cli"
+display "log-govc" "Log with govc vSphere cli"
 display "log-openstack" "Log with openstack cli"
 display "log-shield" "Log with shield cli"
 display "log-uaac" "Log with uaac cli"

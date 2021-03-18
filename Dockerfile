@@ -12,6 +12,7 @@ ENV BBR_VERSION="1.9.1" \
     CREDHUB_VERSION="2.9.0" \
     DB_DUMPER_VERSION="1.4.2" \
     FLY_VERSION="6.7.2" \
+    GOVC_VERSION="0.24.0" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.5.3" \
     JQ_VERSION="1.6" \
@@ -77,8 +78,11 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add BOSH-CLI completion\n' && curl -sSLo /home/bosh/bosh-complete-linux "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_CLI_COMPLETION_VERSION}/bosh-complete-linux" && chmod 755 /home/bosh/bosh-complete-linux && \
     printf '\n=> Add CF-CLI\n' && curl -sSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI_VERSION}&source=github" | tar -xz -C /tmp && mv /tmp/cf7 /usr/local/bin/cf && \
     printf '\n=> Add CF-CLI completion\n' && curl -sSLo /usr/share/bash-completion/completions/cf "https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf7" && \
+    printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plug in \$(echo ${CF_PLUGINS}) ; do cf install-plugin \"\${plug}\" -r CF-Community -f ; done" && \    
     printf '\n=> Add CREDHUB-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
+    printf '\n=> Add DB-DUMPER-PLUGIN\n' && curl -sSLo /tmp/db-dumper-plugin "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" && chmod 755 /tmp/db-dumper-plugin && su -l bosh -s /bin/bash -c "cf install-plugin /tmp/db-dumper-plugin -f" && rm -f /tmp/db-dumper-plugin && \
     printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
+    printf '\n=> Add GOVC-CLI\n' && curl -sSL "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_linux_amd64.gz" | gunzip > /usr/local/bin/govc && \
     printf '\n=> Add GO3FR-CLI\n' && curl -sSL "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/gof3r_${GO3FR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
     printf '\n=> Add HELM-CLI\n' && curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 755 /usr/local/bin/helm && \
     printf '\n=> Add HELM-CLI completion\n' && /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
@@ -99,8 +103,6 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add SVCAT-CLI\n' && curl -sSLo /usr/local/bin/svcat "https://download.svcat.sh/cli/v${SVCAT_VERSION}/linux/amd64/svcat" && \
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
-    printf '\n=> Add DB-DUMPER-PLUGIN\n' && curl -sSLo /tmp/db-dumper-plugin "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" && chmod 755 /tmp/db-dumper-plugin && su -l bosh -s /bin/bash -c "cf install-plugin /tmp/db-dumper-plugin -f" && rm -f /tmp/db-dumper-plugin && \
-    printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plug in \$(echo ${CF_PLUGINS}) ; do cf install-plugin \"\${plug}\" -r CF-Community -f ; done" && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     GIT_VERSION=$(git --version | awk '{print $3}') && \
     printf '\nYour are logged into an ubuntu docker container, which provides several tools :\n' > /etc/motd && \
@@ -116,6 +118,7 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "uaac (${CF_UAAC_VERSION})" "Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac/)" >> /etc/motd && \
     printf 'Admin tools:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "bbr (${BBR_VERSION})" "Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "govc (${GOVC_VERSION})" "vSphere CLI (https://github.com/vmware/govmomi/tree/master/govc/)" >> /etc/motd && \
     printf "  %-20s %s\n" "gof3r (${GO3FR_VERSION})" "Client for parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)" >> /etc/motd && \
     printf "  %-20s %s\n" "mongo (${MONGO_SHELL_VERSION})" "MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)" >> /etc/motd && \
     printf "  %-20s %s\n" "mysqlsh (${MYSQL_SHELL_VERSION})" "MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)" >> /etc/motd && \
