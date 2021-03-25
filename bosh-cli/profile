@@ -159,16 +159,11 @@ _fly_bash_autocomplete() {
 complete -F _fly_bash_autocomplete fly
 
 #--- minio cli auto-completion
-_mc_bash_autocomplete() {
-  local cur opts base
-  COMPREPLY=()
-  cur="${COMP_WORDS[COMP_CWORD]}"
-  opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} --compgen )
-  COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
-  return 0
-}
+if [ -f /usr/share/bash-completion/bash_completion ] ; then
+  source /usr/share/bash-completion/bash_completion
+fi
 
-complete -F _mc_bash_autocomplete mc -q
+complete -C /usr/local/bin/mc mc
 
 #--- Load OSB-CMDB bash functions
 if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then

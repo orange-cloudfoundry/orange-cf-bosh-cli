@@ -88,7 +88,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add HELM-CLI completion\n' && /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
     printf '\n=> Add JQ-CLI\n' && curl -sSLo /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
     printf '\n=> Add KUBECTL-CLI\n' && curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && chmod 755 /usr/local/bin/kubectl && \
-    printf '\n=> Add KUBECTL-CLI completion\n' && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && cp /etc/bash_completion.d/kubectl /etc/bash_completion.d/k && \
+    printf '\n=> Add KUBECTL-CLI completion\n' && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && /usr/local/bin/kubectl completion bash | sed -e "s+kubectl+k+g" > /etc/bash_completion.d/k && \
     printf '\n=> Add KUSTOMIZE-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/kustomize /usr/local/bin/kustomize && \
     printf '\n=> Add K14S-KAPP-CLI\n' && curl -sSLo /usr/local/bin/kapp "https://github.com/k14s/kapp/releases/download/v${K14S_KAPP_VERSION}/kapp-linux-amd64" && \
     printf '\n=> Add K14S-KLBD-CLI\n' && curl -sSLo /usr/local/bin/klbd "https://github.com/k14s/kbld/releases/download/v${K14S_KLBD_VERSION}/kbld-linux-amd64" && \
