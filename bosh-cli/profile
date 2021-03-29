@@ -113,24 +113,62 @@ export RED='\033[31m'
 export GREEN='\033[32m'
 export YELLOW='\033[33m'
 export BLUE='\033[34m'
+export PURPLE='\033[35m'
 export CYAN='\033[36m'
+export WHITE='\033[37m'
 
 export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
 
-#--- Set user prompt
-parse_git_branch()
+export GIT_SYMBOL=$'\u2387'
+export PROXY_SYMBOL=$'\u26a1'
+export BOSH_SYMBOL=$'\u2601\ufe0f'
+export K8S_SYMBOL=$'\u2638\ufe0f'
+
+#--- Set dynamic user prompt
+set_proxy_prompt()
 {
-  local BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
-  if [ ! -z "${BRANCH}" ] ; then
-    echo "(${BRANCH})"
+  if [ ! -z "${PROXY_TYPE}" ] ; then
+    echo "${PROXY_SYMBOL}${PROXY_TYPE} proxy "
   else
     echo ""
   fi
 }
 
-export PS1="\[\033[32m\]\h@${SITE_NAME}\[\033[36m\]\$(parse_git_branch)\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ "
+set_git_prompt()
+{
+  local BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
+  if [ ! -z "${BRANCH}" ] ; then
+    echo "${GIT_SYMBOL} ${BRANCH} "
+  else
+    echo ""
+  fi
+}
+
+set_bosh_prompt()
+{
+  if [ ! -z "${BOSH_TARGET}" ] ; then
+    echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET} "
+  else
+    echo ""
+  fi
+}
+
+set_k8s_prompt()
+{
+  if [ ! -z "${K8S_CLUSTER}" ] ; then
+    echo "${K8S_SYMBOL}  ${K8S_CLUSTER} "
+  else
+    echo ""
+  fi
+}
+
+set_prompt() {
+  export PS1="\n${REVERSE}${GREEN}\h@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${WHITE}\$(set_git_prompt)${PURPLE}\$(set_bosh_prompt)${CYAN}\$(set_k8s_prompt)${BLUE}\w${STD}\n$ "
+}
+
+set_prompt
 
 #--- Set locales
 export LANG=en_US.UTF-8

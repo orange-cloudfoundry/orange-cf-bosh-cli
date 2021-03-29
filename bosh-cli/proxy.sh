@@ -60,10 +60,9 @@ if [ ${flagError} = 0 ] ; then
     export HTTPS_PROXY=${PROXY}
     export no_proxy=${NO_PROXY}
     export NO_PROXY
-    export PS1="\[\033[32m\]\h@${SITE_NAME}\[\033[33m\][${PROXY_TYPE} proxy]\[\033[36m\]\$(parse_git_branch)\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ "
   else
     printf "\n%bUnset proxy...%b\n\n" "${REVERSE}${YELLOW}" "${STD}"
-    unset http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
-    export PS1="\[\033[32m\]\h@${SITE_NAME}\[\033[36m\]\$(parse_git_branch)\[\033[0m\]:\[\033[34m\]\w\[\033[0m\]\$ "
+    unset PROXY_TYPE http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
   fi
+  set_prompt
 fi
