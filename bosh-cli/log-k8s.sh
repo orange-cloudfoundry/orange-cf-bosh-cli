@@ -140,6 +140,6 @@ if [ ${flagError} = 0 ] ; then
   fi
 
   #--- Display cluster nodes
-  printf "\n%bCluster nodes:%b\n" "${YELLOW}${REVERSE}" "${STD}"
-  kubectl get nodes
+  printf "\n%bCluster namespaces:%b\n" "${YELLOW}${REVERSE}" "${STD}"
+  kubectl get namespaces
 fi
