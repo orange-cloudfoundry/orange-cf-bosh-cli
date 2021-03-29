@@ -60,13 +60,13 @@ if [ ${flagError} = 0 ] ; then
     printf "%b10%b : k8s services\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
-      1) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CLUSTER="core-connectivity" ;;
-      2) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CLUSTER="ci" ;;
-      3) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; K8S_DEPLOYMENT="00-gitops-management" ; K8S_CLUSTER="gitops-management" ;;
-      4) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="rundeck" ; K8S_CLUSTER="rundeck" ;;
-      5) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="00-logs-ops" ; K8S_CLUSTER="logs-ops" ;;
-      6) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; K8S_DEPLOYMENT="k3s-sandbox" ; K8S_CLUSTER="sandbox" ;;
-      10) K8S_TYPE="k8s" ; K8S_DIRECTOR="bosh-coab" ; K8S_DEPLOYMENT="10-k8s" ; K8S_CLUSTER="k8s-serv" ;;
+      1) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; BOSH_K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CLUSTER="core-connectivity" ;;
+      2) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; BOSH_K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CLUSTER="ci" ;;
+      3) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; BOSH_K8S_DEPLOYMENT="00-gitops-management" ; K8S_CLUSTER="gitops-management" ;;
+      4) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; BOSH_K8S_DEPLOYMENT="rundeck" ; K8S_CLUSTER="rundeck" ;;
+      5) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; BOSH_K8S_DEPLOYMENT="00-logs-ops" ; K8S_CLUSTER="logs-ops" ;;
+      6) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; BOSH_K8S_DEPLOYMENT="k3s-sandbox" ; K8S_CLUSTER="sandbox" ;;
+      10) K8S_TYPE="k8s" ; K8S_DIRECTOR="bosh-coab" ; BOSH_K8S_DEPLOYMENT="10-k8s" ; K8S_CLUSTER="k8s-serv" ;;
       *) flag=0 ; clear ;;
     esac
   done
@@ -89,9 +89,9 @@ if [ ${flagError} = 0 ] ; then
         mkdir ${CRT_DIR} > /dev/null 2>&1
       fi
 
-      bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-ca" --output-json) --path=/value/ca > ${CRT_DIR}/${K8S_CLUSTER}_ca.pem
-      bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/certificate > ${CRT_DIR}/${K8S_CLUSTER}_cert.pem
-      bosh int <(credhub get -n "/${K8S_DIRECTOR}/${K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/private_key > ${CRT_DIR}/${K8S_CLUSTER}_key.pem
+      bosh int <(credhub get -n "/${K8S_DIRECTOR}/${BOSH_K8S_DEPLOYMENT}/tls-ca" --output-json) --path=/value/ca > ${CRT_DIR}/${K8S_CLUSTER}_ca.pem
+      bosh int <(credhub get -n "/${K8S_DIRECTOR}/${BOSH_K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/certificate > ${CRT_DIR}/${K8S_CLUSTER}_cert.pem
+      bosh int <(credhub get -n "/${K8S_DIRECTOR}/${BOSH_K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/private_key > ${CRT_DIR}/${K8S_CLUSTER}_key.pem
       export KUBECONFIG=${HOME}/.kube/config
 
       kubectl config set-cluster "${K8S_CLUSTER}" --server="https://${K8S_API_ENDPOINT}" --certificate-authority="${CRT_DIR}/${K8S_CLUSTER}_ca.pem" --embed-certs=true > /dev/null 2>&1
@@ -118,8 +118,8 @@ if [ ${flagError} = 0 ] ; then
     logToBosh "${K8S_DIRECTOR}"
     if [ ${flagError} = 0 ] ; then
       export KUBECONFIG=${HOME}/.kube/${K8S_CLUSTER}.yml
-      instance="$(bosh -d ${K8S_DEPLOYMENT} is | grep "server/" | awk '{print $1}')"
-      bosh -d ${K8S_DEPLOYMENT} scp ${instance}:/var/vcap/store/k3s-server/kubeconfig.yml ${KUBECONFIG} > /dev/null 2>&1
+      instance="$(bosh -d ${BOSH_K8S_DEPLOYMENT} is | grep "server/" | awk '{print $1}')"
+      bosh -d ${BOSH_K8S_DEPLOYMENT} scp ${instance}:/var/vcap/store/k3s-server/kubeconfig.yml ${KUBECONFIG} > /dev/null 2>&1
       if [ $? != 0 ] ; then
         printf "\n\n%bERROR : Get cluster configuration failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
       fi

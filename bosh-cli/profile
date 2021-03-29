@@ -149,7 +149,11 @@ set_git_prompt()
 set_bosh_prompt()
 {
   if [ ! -z "${BOSH_TARGET}" ] ; then
-    echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET} "
+    if [ ! -z "${BOSH_DEPLOYMENT}" ] ; then
+      echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET}:${BOSH_DEPLOYMENT} "
+    else
+      echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET} "
+    fi
   else
     echo ""
   fi
@@ -158,7 +162,12 @@ set_bosh_prompt()
 set_k8s_prompt()
 {
   if [ ! -z "${K8S_CLUSTER}" ] ; then
-    echo "${K8S_SYMBOL}  ${K8S_CLUSTER} "
+    K8S_NS="$(kubectl config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
+    if [ ! -z "${K8S_NS}" ] ; then
+      echo "${K8S_SYMBOL}  ${K8S_CLUSTER}:${K8S_NS} "
+    else
+      echo "${K8S_SYMBOL}  ${K8S_CLUSTER} "
+    fi
   else
     echo ""
   fi
