@@ -90,6 +90,7 @@ alias generate-password='apg -MCLN -n 1 -m 30'
 alias k='/usr/local/bin/kubectl'
 alias k8s-token='/usr/local/bin/k8s-token.sh'
 alias os='openstack'
+alias ps1-clear='unset BOSH_TARGET ; unset K8S_CLUSTER'
 alias proxy='. /usr/local/bin/proxy.sh'
 alias toggle-proxy='. /usr/local/bin/proxy.sh'
 alias prune-workers='fly prune-worker -a'
@@ -112,9 +113,7 @@ export RED='\033[31m'
 export GREEN='\033[32m'
 export YELLOW='\033[33m'
 export BLUE='\033[34m'
-export PURPLE='\033[35m'
 export CYAN='\033[36m'
-export WHITE='\033[37m'
 
 export STD='\033[0m'
 export BOLD='\033[1m'
@@ -173,7 +172,7 @@ set_k8s_prompt()
 }
 
 set_prompt() {
-  export PS1="\n${REVERSE}${GREEN}\h@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${WHITE}\$(set_git_prompt)${PURPLE}\$(set_bosh_prompt)${CYAN}\$(set_k8s_prompt)${BLUE}\w${STD}\n$ "
+  export PS1="\n${REVERSE}${GREEN}\h@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${BLUE}\w${STD}\n$ "
 }
 
 set_prompt
