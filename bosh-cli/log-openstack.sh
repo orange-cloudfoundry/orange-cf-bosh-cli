@@ -29,6 +29,7 @@ fi
 if [ "${flagError}" = "0" ] ; then
   #--- Common keystone parameters V2/V3
   getCredhubValue "OS_AUTH_URL" "/secrets/openstack_auth_url"
+  OS_AUTH_URL="$(echo "${OS_AUTH_URL}" | sed -e "s+/$++")"
   getCredhubValue "OS_USERNAME" "/secrets/openstack_username"
   getCredhubValue "OS_PASSWORD" "/secrets/openstack_password"
   export OS_AUTH_URL
