@@ -62,7 +62,13 @@ alias pull='git pull --rebase ; git fetch --prune'
 alias push='git pull --rebase ; git fetch --prune ; git push'
 alias status='git status'
 
-#--- Cli log aliases
+#--- Cli aliases
+alias bosh-clean-prometheus-tasks='for var in $(bosh tasks | grep "queued" | grep "prometheus" | awk "{print $1}") ; do bosh cancel-task $var ; done'
+alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
+alias credhub-get='function __cg() { log-credhub -i ; credhub get -n $1 -j | jq .value -r; }; __cg'
+alias fly='fly -t concourse'
+alias k='/usr/local/bin/kubectl'
+alias k8s-token='/usr/local/bin/k8s-token.sh'
 alias log-bosh='. /usr/local/bin/log-bosh.sh'
 alias log-cf='. /usr/local/bin/log-cf.sh'
 alias log-credhub='. /usr/local/bin/log-credhub.sh'
@@ -72,6 +78,10 @@ alias log-k8s='. /usr/local/bin/log-k8s.sh'
 alias log-openstack='. /usr/local/bin/log-openstack.sh'
 alias log-shield='. /usr/local/bin/log-shield.sh'
 alias log-uaac='. /usr/local/bin/log-uaac.sh'
+alias os='openstack'
+alias prune-workers='fly prune-worker -a'
+alias set-ns='function __sn() { kubectl config set-context --current --namespace=$1; }; __sn'
+alias switch='. /usr/local/bin/switch.sh'
 
 #--- Docker aliases
 alias dim='docker images'
@@ -80,27 +90,16 @@ alias dprune='docker container prune'
 alias dsh='function __dsh() { docker exec -it $1 sh; }; __dsh'
 
 #--- Tools aliases
-alias bosh-clean-prometheus-tasks='for var in $(bosh tasks | grep "queued" | grep "prometheus" | awk "{print $1}") ; do bosh cancel-task $var ; done'
-alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
-alias credhub-get='function __cg() { log-credhub -i ; credhub get -n $1 -j | jq .value -r; }; __cg'
 alias diff='colordiff'
 alias f='function __f() { printf "%100s\n"|tr " " "=";find . ! -regex ".*[/]\.git[/]?.*" ! -regex ".*last-deployment-failure\.yml" -type f,l -not -xtype l -not -xtype d -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "%100s\n"|tr " " "="; }; __f'
-alias fly='fly -t concourse'
 alias generate-password='apg -MCLN -n 1 -m 30'
-alias k='/usr/local/bin/kubectl'
-alias k8s-token='/usr/local/bin/k8s-token.sh'
-alias os='openstack'
 alias ps1-clear='unset BOSH_TARGET ; unset K8S_CLUSTER'
 alias proxy='. /usr/local/bin/proxy.sh'
-alias toggle-proxy='. /usr/local/bin/proxy.sh'
-alias prune-workers='fly prune-worker -a'
-alias set-ns='function __sn() { kubectl config set-context --current --namespace=$1; }; __sn'
 alias show-cert='function __scrt() { openssl x509 -text -in $1; }; __scrt'
 alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
-alias switch='. /usr/local/bin/switch.sh'
 alias tn='function __tn() { echo -ne "\033]0;$@\007";unset -f __t;printf "\n"; }; __tn'
+alias toggle-proxy='. /usr/local/bin/proxy.sh'
 alias tools='. /usr/local/bin/tools.sh'
-
 EOF
 
 #--- Init bash profile

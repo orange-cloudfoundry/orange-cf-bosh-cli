@@ -16,17 +16,6 @@ usage() {
   flagError=1
 }
 
-#--- Set user prompt
-parse_git_branch()
-{
-  local BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
-  if [ ! -z "${BRANCH}" ] ; then
-    echo "(${BRANCH})"
-  else
-    echo ""
-  fi
-}
-
 flagError=0
 PROXY=""
 proxyStatus=`env | grep -i "http_proxy"`
