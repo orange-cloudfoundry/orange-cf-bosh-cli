@@ -29,12 +29,12 @@ case "$1" in
   "-e"|"--internet")
     PROXY_TYPE="internet"
     PROXY="http://system-internet-http-proxy.internal.paas:3128"
-    NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,.intraorange,.ftgroup,.francetelecom.fr" ;;
+    NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,${INTRANET_DOMAINS}" ;;
 
   "") if [ "${proxyStatus}" = "" ] ; then
         PROXY_TYPE="internet"
         PROXY="http://system-internet-http-proxy.internal.paas:3128"
-        NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,.intraorange,.ftgroup,.francetelecom.fr"
+        NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,${INTRANET_DOMAINS}"
       fi ;;
 
   *) usage ;;
