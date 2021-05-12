@@ -4,22 +4,22 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
 ENV BBR_VERSION="1.9.1" \
-    BOSH_CLI_VERSION="6.4.1" \
+    BOSH_CLI_VERSION="6.4.3" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
     CF_CLI_VERSION="7.2.0" \
     CF_UAAC_VERSION="4.2.0" \
     CREDHUB_VERSION="2.9.0" \
     DB_DUMPER_VERSION="1.4.2" \
-    FLY_VERSION="7.1.0" \
-    GOVC_VERSION="0.24.0" \
+    FLY_VERSION="7.2.0" \
+    GOVC_VERSION="0.25.0" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.5.3" \
     JQ_VERSION="1.6" \
     K14S_KAPP_VERSION="0.36.0" \
     K14S_KLBD_VERSION="0.29.0" \
     K14S_YTT_VERSION="0.31.0" \
-    K9S_VERSION="0.24.6" \
+    K9S_VERSION="0.24.9" \
     KUBECTL_VERSION="1.18.8" \
     KUSTOMIZE_VERSION="4.0.5" \
     MONGO_SHELL_VERSION="4.0.23" \
@@ -83,7 +83,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add CREDHUB-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add DB-DUMPER-PLUGIN\n' && curl -sSLo /tmp/db-dumper-plugin "https://github.com/Orange-OpenSource/db-dumper-cli-plugin/releases/download/v${DB_DUMPER_VERSION}/db-dumper_linux_amd64" && chmod 755 /tmp/db-dumper-plugin && su -l bosh -s /bin/bash -c "cf install-plugin /tmp/db-dumper-plugin -f" && rm -f /tmp/db-dumper-plugin && \
     printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
-    printf '\n=> Add GOVC-CLI\n' && curl -sSL "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_linux_amd64.gz" | gunzip > /usr/local/bin/govc && \
+    printf '\n=> Add GOVC-CLI\n' && curl -sSL "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/govc /usr/local/bin/govc && \
     printf '\n=> Add GO3FR-CLI\n' && curl -sSL "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/gof3r_${GO3FR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
     printf '\n=> Add HELM-CLI\n' && curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 755 /usr/local/bin/helm && \
     printf '\n=> Add HELM-CLI completion\n' && /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
