@@ -2,8 +2,8 @@ FROM ubuntu:20.04 AS orange_cli
 USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
-#--- Clis versions
-ENV BBR_VERSION="1.9.1" \
+#--- clis versions
+ENV BBR_VERSION="1.9.7" \
     BOSH_CLI_VERSION="6.4.3" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
@@ -12,48 +12,46 @@ ENV BBR_VERSION="1.9.1" \
     CREDHUB_VERSION="2.9.0" \
     DB_DUMPER_VERSION="1.4.2" \
     FLY_VERSION="7.2.0" \
-    GOVC_VERSION="0.25.0" \
+    GOVC_VERSION="0.26.0" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.5.3" \
     JQ_VERSION="1.6" \
-    K14S_KAPP_VERSION="0.36.0" \
-    K14S_KLBD_VERSION="0.29.0" \
-    K14S_YTT_VERSION="0.31.0" \
-    K9S_VERSION="0.24.9" \
-    KUBECTL_VERSION="1.18.8" \
-    KUSTOMIZE_VERSION="4.0.5" \
-    MONGO_SHELL_VERSION="4.0.23" \
-    MYSQL_SHELL_VERSION="8.0.23-1" \
-    REDIS_CLI_VERSION="6.2.1" \
+    K14S_KAPP_VERSION="0.37.0" \
+    K14S_KLBD_VERSION="0.30.0" \
+    K14S_YTT_VERSION="0.34.0" \
+    K9S_VERSION="0.24.10" \
+    KUBECTL_VERSION="1.20.7" \
+    KUSTOMIZE_VERSION="4.1.3" \
+    MONGO_SHELL_VERSION="4.0.25" \
+    MYSQL_SHELL_VERSION="8.0.25-1" \
+    REDIS_CLI_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6.5" \
     SHIELD_VERSION="8.7.3" \
     SPRUCE_VERSION="1.27.0" \
     SVCAT_VERSION="0.3.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
-    TERRAFORM_VERSION="0.11.14"
+    TERRAFORM_VERSION="0.11.14" \
+    VENDIR_VERSION="0.19.0"
 
 #--- Packages list, ruby env for COA and cf plugins
-ENV INIT_PACKAGES="apt-utils apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core less locales nano nodejs python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tmux byobu vim" \
+ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg less locales nano python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tmux byobu yarnpkg vim" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois" \
     DEV_PACKAGES="python-dev build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
     PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:${PATH}" \
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
-    CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
+    CF_PLUGINS="cli-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report"
 
 ADD bosh-cli/* /tmp/bosh-cli/
 
 RUN printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
-    apt-get update && apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} && apt-get upgrade -y && \
-    cp /usr/bin/chardetect3 /usr/local/bin/chardetect && \
-    printf '=====================================================\n Install NodeJS and yarn\n=====================================================\n' && \
-    curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && \
-    curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list.d/yarn.list && \
-    apt-get update && apt-get install -y --no-install-recommends yarn && \
+    apt-get update && apt-get install -y --no-install-recommends apt-utils && \
+    apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} && \
     apt-get upgrade -y && apt-get autoremove -y && apt-get clean && apt-get purge && \
+    cp /usr/bin/chardetect3 /usr/local/bin/chardetect && \
     printf '\n=====================================================\n Install ruby tools\n=====================================================\n' && \
     curl -sSL https://rvm.io/mpapis.asc | gpg --import - && curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - && curl -sSL https://get.rvm.io | bash -s stable && \
     /bin/bash -l -c "source /etc/profile.d/rvm.sh ; rvm install ${RUBY_VERSION}" && \
@@ -94,7 +92,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add K14S-KAPP-CLI\n' && curl -sSLo /usr/local/bin/kapp "https://github.com/k14s/kapp/releases/download/v${K14S_KAPP_VERSION}/kapp-linux-amd64" && \
     printf '\n=> Add K14S-KLBD-CLI\n' && curl -sSLo /usr/local/bin/klbd "https://github.com/k14s/kbld/releases/download/v${K14S_KLBD_VERSION}/kbld-linux-amd64" && \
     printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
-    printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
+    printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_v${K9S_VERSION}_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
     printf '\n=> Add MONGO_SHELL_VERSION\n' && curl -sSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}.tgz" | tar -xz -C /tmp && cd /tmp/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}/bin && mv mongo mongostat mongotop /usr/local/bin && \
     printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu20.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
@@ -104,35 +102,37 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add SVCAT-CLI\n' && curl -sSLo /usr/local/bin/svcat "https://download.svcat.sh/cli/v${SVCAT_VERSION}/linux/amd64/svcat" && \
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
+    printf '\n=> Add VENDIR-CLI\n' && curl -sSLo /usr/local/bin/vendir "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-amd64" && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     GIT_VERSION=$(git --version | awk '{print $3}') && \
     printf '\nYour are logged into an ubuntu docker container, which provides several tools :\n' > /etc/motd && \
     printf 'Generic tools:\n' >> /etc/motd && \
-    printf "  %-20s %s\n" "bosh (${BOSH_CLI_VERSION})" "Bosh CLI (https://bosh.io/docs/cli-v2.html)" >> /etc/motd && \
-    printf "  %-20s %s\n" "cf (${CF_CLI_VERSION})" "Cloud Foundry CLI (https://github.com/cloudfoundry/cli/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "credhub (${CREDHUB_VERSION})" "Credhub CLI (https://github.com/cloudfoundry-incubator/credhub-cli/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "fly (${FLY_VERSION})" "Concourse CLI (https://github.com/concourse/fly/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "git (${GIT_VERSION})" "Git CLI" >> /etc/motd && \
+    printf "  %-20s %s\n" "bosh (${BOSH_CLI_VERSION})" "Bosh cli (https://bosh.io/docs/cli-v2.html)" >> /etc/motd && \
+    printf "  %-20s %s\n" "cf (${CF_CLI_VERSION})" "Cloud Foundry cli (https://github.com/cloudfoundry/cli/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "credhub (${CREDHUB_VERSION})" "Credhub cli (https://github.com/cloudfoundry-incubator/credhub-cli/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "fly (${FLY_VERSION})" "Concourse cli (https://github.com/concourse/fly/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "git (${GIT_VERSION})" "Git cli" >> /etc/motd && \
     printf "  %-20s %s\n" "jq (${JQ_VERSION})" "JSON processing Tool (https://stedolan.github.io/jq/)" >> /etc/motd && \
     printf "  %-20s %s\n" "spruce (${SPRUCE_VERSION})" "YAML templating tool (https://github.com/geofffranks/spruce/)" >> /etc/motd && \
     printf "  %-20s %s\n" "terraform (${TERRAFORM_VERSION})" "Manage infrastructure creation by configuration (https://www.terraform.io/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "uaac (${CF_UAAC_VERSION})" "Cloud Foundry UAA CLI (https://github.com/cloudfoundry/cf-uaac/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "uaac (${CF_UAAC_VERSION})" "Cloud Foundry UAA cli (https://github.com/cloudfoundry/cf-uaac/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "vendir (${VENDIR_VERSION})" "Define and fetch components to target directory (https://github.com/vmware-tanzu/carvel-vendir/)" >> /etc/motd && \
     printf 'Admin tools:\n' >> /etc/motd && \
-    printf "  %-20s %s\n" "bbr (${BBR_VERSION})" "Bosh Backup and Restore CLI (http://docs.cloudfoundry.org/bbr/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "govc (${GOVC_VERSION})" "vSphere CLI (https://github.com/vmware/govmomi/tree/master/govc/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "gof3r (${GO3FR_VERSION})" "Client for parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "mongo (${MONGO_SHELL_VERSION})" "MongoDB shell CLI (https://docs.mongodb.com/manual/mongo/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "mysqlsh (${MYSQL_SHELL_VERSION})" "MySQL shell CLI (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "redis (${REDIS_CLI_VERSION})" "Redis CLI (https://redis.io/topics/rediscli)" >> /etc/motd && \
-    printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield CLI (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "bbr (${BBR_VERSION})" "Bosh Backup and Restore cli (http://docs.cloudfoundry.org/bbr/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "govc (${GOVC_VERSION})" "vSphere cli (https://github.com/vmware/govmomi/tree/master/govc/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "gof3r (${GO3FR_VERSION})" "client for parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "mongo (${MONGO_SHELL_VERSION})" "MongoDB shell cli (https://docs.mongodb.com/manual/mongo/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "mysqlsh (${MYSQL_SHELL_VERSION})" "MySQL shell cli (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "redis (${REDIS_CLI_VERSION})" "Redis cli (https://redis.io/topics/rediscli)" >> /etc/motd && \
+    printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield cli (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "helm (${HELM_VERSION})" "Kubernetes Package Manager (https://docs.helm.sh/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes CLI (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kapp (${K14S_KAPP_VERSION})" "Kubernetes YAML tool (https://github.com/k14s/kapp/)" >> /etc/motd && \
     printf "  %-20s %s\n" "klbd (${K14S_KLBD_VERSION})" "Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
     printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "svcat (${SVCAT_VERSION})" "Kubernetes Service Catalog CLI (https://github.com/kubernetes-sigs/service-catalog/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "svcat (${SVCAT_VERSION})" "Kubernetes Service Catalog cli (https://github.com/kubernetes-sigs/service-catalog/)" >> /etc/motd && \
     printf "  %-20s %s\n" "ytt (${K14S_YTT_VERSION})" "YAML Templating Tool (https://github.com/k14s/ytt/)" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
     printf '  "tools" command gives available tools.\n' >> /etc/motd && \
