@@ -37,13 +37,12 @@ if [ $? != 0 ] ; then
   fi
 fi
 
+if [ ! -d ${HOME}/.kube ] ; then
+  mkdir ${HOME}/.kube > /dev/null 2>&1
+fi
+
 #--- Log to K8S
 if [ ${flagError} = 0 ] ; then
-  #--- Install svcat plugin and auto-completion for kubectl (need to unset KUBECONFIG for using default path ${HOME}/.kube)
-  unset KUBECONFIG
-  svcat install plugin > /dev/null 2>&1
-  source <(svcat completion bash)
-
   #--- Select kubernetes cluster
   flag=0
   while [ ${flag} = 0 ] ; do
@@ -70,10 +69,6 @@ if [ ${flagError} = 0 ] ; then
       *) flag=0 ; clear ;;
     esac
   done
-
-  if [ ! -d ${HOME}/.kube ] ; then
-    mkdir ${HOME}/.kube > /dev/null 2>&1
-  fi
 
   if [ "${K8S_TYPE}" = "k8s" ] ; then
     #--- Check if bosh dns exists
@@ -128,8 +123,11 @@ if [ ${flagError} = 0 ] ; then
   fi
 fi
 
-#--- Install svcat plugin and auto-completion for kubectl
 if [ ${flagError} = 0 ] ; then
+  #--- Install svcat plugin and auto-completion (need to unset KUBECONFIG for using default path ${HOME}/.kube)
+  svcat install plugin > /dev/null 2>&1
+  source <(svcat completion bash)
+
   #--- Display admin token (used for web ui portals)
   admin_token_name="$(kubectl -n kube-system get secret | grep admin | awk '{print $1}')"
   if [ "${admin_token_name}" = "" ] ; then
