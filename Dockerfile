@@ -27,7 +27,7 @@ ENV BBR_VERSION="1.9.7" \
     REDIS_CLI_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="1.17.3" \
     RUBY_VERSION="2.6.5" \
-    SHIELD_VERSION="8.7.3" \
+    SHIELD_VERSION="8.7.4" \
     SPRUCE_VERSION="1.27.0" \
     SVCAT_VERSION="0.3.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
@@ -142,7 +142,7 @@ RUN printf '\n=====================================================\n Install sy
     mv /tmp/bosh-cli/*.sh /usr/local/bin/ && mv /tmp/bosh-cli/sshd.conf /etc/supervisor/conf.d/ && mv /tmp/bosh-cli/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \
     mkdir -p /home/bosh/.ssh && chmod 700 /home/bosh /home/bosh/.ssh && \
     find /usr/local/bin -print0 | xargs -0 chown root:root && find /home/bosh /data -print0 | xargs -0 chown bosh:users && \
-    chmod 755 /usr/local/bin/* /etc/profile.d/* && chmod 644 /etc/motd && \
+    chmod 1777 /tmp && chmod 755 /usr/local/bin/* /etc/profile.d/* && chmod 644 /etc/motd && \
     rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/* && find /var/log -type f -delete && \
     touch /var/log/lastlog && chgrp utmp /var/log/lastlog && chmod 664 /var/log/lastlog
 

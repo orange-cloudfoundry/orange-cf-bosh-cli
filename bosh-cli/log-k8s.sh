@@ -3,6 +3,45 @@
 # Log to kubernetes clusters for clis (kubectl, helm, k9s)
 #===========================================================================
 
+#--- Update value form yaml file propertie
+updateYaml() {
+  yaml_file="$1"
+  key_path="$2"
+  key_value="$3"
+  new_file="$1.tmp"
+
+  if [ ! -s ${yaml_file} ] ; then
+    printf "\n%bERROR : File \"${yaml_file}\" unknown.%b\n\n" "${RED}" "${STD}" ; flagError=1
+  else
+    > ${new_file}
+    awk -v new_file="${new_file}" -v refpath="${key_path}" -v value="${key_value}" 'BEGIN {nb = split(refpath, path, ".") ; level = 1 ; flag = 0 ; string = ""}
+    {
+      line = $0
+      currentLine = $0 ; gsub("^ *", "", currentLine) ; gsub("^ *- *", "", currentLine)
+      key = path[level]":"
+      if (index(currentLine, key) == 1) {
+        if(level == nb) {
+          level = level + 1 ; path[level] = "@" ; flag = 1
+          sub("^ *", "", value) ; sub(" *$", "", value)
+          gsub(":.*", ": "value, line)
+        }
+        else {level = level + 1}
+        string = string "\n" line
+      }
+      printf("%s\n", line) >> new_file
+    }
+    END {if(flag == 0){exit 1}}' ${yaml_file}
+
+    if [ $? != 0 ] ; then
+      printf "\n%bERROR: Unknown key [${key_path}] in file \"${yaml_file}\".%b\n\n" "${RED}" "${STD}" ; flagError=1
+    else
+      cp ${new_file} ${yaml_file}
+    fi
+    rm -f ${new_file} > /dev/null 2>&1
+    chmod 600 ${yaml_file} > /dev/null 2>&1
+  fi
+}
+
 #--- Log to bosh director
 logToBosh() {
   case "$1" in
@@ -75,7 +114,7 @@ if [ ${flagError} = 0 ] ; then
     K8S_API_ENDPOINT="${K8S_CLUSTER}-api.internal.paas"
     flag_host="$(host ${K8S_API_ENDPOINT} | awk '{print $4}')"
     if [ "${flag_host}" = "found:" ] ; then
-      printf "\n\n%bERROR : Kubernetes cluster endpoint \"${K8S_API_ENDPOINT}\" unknown (no dns record).%b\n\n" "${RED}" "${STD}" ; flagError=1
+      printf "\n%bERROR : Kubernetes cluster endpoint \"${K8S_API_ENDPOINT}\" unknown (no dns record).%b\n\n" "${RED}" "${STD}" ; flagError=1
     else
       #--- Set kubernetes configuration
       printf "\n"
@@ -118,7 +157,8 @@ if [ ${flagError} = 0 ] ; then
       if [ $? != 0 ] ; then
         printf "\n\n%bERROR : Get cluster configuration failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
       fi
-      chmod 600 ${KUBECONFIG} > /dev/null 2>&1
+      updateYaml "${KUBECONFIG}" "clusters.name" "${K8S_CLUSTER}"
+      updateYaml "${KUBECONFIG}" "contexts.context.cluster" "${K8S_CLUSTER}"
     fi
   fi
 fi

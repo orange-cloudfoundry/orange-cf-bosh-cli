@@ -26,6 +26,9 @@ if [ ! -d ${HOME} ] ; then
   mkdir -p ${HOME}
 fi
 
+#--- Set k9s config path
+export K9SCONFIG=${HOME}/.k9s
+
 #--- Copy bash user configuration
 cp /home/bosh/.bashrc ${HOME}/.bashrc
 
