@@ -35,7 +35,7 @@ while [ ${flag} = 0 ] ; do
   printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
   case "${choice}" in
     1) GOVC_TARGET="vcenter" ;;
-    2) GOVC_TARGET="vcenter_2" ;;
+    2) GOVC_TARGET="2_vcenter" ; export GOVC_INSECURE=1 ;;  #--- vcenter region 2 is not trusted with pki
     *) flag=0 ; clear ;;
   esac
 done

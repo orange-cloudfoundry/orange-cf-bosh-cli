@@ -126,7 +126,7 @@ if [ ${flagError} = 0 ] ; then
       bosh int <(credhub get -n "/${K8S_DIRECTOR}/${BOSH_K8S_DEPLOYMENT}/tls-ca" --output-json) --path=/value/ca > ${CRT_DIR}/${K8S_CLUSTER}_ca.pem
       bosh int <(credhub get -n "/${K8S_DIRECTOR}/${BOSH_K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/certificate > ${CRT_DIR}/${K8S_CLUSTER}_cert.pem
       bosh int <(credhub get -n "/${K8S_DIRECTOR}/${BOSH_K8S_DEPLOYMENT}/tls-admin" --output-json) --path=/value/private_key > ${CRT_DIR}/${K8S_CLUSTER}_key.pem
-      export KUBECONFIG=${HOME}/.kube/config
+      KUBECONFIG="${HOME}/.kube/config"
 
       kubectl config set-cluster "${K8S_CLUSTER}" --server="https://${K8S_API_ENDPOINT}" --certificate-authority="${CRT_DIR}/${K8S_CLUSTER}_ca.pem" --embed-certs=true > /dev/null 2>&1
       if [ $? != 0 ] ; then
@@ -151,7 +151,7 @@ if [ ${flagError} = 0 ] ; then
     export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
     logToBosh "${K8S_DIRECTOR}"
     if [ ${flagError} = 0 ] ; then
-      export KUBECONFIG=${HOME}/.kube/${K8S_CLUSTER}.yml
+      KUBECONFIG="${HOME}/.kube/${K8S_CLUSTER}.yml"
       instance="$(bosh -d ${BOSH_K8S_DEPLOYMENT} is | grep "server/" | awk '{print $1}')"
       bosh -d ${BOSH_K8S_DEPLOYMENT} scp ${instance}:/var/vcap/store/k3s-server/kubeconfig.yml ${KUBECONFIG} > /dev/null 2>&1
       if [ $? != 0 ] ; then
@@ -165,8 +165,11 @@ fi
 
 if [ ${flagError} = 0 ] ; then
   #--- Install svcat plugin and auto-completion (need to unset KUBECONFIG for using default path ${HOME}/.kube)
+  OLD_KUBECONFIG="${KUBECONFIG}"
+  unset KUBECONFIG
   svcat install plugin > /dev/null 2>&1
   source <(svcat completion bash)
+  export KUBECONFIG="${OLD_KUBECONFIG}"
 
   #--- Display admin token (used for web ui portals)
   admin_token_name="$(kubectl -n kube-system get secret | grep admin | awk '{print $1}')"
