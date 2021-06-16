@@ -35,7 +35,7 @@ while [ ${flag} = 0 ] ; do
   printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
   case "${choice}" in
     1) GOVC_TARGET="vcenter" ;;
-    2) GOVC_TARGET="2_vcenter" ; export GOVC_INSECURE=1 ;;  #--- vcenter region 2 is not trusted with pki
+    2) GOVC_TARGET="2_vcenter" ;;
     *) flag=0 ; clear ;;
   esac
 done
@@ -50,5 +50,6 @@ getCredhubValue "GOVC_CLUSTER" "/secrets/vsphere_${GOVC_TARGET}_cluster"
 getCredhubValue "GOVC_RESOURCE_POOL" "/secrets/vsphere_${GOVC_TARGET}_resource_pool"
 
 export GOVC_URL GOVC_USERNAME GOVC_PASSWORD GOVC_DATACENTER GOVC_DATASTORE GOVC_CLUSTER GOVC_RESOURCE_POOL
+export GOVC_INSECURE=1 #--- vcenter region 2 is not trusted with pki
 
 printf "\n"
