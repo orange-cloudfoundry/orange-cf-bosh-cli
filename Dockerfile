@@ -3,7 +3,7 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- clis versions
-ENV BBR_VERSION="1.9.7" \
+ENV BBR_VERSION="1.9.1" \
     BOSH_CLI_VERSION="6.4.3" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
