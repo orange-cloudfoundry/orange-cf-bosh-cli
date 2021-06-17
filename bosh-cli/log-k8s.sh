@@ -3,7 +3,7 @@
 # Log to kubernetes clusters for clis (kubectl, helm, k9s)
 #===========================================================================
 
-#--- Update value form yaml file propertie
+#--- Update propertie value from yaml file
 updateYaml() {
   yaml_file="$1"
   key_path="$2"
