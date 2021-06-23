@@ -168,8 +168,8 @@ if [ ${flagError} = 0 ] ; then
   OLD_KUBECONFIG="${KUBECONFIG}"
   unset KUBECONFIG
   svcat install plugin > /dev/null 2>&1
-  source <(svcat completion bash)
   export KUBECONFIG="${OLD_KUBECONFIG}"
+  source <(svcat completion bash)
 
   #--- Display admin token (used for web ui portals)
   admin_token_name="$(kubectl -n kube-system get secret | grep admin | awk '{print $1}')"
