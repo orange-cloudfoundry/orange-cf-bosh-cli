@@ -1,0 +1,44 @@
+name: Build published docker image
+
+on:
+  release:
+    types: [published]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_VERSION: ${{ github.ref }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    #--- Set permissions to ephemeral GITHUB_TOKEN for job actions
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout and download repository to workflow runner
+        uses: actions/checkout@v2
+
+      - name: Login to github container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image version
+        id: prep
+        run: |
+          echo "IMAGE_NAME: ${{ env.IMAGE_NAME }}"
+          echo "IMAGE_VERSION: ${{ env.IMAGE_VERSION }}"
+
+      - name: Build and push image to github container registry
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: false
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_VERSION }}
