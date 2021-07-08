@@ -78,7 +78,7 @@ if [ ${flagError} = 0 ] ; then
     #--- Check if bosh director instance is available
     nc -vz -w 1 ${BOSH_ENVIRONMENT} 25250 > /dev/null 2>&1
     if [ $? != 0 ] ; then
-      printf "\n\n%bERROR : Bosh director \"${BOSH_TARGET}\" unreachable.%b\n\n" "${RED}" "${STD}"
+      printf "\n\n%bERROR : Bosh director \"${BOSH_TARGET}\" unreachable.%b\n\n" "${RED}" "${STD}" ; flagError=1
     else
       #--- Check if token access expired, then log out
       bosh env > /dev/null 2>&1
@@ -95,8 +95,7 @@ if [ ${flagError} = 0 ] ; then
         if [ ${flag_use_uaa} = 1 ] ; then
           printf "\n%buaa \"admin\" client password :%b " "${REVERSE}${GREEN}" "${STD}" ; read BOSH_CLIENT_SECRET
           if [ "${BOSH_CLIENT_SECRET}" = "" ] ; then
-            printf "\n\n%bERROR : Empty password.%b\n\n" "${RED}" "${STD}"
-            flagError=1
+            printf "\n\n%bERROR : Empty password.%b\n\n" "${RED}" "${STD}" ; flagError=1
           else
             export BOSH_CLIENT="admin"
             export BOSH_CLIENT_SECRET
@@ -109,8 +108,7 @@ if [ ${flagError} = 0 ] ; then
         if [ ${flagError} = 0 ] ; then
           bosh log-in
           if [ $? != 0 ] ; then
-            printf "\n\n%bERROR : Log to bosh director \"${BOSH_TARGET}\" failed.%b\n\n" "${RED}" "${STD}"
-            flagError=1
+            printf "\n\n%bERROR : Log to bosh director \"${BOSH_TARGET}\" failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
           fi
         fi
       fi
