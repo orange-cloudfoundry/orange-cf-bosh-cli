@@ -1,4 +1,4 @@
-# Cloud Foundry Docker Bosh cli [![Docker Automated build](build_automated.svg)](https://hub.docker.com/r/orangecloudfoundry/orange-cf-bosh-cli/)
+# Cloud Foundry Docker Bosh cli [![Docker Automated build](build_automated.svg)](https://github.com/orange-cloudfoundry/orange-cf-bosh-cli/pkgs/container/orange-cf-bosh-cli)
 `cf-bosh-cli` allows to deploy several cli tools through docker image.
 
 ## Installed tools
