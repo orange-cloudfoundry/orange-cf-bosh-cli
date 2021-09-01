@@ -101,7 +101,7 @@ if [ ${flagError} = 0 ] ; then
       1) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; BOSH_K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CLUSTER="core-connectivity" ;;
       2) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; BOSH_K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CLUSTER="ci" ;;
       3) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; BOSH_K8S_DEPLOYMENT="00-gitops-management" ; K8S_CLUSTER="gitops-management" ;;
-      4) K8S_TYPE="k3s" ; K8S_DIRECTOR="micro-bosh" ; BOSH_K8S_DEPLOYMENT="00-supervision" ; K8S_CLUSTER="supervision" ;;
+      4) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; BOSH_K8S_DEPLOYMENT="00-supervision" ; K8S_CLUSTER="supervision" ;;
       5) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; BOSH_K8S_DEPLOYMENT="rundeck" ; K8S_CLUSTER="rundeck" ;;
       6) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-coab" ; BOSH_K8S_DEPLOYMENT="00-k3s-serv" ; K8S_CLUSTER="k3s-serv" ;;
       7) K8S_TYPE="k3s" ; K8S_DIRECTOR="bosh-master" ; BOSH_K8S_DEPLOYMENT="k3s-sandbox" ; K8S_CLUSTER="sandbox" ;;
