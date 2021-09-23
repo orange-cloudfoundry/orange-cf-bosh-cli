@@ -107,7 +107,22 @@ if [ ${flagError} = 0 ] ; then
     esac
   done
 
-  if [ "${K8S_TYPE}" = "k8s" ] ; then
+  if [ "${K8S_TYPE}" = "k3s" ] ; then
+    #--- Get k3s cluster configuration
+    export BOSH_CLIENT="admin"
+    export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
+    logToBosh "${K8S_DIRECTOR}"
+    if [ ${flagError} = 0 ] ; then
+      KUBECONFIG="${HOME}/.kube/${K8S_CLUSTER}.yml"
+      instance="$(bosh -d ${BOSH_K8S_DEPLOYMENT} is | grep "server/" | awk '{print $1}')"
+      bosh -d ${BOSH_K8S_DEPLOYMENT} scp ${instance}:/var/vcap/store/k3s-server/kubeconfig.yml ${KUBECONFIG} > /dev/null 2>&1
+      if [ $? != 0 ] ; then
+        printf "\n\n%bERROR : Get cluster configuration failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
+      fi
+      updateYaml "${KUBECONFIG}" "clusters.name" "${K8S_CLUSTER}"
+      updateYaml "${KUBECONFIG}" "contexts.context.cluster" "${K8S_CLUSTER}"
+    fi
+  else
     #--- Check if bosh dns exists
     K8S_API_ENDPOINT="${K8S_CLUSTER}-api.internal.paas"
     flag_host="$(host ${K8S_API_ENDPOINT} | awk '{print $4}')"
@@ -143,20 +158,14 @@ if [ ${flagError} = 0 ] ; then
         fi
       fi
     fi
-  else
-    #--- Get k3s cluster configuration
-    export BOSH_CLIENT="admin"
-    export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
-    logToBosh "${K8S_DIRECTOR}"
-    if [ ${flagError} = 0 ] ; then
-      KUBECONFIG="${HOME}/.kube/${K8S_CLUSTER}.yml"
-      instance="$(bosh -d ${BOSH_K8S_DEPLOYMENT} is | grep "server/" | awk '{print $1}')"
-      bosh -d ${BOSH_K8S_DEPLOYMENT} scp ${instance}:/var/vcap/store/k3s-server/kubeconfig.yml ${KUBECONFIG} > /dev/null 2>&1
-      if [ $? != 0 ] ; then
-        printf "\n\n%bERROR : Get cluster configuration failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
-      fi
-      updateYaml "${KUBECONFIG}" "clusters.name" "${K8S_CLUSTER}"
-      updateYaml "${KUBECONFIG}" "contexts.context.cluster" "${K8S_CLUSTER}"
+
+    #--- Display admin token (used for web ui portals)
+    admin_token_name="$(kubectl -n kube-system get secret | grep admin | awk '{print $1}')"
+    if [ "${admin_token_name}" = "" ] ; then
+      printf "\n%bk8s token:%b\nNo \"admin\" token available for cluster \"${K8S_CLUSTER}\".\n" "${YELLOW}${REVERSE}" "${STD}"
+    else
+      token="$(kubectl -n kube-system describe secret ${admin_token_name} | grep "token:" | sed -e "s+token: *++g")"
+      printf "\n%bk8s token:%b\n${token}\n" "${YELLOW}${REVERSE}" "${STD}"
     fi
   fi
 fi
@@ -168,15 +177,6 @@ if [ ${flagError} = 0 ] ; then
   svcat install plugin > /dev/null 2>&1
   export KUBECONFIG="${OLD_KUBECONFIG}"
   source <(svcat completion bash)
-
-  #--- Display admin token (used for web ui portals)
-  admin_token_name="$(kubectl -n kube-system get secret | grep admin | awk '{print $1}')"
-  if [ "${admin_token_name}" = "" ] ; then
-    printf "\n%bk8s token:%b\nNo \"admin\" token available for cluster \"${K8S_CLUSTER}\".\n" "${YELLOW}${REVERSE}" "${STD}"
-  else
-    token="$(kubectl -n kube-system describe secret ${admin_token_name} | grep "token:" | sed -e "s+token: *++g")"
-    printf "\n%bk8s token:%b\n${token}\n" "${YELLOW}${REVERSE}" "${STD}"
-  fi
 
   #--- Display cluster nodes
   printf "\n%bCluster namespaces:%b\n" "${YELLOW}${REVERSE}" "${STD}"

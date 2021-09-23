@@ -212,6 +212,46 @@ fi
 
 complete -C /usr/local/bin/mc mc
 
+#--- govc cli auto-completion
+_govc_complete()
+{
+  local cur prev subcmd
+  prev=${COMP_WORDS[COMP_CWORD-1]}
+  cur=${COMP_WORDS[COMP_CWORD]}
+  subcmd=${COMP_WORDS[1]}
+  COMPREPLY=()
+
+  if [[ ${prev} == "govc" ]] ; then
+    COMPREPLY=( $(compgen -W "$(govc -h | grep -v Usage | tr -s '\n' ' ')" -- ${cur}) )
+    return 0
+
+  elif [[ ${cur} == "-"* ]] ; then
+    : #--- drop out and show options
+
+  elif [[ ${subcmd} == "ls" ]] ; then #--- not completing an option, try for appropriate values
+    if [[ ${prev} == "-t" ]] ; then
+      COMPREPLY=( $(compgen -W "$(govc ls -l "/**" | awk '{print $2}' | sort -u | tr -d '()' | tr '\n' ' '  )" -- ${cur}) )
+    else
+      COMPREPLY=( $(compgen -W "$(govc ls "${cur:-/*}*" | tr -s '\n' ' ' )" -- ${cur}) )
+    fi
+
+  elif [[ ${subcmd} == "vm."* || ${prev} == "-vm" ]] ; then
+    COMPREPLY=( $(compgen -W "$(govc ls -t VirtualMachine -l "${cur}*" | awk '{print $1}' | tr -s '\n' ' ' )" -- ${cur}) )
+  fi
+
+  #--- did not hit any specifcs so show all options from help
+  if [[ -z ${COMPREPLY} ]] ; then
+    COMPREPLY=( $(compgen -W "-h $(govc ${subcmd} -h | awk '{print $1}' | grep "^-" | sed -e 's/=.*//g' | tr -s '\n' ' ' )" -- ${cur}) )
+  fi
+
+  return 0
+}
+
+complete -F _govc_complete govc
+
+#--- flux cli auto-completion
+. <(flux completion bash)
+
 #--- Load OSB-CMDB bash functions
 if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
   source /usr/local/bin/cf-cli-cmdb-functions.bash
