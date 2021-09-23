@@ -111,16 +111,22 @@ if [ ${flagError} = 0 ] ; then
     #--- Get k3s cluster configuration
     export BOSH_CLIENT="admin"
     export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
-    logToBosh "${K8S_DIRECTOR}"
-    if [ ${flagError} = 0 ] ; then
-      KUBECONFIG="${HOME}/.kube/${K8S_CLUSTER}.yml"
-      instance="$(bosh -d ${BOSH_K8S_DEPLOYMENT} is | grep "server/" | awk '{print $1}')"
-      bosh -d ${BOSH_K8S_DEPLOYMENT} scp ${instance}:/var/vcap/store/k3s-server/kubeconfig.yml ${KUBECONFIG} > /dev/null 2>&1
-      if [ $? != 0 ] ; then
-        printf "\n\n%bERROR : Get cluster configuration failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
+    export KUBECONFIG="${HOME}/.kube/${K8S_CLUSTER}.yml"
+
+    #--- Check if kube config is running
+    kubectl get namespaces >/dev/null 2>&1
+    if [ $? != 0 ] ; then
+      printf "\n%bGet cluster credentials...%b\n" "${YELLOW}${REVERSE}" "${STD}"
+      logToBosh "${K8S_DIRECTOR}"
+      if [ ${flagError} = 0 ] ; then
+        instance="$(bosh -d ${BOSH_K8S_DEPLOYMENT} is | grep "server/" | awk '{print $1}')"
+        bosh -d ${BOSH_K8S_DEPLOYMENT} scp ${instance}:/var/vcap/store/k3s-server/kubeconfig.yml ${KUBECONFIG} > /dev/null 2>&1
+        if [ $? != 0 ] ; then
+          printf "\n\n%bERROR : Get cluster configuration failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
+        fi
+        updateYaml "${KUBECONFIG}" "clusters.name" "${K8S_CLUSTER}"
+        updateYaml "${KUBECONFIG}" "contexts.context.cluster" "${K8S_CLUSTER}"
       fi
-      updateYaml "${KUBECONFIG}" "clusters.name" "${K8S_CLUSTER}"
-      updateYaml "${KUBECONFIG}" "contexts.context.cluster" "${K8S_CLUSTER}"
     fi
   else
     #--- Check if bosh dns exists
