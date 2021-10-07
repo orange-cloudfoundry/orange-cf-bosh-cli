@@ -112,7 +112,7 @@ flag=$(credhub f > /dev/null 2>&1)
 if [ $? != 0 ] ; then
   printf "\n%bLDAP user and password :%b\n" "${REVERSE}${GREEN}" "${STD}"
   printf "username: " ; read LDAP_USER
-  credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER} > /dev/null 2>&1
+  credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
   if [ $? != 0 ] ; then
     printf "\n%bERROR : LDAP authentication failed with \"${LDAP_USER}\" account.%b\n" "${RED}" "${STD}" ; flagError=1
   fi
@@ -185,7 +185,7 @@ if [ ${flagError} = 0 ] ; then
 
   #--- Display cluster namespaces
   if [ ${result} = 0 ] ; then
-    printf "\n%bCluster namespaces:%b\n" "${YELLOW}${REVERSE}" "${STD}"
+    printf "\n%bCluster \"${K8S_CLUSTER}\" namespaces:%b\n" "${YELLOW}${REVERSE}" "${STD}"
     kubectl get namespaces
   else
     printf "\n%bERROR : Cluster \"${BOSH_K8S_DEPLOYMENT}\" is not available.%b\n" "${RED}" "${STD}"
