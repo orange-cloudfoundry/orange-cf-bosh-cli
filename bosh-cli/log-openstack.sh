@@ -25,48 +25,31 @@ if [ $? != 0 ] ; then
   fi
 fi
 
-#--- Select openstack region
-flag=0
-while [ ${flag} = 0 ] ; do
-  flag=1
-  printf "\n%bOpenstack :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-  printf "%b1%b : region 1\n" "${GREEN}${BOLD}" "${STD}"
-  printf "%b2%b : region 2\n" "${GREEN}${BOLD}" "${STD}"
-  printf "%b3%b : region 3\n" "${GREEN}${BOLD}" "${STD}"
-  printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
-  case "${choice}" in
-    1) OPENSTACK_PREFIX="openstack" ;;
-    2) OPENSTACK_PREFIX="openstack_2" ;;
-    3) OPENSTACK_PREFIX="openstack_3" ;;
-    *) flag=0 ; clear ;;
-  esac
-done
-
 #--- Log to openstack
 if [ "${flagError}" = "0" ] ; then
   #--- Common keystone parameters V2/V3
-  getCredhubValue "OS_AUTH_URL" "/secrets/${OPENSTACK_PREFIX}_auth_url"
+  getCredhubValue "OS_AUTH_URL" "/secrets/openstack_3_auth_url"
   OS_AUTH_URL="$(echo "${OS_AUTH_URL}" | sed -e "s+/$++")"
-  getCredhubValue "OS_USERNAME" "/secrets/${OPENSTACK_PREFIX}_username"
-  getCredhubValue "OS_PASSWORD" "/secrets/${OPENSTACK_PREFIX}_password"
+  getCredhubValue "OS_USERNAME" "/secrets/openstack_3_username"
+  getCredhubValue "OS_PASSWORD" "/secrets/openstack_3_password"
   export OS_AUTH_URL
   export OS_USERNAME
   export OS_PASSWORD
 
   unset OS_PROJECT_NAME
-  getCredhubValue "OS_PROJECT_NAME" "/secrets/${OPENSTACK_PREFIX}_project"
+  getCredhubValue "OS_PROJECT_NAME" "/secrets/openstack_3_project"
   if [ ${flagError} = 0 ] ; then
     #--- Specific keystone V3
     export OS_PROJECT_NAME
     export OS_IDENTITY_API_VERSION="3"
-    getCredhubValue "OS_PROJECT_DOMAIN_NAME" "/secrets/${OPENSTACK_PREFIX}_domain"
+    getCredhubValue "OS_PROJECT_DOMAIN_NAME" "/secrets/openstack_3_domain"
     export OS_PROJECT_DOMAIN_NAME
     export OS_USER_DOMAIN_NAME="${OS_PROJECT_DOMAIN_NAME}"
   else
     #--- Specific keystone V2
     flagError=0
-    getCredhubValue "OS_TENANT_NAME" "/secrets/${OPENSTACK_PREFIX}_tenant"
-    getCredhubValue "OS_REGION_NAME" "/secrets/${OPENSTACK_PREFIX}_region"
+    getCredhubValue "OS_TENANT_NAME" "/secrets/openstack_3_tenant"
+    getCredhubValue "OS_REGION_NAME" "/secrets/openstack_3_region"
     export OS_TENANT_NAME
     export OS_REGION_NAME
   fi
