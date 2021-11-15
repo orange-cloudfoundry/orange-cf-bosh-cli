@@ -62,11 +62,12 @@ getClusterConfiguration() {
 selectCluster() {
   case "$1" in
     "1") K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CLUSTER="core-connectivity" ;;
-    "2") K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CLUSTER="ci" ;;
+    "2") K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CLUSTER="ci-k8s" ;;
     "3") K8S_DEPLOYMENT="00-gitops-management" ; K8S_CLUSTER="gitops-management" ;;
     "4") K8S_DEPLOYMENT="00-supervision" ; K8S_CLUSTER="supervision" ;;
-    "5") K8S_DEPLOYMENT="00-k3s-serv" ; K8S_CLUSTER="services" ;;
-    "6") K8S_DEPLOYMENT="k3s-sandbox" ; K8S_CLUSTER="sandbox" ;;
+    "5") K8S_DEPLOYMENT="00-marketplace" ; K8S_CLUSTER="marketplace" ;;
+    "6") K8S_DEPLOYMENT="00-shared-services" ; K8S_CLUSTER="shared-services" ;;
+    "7") K8S_DEPLOYMENT="k3s-sandbox" ; K8S_CLUSTER="sandbox" ;;
     *) flag=0 ; clear ;;
   esac
 }
@@ -95,9 +96,9 @@ if [ ${flagError} = 0 ] ; then
   clear
   printf "\n%bGet clusters properties...%b\n" "${YELLOW}${REVERSE}" "${STD}"
   if [ "${SITE_NAME}" = "fe-int" ] ; then
-    MAX_ITEMS=6
+    MAX_ITEMS=7
   else
-    MAX_ITEMS=5
+    MAX_ITEMS=6
   fi
 
   for value in $(seq 1 ${MAX_ITEMS}) ; do
@@ -131,13 +132,14 @@ if [ ${flagError} = 0 ] ; then
   while [ ${flag} = 0 ] ; do
     flag=1
     printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-    printf "%b1%b : k3s core connectivity\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b2%b : k3s ci\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : k3s gitops management\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b4%b : k3s supervision\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b5%b : k3s services\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b1%b : core connectivity\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b2%b : ci\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b : gitops management\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b4%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b5%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b6%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
     if [ "${SITE_NAME}" = "fe-int" ] ; then
-      printf "%b6%b : k3s sandbox\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
     fi
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     selectCluster "${choice}"
