@@ -28,6 +28,7 @@
 * `shield` - Shield cli (https://docs.pivotal.io/partners/starkandwayne-shield/)
 
 ### Kubernetes tools
+* `flux` - Kubernetes Gitops management (https://fluxcd.io/docs/cmd/)
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
 * `kapp` - Kubernetes YAML tool (https://github.com/k14s/kapp/)
 * `klbd` - Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)

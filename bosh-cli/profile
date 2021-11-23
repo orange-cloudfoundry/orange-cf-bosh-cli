@@ -35,6 +35,17 @@ fi
 #--- Create k9s plugins
 cat > ${K9SCONFIG}/plugin.yml <<'EOF'
 plugin:
+  get-all:
+    shortCut: g
+    confirm: false
+    description: get-all
+    scopes:
+    - all
+    command: sh
+    background: false
+    args:
+    - -c
+    - "kubectl get-all -n $NAMESPACE | less"
   toggle-helmrelease:
     shortCut: Shift-T
     confirm: true
@@ -101,6 +112,12 @@ export XDG_CONFIG_HOME=${HOME}
 #--- Redefine command history file path
 export HISTFILE=${HOME}/.bash_history
 
+#--- Link to kubectl krew repository
+if [ -d /home/bosh/.krew ] ; then
+  rm -fr ${HOME}/.krew > /dev/null 2>&1
+  ln -s /home/bosh/.krew ${HOME}/.krew
+fi
+
 #--- Link to Cloud Foundry plugins repository
 if [ -L ${HOME}/.cf ] ; then
   rm ${HOME}/.cf
@@ -115,7 +132,7 @@ if [ ! -L ${HOME}/.cf/plugins ] ; then
 fi
 
 #--- Redefine Path to binary
-export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${HOME}/bosh/template/admin:${PATH}
+export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${HOME}/bosh/template/admin:${HOME}/.krew/bin:${PATH}
 
 #--- Init user aliases
 cat > ${HOME}/.bash_aliases <<'EOF'
