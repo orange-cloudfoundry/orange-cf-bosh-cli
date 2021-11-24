@@ -101,6 +101,17 @@ plugin:
     args:
     - -c
     - "flux reconcile kustomization -n $NAMESPACE $NAME | less"
+  trace-hr:
+    shortCut: Shift-T
+    confirm: false
+    description: Flux trace
+    scopes:
+    - helmreleases
+    command: sh
+    background: false
+    args:
+    - -c
+    - "flux trace $NAME --kind helmrelease --api-version helm.toolkit.fluxcd.io/v2beta1 --namespace $NAMESPACE $NAME | less"
 EOF
 
 #--- Copy bash user configuration
