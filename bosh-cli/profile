@@ -112,6 +112,17 @@ plugin:
     args:
     - -c
     - "flux trace $NAME --kind helmrelease --api-version helm.toolkit.fluxcd.io/v2beta1 --namespace $NAMESPACE $NAME | less"
+  trace-ks:
+    shortCut: Shift-T
+    confirm: false
+    description: Flux trace
+    scopes:
+    - kustomizations
+    command: sh
+    background: false
+    args:
+    - -c
+    - "flux trace $NAME --kind kustomization --api-version kustomize.toolkit.fluxcd.io/v1beta2 --namespace $NAMESPACE $NAME | less"
 EOF
 
 #--- Copy bash user configuration
