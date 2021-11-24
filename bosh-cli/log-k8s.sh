@@ -104,23 +104,7 @@ if [ ${flagError} = 0 ] ; then
   for value in $(seq 1 ${MAX_ITEMS}) ; do
     selectCluster "${value}"
     export KUBECONFIG="${HOME}/.kube/${K8S_CLUSTER}.yml"
-    if [ -s ${KUBECONFIG} ] ; then
-      #--- Check if k8s cluster is accessible
-      kubectl get namespaces --request-timeout='2s' >/dev/null 2>&1
-      if [ $? = 0 ] ; then
-        updateKubeConfig "clusters.name" "${K8S_DEPLOYMENT}"
-        updateKubeConfig "contexts.context.cluster" "${K8S_DEPLOYMENT}"
-        updateKubeConfig "contexts.name" "${K8S_CLUSTER}"
-        updateKubeConfig "users.name" "${K8S_CLUSTER}"
-        updateKubeConfig "contexts.context.user" "${K8S_CLUSTER}"
-        updateKubeConfig "current-context" "${K8S_CLUSTER}"
-        TARGET_KUBECONFIG="${TARGET_KUBECONFIG}:${KUBECONFIG}"
-      else
-        getClusterConfiguration
-      fi
-    else
-      getClusterConfiguration
-    fi
+    getClusterConfiguration
   done
 
   #--- Install svcat plugin (need to unset KUBECONFIG for using default path ${HOME}/.kube)
