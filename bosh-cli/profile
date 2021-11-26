@@ -203,6 +203,7 @@ alias f='function __f() { printf "%100s\n"|tr " " "=";find . ! -regex ".*[/]\.gi
 alias generate-password='apg -MCLN -n 1 -m 30'
 alias ps1-clear='unset BOSH_TARGET ; unset K8S_CLUSTER'
 alias proxy='. /usr/local/bin/proxy.sh'
+alias kube-editor='. /usr/local/bin/kube-editor.sh'
 alias show-cert='function __scrt() { openssl x509 -text -in $1; }; __scrt'
 alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
 alias tn='function __tn() { echo -ne "\033]0;$@\007";unset -f __t;printf "\n"; }; __tn'
@@ -266,15 +267,23 @@ set_bosh_prompt()
 
 set_k8s_prompt()
 {
-  if [ ! -z "${K8S_CLUSTER}" ] ; then
-    K8S_NS="$(kubectl config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
-    if [ ! -z "${K8S_NS}" ] ; then
-      echo "${K8S_SYMBOL}  ${K8S_CLUSTER}:${K8S_NS} "
-    else
-      echo "${K8S_SYMBOL}  ${K8S_CLUSTER} "
-    fi
-  else
+  if [ -z ${K8S_CLUSTER} ] ; then
     echo ""
+  else
+    K8S_NS="$(kubectl config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
+    if [ -z ${K8S_NS} ] ; then
+      if [ -z ${KUBE_EDITOR} ] ; then
+        echo "${K8S_SYMBOL}  ${K8S_CLUSTER} (W) "
+      else
+        echo "${K8S_SYMBOL}  ${K8S_CLUSTER} "
+      fi
+    else
+      if [ -z ${KUBE_EDITOR} ] ; then
+        echo "${K8S_SYMBOL}  ${K8S_CLUSTER}:${K8S_NS} (W) "
+      else
+        echo "${K8S_SYMBOL}  ${K8S_CLUSTER}:${K8S_NS} "
+      fi
+    fi
   fi
 }
 
