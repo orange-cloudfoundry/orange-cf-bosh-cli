@@ -35,11 +35,6 @@ if [ ! -d ${K9SCONFIG} ] ; then
   mkdir -p ${K9SCONFIG}
 fi
 
-#--- Set k9s config
-if [ -f ${K9SCONFIG} ] ; then
-  sed -i "s+enableMouse:.*+enableMouse: true+;s+logoless:.*+logoless: true+" ${K9SCONFIG}/config.yml
-fi
-
 #--- Create k9s plugins
 cat > ${K9SCONFIG}/plugin.yml <<'EOF'
 plugin:
@@ -365,6 +360,11 @@ complete -F _govc_complete govc
 #--- Load OSB-CMDB bash functions
 if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
   source /usr/local/bin/cf-cli-cmdb-functions.bash
+fi
+
+#--- Set k9s config
+if [ -f ${K9SCONFIG}/config.yml ] ; then
+  sed -i "s+enableMouse:.*+enableMouse: true+;s+logoless:.*+logoless: true+" ${K9SCONFIG}/config.yml
 fi
 
 EOF
