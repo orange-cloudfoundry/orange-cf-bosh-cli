@@ -38,12 +38,6 @@ fi
 #--- Set k9s config
 if [ -f ${K9SCONFIG} ] ; then
   sed -i "s+enableMouse:.*+enableMouse: true+;s+logoless:.*+logoless: true+" ${K9SCONFIG}/config.yml
-else
-  cat > ${K9SCONFIG}/config.yml <<'EOF'
-  k9s:
-    enableMouse: true
-    logoless: true
-EOF
 fi
 
 #--- Create k9s plugins
