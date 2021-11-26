@@ -26,10 +26,24 @@ if [ ! -d ${HOME} ] ; then
   mkdir -p ${HOME}
 fi
 
+#--- Set kubeclt read-only editor
+export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh"
+
 #--- Set k9s config path
 export K9SCONFIG=${HOME}/.k9s
 if [ ! -d ${K9SCONFIG} ] ; then
   mkdir -p ${K9SCONFIG}
+fi
+
+#--- Set k9s config
+if [ -f ${K9SCONFIG} ] ; then
+  sed -i "s+enableMouse:.*+enableMouse: true+;s+logoless:.*+logoless: true+" ${K9SCONFIG}/config.yml
+else
+  cat > ${K9SCONFIG}/config.yml <<'EOF'
+  k9s:
+    enableMouse: true
+    logoless: true
+EOF
 fi
 
 #--- Create k9s plugins
@@ -102,7 +116,7 @@ plugin:
     - -c
     - "flux reconcile kustomization -n $NAMESPACE $NAME | less"
   trace-hr:
-    shortCut: Shift-T
+    shortCut: t
     confirm: false
     description: Flux trace
     scopes:
@@ -113,7 +127,7 @@ plugin:
     - -c
     - "flux trace $NAME --kind helmrelease --api-version helm.toolkit.fluxcd.io/v2beta1 --namespace $NAMESPACE $NAME | less"
   trace-ks:
-    shortCut: Shift-T
+    shortCut: t
     confirm: false
     description: Flux trace
     scopes:
