@@ -38,10 +38,21 @@ fi
 #--- Create k9s plugins
 cat > ${K9SCONFIG}/plugin.yml <<'EOF'
 plugin:
-  get-all:
-    shortCut: g
+  flux-trace:
+    shortCut: z
     confirm: false
-    description: get-all
+    description: Flux trace
+    scopes:
+    - all
+    command: sh
+    background: false
+    args:
+    - -c
+    - "flux trace $NAME --kind `echo $RESOURCE_NAME | sed -E 's/(s|es)$//g'` --api-version $RESOURCE_GROUP/$RESOURCE_VERSION --namespace $NAMESPACE $NAME | less"
+  get-all:
+    shortCut: x
+    confirm: false
+    description: Get all
     scopes:
     - all
     command: sh
@@ -54,7 +65,7 @@ plugin:
     confirm: true
     scopes:
       - helmreleases
-    description: Toggle to suspend or resume a HelmRelease
+    description: Toggle suspend/resume
     command: sh
     background: false
     args:
@@ -65,14 +76,14 @@ plugin:
     confirm: true
     scopes:
       - kustomizations
-    description: Toggle to suspend or resume a Kustomization
+    description: Toggle suspend/resume
     command: sh
     background: false
     args:
       - -c
       - "flux $([ $(kubectl get kustomizations -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
   reconcile-git:
-    shortCut: Shift-R
+    shortCut: Shift-Z
     confirm: false
     description: Flux reconcile
     scopes:
@@ -83,7 +94,7 @@ plugin:
     - -c
     - "flux reconcile source git --context $CONTEXT -n $NAMESPACE $NAME | less"
   reconcile-hr:
-    shortCut: Shift-R
+    shortCut: Shift-Z
     confirm: false
     description: Flux reconcile
     scopes:
@@ -94,7 +105,7 @@ plugin:
     - -c
     - "flux reconcile helmrelease --context $CONTEXT -n $NAMESPACE $NAME | less"
   reconcile-ks:
-    shortCut: Shift-R
+    shortCut: Shift-Z
     confirm: false
     description: Flux reconcile
     scopes:
@@ -104,17 +115,6 @@ plugin:
     args:
     - -c
     - "flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
-  flux-trace:
-    shortCut: Shift-A
-    confirm: false
-    description: Flux trace
-    scopes:
-    - all
-    command: sh
-    background: false
-    args:
-    - -c
-    - "flux trace $NAME --kind `echo $RESOURCE_NAME | sed -E 's/(s|es)$//g'` --api-version $RESOURCE_GROUP/$RESOURCE_VERSION --namespace $NAMESPACE $NAME | less"
 EOF
 
 #--- Copy bash user configuration

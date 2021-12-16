@@ -1,5 +1,6 @@
 # Cloud Foundry Docker Bosh cli [![Docker Automated build](build_automated.svg)](https://github.com/orange-cloudfoundry/orange-cf-bosh-cli/pkgs/container/orange-cf-bosh-cli)
-`cf-bosh-cli` allows to deploy several cli tools through docker image.
+`cf-bosh-cli` is used to deploy several cli tools through docker image.  
+The container expose ssh port. Password or key (rsa only) authentication is supported.
 
 ## Installed tools
 
@@ -39,17 +40,18 @@
 * `ytt` - YAML Templating Tool (https://github.com/k14s/ytt/)
 * `velero` - Kubernetes cli for cluster resources backup/restore (https://github.com/vmware-tanzu/velero)
 
-The container expose ssh port. Password or key (rsa only) authentication is supported.
-
 ## How to get it or build it
 
 ### How to get it
-Pull the image from docker hub: <code>docker pull orangecloudfoundry/orange-cf-bosh-cli:<image_tag></code>
+Pull the image from github container registry:  
+<code>docker pull orangecloudfoundry/orange-cf-bosh-cli:<image_tag></code>
 
 ### How to build it
-Clone the repository: <code>git clone https://github.com/orange-cloudfoundry/orange-cf-bosh-cli.git</code>
+Clone the repository:  
+<code>git clone https://github.com/orange-cloudfoundry/orange-cf-bosh-cli.git</code>
 
-Then, build the image: <code>docker build -t cf-bosh-cli:<image_tag> .</code>
+Then, build the image:  
+<code>docker build -t cf-bosh-cli:<image_tag> .</code>
 
 ## How to use it
 
@@ -60,10 +62,11 @@ Then, build the image: <code>docker build -t cf-bosh-cli:<image_tag> .</code>
 
 #### With public ssh key provided to the container
 
-Launch the image. Don't miss to assign an host port to the container ssh port (22) :
+Launch the image (don't miss to assign an host port to the container ssh port 22) :  
 <code>docker run --name bosh-cli -d -p 2222:22 -v /home/bosh -v /data -e "SSH_PUBLIC_KEY=<path_to_your_public_ssh-rsa_key>" orangecloudfoundry/orange-cf-bosh-cli</code>
 
-Then, log into the container with ssh : <code>ssh -p 2222 -i <path_to_your_rsa_private_key> bosh@localhost</code>
+Then, log into the container with ssh :  
+<code>ssh -p 2222 -i <path_to_your_rsa_private_key> bosh@localhost</code>
 
 The password is completely disabled. By default, the file containing the public key <code>~/.ssh/authorized_keys</code> is overwrited after container restart or update.
 
@@ -188,4 +191,68 @@ properties:
     - data_container
 ```
 
-Then, log into the container you want with ssh : <code>ssh -i <path_to_your_rsa_private_key> -p 2222 bosh@docker.bosh.release.deployment</code> to log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).
+Then, log into the container you want with ssh :  
+<code>ssh -i <path_to_your_rsa_private_key> -p 2222 bosh@docker.bosh.release.deployment</code>  
+
+To log into first container (replace docker.bosh.release.deployment with IP or dns name of docker host deployed using bosh release).
+
+# Appendices
+
+## k9s shorcuts
+
+|Shotcut        |Description          |
+|---------------|---------------------|
+|`<0>`          | all                 |
+|`<1>`          | default             |
+|`<?>`          | Help                |
+|`<:q>`         | Quit                |
+|`<enter>`      | View                |
+|`<esc>`        | Back/Clear          |
+|`<backtab>`    | Field Previous      |
+|`<space>`      | Mark                |
+|`<tab>`        | Field Next          |
+|`</term>`      | Filter mode         |
+|`<a>`          | Attach              |
+|`<c>`          | Copy                |
+|`<d>`          | Describe            |
+|`<e>`          | Edit                |
+|`<f>`          | Show PortForward    |
+|`<g>`          | Goto Top            |
+|`<h>`          | Left                |
+|`<i>`          | Set Image           |
+|`<j>`          | Down                |
+|`<k>`          | Up                  |
+|`<l>`          | Right/Logs          |
+|`<p>`          | Logs Previous       |
+|`<s>`          | Shell               |
+|`<t>`          | Trigger cron        |
+|`<u>`          | Use/UsedBy          |
+|`<x>`          | Get all             |
+|`<y>`          | YAML                |
+|`<z>`          | Flux trace          |
+|`<ctrl-a>`     | Aliases             |
+|`<ctrl-b>`     | Page Up             |
+|`<ctrl-d>`     | Delete              |
+|`<ctrl-e>`     | Toggle Header       |
+|`<ctrl-f>`     | Page Down           |
+|`<ctrl-g>`     | Toggle Crumbs       |
+|`<ctrl-k>`     | Kill                |
+|`<ctrl-r>`     | Refresh/Reload      |
+|`<ctrl-s>`     | Save                |
+|`<ctrl-u>`     | Command Clear       |
+|`<ctrl-w>`     | Toggle Wide         |
+|`<ctrl-x>`     | Sort CPU/L          |
+|`<ctrl-z>`     | Toggle Faults       |
+|`<ctrl-\>`     | Mark Clear          |
+|`<ctrl-space>` | Mark Range          |
+|`<shift-a>`    | Sort Age            |
+|`<shift-c>`    | Sort CPU            |
+|`<shift-f>`    | Port-Forward        |
+|`<shift-g>`    | Goto Bottom         |
+|`<shift-l>`    | Sort Available      |
+|`<shift-n>`    | Sort Name           |
+|`<shift-r>`    | Sort Ready          |
+|`<shift-s>`    | Sort Status         |
+|`<shift-t>`    | Toggle hr/ks        |
+|`<shift-u>`    | Sort UpToDate       |
+|`<shift-z>`    | Flux reconcile      |
