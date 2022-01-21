@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 #--- clis versions
 ENV BBR_VERSION="1.9.20" \
-    BOSH_CLI_VERSION="6.4.9" \
+    BOSH_CLI_VERSION="6.4.11" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
     CF_CLI_VERSION="7.4.0" \
@@ -16,12 +16,12 @@ ENV BBR_VERSION="1.9.20" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.5.3" \
     JQ_VERSION="1.6" \
-    K14S_KAPP_VERSION="0.43.0" \
+    K14S_KAPP_VERSION="0.44.0" \
     K14S_KLBD_VERSION="0.32.0" \
     K14S_YTT_VERSION="0.38.0" \
-    K9S_VERSION="0.25.12" \
+    K9S_VERSION="0.25.18" \
     KREW_VERSION="0.4.2" \
-    KUBECTL_VERSION="1.20.7" \
+    KUBECTL_VERSION="1.21.8" \
     KUSTOMIZE_VERSION="4.4.1" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
@@ -33,7 +33,7 @@ ENV BBR_VERSION="1.9.20" \
     SVCAT_VERSION="0.3.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    VENDIR_VERSION="0.23.0"
+    VENDIR_VERSION="0.24.0"
 
 #--- Packages list, ruby env for COA and cf plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -78,7 +78,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add BOSH-CLI completion\n' && curl -sSLo /home/bosh/bosh-complete-linux "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_CLI_COMPLETION_VERSION}/bosh-complete-linux" && chmod 755 /home/bosh/bosh-complete-linux && \
     printf '\n=> Add CF-CLI\n' && curl -sSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI_VERSION}&source=github" | tar -xz -C /tmp && mv /tmp/cf7 /usr/local/bin/cf && \
     printf '\n=> Add CF-CLI completion\n' && curl -sSLo /usr/share/bash-completion/completions/cf "https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf7" && \
-    printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plugin in \$(echo \"${CF_PLUGINS}\") ; do cf install-plugin \"\${plugin}\" -r CF-Community -f ; done" && \    
+    printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plugin in \$(echo \"${CF_PLUGINS}\") ; do cf install-plugin \"\${plugin}\" -r CF-Community -f ; done" && \
     printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
     printf '\n=> Add CREDHUB-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
@@ -89,10 +89,11 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add HELM-CLI completion\n' && /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
     printf '\n=> Add JQ-CLI\n' && curl -sSLo /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
     printf '\n=> Add KUBECTL-CLI\n' && curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && chmod 755 /usr/local/bin/kubectl && \
-    printf '\n=> Add KUBECTL-CLI completion\n' && kubectl completion bash > /etc/bash_completion.d/kubectl && kubectl completion bash | sed -e "s+kubectl+k+g" > /etc/bash_completion.d/k && \ 
+    printf '\n=> Add KUBECTL-CLI completion\n' && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && kubectl completion bash | sed -e "s+kubectl+k+g" > /etc/bash_completion.d/k && \
     printf '\n=> Add KREW-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/krew/releases/download/v${KREW_VERSION}/krew-linux_amd64.tar.gz" | tar -xz -C /tmp && chmod 1777 /tmp && \
     printf '\n=> Add KUBECTL_PLUGINS\n' && su -l bosh -s /bin/bash -c "export KREW_ROOT=/home/bosh/.krew ; export PATH=/home/bosh/.krew/bin:${PATH} ; /tmp/krew-linux_amd64 install krew ; export IFS=, ; for plugin in \$(echo \"${KUBECTL_PLUGINS}\") ; do kubectl krew install \${plugin} ; done" && \
     printf '\n=> Add KUSTOMIZE-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/kustomize /usr/local/bin/kustomize && \
+    printf '\n=> Add KUSTOMIZE-CLI completion\n' && /usr/local/bin/kustomize completion bash > /etc/bash_completion.d/kustomize && \
     printf '\n=> Add K14S-KAPP-CLI\n' && curl -sSLo /usr/local/bin/kapp "https://github.com/k14s/kapp/releases/download/v${K14S_KAPP_VERSION}/kapp-linux-amd64" && \
     printf '\n=> Add K14S-KLBD-CLI\n' && curl -sSLo /usr/local/bin/klbd "https://github.com/k14s/kbld/releases/download/v${K14S_KLBD_VERSION}/kbld-linux-amd64" && \
     printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
