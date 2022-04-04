@@ -24,6 +24,7 @@ display "k9s" "Cluster manager cli (used with log-k8s)"
 display "log-k8s" "Log with kubernetes cli (kubectl, helm)"
 display "set-ns" "Set current namespace to use with kubectl"
 display "svcat" "Service Catalog cli"
+display "switch-k8s" "Switch to k8s cluster"
 display "velero" "Cluster resources, persistent volumes backup/restore (used with log-k8s)"
 
 printf "\n%bOTHER CLI TOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
