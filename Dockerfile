@@ -14,14 +14,15 @@ ENV BBR_VERSION="1.9.20" \
     FLY_VERSION="7.6.0" \
     GOVC_VERSION="0.27.4" \
     GO3FR_VERSION="0.5.0" \
-    HELM_VERSION="3.5.3" \
+    HELM_VERSION="3.7.2" \
     JQ_VERSION="1.6" \
     K14S_KAPP_VERSION="0.44.0" \
     K14S_KLBD_VERSION="0.32.0" \
     K14S_YTT_VERSION="0.38.0" \
     K9S_VERSION="0.25.18" \
-    KREW_VERSION="0.4.2" \
+    KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.21.8" \
+    KUBECTX_VERSION="0.9.4" \
     KUSTOMIZE_VERSION="4.5.2" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
@@ -33,7 +34,7 @@ ENV BBR_VERSION="1.9.20" \
     SVCAT_VERSION="0.3.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    VENDIR_VERSION="0.24.0"
+    VENDIR_VERSION="0.26.0"
 
 #--- Packages list, ruby env for COA and cf plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -44,8 +45,8 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
     PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:${PATH}" \
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
-    CF_PLUGINS="cli-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report" \
-    KUBECTL_PLUGINS="get-all"
+    CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report" \
+    KUBECTL_PLUGINS="get-all,ctx,ns"
 
 ADD bosh-cli/* /tmp/bosh-cli/
 

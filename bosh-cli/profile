@@ -178,9 +178,7 @@ alias log-shield='. /usr/local/bin/log-shield.sh'
 alias log-uaac='. /usr/local/bin/log-uaac.sh'
 alias os='openstack'
 alias prune-workers='fly prune-worker -a'
-alias set-ns='function __sn() { kubectl config set-context --current --namespace=$1; }; __sn'
 alias switch='. /usr/local/bin/switch.sh'
-alias switch-k8s='. /usr/local/bin/switch-k8s.sh'
 
 #--- Docker aliases
 alias dim='docker images'
@@ -298,7 +296,7 @@ export GREP_COLORS="fn=1;34:se=1;34:mt=1;33"
 eval "$(/home/bosh/bosh-complete-linux bash-source)"
 
 #--- fly cli auto-completion
-_fly_bash_autocomplete() {
+_fly_completion() {
   #--- All arguments except the first one
   args=("${COMP_WORDS[@]:1:$COMP_CWORD}")
   #--- Only split on newlines
@@ -307,18 +305,16 @@ _fly_bash_autocomplete() {
   COMPREPLY=($(GO_FLAGS_COMPLETION=1 ${COMP_WORDS[0]} "${args[@]}"))
   return 0
 }
-
-complete -F _fly_bash_autocomplete fly
+complete -F _fly_completion fly
 
 #--- minio cli auto-completion
 if [ -f /usr/share/bash-completion/bash_completion ] ; then
   source /usr/share/bash-completion/bash_completion
 fi
-
 complete -C /usr/local/bin/mc mc
 
 #--- govc cli auto-completion
-_govc_complete()
+_govc_completion()
 {
   local cur prev subcmd
   prev=${COMP_WORDS[COMP_CWORD-1]}
@@ -351,8 +347,7 @@ _govc_complete()
 
   return 0
 }
-
-complete -F _govc_complete govc
+complete -F _govc_completion govc
 
 #--- flux cli auto-completion
 . <(flux completion bash)
