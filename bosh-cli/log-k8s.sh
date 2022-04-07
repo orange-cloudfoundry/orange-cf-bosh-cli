@@ -48,10 +48,10 @@ getClusterConfiguration() {
   if [ -s ${KUBECONFIG} ] ; then
     updateKubeConfig "clusters.name" "${K8S_DEPLOYMENT}"
     updateKubeConfig "contexts.context.cluster" "${K8S_DEPLOYMENT}"
-    updateKubeConfig "contexts.name" "${K8S_CLUSTER}"
-    updateKubeConfig "users.name" "${K8S_CLUSTER}"
-    updateKubeConfig "contexts.context.user" "${K8S_CLUSTER}"
-    updateKubeConfig "current-context" "${K8S_CLUSTER}"
+    updateKubeConfig "contexts.name" "${K8S_CONTEXT}"
+    updateKubeConfig "users.name" "${K8S_CONTEXT}"
+    updateKubeConfig "contexts.context.user" "${K8S_CONTEXT}"
+    updateKubeConfig "current-context" "${K8S_CONTEXT}"
     TARGET_KUBECONFIG="${TARGET_KUBECONFIG}:${KUBECONFIG}"
   else
     rm -f ${KUBECONFIG} > /dev/null 2>&1
@@ -61,13 +61,13 @@ getClusterConfiguration() {
 #--- Select k8s cluster
 selectCluster() {
   case "$1" in
-    "1") K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CLUSTER="core-connectivity" ;;
-    "2") K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CLUSTER="ci-k8s" ;;
-    "3") K8S_DEPLOYMENT="00-gitops-management" ; K8S_CLUSTER="gitops-management" ;;
-    "4") K8S_DEPLOYMENT="00-supervision" ; K8S_CLUSTER="supervision" ;;
-    "5") K8S_DEPLOYMENT="00-marketplace" ; K8S_CLUSTER="marketplace" ;;
-    "6") K8S_DEPLOYMENT="00-shared-services" ; K8S_CLUSTER="shared-services" ;;
-    "7") K8S_DEPLOYMENT="k3s-sandbox" ; K8S_CLUSTER="sandbox" ;;
+    "1") K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CONTEXT="core-connectivity" ;;
+    "2") K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CONTEXT="ci-k8s" ;;
+    "3") K8S_DEPLOYMENT="00-gitops-management" ; K8S_CONTEXT="gitops-management" ;;
+    "4") K8S_DEPLOYMENT="00-supervision" ; K8S_CONTEXT="supervision" ;;
+    "5") K8S_DEPLOYMENT="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
+    "6") K8S_DEPLOYMENT="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
+    "7") K8S_DEPLOYMENT="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
     *) flag=0 ; clear ;;
   esac
 }
@@ -103,7 +103,7 @@ if [ ${flagError} = 0 ] ; then
 
   for value in $(seq 1 ${MAX_ITEMS}) ; do
     selectCluster "${value}"
-    export KUBECONFIG="${HOME}/.kube/${K8S_CLUSTER}.yml"
+    export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
     getClusterConfiguration
   done
 
@@ -127,7 +127,7 @@ if [ ${flagError} = 0 ] ; then
     fi
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     selectCluster "${choice}"
-    export KUBECONFIG="${HOME}/.kube/${K8S_CLUSTER}.yml"
+    export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
   done
 
   #--- Concatenate clusters config files and set current context
@@ -137,7 +137,7 @@ if [ ${flagError} = 0 ] ; then
     export KUBECONFIG="$(echo "${TARGET_KUBECONFIG}" | sed -e "s+^:++")"
     kubectl config view --flatten > ${HOME}/.kube/config
     export KUBECONFIG="${HOME}/.kube/config"
-    kubectl config use-context ${K8S_CLUSTER} > /dev/null 2>&1
+    kubectl config use-context ${K8S_CONTEXT} > /dev/null 2>&1
     result=$?
 
     #--- Install svcat auto-completion
@@ -145,7 +145,7 @@ if [ ${flagError} = 0 ] ; then
 
     #--- Display cluster namespaces
     if [ ${result} = 0 ] ; then
-      printf "\n%bCluster \"${K8S_CLUSTER}\" namespaces:%b\n" "${YELLOW}${REVERSE}" "${STD}"
+      printf "\n%bCluster \"${K8S_CONTEXT}\" namespaces:%b\n" "${YELLOW}${REVERSE}" "${STD}"
       kubectl get namespaces
     else
       printf "\n%bERROR : Cluster \"${K8S_DEPLOYMENT}\" is not available.%b\n" "${RED}" "${STD}"

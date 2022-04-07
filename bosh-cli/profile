@@ -191,7 +191,7 @@ alias diff='colordiff'
 alias f='function __f() { printf "%100s\n"|tr " " "=";find . ! -regex ".*[/]\.git[/]?.*" ! -regex ".*last-deployment-failure\.yml" -type f,l -not -xtype l -not -xtype d -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "%100s\n"|tr " " "="; }; __f'
 alias generate-password='apg -MCLN -n 1 -m 30'
 alias kube-editor='. /usr/local/bin/kube-editor.sh'
-alias ps1-clear='unset BOSH_TARGET ; unset K8S_CLUSTER'
+alias ps1-clear='unset BOSH_TARGET ; unset K8S_CONTEXT'
 alias proxy='. /usr/local/bin/proxy.sh'
 alias show-cert='function __scrt() { openssl x509 -text -in $1; }; __scrt'
 alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
@@ -256,21 +256,22 @@ set_bosh_prompt()
 
 set_k8s_prompt()
 {
-  if [ -z ${K8S_CLUSTER} ] ; then
+  K8S_CONTEXT="$(kubectl ctx -c 2> /dev/null)"
+  if [ $? != 0 ] ; then
     echo ""
   else
-    K8S_NS="$(kubectl config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
-    if [ -z ${K8S_NS} ] ; then
+    K8S_NS="$(kubectl ns -c 2> /dev/null)"
+    if [ $? != 0 ] ; then
       if [ -z ${KUBE_EDITOR} ] ; then
-        echo "${K8S_SYMBOL}  ${K8S_CLUSTER} (W) "
+        echo "${K8S_SYMBOL}  ${K8S_CONTEXT} (W) "
       else
-        echo "${K8S_SYMBOL}  ${K8S_CLUSTER} "
+        echo "${K8S_SYMBOL}  ${K8S_CONTEXT} "
       fi
     else
       if [ -z ${KUBE_EDITOR} ] ; then
-        echo "${K8S_SYMBOL}  ${K8S_CLUSTER}:${K8S_NS} (W) "
+        echo "${K8S_SYMBOL}  ${K8S_CONTEXT}:${K8S_NS} (W) "
       else
-        echo "${K8S_SYMBOL}  ${K8S_CLUSTER}:${K8S_NS} "
+        echo "${K8S_SYMBOL}  ${K8S_CONTEXT}:${K8S_NS} "
       fi
     fi
   fi
