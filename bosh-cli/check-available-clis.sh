@@ -15,6 +15,7 @@ chardetect --version
 tabulate --help > /dev/null
 
 printf "\n====================================================\n=> Check if expected clis are available...\n====================================================\n"
+printf '\n=> Check ARGO-CLI\n' ; argo version
 printf '\n=> Check BBR-CLI\n' ; bbr --version
 printf '\n=> Check BOSH-CLI\n' ; bosh --version
 printf '\n=> Check CF-CLI\n' ; cf --version
@@ -25,12 +26,12 @@ printf '\n=> Check GOVC-CLI\n' ; govc version
 printf '\n=> Check GO3FR-CLI\n' ; go3fr --version
 printf '\n=> Check HELM-CLI\n' ; helm version
 printf '\n=> Check JQ-CLI\n' ; jq --version
-printf '\n=> Check KUBECTL-CLI\n' ; kubectl version --client --short
-printf '\n=> Check KUSTOMIZE-CLI\n' ; kustomize version --short
 printf '\n=> Check K14S-KAPP-CLI\n' ; kapp version
 printf '\n=> Check K14S-KLBD-CLI\n' ; klbd --version
 printf '\n=> Check K14S-YTT-CLI\n' ; ytt --version
 printf '\n=> Check K9S-CLI\n' ; k9s version --short
+printf '\n=> Check KUBECTL-CLI\n' ; kubectl version --client --short
+printf '\n=> Check KUSTOMIZE-CLI\n' ; kustomize version --short
 printf '\n=> Check MINIO-CLI\n' ; mc --version
 printf '\n=> Check MONGO_SHELL_CLI\n' ; mongo --version
 printf '\n=> Check MYSQL-SHELL-CLI\n' ; mysqlsh --version
