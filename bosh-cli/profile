@@ -351,7 +351,10 @@ _govc_completion()
 complete -F _govc_completion govc
 
 #--- flux cli auto-completion
-. <(flux completion bash)
+source <(flux completion bash)
+
+#--- argo cli auto-completion
+source <(argo completion bash)
 
 #--- Load OSB-CMDB bash functions
 if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
