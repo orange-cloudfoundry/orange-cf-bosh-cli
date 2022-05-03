@@ -13,6 +13,7 @@ ENV ARGO_CLI_VERSION="3.3.2" \
     CREDHUB_VERSION="2.9.3" \
     FLUX_VERSION="0.27.0" \
     FLY_VERSION="7.6.0" \
+    GCP_CLI_VERSION="384.0.0" \
     GOVC_VERSION="0.27.4" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.7.2" \
@@ -47,7 +48,8 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report" \
-    KUBECTL_PLUGINS="get-all,ctx,ns"
+    KUBECTL_PLUGINS="get-all,ctx,ns" \
+    GCP_CLI_COMPONENTS="alpha beta"
 
 ADD bosh-cli/* /tmp/bosh-cli/
 
@@ -86,6 +88,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add CREDHUB-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add FLUX-CLI\n' && curl -sSL "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_amd64.tar.gz" | tar -xz -C /usr/local/bin && \
+    printf '\n=> Add GCP-CLI\n' && su -l bosh -s /bin/bash -c "curl -sSL "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCP_CLI_VERSION}-linux-x86_64.tar.gz" | tar -xz -C /home/bosh ; /home/bosh/google-cloud-sdk/install.sh -q --usage-reporting false --additional-components ${GCP_CLI_COMPONENTS}" && \
     printf '\n=> Add GOVC-CLI\n' && curl -sSL "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/govc /usr/local/bin/govc && \
     printf '\n=> Add GO3FR-CLI\n' && curl -sSL "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/gof3r_${GO3FR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
     printf '\n=> Add HELM-CLI\n' && curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 755 /usr/local/bin/helm && \

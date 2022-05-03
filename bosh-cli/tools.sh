@@ -27,6 +27,7 @@ display "velero" "Cluster resources, persistent volumes backup/restore (used wit
 
 printf "\n%bOTHER CLI TOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
 display "credhub-get" "Get credhub propertie value"
+display "gcloud" "Google Cloud cli"
 display "govc" "vSphere cli"
 display "go3fr" "Parallelized and pipelined streaming access to S3 bucket cli"
 display "log-cf" "Log with cf cli"

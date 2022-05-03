@@ -146,7 +146,7 @@ if [ ! -L ${HOME}/.cf/plugins ] ; then
 fi
 
 #--- Redefine Path to binary
-export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${HOME}/bosh/template/admin:${HOME}/.krew/bin:${PATH}
+export PATH=.:/data/shared/${MY_BOSH_USER}/bin:/home/bosh/google-cloud-sdk/bin:${HOME}/bosh/template/admin:${HOME}/.krew/bin:${PATH}
 
 #--- Init user aliases
 cat > ${HOME}/.bash_aliases <<'EOF'
@@ -293,10 +293,10 @@ echo -en "\033]0;${MY_BOSH_USER}@${SITE_NAME}\007"
 #--- Grep colorization
 export GREP_COLORS="fn=1;34:se=1;34:mt=1;33"
 
-#--- bosh cli auto-completion
+#--- bosh cli completion
 eval "$(/home/bosh/bosh-complete-linux bash-source)"
 
-#--- fly cli auto-completion
+#--- fly cli completion
 _fly_completion() {
   #--- All arguments except the first one
   args=("${COMP_WORDS[@]:1:$COMP_CWORD}")
@@ -308,13 +308,13 @@ _fly_completion() {
 }
 complete -F _fly_completion fly
 
-#--- minio cli auto-completion
+#--- minio cli completion
 if [ -f /usr/share/bash-completion/bash_completion ] ; then
   source /usr/share/bash-completion/bash_completion
 fi
 complete -C /usr/local/bin/mc mc
 
-#--- govc cli auto-completion
+#--- govc cli completion
 _govc_completion()
 {
   local cur prev subcmd
@@ -350,11 +350,14 @@ _govc_completion()
 }
 complete -F _govc_completion govc
 
-#--- flux cli auto-completion
+#--- flux cli completion
 source <(flux completion bash)
 
-#--- argo cli auto-completion
+#--- argo cli completion
 source <(argo completion bash)
+
+#--- gcloud completion
+source /home/bosh/google-cloud-sdk/completion.bash.inc
 
 #--- Load OSB-CMDB bash functions
 if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
