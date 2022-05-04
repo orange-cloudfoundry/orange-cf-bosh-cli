@@ -124,7 +124,7 @@ plugin:
     command: sh
     args:
     - -c
-    - "argo submit --from workflowtemplate/$NAME | less"
+    - "argo submit --from workflowtemplate/$NAME -n $NAMESPACE | less"
 EOF
 
 #--- Copy bash user configuration
