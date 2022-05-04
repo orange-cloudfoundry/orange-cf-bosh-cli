@@ -115,6 +115,16 @@ plugin:
     args:
     - -c
     - "flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
+  submit-argoworkflow-template:
+    shortCut: t
+    confirm: true
+    description: Submit argo workflow
+    scopes:
+    - workflowtemplates
+    command: sh
+    args:
+    - -c
+    - "argo submit --from workflowtemplate/$NAME | less"
 EOF
 
 #--- Copy bash user configuration
