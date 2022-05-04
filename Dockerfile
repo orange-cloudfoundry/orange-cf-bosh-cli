@@ -48,15 +48,13 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report" \
-    KUBECTL_PLUGINS="get-all,ctx,ns" \
-    GCP_CLI_COMPONENTS="alpha beta"
+    KUBECTL_PLUGINS="get-all,ctx,ns"
 
 ADD bosh-cli/* /tmp/bosh-cli/
 
 RUN printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
-    apt-get update && apt-get install -y --no-install-recommends apt-utils && \
+    apt-get update && apt-get install -y --no-install-recommends apt-utils dialog && \
     apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} && \
-    apt-get upgrade -y && apt-get autoremove -y && apt-get clean && apt-get purge && \
     cp /usr/bin/chardetect3 /usr/local/bin/chardetect && \
     printf '\n=====================================================\n Install ruby tools\n=====================================================\n' && \
     curl -sSL https://rvm.io/mpapis.asc | gpg --import - && curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - && curl -sSL https://get.rvm.io | bash -s stable && \
@@ -88,7 +86,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add CREDHUB-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add FLUX-CLI\n' && curl -sSL "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_amd64.tar.gz" | tar -xz -C /usr/local/bin && \
-    printf '\n=> Add GCP-CLI\n' && su -l bosh -s /bin/bash -c "curl -sSL "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCP_CLI_VERSION}-linux-x86_64.tar.gz" | tar -xz -C /home/bosh ; /home/bosh/google-cloud-sdk/install.sh -q --usage-reporting false --additional-components ${GCP_CLI_COMPONENTS}" && \
+    printf '\n=> Add GCP-CLI\n' && echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && apt-get update && apt-get install -y --no-install-recommends google-cloud-cli && \
     printf '\n=> Add GOVC-CLI\n' && curl -sSL "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/govc /usr/local/bin/govc && \
     printf '\n=> Add GO3FR-CLI\n' && curl -sSL "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/gof3r_${GO3FR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
     printf '\n=> Add HELM-CLI\n' && curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 755 /usr/local/bin/helm && \
@@ -151,6 +149,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '  "tools" command gives available tools.\n' >> /etc/motd && \
     printf '  All path except "/data/shared" are not persistant (do not save data on it).\n\n' >> /etc/motd && \
     printf '\n=====================================================\n Configure system and cleanup docker image\n=====================================================\n' && \
+    apt-get upgrade -y && apt-get autoremove -y && apt-get clean && apt-get purge && \
     locale-gen en_US.UTF-8 && \
     mv /tmp/bosh-cli/*.sh /usr/local/bin/ && mv /tmp/bosh-cli/sshd.conf /etc/supervisor/conf.d/ && mv /tmp/bosh-cli/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \
     chmod 644 /etc/motd && mkdir -p /home/bosh/.ssh && chmod 700 /home/bosh /home/bosh/.ssh && \
