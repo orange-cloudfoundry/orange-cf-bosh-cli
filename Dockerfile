@@ -35,6 +35,7 @@ ENV ARGO_CLI_VERSION="3.3.2" \
     SVCAT_VERSION="0.3.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
+    TFO_CLI_VERSION="1.1.2" \
     VENDIR_VERSION="0.26.0"
 
 #--- Packages list, ruby env for COA and cf plugins
@@ -110,6 +111,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add SVCAT-CLI\n' && curl -sSLo /usr/local/bin/svcat "https://download.svcat.sh/cli/v${SVCAT_VERSION}/linux/amd64/svcat" && \
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
+    printf '\n=> Add TFO-CLI\n' && curl -sSL "https://github.com/isaaguilar/terraform-operator-cli/releases/download/v${TFO_CLI_VERSION}/tfo-v${TFO_CLI_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add VENDIR-CLI\n' && curl -sSLo /usr/local/bin/vendir "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-amd64" && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     GIT_VERSION=$(git --version | awk '{print $3}') && \
