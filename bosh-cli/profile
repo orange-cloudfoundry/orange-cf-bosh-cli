@@ -170,7 +170,7 @@ alias push='git pull --rebase ; git fetch --prune ; git push'
 alias status='git status'
 
 #--- Cli aliases
-alias bosh-clean-prometheus-tasks='for var in $(bosh tasks | grep "queued" | grep "prometheus" | awk "{print $1}") ; do bosh cancel-task $var ; done'
+alias bosh-clean-prometheus-tasks='for var in $(bosh tasks | grep "queued" | grep "prometheus" | sed -e "s+\t.*++g") ; do bosh cancel-task $var ; done'
 alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
 alias credhub-get='function __cg() { log-credhub -i ; credhub get -n $1 -j | jq .value -r; }; __cg'
 alias fly='fly -t concourse'
