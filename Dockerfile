@@ -3,28 +3,27 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- clis versions
-ENV ARGO_CLI_VERSION="3.3.2" \
+ENV ARGO_CLI_VERSION="3.3.6" \
     BBR_VERSION="1.9.20" \
     BOSH_CLI_VERSION="6.4.17" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
-    CF_CLI_VERSION="8.3.0" \
+    CF_CLI_VERSION="8.4.0" \
     CF_UAAC_VERSION="4.5.0" \
     CREDHUB_VERSION="2.9.3" \
     FLUX_VERSION="0.29.5" \
     FLY_VERSION="7.6.0" \
-    GOVC_VERSION="0.27.4" \
+    GOVC_VERSION="0.27.5" \
     GO3FR_VERSION="0.5.0" \
-    HELM_VERSION="3.7.2" \
+    HELM_VERSION="3.8.2" \
     JQ_VERSION="1.6" \
-    K14S_KAPP_VERSION="0.44.0" \
-    K14S_KLBD_VERSION="0.32.0" \
-    K14S_YTT_VERSION="0.38.0" \
+    K14S_KAPP_VERSION="0.49.0" \
+    K14S_KLBD_VERSION="0.34.0" \
+    K14S_YTT_VERSION="0.41.1" \
     K9S_VERSION="0.25.18" \
     KREW_VERSION="0.4.3" \
-    KUBECTL_VERSION="1.21.8" \
-    KUBECTX_VERSION="0.9.4" \
-    KUSTOMIZE_VERSION="4.5.2" \
+    KUBECTL_VERSION="1.22.10" \
+    KUSTOMIZE_VERSION="4.5.5" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
     REDIS_CLI_VERSION="6.2.4" \
@@ -35,8 +34,8 @@ ENV ARGO_CLI_VERSION="3.3.2" \
     SVCAT_VERSION="0.3.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TFO_CLI_VERSION="1.1.2" \
-    VENDIR_VERSION="0.26.0"
+    TFO_CLI_VERSION="1.1.3" \
+    VENDIR_VERSION="0.27.0"
 
 #--- Packages list, ruby env for COA and cf plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -62,6 +61,7 @@ RUN printf '\n=====================================================\n Install sy
     /bin/bash -l -c "gem install bundler -v ${RUBY_BUNDLER_VERSION} --no-document" && \
     /bin/bash -l -c "gem install bosh-gen -v ${BOSH_GEN_VERSION} --no-document" && \
     /bin/bash -l -c "gem install cf-uaac -v ${CF_UAAC_VERSION} --no-document" && \
+    /bin/bash -l -c "gem install mdless --no-document" && \
     /bin/bash -l -c "rvm cleanup all" && \
     printf '\n=====================================================\n Setup bosh account, ssh and supervisor\n=====================================================\n' && \
     echo "root:$(date +%s | sha256sum | base64 | head -c 32 ; echo)" | chpasswd && \
