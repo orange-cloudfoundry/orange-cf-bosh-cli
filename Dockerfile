@@ -5,7 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 #--- clis versions
 ENV ARGO_CLI_VERSION="3.3.6" \
     BBR_VERSION="1.9.20" \
-    BOSH_CLI_VERSION="6.4.17" \
+    BOSH_CLI_VERSION="7.0.1" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.1" \
     CF_CLI_VERSION="8.4.0" \
