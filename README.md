@@ -12,7 +12,9 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `credhub` - Credhub cli (https://github.com/cloudfoundry-incubator/credhub-cli)
 * `fly` - Concourse cli (https://github.com/concourse/fly)
 * `git` - Git cli
+* `git-filter-repo` - Git rewriting history tool (https://github.com/newren/git-filter-repo)
 * `jq` - JSON processing tool (https://stedolan.github.io/jq/)
+* `mdless` - Provides a formatted and highlighted view of Markdown files in Terminal (https://github.com/ttscoff/mdless)
 * `spruce` - YAML templating tool, for Bosh deployment manifests generation (https://github.com/geofffranks/spruce)
 * `terraform` - Terraform cli (https://www.terraform.io/)
 * `uaac` - Cloud Foundry UAA cli (https://github.com/cloudfoundry/cf-uaac)
@@ -21,7 +23,9 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 
 ### Admin tools
 * `bbr` - Bosh Backup and Restore cli (http://docs.cloudfoundry.org/bbr/)
-* `gof3r` - client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
+* `gcloud` - Google Cloud Platform cli (https://cloud.google.com/sdk/gcloud)
+* `govc` - Vsphere cli (https://github.com/vmware/govmomi/tree/master/govc/)
+* `go3fr` - client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
 * `mc` - Minio S3 cli (https://github.com/minio/mc)
 * `mongo` - MongoDB shell cli (https://docs.mongodb.com/manual/mongo/)
 * `mysqlsh` - MySQL shell cli (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)
@@ -29,6 +33,7 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `shield` - Shield cli (https://docs.pivotal.io/partners/starkandwayne-shield/)
 
 ### Kubernetes tools
+* `argo` - Kubernetes workflow management (https://argoproj.github.io/argo-workflows/)
 * `flux` - Kubernetes Gitops management (https://fluxcd.io/docs/cmd/)
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
 * `kapp` - Kubernetes YAML tool (https://github.com/k14s/kapp/)
@@ -36,9 +41,9 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `kubectl` - Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
 * `kustomize` Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)
 * `k9s` - Kubernetes cli (https://github.com/derailed/k9s)
+* `oc` - Openshift cli (https://docs.openshift.com/dedicated/welcome/)
 * `svcat` - Kubernetes Service Catalog cli (https://github.com/kubernetes-sigs/service-catalog/)
 * `ytt` - YAML Templating Tool (https://github.com/k14s/ytt/)
-* `velero` - Kubernetes cli for cluster resources backup/restore (https://github.com/vmware-tanzu/velero)
 
 ## How to get it or build it
 

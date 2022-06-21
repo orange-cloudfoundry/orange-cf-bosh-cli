@@ -84,9 +84,10 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plugin in \$(echo \"${CF_PLUGINS}\") ; do cf install-plugin \"\${plugin}\" -r CF-Community -f ; done" && \
     printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
     printf '\n=> Add CREDHUB-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
-    printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add FLUX-CLI\n' && curl -sSL "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_amd64.tar.gz" | tar -xz -C /usr/local/bin && \
-    printf '\n=> Add GCP-CLI\n' && echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && chmod 1777 /tmp && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && apt-get update && apt-get install -y --no-install-recommends google-cloud-cli && \
+    printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
+    printf '\n=> Add GCLOUD-CLI\n' && echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && chmod 1777 /tmp && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && apt-get update && apt-get install -y --no-install-recommends google-cloud-cli && \
+    printf '\n=> Add GIT-FILTER-REPO\n' && curl -sSLo /usr/local/bin/git-filter-repo "https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo" && \
     printf '\n=> Add GOVC-CLI\n' && curl -sSL "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/govc /usr/local/bin/govc && \
     printf '\n=> Add GO3FR-CLI\n' && curl -sSL "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/gof3r_${GO3FR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
     printf '\n=> Add HELM-CLI\n' && curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 755 /usr/local/bin/helm && \
@@ -103,8 +104,9 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
-    printf '\n=> Add MONGO-SHELL-VERSION\n' && curl -sSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}.tgz" | tar -xz -C /tmp && cd /tmp/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}/bin && mv mongo mongostat mongotop /usr/local/bin && \
+    printf '\n=> Add MONGO-SHELL-CLI\n' && curl -sSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}.tgz" | tar -xz -C /tmp && cd /tmp/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}/bin && mv mongo mongostat mongotop /usr/local/bin && \
     printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu20.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    printf '\n=> Add OC-CLI\n' && curl -sSL "https://downloads-openshift-console.apps.rh-gcp-csf.a3rr.p2.openshiftapps.com/amd64/linux/oc.tar"| tar -x -C /tmp && mv /tmp/oc /usr/local/bin/oc && \
     printf '\n=> Add REDIS-CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
     printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
     printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
@@ -115,7 +117,8 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add VENDIR-CLI\n' && curl -sSLo /usr/local/bin/vendir "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-amd64" && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     GIT_VERSION=$(git --version | awk '{print $3}') && \
-    printf '\nYour are logged into an ubuntu docker container, which provides several tools :\n' > /etc/motd && \
+    OC_VERSION=$(oc version | awk '{print $3}') && \
+    printf '\nYour are logged into an ubuntu docker tools container :\n' > /etc/motd && \
     printf 'Generic tools:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "bosh (${BOSH_CLI_VERSION})" "Bosh cli (https://bosh.io/docs/cli-v2.html)" >> /etc/motd && \
     printf "  %-20s %s\n" "cf (${CF_CLI_VERSION})" "Cloud Foundry cli (https://github.com/cloudfoundry/cli/)" >> /etc/motd && \
@@ -129,21 +132,23 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "vendir (${VENDIR_VERSION})" "Define and fetch components to target directory (https://github.com/vmware-tanzu/carvel-vendir/)" >> /etc/motd && \
     printf 'Admin tools:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "bbr (${BBR_VERSION})" "Bosh Backup and Restore cli (http://docs.cloudfoundry.org/bbr/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "gcloud" "GCP cli (https://cloud.google.com/sdk/gcloud)" >> /etc/motd && \
     printf "  %-20s %s\n" "govc (${GOVC_VERSION})" "vSphere cli (https://github.com/vmware/govmomi/tree/master/govc/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "gof3r (${GO3FR_VERSION})" "client for parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "go3fr (${GO3FR_VERSION})" "client for parallelized and pipelined S3 streaming (https://github.com/rlmcpherson/s3gof3r/)" >> /etc/motd && \
     printf "  %-20s %s\n" "mongo (${MONGO_SHELL_VERSION})" "MongoDB shell cli (https://docs.mongodb.com/manual/mongo/)" >> /etc/motd && \
     printf "  %-20s %s\n" "mysqlsh (${MYSQL_SHELL_VERSION})" "MySQL shell cli (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)" >> /etc/motd && \
     printf "  %-20s %s\n" "redis (${REDIS_CLI_VERSION})" "Redis cli (https://redis.io/topics/rediscli)" >> /etc/motd && \
     printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield cli (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "argo (${ARGO_CLI_VERSION})" "Kubernetes Workflow Engine (https://argoproj.github.io/argo-workflows/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "helm (${HELM_VERSION})" "Kubernetes Package Manager (https://docs.helm.sh/)" >> /etc/motd && \
     printf "  %-20s %s\n" "flux (${FLUX_VERSION})" "Kubernetes Gitops cli (https://fluxcd.io/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "helm (${HELM_VERSION})" "Kubernetes Package Manager (https://docs.helm.sh/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kapp (${K14S_KAPP_VERSION})" "Kubernetes YAML tool (https://github.com/k14s/kapp/)" >> /etc/motd && \
     printf "  %-20s %s\n" "klbd (${K14S_KLBD_VERSION})" "Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
     printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "oc (${OC_VERSION})" "Openshift cli (https://docs.openshift.com/dedicated/welcome/)" >> /etc/motd && \
     printf "  %-20s %s\n" "svcat (${SVCAT_VERSION})" "Kubernetes Service Catalog cli (https://github.com/kubernetes-sigs/service-catalog/)" >> /etc/motd && \
     printf "  %-20s %s\n" "ytt (${K14S_YTT_VERSION})" "YAML Templating Tool (https://github.com/k14s/ytt/)" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
