@@ -44,10 +44,10 @@ updateKubeConfig() {
 
 #--- Get k8s cluster configuration from credhub
 getClusterConfiguration() {
-  credhub g -n /kubeconfigs/${K8S_DEPLOYMENT} -j 2> /dev/null | jq -r '.value' > ${KUBECONFIG}
+  credhub g -n /kubeconfigs/${K8S_CLUSTER} -j 2> /dev/null | jq -r '.value' > ${KUBECONFIG}
   if [ -s ${KUBECONFIG} ] ; then
-    updateKubeConfig "clusters.name" "${K8S_DEPLOYMENT}"
-    updateKubeConfig "contexts.context.cluster" "${K8S_DEPLOYMENT}"
+    updateKubeConfig "clusters.name" "${K8S_CLUSTER}"
+    updateKubeConfig "contexts.context.cluster" "${K8S_CLUSTER}"
     updateKubeConfig "contexts.name" "${K8S_CONTEXT}"
     updateKubeConfig "users.name" "${K8S_CONTEXT}"
     updateKubeConfig "contexts.context.user" "${K8S_CONTEXT}"
@@ -61,21 +61,17 @@ getClusterConfiguration() {
 #--- Select k8s cluster
 selectCluster() {
   case "$1" in
-    "1") K8S_DEPLOYMENT="00-core-connectivity-k8s" ; K8S_CONTEXT="core-connectivity" ;;
-    "2") K8S_DEPLOYMENT="01-ci-k8s" ; K8S_CONTEXT="ci-k8s" ;;
-    "3") K8S_DEPLOYMENT="00-gitops-management" ; K8S_CONTEXT="gitops-management" ;;
-    "4") K8S_DEPLOYMENT="00-supervision" ; K8S_CONTEXT="supervision" ;;
-    "5") K8S_DEPLOYMENT="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
-    "6") K8S_DEPLOYMENT="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
-    "7") K8S_DEPLOYMENT="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
+    "1") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-core-connectivity-k8s" ; K8S_CONTEXT="core-connectivity" ;;
+    "2") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="01-ci-k8s" ; K8S_CONTEXT="ci-k8s" ;;
+    "3") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-gitops-management" ; K8S_CONTEXT="gitops-management" ;;
+    "4") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-supervision" ; K8S_CONTEXT="supervision" ;;
+    "5") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
+    "6") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
+    "7") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
+    "8") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp-marketplace" ; K8S_CONTEXT="marketplace-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
     *) flag=0 ; clear ;;
   esac
 }
-
-#--- Create k8s configration directory
-if [ ! -d ${HOME}/.kube ] ; then
-  mkdir ${HOME}/.kube > /dev/null 2>&1
-fi
 
 #--- Log to credhub
 flagError=0
@@ -89,22 +85,29 @@ if [ $? != 0 ] ; then
   fi
 fi
 
+#--- Create k8s configration directory
+if [ ! -d ${HOME}/.kube ] ; then
+  mkdir ${HOME}/.kube > /dev/null 2>&1
+fi
+
 #--- Log to k8s
 if [ ${flagError} = 0 ] ; then
-  #--- Get k3s clusters configuration
+  #--- Get all k3s clusters configuration
   TARGET_KUBECONFIG=""
   clear
   printf "\n%bGet clusters properties...%b\n" "${YELLOW}${REVERSE}" "${STD}"
   if [ "${SITE_NAME}" = "fe-int" ] ; then
-    MAX_ITEMS=7
+    MAX_ITEMS=8
   else
     MAX_ITEMS=6
   fi
 
   for value in $(seq 1 ${MAX_ITEMS}) ; do
     selectCluster "${value}"
-    export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
-    getClusterConfiguration
+    if [ "${K8S_TYPE_CLUSTER}" = "k3s" ] ; then
+      export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
+      getClusterConfiguration
+    fi
   done
 
   #--- Install svcat plugin (need to unset KUBECONFIG for using default path ${HOME}/.kube)
@@ -124,31 +127,60 @@ if [ ${flagError} = 0 ] ; then
     printf "%b6%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
     if [ "${SITE_NAME}" = "fe-int" ] ; then
       printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b8%b : marketplace gcp\n" "${GREEN}${BOLD}" "${STD}"
     fi
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     selectCluster "${choice}"
-    export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
   done
 
   #--- Concatenate clusters config files and set current context
-  if [ ! -f ${KUBECONFIG} ] ; then
-    printf "\n%bERROR : Get \"${K8S_DEPLOYMENT}\" cluster configuration failed.%b\n" "${RED}" "${STD}"
-  else
+  export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
+  if [ "${K8S_TYPE_CLUSTER}" = "k3s" ] ; then
+    if [ ! -f ${KUBECONFIG} ] ; then
+      printf "\n%bERROR : No configuration file for \"${K8S_CLUSTER}\" cluster.%b\n" "${RED}" "${STD}" ; flagError=1
+    fi
+  fi
+
+  if [ ${flagError} = 0 ] ; then
+    #--- Concatenate all clusters config files
     export KUBECONFIG="$(echo "${TARGET_KUBECONFIG}" | sed -e "s+^:++")"
     kubectl config view --flatten > ${HOME}/.kube/config
     export KUBECONFIG="${HOME}/.kube/config"
-    kubectl config use-context ${K8S_CONTEXT} > /dev/null 2>&1
-    result=$?
 
-    #--- Install svcat auto-completion
-    source <(svcat completion bash)
+    #--- Connect to cluster
+    if [ "${K8S_TYPE_CLUSTER}" = "openshift" ] ; then
+      proxyStatus="$(env | grep "https_proxy" | grep "internet")"
+      if [ "${proxyStatus}" = "" ] ; then
+        printf "\n%bERROR : You need to set internet proxy to use \"${K8S_CLUSTER}\" cluster.%b\n" "${RED}" "${STD}" ; flagError=1
+      else
+        OC_ENDPOINT="$(credhub g -n ${CREDHUB_ENDPOINT} -j 2> /dev/null | jq -r '.value')"
+        printf "\n%bOpenshift API token :%b " "${GREEN}${BOLD}" "${STD}" ; read API_TOKEN
 
-    #--- Display cluster namespaces
-    if [ ${result} = 0 ] ; then
-      printf "\n%bCluster \"${K8S_CONTEXT}\" namespaces:%b\n" "${YELLOW}${REVERSE}" "${STD}"
-      kubectl get namespaces
+        #--- Set internet proxy
+        unset PROXY_TYPE http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY
+        export https_proxy="http://system-internet-http-proxy.internal.paas:3128"
+        export no_proxy="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,${INTRANET_DOMAINS}"
+
+        #--- Connect to openshift cluster
+        oc login --token=${API_TOKEN} --server=${OC_ENDPOINT}
+        flagError=$?
+        if [ ${flagError} != 0 ] ; then
+          printf "\n%bERROR : Invalid token \"${API_TOKEN}\".%b\n" "${RED}" "${STD}"
+        fi
+      fi
     else
-      printf "\n%bERROR : Cluster \"${K8S_DEPLOYMENT}\" is not available.%b\n" "${RED}" "${STD}"
+      #--- Set context to use for selected k3s cluster
+      kubectl config use-context ${K8S_CONTEXT} > /dev/null 2>&1
+      flagError=$?
+      if [ ${flagError} != 0 ] ; then
+        printf "\n%bERROR : Unable to set context for \"${K8S_CLUSTER}\" cluster.%b\n" "${RED}" "${STD}"
+      fi
+    fi
+
+    if [ ${flagError} = 0 ] ; then
+      #--- Install svcat auto-completion
+      source <(svcat completion bash)
+      printf "\n%bCluster \"${K8S_CONTEXT}\" available.%b\n" "${YELLOW}${REVERSE}" "${STD}"
     fi
   fi
 fi

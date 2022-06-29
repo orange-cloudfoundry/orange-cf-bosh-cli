@@ -26,6 +26,34 @@ if [ ! -d ${HOME} ] ; then
   mkdir -p ${HOME}
 fi
 
+#--- Set vi configuration
+if [ ! -d ${HOME}/.vim/plugin ] ; then
+  mkdir -p ${HOME}/.vim/plugin
+fi
+
+cat > ${HOME}/.vim/plugin/yaml-path.vim <<'EOF'
+if !exists('g:yamlpath_sep')
+  let g:yamlpath_sep = '/'
+endif
+
+if !exists('g:yamlpath_auto')
+  let g:yamlpath_auto = 1
+endif
+
+function! Yamlpath(...)
+  let sep = a:0 ? a:1 : g:yamlpath_sep
+  let clean = systemlist('yaml-path --sep=' . sep . ' --line ' . line('.') . ' --col ' . string(col('.')-1), join(getline(1,'$') , "\n"))[0]
+  redraw!
+  echom clean
+endfunction
+
+command! -nargs=? Yamlpath call Yamlpath(<args>)
+
+if has("autocmd") && g:yamlpath_auto
+  au FileType yaml :autocmd CursorMoved * call Yamlpath()
+endif
+EOF
+
 #--- Set kubeclt read-only editor
 export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh"
 
@@ -170,8 +198,8 @@ alias push='git pull --rebase ; git fetch --prune ; git push'
 alias status='git status'
 
 #--- Cli aliases
-alias bosh-clean-prometheus-tasks='for var in $(bosh tasks | grep "queued" | grep "prometheus" | sed -e "s+\t.*++g") ; do bosh cancel-task $var ; done'
 alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
+alias clean-prometheus-tasks='for var in $(bosh tasks | grep "prometheus" | grep -E "queued|processing" | sed -e "s+\t.*++g") ; do bosh cancel-task $var ; done'
 alias credhub-get='function __cg() { log-credhub -i ; credhub get -n $1 -j | jq .value -r; }; __cg'
 alias fly='fly -t concourse'
 alias k='/usr/local/bin/kubectl'

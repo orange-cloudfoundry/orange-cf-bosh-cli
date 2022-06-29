@@ -35,7 +35,8 @@ ENV ARGO_CLI_VERSION="3.3.6" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     TFO_CLI_VERSION="1.1.3" \
-    VENDIR_VERSION="0.27.0"
+    VENDIR_VERSION="0.27.0" \
+    YAML_PATH_VERSION="0.4"
 
 #--- Packages list, ruby env for COA and cf plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -107,6 +108,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add MONGO-SHELL-CLI\n' && curl -sSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}.tgz" | tar -xz -C /tmp && cd /tmp/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}/bin && mv mongo mongostat mongotop /usr/local/bin && \
     printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu20.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
     printf '\n=> Add OC-CLI\n' && curl -sSL "https://downloads-openshift-console.apps.rh-gcp-csf.a3rr.p2.openshiftapps.com/amd64/linux/oc.tar"| tar -x -C /tmp && mv /tmp/oc /usr/local/bin/oc && \
+    printf '\n=> Add OC-CLI completion\n' && /usr/local/bin/oc completion bash > /etc/bash_completion.d/oc && \
     printf '\n=> Add REDIS-CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
     printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
     printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
@@ -115,6 +117,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
     printf '\n=> Add TFO-CLI\n' && curl -sSL "https://github.com/isaaguilar/terraform-operator-cli/releases/download/v${TFO_CLI_VERSION}/tfo-v${TFO_CLI_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add VENDIR-CLI\n' && curl -sSLo /usr/local/bin/vendir "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-amd64" && \
+    printf '\n=> Add YAML-PATH-CLI\n' && curl -sSL "https://github.com/psycofdj/yaml-path/releases/download/v${YAML_PATH_VERSION}/yaml-path-${YAML_PATH_VERSION}.linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/yaml-path-${YAML_PATH_VERSION}.linux-amd64/yaml-path /usr/local/bin && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     GIT_VERSION=$(git --version | awk '{print $3}') && \
     OC_VERSION=$(oc version | awk '{print $3}') && \
