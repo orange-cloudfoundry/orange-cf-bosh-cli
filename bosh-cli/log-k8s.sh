@@ -68,7 +68,7 @@ selectCluster() {
     "5") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
     "6") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
     "7") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
-    "8") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp-marketplace" ; K8S_CONTEXT="marketplace-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
+    "8") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
     *) flag=0 ; clear ;;
   esac
 }
@@ -127,7 +127,7 @@ if [ ${flagError} = 0 ] ; then
     printf "%b6%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
     if [ "${SITE_NAME}" = "fe-int" ] ; then
       printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b8%b : marketplace gcp\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b8%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
     fi
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     selectCluster "${choice}"
@@ -153,20 +153,18 @@ if [ ${flagError} = 0 ] ; then
       if [ "${proxyStatus}" = "" ] ; then
         printf "\n%bERROR : You need to set internet proxy to use \"${K8S_CLUSTER}\" cluster.%b\n" "${RED}" "${STD}" ; flagError=1
       else
-        OC_ENDPOINT="$(credhub g -n ${CREDHUB_ENDPOINT} -j 2> /dev/null | jq -r '.value')"
-        printf "\n%bOpenshift API token :%b " "${GREEN}${BOLD}" "${STD}" ; read API_TOKEN
-
-        #--- Set internet proxy
-        unset PROXY_TYPE http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY
-        export https_proxy="http://system-internet-http-proxy.internal.paas:3128"
-        export no_proxy="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,${INTRANET_DOMAINS}"
-
         #--- Connect to openshift cluster
-        oc login --token=${API_TOKEN} --server=${OC_ENDPOINT}
+        OC_ENDPOINT="$(credhub g -n ${CREDHUB_ENDPOINT} -j 2> /dev/null | jq -r '.value')"
+        printf "\n%bOpenshift API token :%b " "${GREEN}${BOLD}" "${STD}" ; read -s API_TOKEN
+        message="$(oc login --token=${API_TOKEN} --server=${OC_ENDPOINT})"
         flagError=$?
         if [ ${flagError} != 0 ] ; then
-          printf "\n%bERROR : Invalid token \"${API_TOKEN}\".%b\n" "${RED}" "${STD}"
+          printf "\n%bERROR : Invalid token \"${API_TOKEN}\".\n${message}\n%b" "${RED}" "${STD}"
         fi
+
+        #--- Rename cluster context
+        current_context="$(kubectl ctx -c)"
+        kubectl config rename-context ${current_context} ${K8S_CONTEXT} > /dev/null 2>&1
       fi
     else
       #--- Set context to use for selected k3s cluster
@@ -180,7 +178,7 @@ if [ ${flagError} = 0 ] ; then
     if [ ${flagError} = 0 ] ; then
       #--- Install svcat auto-completion
       source <(svcat completion bash)
-      printf "\n%bCluster \"${K8S_CONTEXT}\" available.%b\n" "${YELLOW}${REVERSE}" "${STD}"
+      printf "\n\n%bCluster \"${K8S_CONTEXT}\" available.%b\n" "${YELLOW}${REVERSE}" "${STD}"
     fi
   fi
 fi

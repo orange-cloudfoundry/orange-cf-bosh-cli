@@ -93,7 +93,7 @@ if [ ${flagError} = 0 ] ; then
       isUserNotConnected=$(bosh env | grep "not logged in")
       if [ "${isUserNotConnected}" != "" ] ; then
         if [ ${flag_use_uaa} = 1 ] ; then
-          printf "\n%buaa \"admin\" client password :%b " "${REVERSE}${GREEN}" "${STD}" ; read BOSH_CLIENT_SECRET
+          printf "\n%buaa \"admin\" client password :%b " "${REVERSE}${GREEN}" "${STD}" ; read -s BOSH_CLIENT_SECRET
           if [ "${BOSH_CLIENT_SECRET}" = "" ] ; then
             printf "\n\n%bERROR : Empty password.%b\n\n" "${RED}" "${STD}" ; flagError=1
           else
