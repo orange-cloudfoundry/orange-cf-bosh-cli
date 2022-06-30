@@ -157,7 +157,7 @@ if [ ${flagError} = 0 ] ; then
         OC_ENDPOINT="$(credhub g -n ${CREDHUB_ENDPOINT} -j 2> /dev/null | jq -r '.value')"
         message="$(oc login --server=${OC_ENDPOINT})"
         printf "\n%b${message}%b " "${YELLOW}${BOLD}" "${STD}"
-        printf "\n%bOpenshift API token :%b " "${GREEN}${BOLD}" "${STD}" ; read -s API_TOKEN
+        printf "\n\n%bOpenshift API token :%b " "${GREEN}${BOLD}" "${STD}" ; read -s API_TOKEN
         oc login --token=${API_TOKEN} --server=${OC_ENDPOINT} > /dev/null 2>&1
         flagError=$?
         if [ ${flagError} != 0 ] ; then
