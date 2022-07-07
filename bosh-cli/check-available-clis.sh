@@ -24,11 +24,11 @@ printf '\n=> Check GOVC-CLI\n' ; govc version
 printf '\n=> Check GO3FR-CLI\n' ; go3fr --version
 printf '\n=> Check HELM-CLI\n' ; helm version
 printf '\n=> Check JQ-CLI\n' ; jq --version
+printf '\n=> Check KAPP-CLI\n' ; kapp version
+printf '\n=> Check KCTRL-CLI\n' ; kctrl version
+printf '\n=> Check KLBD-CLI\n' ; klbd --version
 printf '\n=> Check KUBECTL-CLI\n' ; kubectl version --client --short
 printf '\n=> Check KUSTOMIZE-CLI\n' ; kustomize version --short
-printf '\n=> Check K14S-KAPP-CLI\n' ; kapp version
-printf '\n=> Check K14S-KLBD-CLI\n' ; klbd --version
-printf '\n=> Check K14S-YTT-CLI\n' ; ytt --version
 printf '\n=> Check K9S-CLI\n' ; k9s version --short
 printf '\n=> Check MINIO-CLI\n' ; mc --version
 printf '\n=> Check MONGO_SHELL_CLI\n' ; mongo --version
@@ -40,5 +40,6 @@ printf '\n=> Check SPRUCE-CLI\n' ; spruce --version
 printf '\n=> Check SVCAT-CLI\n' ; svcat --help > /dev/null
 printf '\n=> Check TERRAFORM-CLI\n' ; terraform --version
 printf '\n=> Check VENDIR-CLI\n' ; vendir -v
+printf '\n=> Check YTT-CLI\n' ; ytt --version
 printf "\n====================================================\n=> Check complete.\n"
 set +e

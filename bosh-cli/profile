@@ -334,6 +334,13 @@ export GREP_COLORS="fn=1;34:se=1;34:mt=1;33"
 #--- bosh cli completion
 eval "$(/home/bosh/bosh-complete-linux bash-source)"
 
+#--- argo, flux, kapp, kctrl, ytt cli completion
+source <(argo completion bash)
+source <(flux completion bash)
+source <(kapp completion bash | grep -v Succeeded)
+source <(kctrl completion bash | grep -v Succeeded)
+source <(ytt completion bash | grep -v Succeeded)
+
 #--- fly cli completion
 _fly_completion() {
   #--- All arguments except the first one
@@ -387,12 +394,6 @@ _govc_completion()
   return 0
 }
 complete -F _govc_completion govc
-
-#--- flux cli completion
-source <(flux completion bash)
-
-#--- argo cli completion
-source <(argo completion bash)
 
 #--- gcloud cli completion
 _python_argcomplete() {

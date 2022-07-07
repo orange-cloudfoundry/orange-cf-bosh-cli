@@ -17,10 +17,10 @@ ENV ARGO_CLI_VERSION="3.3.6" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.8.2" \
     JQ_VERSION="1.6" \
-    K14S_KAPP_VERSION="0.49.0" \
-    K14S_KLBD_VERSION="0.34.0" \
-    K14S_YTT_VERSION="0.41.1" \
     K9S_VERSION="0.25.18" \
+    KAPP_VERSION="0.49.0" \
+    KCTRL_VERSION="0.38.3" \
+    KLBD_VERSION="0.34.0" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.22.10" \
     KUSTOMIZE_VERSION="4.5.5" \
@@ -36,7 +36,8 @@ ENV ARGO_CLI_VERSION="3.3.6" \
     TERRAFORM_VERSION="0.11.14" \
     TFO_CLI_VERSION="1.1.3" \
     VENDIR_VERSION="0.27.0" \
-    YAML_PATH_VERSION="0.4"
+    YAML_PATH_VERSION="0.4" \
+    YTT_VERSION="0.41.1"
 
 #--- Packages list, ruby env for COA and cf plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -94,15 +95,15 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add HELM-CLI\n' && curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod 755 /usr/local/bin/helm && \
     printf '\n=> Add HELM-CLI completion\n' && /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
     printf '\n=> Add JQ-CLI\n' && curl -sSLo /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
+    printf '\n=> Add KAPP-CLI\n' && curl -sSLo /usr/local/bin/kapp "https://github.com/k14s/kapp/releases/download/v${KAPP_VERSION}/kapp-linux-amd64" && \
+    printf '\n=> Add KCTRL-CLI\n' && curl -sSLo /usr/local/bin/kctrl "https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v${KCTRL_VERSION}/kctrl-linux-amd64" && \
+    printf '\n=> Add KLBD-CLI\n' && curl -sSLo /usr/local/bin/klbd "https://github.com/k14s/kbld/releases/download/v${KLBD_VERSION}/kbld-linux-amd64" && \
+    printf '\n=> Add KREW-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/krew/releases/download/v${KREW_VERSION}/krew-linux_amd64.tar.gz" | tar -xz -C /tmp && chmod 1777 /tmp && \
     printf '\n=> Add KUBECTL-CLI\n' && curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && chmod 755 /usr/local/bin/kubectl && \
     printf '\n=> Add KUBECTL-CLI completion\n' && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && kubectl completion bash | sed -e "s+kubectl+k+g" > /etc/bash_completion.d/k && \
-    printf '\n=> Add KREW-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/krew/releases/download/v${KREW_VERSION}/krew-linux_amd64.tar.gz" | tar -xz -C /tmp && chmod 1777 /tmp && \
     printf '\n=> Add KUBECTL_PLUGINS\n' && su -l bosh -s /bin/bash -c "export KREW_ROOT=/home/bosh/.krew ; export PATH=/home/bosh/.krew/bin:${PATH} ; /tmp/krew-linux_amd64 install krew ; export IFS=, ; for plugin in \$(echo \"${KUBECTL_PLUGINS}\") ; do kubectl krew install \${plugin} ; done" && \
     printf '\n=> Add KUSTOMIZE-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/kustomize /usr/local/bin/kustomize && \
     printf '\n=> Add KUSTOMIZE-CLI completion\n' && /usr/local/bin/kustomize completion bash > /etc/bash_completion.d/kustomize && \
-    printf '\n=> Add K14S-KAPP-CLI\n' && curl -sSLo /usr/local/bin/kapp "https://github.com/k14s/kapp/releases/download/v${K14S_KAPP_VERSION}/kapp-linux-amd64" && \
-    printf '\n=> Add K14S-KLBD-CLI\n' && curl -sSLo /usr/local/bin/klbd "https://github.com/k14s/kbld/releases/download/v${K14S_KLBD_VERSION}/kbld-linux-amd64" && \
-    printf '\n=> Add K14S-YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${K14S_YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
     printf '\n=> Add MONGO-SHELL-CLI\n' && curl -sSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}.tgz" | tar -xz -C /tmp && cd /tmp/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}/bin && mv mongo mongostat mongotop /usr/local/bin && \
@@ -118,6 +119,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add TFO-CLI\n' && curl -sSL "https://github.com/isaaguilar/terraform-operator-cli/releases/download/v${TFO_CLI_VERSION}/tfo-v${TFO_CLI_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add VENDIR-CLI\n' && curl -sSLo /usr/local/bin/vendir "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-amd64" && \
     printf '\n=> Add YAML-PATH-CLI\n' && curl -sSL "https://github.com/psycofdj/yaml-path/releases/download/v${YAML_PATH_VERSION}/yaml-path-${YAML_PATH_VERSION}.linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/yaml-path-${YAML_PATH_VERSION}.linux-amd64/yaml-path /usr/local/bin && \
+    printf '\n=> Add YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     GIT_VERSION=$(git --version | awk '{print $3}') && \
     OC_VERSION=$(oc version | awk '{print $3}') && \
@@ -146,14 +148,15 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "argo (${ARGO_CLI_VERSION})" "Kubernetes Workflow Engine (https://argoproj.github.io/argo-workflows/)" >> /etc/motd && \
     printf "  %-20s %s\n" "flux (${FLUX_VERSION})" "Kubernetes Gitops cli (https://fluxcd.io/)" >> /etc/motd && \
     printf "  %-20s %s\n" "helm (${HELM_VERSION})" "Kubernetes Package Manager (https://docs.helm.sh/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "kapp (${KAPP_VERSION})" "Kubernetes YAML tool (https://carvel.dev/kapp/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "kapp (${KCTRL_VERSION})" "Kubernetes kapp-controller tool (https://carvel.dev/kapp-controller/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "klbd (${KLBD_VERSION})" "Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "kapp (${K14S_KAPP_VERSION})" "Kubernetes YAML tool (https://github.com/k14s/kapp/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "klbd (${K14S_KLBD_VERSION})" "Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
     printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
     printf "  %-20s %s\n" "oc (${OC_VERSION})" "Openshift cli (https://docs.openshift.com/dedicated/welcome/)" >> /etc/motd && \
     printf "  %-20s %s\n" "svcat (${SVCAT_VERSION})" "Kubernetes Service Catalog cli (https://github.com/kubernetes-sigs/service-catalog/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "ytt (${K14S_YTT_VERSION})" "YAML Templating Tool (https://github.com/k14s/ytt/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "ytt (${YTT_VERSION})" "YAML Templating Tool (https://carvel.dev/ytt/)" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
     printf '  "tools" command gives available tools.\n' >> /etc/motd && \
     printf '  All path except "/data/shared" are not persistant (do not save data on it).\n\n' >> /etc/motd && \
