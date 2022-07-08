@@ -88,12 +88,34 @@ plugin:
     args:
     - -c
     - "kubectl get-all -n $NAMESPACE | less"
+  get-suspended-helmreleases:
+    shortCut: Shift-S
+    confirm: false
+    description: Suspended Helm Releases
+    scopes:
+      - helmrelease
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl get --all-namespaces helmreleases.helm.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' | less"
+  get-suspended-kustomizations:
+    shortCut: Shift-S
+    confirm: false
+    description: Suspended Kustomizations
+    scopes:
+      - kustomizations
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl get --all-namespaces kustomizations.kustomize.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' | less"
   toggle-helmrelease:
     shortCut: Shift-T
     confirm: true
+    description: Toggle suspend/resume
     scopes:
       - helmreleases
-    description: Toggle suspend/resume
     command: sh
     background: false
     args:
@@ -102,9 +124,9 @@ plugin:
   toggle-kustomization:
     shortCut: Shift-T
     confirm: true
+    description: Toggle suspend/resume
     scopes:
       - kustomizations
-    description: Toggle suspend/resume
     command: sh
     background: false
     args:
