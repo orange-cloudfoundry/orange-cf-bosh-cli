@@ -57,7 +57,7 @@ if [ ${flagError} = 0 ] ; then
       printf "%b4%b : coab\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b5%b : remote-r2\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b6%b : remote-r3\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b6%b : remote-r4\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b7%b : remote-r4\n" "${GREEN}${BOLD}" "${STD}"
       printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
       case "${choice}" in
         1) BOSH_TARGET="micro" ;;

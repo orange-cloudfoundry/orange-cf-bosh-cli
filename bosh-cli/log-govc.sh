@@ -38,7 +38,7 @@ if [ ${flagError} = 0 ] ; then
     case "${choice}" in
       1) GOVC_TARGET="vcenter" ;;
       2) GOVC_TARGET="2_vcenter" ;;
-      4) GOVC_TARGET="4_vcenter" ;;
+      3) GOVC_TARGET="4_vcenter" ;;
       *) flag=0 ; clear ;;
     esac
   done
