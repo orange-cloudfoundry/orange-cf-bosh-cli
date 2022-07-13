@@ -33,10 +33,12 @@ if [ ${flagError} = 0 ] ; then
     printf "\n%bVcenter :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
     printf "%b1%b : region 1\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b2%b : region 2\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b : region 4\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
       1) GOVC_TARGET="vcenter" ;;
       2) GOVC_TARGET="2_vcenter" ;;
+      4) GOVC_TARGET="4_vcenter" ;;
       *) flag=0 ; clear ;;
     esac
   done

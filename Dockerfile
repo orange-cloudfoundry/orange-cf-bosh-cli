@@ -35,7 +35,7 @@ ENV ARGO_CLI_VERSION="3.3.8" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     TFO_CLI_VERSION="1.1.3" \
-    VENDIR_VERSION="0.27.0" \
+    VENDIR_VERSION="0.28.1" \
     YAML_PATH_VERSION="0.4" \
     YTT_VERSION="0.41.1"
 
@@ -149,7 +149,7 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "flux (${FLUX_VERSION})" "Kubernetes Gitops cli (https://fluxcd.io/)" >> /etc/motd && \
     printf "  %-20s %s\n" "helm (${HELM_VERSION})" "Kubernetes Package Manager (https://docs.helm.sh/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kapp (${KAPP_VERSION})" "Kubernetes YAML tool (https://carvel.dev/kapp/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "kapp (${KCTRL_VERSION})" "Kubernetes kapp-controller tool (https://carvel.dev/kapp-controller/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "kctrl (${KCTRL_VERSION})" "Kubernetes kapp-controller tool (https://carvel.dev/kapp-controller/)" >> /etc/motd && \
     printf "  %-20s %s\n" "klbd (${KLBD_VERSION})" "Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
