@@ -7,7 +7,7 @@ ENV ARGO_CLI_VERSION="3.3.8" \
     BBR_VERSION="1.9.20" \
     BOSH_CLI_VERSION="7.0.1" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
-    BOSH_GEN_VERSION="0.101.1" \
+    BOSH_GEN_VERSION="0.101.2" \
     CF_CLI_VERSION="8.4.0" \
     CF_UAAC_VERSION="4.5.0" \
     CREDHUB_VERSION="2.9.3" \
@@ -27,9 +27,8 @@ ENV ARGO_CLI_VERSION="3.3.8" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
     REDIS_CLI_VERSION="6.2.4" \
-    RUBY_BUNDLER_VERSION="1.17.3" \
-    RUBY_DRY_INFLECTOR_VERSION="0.2.1" \
-    RUBY_VERSION="2.6.5" \
+    RUBY_BUNDLER_VERSION="2.3.18" \
+    RUBY_VERSION="3.1.2" \
     SHIELD_VERSION="8.7.4" \
     SPRUCE_VERSION="1.29.0" \
     SVCAT_VERSION="0.3.1" \
@@ -62,7 +61,6 @@ RUN printf '\n=====================================================\n Install sy
     curl -sSL https://rvm.io/mpapis.asc | gpg --import - && curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - && curl -sSL https://get.rvm.io | bash -s stable && \
     /bin/bash -l -c "source /etc/profile.d/rvm.sh ; rvm install ${RUBY_VERSION}" && \
     /bin/bash -l -c "gem install bundler -v ${RUBY_BUNDLER_VERSION} --no-document" && \
-    /bin/bash -l -c "gem install dry-inflector -v ${RUBY_DRY_INFLECTOR_VERSION} --no-document" && \
     /bin/bash -l -c "gem install bosh-gen -v ${BOSH_GEN_VERSION} --no-document" && \
     /bin/bash -l -c "gem install cf-uaac -v ${CF_UAAC_VERSION} --no-document" && \
     /bin/bash -l -c "gem install mdless --no-document" && \
