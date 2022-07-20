@@ -23,7 +23,7 @@ ENV ARGO_CLI_VERSION="3.3.8" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.22.10" \
     KUSTOMIZE_VERSION="4.5.5" \
-    K9S_VERSION="0.25.21" \
+    K9S_VERSION="0.26.0" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
     REDIS_CLI_VERSION="6.2.4" \
@@ -154,7 +154,6 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
     printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "oc (${OC_VERSION})" "Openshift cli (https://docs.openshift.com/dedicated/welcome/)" >> /etc/motd && \
     printf "  %-20s %s\n" "svcat (${SVCAT_VERSION})" "Kubernetes Service Catalog cli (https://github.com/kubernetes-sigs/service-catalog/)" >> /etc/motd && \
     printf "  %-20s %s\n" "ytt (${YTT_VERSION})" "YAML Templating Tool (https://carvel.dev/ytt/)" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
