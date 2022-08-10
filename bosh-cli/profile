@@ -132,6 +132,17 @@ plugin:
     args:
       - -c
       - "flux $([ $(kubectl get kustomizations --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
+  toggle-sources:
+    shortCut: Shift-T
+    confirm: true
+    scopes:
+      - gitrepo
+    description: Toggle to suspend or resume a Git repository
+    command: sh
+    background: false
+    args:
+      - -c
+      - "flux --context $CONTEXT $([ $(kubectl --context $CONTEXT get gitrepo -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") source git -n $NAMESPACE $NAME | less"
   reconcile-git:
     shortCut: Shift-Z
     confirm: false
