@@ -76,7 +76,7 @@ plugin:
     background: false
     args:
     - -c
-    - "flux trace $NAME --kind `echo $RESOURCE_NAME | sed -E 's/(s|es)$//g'` --api-version $RESOURCE_GROUP/$RESOURCE_VERSION --namespace $NAMESPACE $NAME | less"
+    - "flux trace --context $CONTEXT $NAME --kind `echo $RESOURCE_NAME | sed -E 's/(s|es)$//g'` --api-version $RESOURCE_GROUP/$RESOURCE_VERSION --namespace $NAMESPACE $NAME | less"
   get-all:
     shortCut: x
     confirm: false
@@ -87,7 +87,7 @@ plugin:
     background: false
     args:
     - -c
-    - "kubectl get-all -n $NAMESPACE | less"
+    - "kubectl get-all --context $CONTEXT -n $NAMESPACE | less"
   get-suspended-helmreleases:
     shortCut: Shift-S
     confirm: false
@@ -98,7 +98,7 @@ plugin:
     background: false
     args:
       - -c
-      - "kubectl get --all-namespaces helmreleases.helm.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' | less"
+      - "kubectl get --all-namespaces --context $CONTEXT helmreleases.helm.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' | less"
   get-suspended-kustomizations:
     shortCut: Shift-S
     confirm: false
@@ -109,7 +109,7 @@ plugin:
     background: false
     args:
       - -c
-      - "kubectl get --all-namespaces kustomizations.kustomize.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' | less"
+      - "kubectl get --all-namespaces --context $CONTEXT kustomizations.kustomize.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' | less"
   toggle-helmrelease:
     shortCut: Shift-T
     confirm: true
@@ -120,7 +120,7 @@ plugin:
     background: false
     args:
       - -c
-      - "flux $([ $(kubectl get helmreleases -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") helmrelease --context $CONTEXT -n $NAMESPACE $NAME | less"
+      - "flux $([ $(kubectl get helmreleases --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") helmrelease --context $CONTEXT -n $NAMESPACE $NAME | less"
   toggle-kustomization:
     shortCut: Shift-T
     confirm: true
@@ -131,7 +131,7 @@ plugin:
     background: false
     args:
       - -c
-      - "flux $([ $(kubectl get kustomizations -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
+      - "flux $([ $(kubectl get kustomizations --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
   reconcile-git:
     shortCut: Shift-Z
     confirm: false
