@@ -99,7 +99,7 @@ if [ ${flagError} = 0 ] ; then
   if [ "${SITE_NAME}" = "fe-int" ] ; then
     MAX_ITEMS=8
   else
-    MAX_ITEMS=6
+    MAX_ITEMS=7
   fi
 
   for value in $(seq 1 ${MAX_ITEMS}) ; do
@@ -125,8 +125,8 @@ if [ ${flagError} = 0 ] ; then
     printf "%b4%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b5%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b6%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
     if [ "${SITE_NAME}" = "fe-int" ] ; then
-      printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b8%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
     fi
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice

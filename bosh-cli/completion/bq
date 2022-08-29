@@ -1,0 +1,20 @@
+_completer() {
+  command=$1
+  name=$2
+  eval '[[ "$'"${name}"'_COMMANDS" ]] || '"${name}"'_COMMANDS="$('"${command}"')"'
+  set -- $COMP_LINE
+  shift
+  while [[ $1 == -* ]]; do
+    shift
+  done
+  [[ $2 ]] && return
+  grep -q "${name}\s*$" <<< $COMP_LINE && eval 'COMPREPLY=($'"${name}"'_COMMANDS)' && return
+  [[ "$COMP_LINE" == *" " ]] && return
+  [[ $1 ]] && eval 'COMPREPLY=($(echo "$'"${name}"'_COMMANDS" | grep ^'"$1"'))'
+}
+
+unset bq_COMMANDS
+_bq_completer() {
+  _completer "CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1 bq help | grep '^[^ ][^ ]*  ' | sed 's/ .*//'" bq
+}
+complete -F _bq_completer bq

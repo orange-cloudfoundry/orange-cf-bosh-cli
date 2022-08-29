@@ -1,0 +1,96 @@
+#--- Load user configuration
+. ~/.bashrc
+
+#--- Colors and styles
+export RED='\033[31m'
+export GREEN='\033[32m'
+export YELLOW='\033[33m'
+export BLUE='\033[34m'
+export CYAN='\033[36m'
+export STD='\033[0m'
+export BOLD='\033[1m'
+export REVERSE='\033[7m'
+
+export GIT_SYMBOL=$'\u2387'
+export PROXY_SYMBOL=$'\u26a1'
+export BOSH_SYMBOL=$'\u2601\ufe0f'
+export K8S_SYMBOL=$'\u2638\ufe0f'
+
+#--- Set dynamic user prompt
+set_proxy_prompt()
+{
+  if [ ! -z "${PROXY_TYPE}" ] ; then
+    echo "${PROXY_SYMBOL}${PROXY_TYPE} proxy "
+  else
+    echo ""
+  fi
+}
+
+set_git_prompt()
+{
+  local BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
+  if [ ! -z "${BRANCH}" ] ; then
+    echo "${GIT_SYMBOL} ${BRANCH} "
+  else
+    echo ""
+  fi
+}
+
+set_bosh_prompt()
+{
+  if [ ! -z "${BOSH_TARGET}" ] ; then
+    if [ ! -z "${BOSH_DEPLOYMENT}" ] ; then
+      echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET}:${BOSH_DEPLOYMENT} "
+    else
+      echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET} "
+    fi
+  else
+    echo ""
+  fi
+}
+
+set_k8s_prompt()
+{
+  K8S_CONTEXT="$(kubectl ctx -c 2> /dev/null)"
+  if [ $? != 0 ] ; then
+    echo ""
+  else
+    K8S_NS="$(kubectl ns -c 2> /dev/null)"
+    if [ $? != 0 ] ; then
+      if [ -z ${KUBE_EDITOR} ] ; then
+        echo "${K8S_SYMBOL}  ${K8S_CONTEXT} (W) "
+      else
+        echo "${K8S_SYMBOL}  ${K8S_CONTEXT} "
+      fi
+    else
+      if [ -z ${KUBE_EDITOR} ] ; then
+        echo "${K8S_SYMBOL}  ${K8S_CONTEXT}:${K8S_NS} (W) "
+      else
+        echo "${K8S_SYMBOL}  ${K8S_CONTEXT}:${K8S_NS} "
+      fi
+    fi
+  fi
+}
+
+set_prompt() {
+  export PS1="\n${REVERSE}${GREEN}\h@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${BLUE}\w${STD}\n$ "
+}
+
+set_prompt
+
+#--- Set locales
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US
+
+#--- Set terminal name (could be changed with "t" alias)
+echo -en "\033]0;${MY_BOSH_USER}@${SITE_NAME}\007"
+
+#--- Grep colorization
+export GREP_COLORS="fn=1;34:se=1;34:mt=1;33"
+
+#--- bosh cli completion
+eval "$(/home/bosh/bosh-complete-linux bash-source)"
+
+#--- kubectl plugin completion
+source <(kubectl get-all completion bash | sed -e "s+ get-all$+ kubectl-get_all+g")
+source <(kubectl kuttl completion bash)

@@ -26,6 +26,16 @@ if [ ! -d ${HOME} ] ; then
   mkdir -p ${HOME}
 fi
 
+#--- Copy bash user configuration
+cp /home/bosh/.bashrc ${HOME}/.bashrc
+cp /home/bosh/.bash_aliases ${HOME}/.bash_aliases
+
+#--- Redefine GIT config file path
+export XDG_CONFIG_HOME=${HOME}
+
+#--- Redefine command history file path
+export HISTFILE=${HOME}/.bash_history
+
 #--- Set vi configuration
 if [ ! -d ${HOME}/.vim/plugin ] ; then
   mkdir -p ${HOME}/.vim/plugin
@@ -57,142 +67,21 @@ EOF
 #--- Set kubeclt read-only editor
 export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh"
 
-#--- Set k9s config path
+#--- Set k9s config path and create k9s plugins
 export K9SCONFIG=${HOME}/.k9s
 if [ ! -d ${K9SCONFIG} ] ; then
   mkdir -p ${K9SCONFIG}
 fi
 
-#--- Create k9s plugins
-cat > ${K9SCONFIG}/plugin.yml <<'EOF'
-plugin:
-  flux-trace:
-    shortCut: z
-    confirm: false
-    description: Flux trace
-    scopes:
-    - all
-    command: sh
-    background: false
-    args:
-    - -c
-    - "flux trace $NAME --kind `echo $RESOURCE_NAME | sed -E 's/(s|es)$//g'` --api-version $RESOURCE_GROUP/$RESOURCE_VERSION --namespace $NAMESPACE $NAME | less"
-  get-all:
-    shortCut: x
-    confirm: false
-    description: Get all
-    scopes:
-    - all
-    command: sh
-    background: false
-    args:
-    - -c
-    - "kubectl get-all -n $NAMESPACE | less"
-  get-suspended-helmreleases:
-    shortCut: Shift-S
-    confirm: false
-    description: Suspended Helm Releases
-    scopes:
-      - helmrelease
-    command: sh
-    background: false
-    args:
-      - -c
-      - "kubectl get --all-namespaces helmreleases.helm.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' | less"
-  get-suspended-kustomizations:
-    shortCut: Shift-S
-    confirm: false
-    description: Suspended Kustomizations
-    scopes:
-      - kustomizations
-    command: sh
-    background: false
-    args:
-      - -c
-      - "kubectl get --all-namespaces kustomizations.kustomize.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' | less"
-  toggle-helmrelease:
-    shortCut: Shift-T
-    confirm: true
-    description: Toggle suspend/resume
-    scopes:
-      - helmreleases
-    command: sh
-    background: false
-    args:
-      - -c
-      - "flux $([ $(kubectl get helmreleases -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") helmrelease --context $CONTEXT -n $NAMESPACE $NAME | less"
-  toggle-kustomization:
-    shortCut: Shift-T
-    confirm: true
-    description: Toggle suspend/resume
-    scopes:
-      - kustomizations
-    command: sh
-    background: false
-    args:
-      - -c
-      - "flux $([ $(kubectl get kustomizations -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
-  reconcile-git:
-    shortCut: Shift-Z
-    confirm: false
-    description: Flux reconcile
-    scopes:
-    - gitrepositories
-    command: sh
-    background: false
-    args:
-    - -c
-    - "flux reconcile source git --context $CONTEXT -n $NAMESPACE $NAME | less"
-  reconcile-hr:
-    shortCut: Shift-Z
-    confirm: false
-    description: Flux reconcile
-    scopes:
-    - helmreleases
-    command: sh
-    background: false
-    args:
-    - -c
-    - "flux reconcile helmrelease --context $CONTEXT -n $NAMESPACE $NAME | less"
-  reconcile-ks:
-    shortCut: Shift-Z
-    confirm: false
-    description: Flux reconcile
-    scopes:
-    - kustomizations
-    command: sh
-    background: false
-    args:
-    - -c
-    - "flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
-  submit-argo-workflow-template:
-    shortCut: t
-    confirm: true
-    description: Submit argo workflow
-    scopes:
-    - workflowtemplates
-    command: sh
-    args:
-    - -c
-    - "argo submit --from workflowtemplate/$NAME -n $NAMESPACE | less"
-EOF
+cp /home/bosh/.k9s/plugin.yml ${K9SCONFIG}/plugin.yml
 
-#--- Copy bash user configuration
-cp /home/bosh/.bashrc ${HOME}/.bashrc
-
-#--- Redefine GIT config file path
-export XDG_CONFIG_HOME=${HOME}
-
-#--- Redefine command history file path
-export HISTFILE=${HOME}/.bash_history
-
-#--- Link to kubectl krew repository
+#--- Set kubectl krew repository
 if [ -d /home/bosh/.krew ] ; then
   rm -fr ${HOME}/.krew > /dev/null 2>&1
   ln -s /home/bosh/.krew ${HOME}/.krew
 fi
 
-#--- Link to Cloud Foundry plugins repository
+#--- Set Cloud Foundry plugins repository
 if [ -L ${HOME}/.cf ] ; then
   rm ${HOME}/.cf
 else
@@ -208,303 +97,7 @@ fi
 #--- Redefine Path to binary
 export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${HOME}/bosh/template/admin:${HOME}/.krew/bin:${PATH}
 
-#--- Init user aliases
-cat > ${HOME}/.bash_aliases <<'EOF'
-#--- Git aliases
-alias checkout='function __gco() { git checkout $1 ; git pull --rebase; }; __gco'
-alias commit='function __gcm() { git add . ; git commit -m "$1" ; unset -f __gcm; }; __gcm'
-alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'
-alias prune='git fetch --prune'
-alias pull='git pull --rebase ; git fetch --prune'
-alias push='git pull --rebase ; git fetch --prune ; git push'
-alias status='git status'
-
-#--- Cli aliases
-alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
-alias clean-prometheus-tasks='for var in $(bosh tasks | grep "prometheus" | grep -E "queued|processing" | sed -e "s+\t.*++g") ; do bosh cancel-task $var ; done'
-alias credhub-get='function __cg() { log-credhub -i ; credhub get -n $1 -j | jq .value -r; }; __cg'
-alias fly='fly -t concourse'
-alias k='/usr/local/bin/kubectl'
-alias k9s='if [ -f ${K9SCONFIG}/config.yml ] ; then sed -i "s+logoless:.*+logoless: true+" ${K9SCONFIG}/config.yml ; fi ; k9s'
-alias k8s-token='/usr/local/bin/k8s-token.sh'
-alias log-bosh='. /usr/local/bin/log-bosh.sh'
-alias log-cf='. /usr/local/bin/log-cf.sh'
-alias log-credhub='. /usr/local/bin/log-credhub.sh'
-alias log-fly='. /usr/local/bin/log-fly.sh'
-alias log-govc='. /usr/local/bin/log-govc.sh'
-alias log-k8s='. /usr/local/bin/log-k8s.sh'
-alias log-openstack='. /usr/local/bin/log-openstack.sh'
-alias log-shield='. /usr/local/bin/log-shield.sh'
-alias log-uaac='. /usr/local/bin/log-uaac.sh'
-alias os='openstack'
-alias prune-workers='fly prune-worker -a'
-alias switch='. /usr/local/bin/switch.sh'
-
-#--- Docker aliases
-alias dim='docker images'
-alias dps='docker ps -a'
-alias dprune='docker container prune'
-alias dsh='function __dsh() { docker exec -it $1 sh; }; __dsh'
-
-#--- Tools aliases
-alias diff='colordiff'
-alias f='function __f() { printf "%100s\n"|tr " " "=";find . ! -regex ".*[/]\.git[/]?.*" ! -regex ".*last-deployment-failure\.yml" -type f,l -not -xtype l -not -xtype d -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "%100s\n"|tr " " "="; }; __f'
-alias generate-password='apg -MCLN -n 1 -m 30'
-alias kube-editor='. /usr/local/bin/kube-editor.sh'
-alias ps1-clear='unset BOSH_TARGET ; unset K8S_CONTEXT'
-alias proxy='. /usr/local/bin/proxy.sh'
-alias show-cert='function __scrt() { openssl x509 -text -in $1; }; __scrt'
-alias show-csr='function __scsr() { openssl req -noout -text -in $1; }; __scsr'
-alias tn='function __tn() { echo -ne "\033]0;$@\007";unset -f __t;printf "\n"; }; __tn'
-alias toggle-proxy='. /usr/local/bin/proxy.sh'
-alias tools='. /usr/local/bin/tools.sh'
-EOF
-
-#--- Init bash profile
-cat > ${HOME}/.bash_profile <<'EOF'
-#--- Load user configuration
-. ~/.bashrc
-
-#--- Colors and styles
-export RED='\033[31m'
-export GREEN='\033[32m'
-export YELLOW='\033[33m'
-export BLUE='\033[34m'
-export CYAN='\033[36m'
-
-export STD='\033[0m'
-export BOLD='\033[1m'
-export REVERSE='\033[7m'
-
-export GIT_SYMBOL=$'\u2387'
-export PROXY_SYMBOL=$'\u26a1'
-export BOSH_SYMBOL=$'\u2601\ufe0f'
-export K8S_SYMBOL=$'\u2638\ufe0f'
-
-#--- Set dynamic user prompt
-set_proxy_prompt()
-{
-  if [ ! -z "${PROXY_TYPE}" ] ; then
-    echo "${PROXY_SYMBOL}${PROXY_TYPE} proxy "
-  else
-    echo ""
-  fi
-}
-
-set_git_prompt()
-{
-  local BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
-  if [ ! -z "${BRANCH}" ] ; then
-    echo "${GIT_SYMBOL} ${BRANCH} "
-  else
-    echo ""
-  fi
-}
-
-set_bosh_prompt()
-{
-  if [ ! -z "${BOSH_TARGET}" ] ; then
-    if [ ! -z "${BOSH_DEPLOYMENT}" ] ; then
-      echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET}:${BOSH_DEPLOYMENT} "
-    else
-      echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET} "
-    fi
-  else
-    echo ""
-  fi
-}
-
-set_k8s_prompt()
-{
-  K8S_CONTEXT="$(kubectl ctx -c 2> /dev/null)"
-  if [ $? != 0 ] ; then
-    echo ""
-  else
-    K8S_NS="$(kubectl ns -c 2> /dev/null)"
-    if [ $? != 0 ] ; then
-      if [ -z ${KUBE_EDITOR} ] ; then
-        echo "${K8S_SYMBOL}  ${K8S_CONTEXT} (W) "
-      else
-        echo "${K8S_SYMBOL}  ${K8S_CONTEXT} "
-      fi
-    else
-      if [ -z ${KUBE_EDITOR} ] ; then
-        echo "${K8S_SYMBOL}  ${K8S_CONTEXT}:${K8S_NS} (W) "
-      else
-        echo "${K8S_SYMBOL}  ${K8S_CONTEXT}:${K8S_NS} "
-      fi
-    fi
-  fi
-}
-
-set_prompt() {
-  export PS1="\n${REVERSE}${GREEN}\h@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${BLUE}\w${STD}\n$ "
-}
-
-set_prompt
-
-#--- Set locales
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US
-
-#--- Set terminal name (can change with "t" alias)
-echo -en "\033]0;${MY_BOSH_USER}@${SITE_NAME}\007"
-
-#--- Grep colorization
-export GREP_COLORS="fn=1;34:se=1;34:mt=1;33"
-
-#--- bosh cli completion
-eval "$(/home/bosh/bosh-complete-linux bash-source)"
-
-#--- argo, flux, kapp, kctrl, ytt cli completion
-source <(argo completion bash)
-source <(flux completion bash)
-source <(kapp completion bash | grep -v Succeeded)
-source <(kctrl completion bash | grep -v Succeeded)
-source <(ytt completion bash | grep -v Succeeded)
-
-#--- fly cli completion
-_fly_completion() {
-  #--- All arguments except the first one
-  args=("${COMP_WORDS[@]:1:$COMP_CWORD}")
-  #--- Only split on newlines
-  local IFS=$'\n'
-  #--- Call completion (note that the first element of COMP_WORDS is the executable itself)
-  COMPREPLY=($(GO_FLAGS_COMPLETION=1 ${COMP_WORDS[0]} "${args[@]}"))
-  return 0
-}
-complete -F _fly_completion fly
-
-#--- minio cli completion
-if [ -f /usr/share/bash-completion/bash_completion ] ; then
-  source /usr/share/bash-completion/bash_completion
-fi
-complete -C /usr/local/bin/mc mc
-
-#--- govc cli completion
-_govc_completion()
-{
-  local cur prev subcmd
-  prev=${COMP_WORDS[COMP_CWORD-1]}
-  cur=${COMP_WORDS[COMP_CWORD]}
-  subcmd=${COMP_WORDS[1]}
-  COMPREPLY=()
-
-  if [[ ${prev} == "govc" ]] ; then
-    COMPREPLY=( $(compgen -W "$(govc -h | grep -v Usage | tr -s '\n' ' ')" -- ${cur}) )
-    return 0
-
-  elif [[ ${cur} == "-"* ]] ; then
-    : #--- drop out and show options
-
-  elif [[ ${subcmd} == "ls" ]] ; then #--- not completing an option, try for appropriate values
-    if [[ ${prev} == "-t" ]] ; then
-      COMPREPLY=( $(compgen -W "$(govc ls -l "/**" | awk '{print $2}' | sort -u | tr -d '()' | tr '\n' ' '  )" -- ${cur}) )
-    else
-      COMPREPLY=( $(compgen -W "$(govc ls "${cur:-/*}*" | tr -s '\n' ' ' )" -- ${cur}) )
-    fi
-
-  elif [[ ${subcmd} == "vm."* || ${prev} == "-vm" ]] ; then
-    COMPREPLY=( $(compgen -W "$(govc ls -t VirtualMachine -l "${cur}*" | awk '{print $1}' | tr -s '\n' ' ' )" -- ${cur}) )
-  fi
-
-  #--- did not hit any specifcs so show all options from help
-  if [[ -z ${COMPREPLY} ]] ; then
-    COMPREPLY=( $(compgen -W "-h $(govc ${subcmd} -h | awk '{print $1}' | grep "^-" | sed -e 's/=.*//g' | tr -s '\n' ' ' )" -- ${cur}) )
-  fi
-
-  return 0
-}
-complete -F _govc_completion govc
-
-#--- gcloud cli completion
-_python_argcomplete() {
-  local IFS=''
-  local prefix=
-  typeset -i n
-  (( lastw=${#COMP_WORDS[@]} -1))
-  if [[ ${COMP_WORDS[lastw]} == --*=* ]]; then
-    # for bash version 3.2
-    flag=${COMP_WORDS[lastw]%%=*}
-    set -- "$1" "$2" '='
-  elif [[ $3 == '=' ]]; then
-    flag=${COMP_WORDS[-3]}
-  fi
-  if [[ $3 == ssh  && $2 == *@* ]] ;then
-    # handle ssh user@instance specially
-    prefix=${2%@*}@
-    COMP_LINE=${COMP_LINE%$2}"${2#*@}"
-  elif [[ $3 == '=' ]] ; then
-    # handle --flag=value
-    prefix=$flag=$2
-    line=${COMP_LINE%$prefix};
-    COMP_LINE=$line${prefix/=/ };
-    prefix=
-  fi
-  if [[ $2 == *,* ]]; then
-    # handle , separated list
-    prefix=${2%,*},
-    set -- "$1" "${2#$prefix}" "$3"
-    COMP_LINE==${COMP_LINE%$prefix*}$2
-  fi
-  # Treat --flag=<TAB> as --flag <TAB> to work around bash 4.x bug
-  if [[ ${COMP_LINE} == *=  && ${COMP_WORDS[-2]} == --* ]]; then
-    COMP_LINE=${COMP_LINE%=}' '
-  fi
-  COMPREPLY=( $(IFS="$IFS"                   COMP_LINE="$COMP_LINE"                   COMP_POINT="$COMP_POINT"                   _ARGCOMPLETE_COMP_WORDBREAKS="$COMP_WORDBREAKS"                   _ARGCOMPLETE=1                   "$1" 8>&1 9>&2 1>/dev/null 2>/dev/null) )
-  if [[ $? != 0 ]]; then
-    unset COMPREPLY
-    return
-  fi
-  if [[ $prefix != '' ]]; then
-    for ((n=0; n < ${#COMPREPLY[@]}; n++)); do
-      COMPREPLY[$n]=$prefix${COMPREPLY[$n]}
-    done
-  fi
-  for ((n=0; n < ${#COMPREPLY[@]}; n++)); do
-    match=${COMPREPLY[$n]%' '}
-    if [[ $match != '' ]]; then
-      COMPREPLY[$n]=${match//? /' '}' '
-    fi
-  done
-  # if flags argument has a single completion and ends in  '= ', delete ' '
-  if [[ ${#COMPREPLY[@]} == 1 && ${COMPREPLY[0]} == -* && ${COMPREPLY[0]} == *'= ' ]]; then
-    COMPREPLY[0]=${COMPREPLY[0]%' '}
-  fi
-}
-complete -o nospace -F _python_argcomplete "gcloud"
-complete -o nospace -F _python_argcomplete gsutil
-
-#--- bq cli completion
-_completer() {
-  command=$1
-  name=$2
-  eval '[[ "$'"${name}"'_COMMANDS" ]] || '"${name}"'_COMMANDS="$('"${command}"')"'
-  set -- $COMP_LINE
-  shift
-  while [[ $1 == -* ]]; do
-    shift
-  done
-  [[ $2 ]] && return
-  grep -q "${name}\s*$" <<< $COMP_LINE && eval 'COMPREPLY=($'"${name}"'_COMMANDS)' && return
-  [[ "$COMP_LINE" == *" " ]] && return
-  [[ $1 ]] && eval 'COMPREPLY=($(echo "$'"${name}"'_COMMANDS" | grep ^'"$1"'))'
-}
-
-unset bq_COMMANDS
-_bq_completer() {
-  _completer "CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1 bq help | grep '^[^ ][^ ]*  ' | sed 's/ .*//'" bq
-}
-complete -F _bq_completer bq
-
-#--- Load OSB-CMDB bash functions
-if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
-  source /usr/local/bin/cf-cli-cmdb-functions.bash
-fi
-
-EOF
-
-#--- Load user bash profile
+##--- Load user bash profile
+cp /home/bosh/bash_profile ${HOME}/.bash_profile
 . ${HOME}/.bash_profile
-
 cd ${HOME}
