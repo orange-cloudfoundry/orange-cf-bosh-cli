@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS orange_cli
+FROM ubuntu:22.04 AS orange_cli
 USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
