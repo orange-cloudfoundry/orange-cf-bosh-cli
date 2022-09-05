@@ -63,12 +63,11 @@ selectCluster() {
   case "$1" in
     "1") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-core-connectivity-k8s" ; K8S_CONTEXT="core-connectivity" ;;
     "2") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="01-ci-k8s" ; K8S_CONTEXT="ci-k8s" ;;
-    "3") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-gitops-management" ; K8S_CONTEXT="gitops-management" ;;
-    "4") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-supervision" ; K8S_CONTEXT="supervision" ;;
-    "5") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
-    "6") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
-    "7") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
-    "8") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
+    "3") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-supervision" ; K8S_CONTEXT="supervision" ;;
+    "4") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
+    "5") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
+    "6") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
+    "7") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
     *) flag=0 ; clear ;;
   esac
 }
@@ -97,9 +96,9 @@ if [ ${flagError} = 0 ] ; then
   clear
   printf "\n%bGet clusters properties...%b\n" "${YELLOW}${REVERSE}" "${STD}"
   if [ "${SITE_NAME}" = "fe-int" ] ; then
-    MAX_ITEMS=8
-  else
     MAX_ITEMS=7
+  else
+    MAX_ITEMS=6
   fi
 
   for value in $(seq 1 ${MAX_ITEMS}) ; do
@@ -121,13 +120,12 @@ if [ ${flagError} = 0 ] ; then
     printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
     printf "%b1%b : core connectivity\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b2%b : ci\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : gitops management\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b4%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b5%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b6%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b3%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b4%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b5%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b6%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
     if [ "${SITE_NAME}" = "fe-int" ] ; then
-      printf "%b8%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%7%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
     fi
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     selectCluster "${choice}"
