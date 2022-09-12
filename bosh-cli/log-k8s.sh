@@ -125,7 +125,7 @@ if [ ${flagError} = 0 ] ; then
     printf "%b5%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b6%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
     if [ "${SITE_NAME}" = "fe-int" ] ; then
-      printf "%7%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b7%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
     fi
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     selectCluster "${choice}"
