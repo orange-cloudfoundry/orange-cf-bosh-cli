@@ -3,27 +3,27 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_CLI_VERSION="3.3.8" \
-    BBR_VERSION="1.9.20" \
+ENV ARGO_CLI_VERSION="3.4.0" \
+    BBR_VERSION="1.9.38" \
     BOSH_CLI_VERSION="7.0.1" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
-    CF_CLI_VERSION="8.4.0" \
-    CF_UAAC_VERSION="4.5.0" \
-    CREDHUB_VERSION="2.9.3" \
+    CF_CLI_VERSION="8.5.0" \
+    CF_UAAC_VERSION="4.6.0" \
+    CREDHUB_VERSION="2.9.4" \
     FLUX_VERSION="0.29.5" \
     FLY_VERSION="7.8.2" \
     GOVC_VERSION="0.29.0" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.8.2" \
     JQ_VERSION="1.6" \
-    KAPP_VERSION="0.49.0" \
-    KCTRL_VERSION="0.38.4" \
-    KLBD_VERSION="0.34.0" \
+    KAPP_VERSION="0.53.0" \
+    KCTRL_VERSION="0.41.2" \
+    KLBD_VERSION="0.35.0" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.22.10" \
     KUSTOMIZE_VERSION="4.5.5" \
-    K9S_VERSION="0.26.3" \
+    K9S_VERSION="0.26.6" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
     OC_CLI_VERSION="4.10.25" \
@@ -36,9 +36,9 @@ ENV ARGO_CLI_VERSION="3.3.8" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     TFO_CLI_VERSION="1.1.3" \
-    VENDIR_VERSION="0.28.1" \
+    VENDIR_VERSION="0.31.0" \
     YAML_PATH_VERSION="0.4" \
-    YTT_VERSION="0.41.1"
+    YTT_VERSION="0.43.0"
 
 #--- Packages list, ruby env for COA and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
