@@ -22,8 +22,9 @@ ENV ARGO_CLI_VERSION="3.4.0" \
     KLBD_VERSION="0.35.0" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.23.9" \
+    KUBECTL_WHOAMI_VERSION="0.0.44" \
     KUSTOMIZE_VERSION="4.5.7" \
-    K9S_VERSION="0.26.6" \
+    K9S_VERSION="0.26.7" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
     OC_CLI_VERSION="4.10.25" \
@@ -50,7 +51,7 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report" \
-    KUBECTL_PLUGINS="get-all,ctx,ns,kuttl"
+    KUBECTL_PLUGINS="ctx,get-all,ns,kuttl"
 
 ADD bosh-cli/* /tmp/bosh-cli/
 ADD bosh-cli/completion/* /tmp/bosh-cli/completion/
@@ -111,6 +112,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add KUBECTL-CLI\n' && curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
     printf '\n=> Add KUBECTL-CLI completion\n' && chmod 755 /usr/local/bin/kubectl && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && kubectl completion bash | sed -e "s+kubectl+k+g" > /etc/bash_completion.d/k && \
     printf '\n=> Add KUBECTL_PLUGINS\n' && su -l bosh -s /bin/bash -c "export KREW_ROOT=/home/bosh/.krew ; export PATH=/home/bosh/.krew/bin:${PATH} ; /tmp/krew-linux_amd64 install krew ; export IFS=, ; for plugin in \$(echo \"${KUBECTL_PLUGINS}\") ; do kubectl krew install \${plugin} ; done" && \
+    printf '\n=> Add KUBECTL_WHOAMI\n' && curl -sSL "https://github.com/rajatjindal/kubectl-whoami/releases/download/v${KUBECTL_WHOAMI_VERSION}/kubectl-whoami_v${KUBECTL_WHOAMI_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/kubectl-whoami /usr/local/bin/ && \
     printf '\n=> Add KUSTOMIZE-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/kustomize /usr/local/bin/kustomize && \
     printf '\n=> Add KUSTOMIZE-CLI completion\n' && chmod 755 /usr/local/bin/kustomize && /usr/local/bin/kustomize completion bash > /etc/bash_completion.d/kustomize && \
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
