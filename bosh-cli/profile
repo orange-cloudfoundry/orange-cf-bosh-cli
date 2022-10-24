@@ -18,7 +18,7 @@ export BOSH_CA_CERT="/etc/ssl/certs/ca-certificates.crt"
 export CF_COLOR=true
 
 #--- Modify home user (on shared disk)
-export MY_BOSH_USER=`hostname`
+export MY_BOSH_USER=`hostname | sed -e "s+\-cli.*$++"`
 export HOME=/data/shared/${MY_BOSH_USER}
 
 #--- Create user directory
