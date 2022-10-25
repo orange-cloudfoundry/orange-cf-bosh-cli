@@ -73,7 +73,7 @@ set_k8s_prompt()
 }
 
 set_prompt() {
-  export PS1="\n${REVERSE}${GREEN}\h@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${BLUE}\w${STD}\n$ "
+  export PS1="\n${REVERSE}${GREEN}${MY_BOSH_USER}@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${BLUE}\w${STD}\n$ "
 }
 
 set_prompt
