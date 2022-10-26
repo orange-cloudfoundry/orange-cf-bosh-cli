@@ -43,6 +43,50 @@ plugin:
     args:
       - -c
       - "kubectl get --all-namespaces --context $CONTEXT kustomizations.kustomize.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' | less"
+  kapp-inspect:
+    shortCut: Shift-Z
+    confirm: false
+    description: Kapp inspect
+    scopes:
+    - app
+    command: bash
+    background: false
+    args:
+    - -c
+    - "export FORCE_COLOR=1;kapp inspect -a $NAME.app --namespace $NAMESPACE --color --tty |& less -R"
+  kctrl-app-status:
+    shortCut: Shift-Q
+    confirm: false
+    description: kctrl app status
+    scopes:
+    - app
+    command: bash
+    background: false
+    args:
+    - -c
+    - "export FORCE_COLOR=1;kctrl app status -a $NAME --namespace $NAMESPACE --color --tty |& less -R"
+  kctrl-app-pause:
+    shortCut: Shift-T
+    confirm: false
+    description: kctrl app pause
+    scopes:
+    - app
+    command: bash
+    background: false
+    args:
+    - -c
+    - "export FORCE_COLOR=1;kctrl app pause -a $NAME --namespace $NAMESPACE --yes --color --tty |& less -R"
+  kctrl-app-kick:
+    shortCut: Shift-Z
+    confirm: false
+    description: kctrl app kick
+    scopes:
+    - app
+    command: bash
+    background: false
+    args:
+    - -c
+    - "export FORCE_COLOR=1;kctrl app kick -a $NAME --namespace $NAMESPACE --yes --color --tty |& less -R"
   toggle-helmrelease:
     shortCut: Shift-T
     confirm: true
