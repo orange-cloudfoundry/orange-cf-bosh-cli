@@ -180,13 +180,13 @@ RUN printf '\n=====================================================\n Install sy
     chmod 1777 /tmp && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
     find /usr/local/bin -print0 | xargs -0 chown root:root && find /home/bosh /data -print0 | xargs -0 chown bosh:users
 
+#--- Check clis/tools availability
+FROM orange_cli AS tests
+RUN /usr/local/bin/check-available-clis.sh
+
 #--- Run supervisord daemon
 CMD /usr/local/bin/supervisord.sh
 EXPOSE 22
-
-#--- Test clis/tools availability
-FROM orange_cli AS tests
-RUN /usr/local/bin/check-available-clis.sh
 
 #--- Export bosh-cli image
 FROM orange_cli
