@@ -4,118 +4,162 @@ plugin:
     confirm: false
     description: Flux trace
     scopes:
-    - all
-    command: sh
+      - all
+    command: bash
     background: false
     args:
-    - -c
-    - "flux trace --context $CONTEXT $NAME --kind `echo $RESOURCE_NAME | sed -E 's/(s|es)$//g'` --api-version $RESOURCE_GROUP/$RESOURCE_VERSION --namespace $NAMESPACE $NAME | less"
+      - -c
+      - "flux trace --context $CONTEXT $NAME --kind `echo $RESOURCE_NAME | sed -E 's/(s|es)$//g'` --api-version $RESOURCE_GROUP/$RESOURCE_VERSION --namespace $NAMESPACE $NAME |& less"
   get-all:
     shortCut: x
     confirm: false
     description: Get all
     scopes:
-    - all
-    command: sh
+      - all
+    command: bash
     background: false
     args:
-    - -c
-    - "kubectl get-all --context $CONTEXT -n $NAMESPACE | less"
+      - -c
+      - "kubectl get-all --context $CONTEXT -n $NAMESPACE |& less"
   get-suspended-helmreleases:
     shortCut: Shift-S
     confirm: false
     description: List suspended
     scopes:
       - helmrelease
-    command: sh
+    command: bash
     background: false
     args:
       - -c
-      - "kubectl get --all-namespaces --context $CONTEXT helmreleases.helm.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' | less"
+      - "kubectl get --all-namespaces --context $CONTEXT helmreleases.helm.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' |& less"
   get-suspended-kustomizations:
     shortCut: Shift-S
     confirm: false
     description: List suspended
     scopes:
       - kustomizations
-    command: sh
+    command: bash
     background: false
     args:
       - -c
-      - "kubectl get --all-namespaces --context $CONTEXT kustomizations.kustomize.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' | less"
+      - "kubectl get --all-namespaces --context $CONTEXT kustomizations.kustomize.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' |& less"
+  kapp-inspect:
+    shortCut: Shift-Z
+    confirm: false
+    description: Kapp inspect
+    scopes:
+      - app
+    command: bash
+    background: false
+    args:
+      - -c
+      - "export FORCE_COLOR=1;kapp inspect -a $NAME.app --namespace $NAMESPACE --color --tty |& less -R"
+  kctrl-app-status:
+    shortCut: Shift-Q
+    confirm: false
+    description: kctrl app status
+    scopes:
+      - app
+    command: bash
+    background: false
+    args:
+      - -c
+      - "export FORCE_COLOR=1;kctrl app status -a $NAME --namespace $NAMESPACE --color --tty |& less -R"
+  kctrl-app-pause:
+    shortCut: Shift-T
+    confirm: false
+    description: kctrl app pause
+    scopes:
+      - app
+    command: bash
+    background: false
+    args:
+      - -c
+      - "export FORCE_COLOR=1;kctrl app pause -a $NAME --namespace $NAMESPACE --yes --color --tty |& less -R"
+  kctrl-app-kick:
+    shortCut: Shift-Z
+    confirm: false
+    description: kctrl app kick
+    scopes:
+      - app
+    command: bash
+    background: false
+    args:
+      - -c
+      - "export FORCE_COLOR=1;kctrl app kick -a $NAME --namespace $NAMESPACE --yes --color --tty |& less -R"
   toggle-helmrelease:
     shortCut: Shift-T
     confirm: true
     description: Toggle suspend/resume
     scopes:
       - helmreleases
-    command: sh
+    command: bash
     background: false
     args:
       - -c
-      - "flux $([ $(kubectl get helmreleases --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") helmrelease --context $CONTEXT -n $NAMESPACE $NAME | less"
+      - "flux $([ $(kubectl get helmreleases --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") helmrelease --context $CONTEXT -n $NAMESPACE $NAME |& less"
   toggle-kustomization:
     shortCut: Shift-T
     confirm: true
     description: Toggle suspend/resume
     scopes:
       - kustomizations
-    command: sh
+    command: bash
     background: false
     args:
       - -c
-      - "flux $([ $(kubectl get kustomizations --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
+      - "flux $([ $(kubectl get kustomizations --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") kustomization --context $CONTEXT -n $NAMESPACE $NAME |& less"
   toggle-sources:
     shortCut: Shift-T
     confirm: true
     scopes:
       - gitrepo
     description: Toggle suspend/resume
-    command: sh
+    command: bash
     background: false
     args:
       - -c
-      - "flux --context $CONTEXT $([ $(kubectl --context $CONTEXT get gitrepo -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") source git -n $NAMESPACE $NAME | less"
+      - "flux --context $CONTEXT $([ $(kubectl --context $CONTEXT get gitrepo -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") source git -n $NAMESPACE $NAME |& less"
   reconcile-git:
     shortCut: Shift-Z
     confirm: false
     description: Flux reconcile
     scopes:
-    - gitrepositories
-    command: sh
+      - gitrepositories
+    command: bash
     background: false
     args:
-    - -c
-    - "flux reconcile source git --context $CONTEXT -n $NAMESPACE $NAME | less"
+      - -c
+      - "flux reconcile source git --context $CONTEXT -n $NAMESPACE $NAME |& less"
   reconcile-hr:
     shortCut: Shift-Z
     confirm: false
     description: Flux reconcile
     scopes:
-    - helmreleases
-    command: sh
+      - helmreleases
+    command: bash
     background: false
     args:
-    - -c
-    - "flux reconcile helmrelease --context $CONTEXT -n $NAMESPACE $NAME | less"
+      - -c
+      - "flux reconcile helmrelease --context $CONTEXT -n $NAMESPACE $NAME |& less"
   reconcile-ks:
     shortCut: Shift-Z
     confirm: false
     description: Flux reconcile
     scopes:
-    - kustomizations
-    command: sh
+      - kustomizations
+    command: bash
     background: false
     args:
-    - -c
-    - "flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME | less"
+      - -c
+      - "flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME |& less"
   submit-argo-workflow-template:
     shortCut: t
     confirm: true
     description: Submit argo workflow
     scopes:
-    - workflowtemplates
-    command: sh
+      - workflowtemplates
+    command: bash
     args:
-    - -c
-    - "argo submit --from workflowtemplate/$NAME -n $NAMESPACE | less"
+      - -c
+      - "argo submit --from workflowtemplate/$NAME -n $NAMESPACE |& less"
