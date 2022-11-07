@@ -42,7 +42,6 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `kustomize` Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)
 * `k9s` - Kubernetes cli (https://github.com/derailed/k9s)
 * `oc` - Openshift cli (https://docs.openshift.com/dedicated/welcome/)
-* `svcat` - Kubernetes Service Catalog cli (https://github.com/kubernetes-sigs/service-catalog/)
 * `ytt` - YAML Templating Tool (https://github.com/k14s/ytt/)
 
 ## How to get it or build it

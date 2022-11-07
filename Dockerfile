@@ -33,7 +33,6 @@ ENV ARGO_CLI_VERSION="3.4.0" \
     RUBY_VERSION="3.1.2" \
     SHIELD_VERSION="8.7.4" \
     SPRUCE_VERSION="1.29.0" \
-    SVCAT_VERSION="0.3.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     TFO_CLI_VERSION="1.1.3" \
@@ -124,7 +123,6 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add REDIS-CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
     printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-amd64" && \
     printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
-    printf '\n=> Add SVCAT-CLI\n' && curl -sSLo /usr/local/bin/svcat "https://download.svcat.sh/cli/v${SVCAT_VERSION}/linux/amd64/svcat" && \
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
     printf '\n=> Add TFO-CLI\n' && curl -sSL "https://github.com/isaaguilar/terraform-operator-cli/releases/download/v${TFO_CLI_VERSION}/tfo-v${TFO_CLI_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
@@ -159,7 +157,6 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
     printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "svcat (${SVCAT_VERSION})" "Kubernetes Service Catalog cli (https://github.com/kubernetes-sigs/service-catalog/)" >> /etc/motd && \
     printf "  %-20s %s\n" "ytt (${YTT_VERSION})" "YAML Templating Tool (https://carvel.dev/ytt/)" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
     printf '  "tools" command gives available tools.\n' >> /etc/motd && \

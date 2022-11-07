@@ -109,10 +109,6 @@ if [ ${flagError} = 0 ] ; then
     fi
   done
 
-  #--- Install svcat plugin (need to unset KUBECONFIG for using default path ${HOME}/.kube)
-  unset KUBECONFIG
-  svcat install plugin > /dev/null 2>&1
-
   #--- Select kubernetes cluster to work with
   flag=0
   while [ ${flag} = 0 ] ; do
@@ -176,8 +172,6 @@ if [ ${flagError} = 0 ] ; then
     fi
 
     if [ ${flagError} = 0 ] ; then
-      #--- Install svcat auto-completion
-      source <(svcat completion bash)
       printf "\n\n%bCluster \"${K8S_CONTEXT}\" available.%b\n" "${YELLOW}${REVERSE}" "${STD}"
     fi
   fi

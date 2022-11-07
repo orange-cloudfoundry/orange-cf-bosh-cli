@@ -24,7 +24,6 @@ display "kubectl" "Cluster manager cli (used with log-k8s)"
 display "k9s" "Cluster manager cli (used with log-k8s)"
 display "log-k8s" "Log with kubernetes cli (kubectl, helm)"
 display "oc" "Openshift cli"
-display "svcat" "Service Catalog cli"
 display "ytt" "YAML Templating Tool"
 
 printf "\n%bOTHER CLI TOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"

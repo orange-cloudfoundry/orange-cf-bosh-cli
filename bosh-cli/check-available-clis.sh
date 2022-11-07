@@ -37,7 +37,6 @@ printf '\n=> Check OC-CLI\n' ; oc version
 printf '\n=> Check REDIS-CLI\n' ; redis --version
 printf '\n=> Check SHIELD-CLI\n' ; shield --version
 printf '\n=> Check SPRUCE-CLI\n' ; spruce --version
-printf '\n=> Check SVCAT-CLI\n' ; svcat --help > /dev/null
 printf '\n=> Check TERRAFORM-CLI\n' ; terraform --version
 printf '\n=> Check VENDIR-CLI\n' ; vendir -v
 printf '\n=> Check YTT-CLI\n' ; ytt --version
