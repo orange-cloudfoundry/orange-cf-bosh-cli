@@ -34,6 +34,7 @@ printf '\n=> Check MINIO-CLI\n' ; mc --version
 printf '\n=> Check MONGO_SHELL_CLI\n' ; mongo --version
 printf '\n=> Check MYSQL-SHELL-CLI\n' ; mysqlsh --version
 printf '\n=> Check OC-CLI\n' ; oc version
+printf '\n=> Check RBAC-TOOL-CLI\n' ; rbac-tool version
 printf '\n=> Check REDIS-CLI\n' ; redis --version
 printf '\n=> Check SHIELD-CLI\n' ; shield --version
 printf '\n=> Check SPRUCE-CLI\n' ; spruce --version
