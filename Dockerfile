@@ -3,13 +3,13 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_CLI_VERSION="3.4.0" \
+ENV ARGO_CLI_VERSION="3.4.3" \
     BBR_VERSION="1.9.38" \
     BOSH_CLI_VERSION="7.0.1" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CF_CLI_VERSION="8.5.0" \
-    CF_UAAC_VERSION="4.6.0" \
+    CF_UAAC_VERSION="4.7.0" \
     CREDHUB_VERSION="2.9.8" \
     FLUX_VERSION="0.33.0" \
     FLY_VERSION="7.8.2" \
@@ -17,9 +17,9 @@ ENV ARGO_CLI_VERSION="3.4.0" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.9.4" \
     JQ_VERSION="1.6" \
-    KAPP_VERSION="0.53.0" \
-    KCTRL_VERSION="0.41.2" \
-    KLBD_VERSION="0.35.0" \
+    KAPP_VERSION="0.54.0" \
+    KCTRL_VERSION="0.42.0" \
+    KLBD_VERSION="0.36.0" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.23.9" \
     KUBECTL_WHOAMI_VERSION="0.0.44" \
@@ -36,14 +36,14 @@ ENV ARGO_CLI_VERSION="3.4.0" \
     SPRUCE_VERSION="1.29.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TFO_CLI_VERSION="1.1.3" \
-    VENDIR_VERSION="0.31.0" \
+    TFO_CLI_VERSION="1.2.0" \
+    VENDIR_VERSION="0.32.0" \
     YAML_PATH_VERSION="0.4" \
-    YTT_VERSION="0.43.0"
+    YTT_VERSION="0.44.0"
 
 #--- Packages list, ruby env for COA and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg less locales nano python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux byobu yarnpkg vim" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg htop less locales nano python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux byobu yarnpkg vim" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois iperf3" \
     DEV_PACKAGES="python-dev build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
