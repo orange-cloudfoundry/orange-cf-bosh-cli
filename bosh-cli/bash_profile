@@ -16,6 +16,11 @@ export PROXY_SYMBOL=$'\u26a1'
 export BOSH_SYMBOL=$'\u2601\ufe0f'
 export K8S_SYMBOL=$'\u2638\ufe0f'
 
+#--- Get enabled proxy type for tmux context
+if [ -f ${HOME}/.bash_proxy ] ; then
+  source ${HOME}/.bash_proxy
+fi
+
 #--- Set dynamic user prompt
 set_proxy_prompt()
 {
