@@ -53,6 +53,5 @@ if [ ${flagError} = 0 ] ; then
     printf "\n%bUnset proxy...%b\n\n" "${REVERSE}${YELLOW}" "${STD}"
     unset PROXY_TYPE http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
   fi
-  echo "export PROXY_TYPE=\"${PROXY_TYPE}\"" > ${HOME}/.bash_proxy
   set_prompt
 fi
