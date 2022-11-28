@@ -36,24 +36,26 @@ if [ ${flagError} = 0 ] ; then
     printf "%b3%b : region 4\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
-      1) GOVC_TARGET="vcenter" ;;
-      2) GOVC_TARGET="2_vcenter" ;;
-      3) GOVC_TARGET="4_vcenter" ;;
+      1) GOVC_TARGET="vcenter" ; GOVC_AZ_TARGET="vcenter" ;;
+      2) GOVC_TARGET="2_vcenter" ; GOVC_AZ_TARGET="2_1_vcenter" ;;
+      3) GOVC_TARGET="4_vcenter" ; GOVC_AZ_TARGET="4_1_vcenter" ;;
       *) flag=0 ; clear ;;
     esac
   done
 
   #--- Set environment variables
+  getCredhubValue "password" "/secrets/bosh_root_decoded_password"
+  GOVC_GUEST_LOGIN="guest:${password}"
   getCredhubValue "GOVC_URL" "/secrets/vsphere_${GOVC_TARGET}_ip"
   getCredhubValue "GOVC_USERNAME" "/secrets/vsphere_${GOVC_TARGET}_user"
   getCredhubValue "GOVC_PASSWORD" "/secrets/vsphere_${GOVC_TARGET}_password"
   getCredhubValue "GOVC_DATACENTER" "/secrets/vsphere_${GOVC_TARGET}_dc"
-  getCredhubValue "GOVC_DATASTORE" "/secrets/vsphere_${GOVC_TARGET}_ds"
-  getCredhubValue "GOVC_CLUSTER" "/secrets/vsphere_${GOVC_TARGET}_cluster"
-  getCredhubValue "GOVC_RESOURCE_POOL" "/secrets/vsphere_${GOVC_TARGET}_resource_pool"
+  getCredhubValue "GOVC_DATASTORE" "/secrets/vsphere_${GOVC_AZ_TARGET}_ds"
+  getCredhubValue "GOVC_CLUSTER" "/secrets/vsphere_${GOVC_AZ_TARGET}_cluster"
+  getCredhubValue "GOVC_RESOURCE_POOL" "/secrets/vsphere_${GOVC_AZ_TARGET}_resource_pool"
 
   if [ ${flagError} = 0 ] ; then
-    export GOVC_URL GOVC_USERNAME GOVC_PASSWORD GOVC_DATACENTER GOVC_DATASTORE GOVC_CLUSTER GOVC_RESOURCE_POOL
+    export GOVC_GUEST_LOGIN GOVC_URL GOVC_USERNAME GOVC_PASSWORD GOVC_DATACENTER GOVC_DATASTORE GOVC_CLUSTER GOVC_RESOURCE_POOL
     export GOVC_INSECURE=1 #--- vcenter region 2 is not trusted with pki
     printf "\n"
   fi

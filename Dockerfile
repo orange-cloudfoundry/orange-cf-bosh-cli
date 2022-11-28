@@ -135,21 +135,22 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add YTT-CLI completion\n' && chmod 755 /usr/local/bin/ytt && ytt completion bash | grep -v Succeeded > /etc/bash_completion.d/ytt && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     printf '\nYour are logged into an ubuntu docker tools container :\n' > /etc/motd && \
-    printf 'Generic tools:\n' >> /etc/motd && \
+    printf 'Admin clis:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "bosh (${BOSH_CLI_VERSION})" "Bosh cli (https://bosh.io/docs/cli-v2.html)" >> /etc/motd && \
     printf "  %-20s %s\n" "cf (${CF_CLI_VERSION})" "Cloud Foundry cli (https://github.com/cloudfoundry/cli/)" >> /etc/motd && \
     printf "  %-20s %s\n" "credhub (${CREDHUB_VERSION})" "Credhub cli (https://github.com/cloudfoundry-incubator/credhub-cli/)" >> /etc/motd && \
     printf "  %-20s %s\n" "fly (${FLY_VERSION})" "Concourse cli (https://github.com/concourse/fly/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "gcloud" "GCP cli (https://cloud.google.com/sdk/gcloud)" >> /etc/motd && \
+    printf "  %-20s %s\n" "govc (${GOVC_VERSION})" "vSphere cli (https://github.com/vmware/govmomi/tree/master/govc/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield cli (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
     printf "  %-20s %s\n" "terraform (${TERRAFORM_VERSION})" "Manage infrastructure creation by configuration (https://www.terraform.io/)" >> /etc/motd && \
     printf "  %-20s %s\n" "uaac (${CF_UAAC_VERSION})" "Cloud Foundry UAA cli (https://github.com/cloudfoundry/cf-uaac/)" >> /etc/motd && \
     printf "  %-20s %s\n" "vendir (${VENDIR_VERSION})" "Define and fetch components to target directory (https://github.com/vmware-tanzu/carvel-vendir/)" >> /etc/motd && \
-    printf 'Admin tools:\n' >> /etc/motd && \
-    printf "  %-20s %s\n" "gcloud" "GCP cli (https://cloud.google.com/sdk/gcloud)" >> /etc/motd && \
-    printf "  %-20s %s\n" "govc (${GOVC_VERSION})" "vSphere cli (https://github.com/vmware/govmomi/tree/master/govc/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "ytt (${YTT_VERSION})" "YAML Templating Tool (https://carvel.dev/ytt/)" >> /etc/motd && \
+    printf 'Services clis:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "mongo (${MONGO_SHELL_VERSION})" "MongoDB shell cli (https://docs.mongodb.com/manual/mongo/)" >> /etc/motd && \
     printf "  %-20s %s\n" "mysqlsh (${MYSQL_SHELL_VERSION})" "MySQL shell cli (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)" >> /etc/motd && \
     printf "  %-20s %s\n" "redis (${REDIS_CLI_VERSION})" "Redis cli (https://redis.io/topics/rediscli)" >> /etc/motd && \
-    printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield cli (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
     printf 'Kubernetes tools:\n' >> /etc/motd && \
     printf "  %-20s %s\n" "argo (${ARGO_CLI_VERSION})" "Kubernetes Workflow Engine (https://argoproj.github.io/argo-workflows/)" >> /etc/motd && \
     printf "  %-20s %s\n" "flux (${FLUX_VERSION})" "Kubernetes Gitops cli (https://fluxcd.io/)" >> /etc/motd && \
@@ -160,7 +161,6 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
     printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "ytt (${YTT_VERSION})" "YAML Templating Tool (https://carvel.dev/ytt/)" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
     printf '  "tools" command gives available tools.\n' >> /etc/motd && \
     printf '  All path except "/data/shared" are not persistant (do not save data on it).\n\n' >> /etc/motd && \
