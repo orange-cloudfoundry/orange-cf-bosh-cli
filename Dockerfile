@@ -5,21 +5,21 @@ ARG DEBIAN_FRONTEND=noninteractive
 #--- Clis versions
 ENV ARGO_CLI_VERSION="3.4.3" \
     BBR_VERSION="1.9.38" \
-    BOSH_CLI_VERSION="7.0.1" \
+    BOSH_CLI_VERSION="7.1.0" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CF_CLI_VERSION="8.5.0" \
-    CF_UAAC_VERSION="4.7.0" \
-    CREDHUB_VERSION="2.9.8" \
+    CF_UAAC_VERSION="4.9.0" \
+    CREDHUB_VERSION="2.9.9" \
     FLUX_VERSION="0.33.0" \
-    FLY_VERSION="7.8.2" \
-    GOVC_VERSION="0.29.0" \
+    FLY_VERSION="7.9.0" \
+    GOVC_VERSION="0.30.0" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.9.4" \
     JQ_VERSION="1.6" \
-    KAPP_VERSION="0.54.0" \
-    KCTRL_VERSION="0.42.0" \
-    KLBD_VERSION="0.36.0" \
+    KAPP_VERSION="0.54.1" \
+    KCTRL_VERSION="0.44.1" \
+    KLBD_VERSION="0.36.1" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.23.9" \
     KUBECTL_WHOAMI_VERSION="0.0.44" \
@@ -28,16 +28,16 @@ ENV ARGO_CLI_VERSION="3.4.3" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
     OC_CLI_VERSION="4.10.25" \
-    RBAC_TOOL_VERSION="1.12.0" \
+    RBAC_TOOL_VERSION="1.13.0" \
     REDIS_CLI_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
-    SHIELD_VERSION="8.7.4" \
+    SHIELD_VERSION="8.8.5" \
     SPRUCE_VERSION="1.29.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TFO_CLI_VERSION="1.2.0" \
-    VENDIR_VERSION="0.32.0" \
+    TFCTL_CLI_VERSION="0.13.1" \
+    VENDIR_VERSION="0.32.2" \
     YAML_PATH_VERSION="0.4" \
     YTT_VERSION="0.44.0"
 
@@ -128,7 +128,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
-    printf '\n=> Add TFO-CLI\n' && curl -sSL "https://github.com/isaaguilar/terraform-operator-cli/releases/download/v${TFO_CLI_VERSION}/tfo-v${TFO_CLI_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
+    printf '\n=> Add TFCTL-CLI\n' && curl -sSL "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_CLI_VERSION}/tfctl_Linux_amd64.tar.gz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add VENDIR-CLI\n' && curl -sSLo /usr/local/bin/vendir "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-amd64" && \
     printf '\n=> Add YAML-PATH-CLI\n' && curl -sSL "https://github.com/psycofdj/yaml-path/releases/download/v${YAML_PATH_VERSION}/yaml-path-${YAML_PATH_VERSION}.linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/yaml-path-${YAML_PATH_VERSION}.linux-amd64/yaml-path /usr/local/bin && \
     printf '\n=> Add YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${YTT_VERSION}/ytt-linux-amd64" && \
@@ -143,7 +143,6 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "gcloud" "GCP cli (https://cloud.google.com/sdk/gcloud)" >> /etc/motd && \
     printf "  %-20s %s\n" "govc (${GOVC_VERSION})" "vSphere cli (https://github.com/vmware/govmomi/tree/master/govc/)" >> /etc/motd && \
     printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield cli (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "terraform (${TERRAFORM_VERSION})" "Manage infrastructure creation by configuration (https://www.terraform.io/)" >> /etc/motd && \
     printf "  %-20s %s\n" "uaac (${CF_UAAC_VERSION})" "Cloud Foundry UAA cli (https://github.com/cloudfoundry/cf-uaac/)" >> /etc/motd && \
     printf "  %-20s %s\n" "vendir (${VENDIR_VERSION})" "Define and fetch components to target directory (https://github.com/vmware-tanzu/carvel-vendir/)" >> /etc/motd && \
     printf "  %-20s %s\n" "ytt (${YTT_VERSION})" "YAML Templating Tool (https://carvel.dev/ytt/)" >> /etc/motd && \
@@ -161,6 +160,7 @@ RUN printf '\n=====================================================\n Install sy
     printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
     printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
     printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
+    printf "  %-20s %s\n" "tfctl(${TFCTL_CLI_VERSION})" "Kubernetes Terraform-controller cli (https://github.com/weaveworks/tf-controller/)" >> /etc/motd && \
     printf '\nNotes :\n' >> /etc/motd && \
     printf '  "tools" command gives available tools.\n' >> /etc/motd && \
     printf '  All path except "/data/shared" are not persistant (do not save data on it).\n\n' >> /etc/motd && \
@@ -178,6 +178,7 @@ RUN printf '\n=====================================================\n Install sy
     rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/* && find /var/log -type f -delete && \
     touch /var/log/lastlog && chgrp utmp /var/log/lastlog && chmod 664 /var/log/lastlog && \
     chmod 1777 /tmp && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
+    rm -f /usr/local/bin/*.md /usr/local/bin/LICENSE && \
     find /usr/local/bin -print0 | xargs -0 chown root:root && find /home/bosh /data -print0 | xargs -0 chown bosh:users
 
 #--- Run supervisord daemon

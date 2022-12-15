@@ -28,7 +28,7 @@ display "k9s-screen" "Show latests k9s screenshots"
 display "log-k8s" "Log with kubernetes cli (kubectl, helm)"
 display "oc" "Openshift cli"
 display "rbac-tool" "Kubernetes rbac cli"
-display "ytt" "YAML Templating Tool"
+display "tfctl" "Kubernetes terraform-controller tool"
 
 printf "\n%bOTHER CLI TOOLS%b\n" "${GREEN}${BOLD}${REVERSE}" "${STD}"
 display "credhub-get" "Get credhub propertie value"
