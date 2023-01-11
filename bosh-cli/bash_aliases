@@ -9,10 +9,12 @@ alias status='git status'
 
 #--- Cli aliases
 alias bosh-depls-failed="bosh is --json | jq -r '.Tables[].Rows[]|select(.process_state == (\"failing\",\"unresponsive agent\"))|.deployment + \" (\" + .instance + \") : \" + .process_state'"
+alias bosh-events="bosh events | grep \"hm \" | grep -E \"create|delete\""
 alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
 alias clean-prometheus-tasks='for var in $(bosh tasks | grep "prometheus" | grep -E "queued|processing" | sed -e "s+\t.*++g") ; do bosh cancel-task $var ; done'
 alias credhub-get='function __cg() { log-credhub -i ; credhub get -n $1 -j | jq .value -r; }; __cg'
 alias fly='fly -t concourse'
+alias hm-bosh-tasks="bosh tasks -a -r=20000 --json | jq -r '.Tables[].Rows[]|select(.user == \"hm\")|.started_at + \" \" + .id + \" \" +  .description + \" \" + .deployment + \" => \" + .result'"
 alias k='/usr/local/bin/kubectl'
 alias k9s='if [ -f ${K9SCONFIG}/config.yml ] ; then sed -i "s+logoless:.*+logoless: true+" ${K9SCONFIG}/config.yml ; fi ; k9s'
 alias k9s-screen='/usr/local/bin/k9s-screen.sh'
