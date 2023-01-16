@@ -46,7 +46,7 @@ jobs:
 
       - name: Test clis availability
         run: |
-          docker run --rm ${{ steps.meta.outputs.tags }} /usr/local/bin/check-available-clis.sh
+          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }} /usr/local/bin/check-available-clis.sh
 
       - name: Build and push image to github container registry
         uses: docker/build-push-action@v3
