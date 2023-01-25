@@ -120,6 +120,17 @@ plugin:
     args:
       - -c
       - "flux --context $CONTEXT $([ $(kubectl --context $CONTEXT get gitrepo -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") source git -n $NAMESPACE $NAME |& less"
+  toggle-kustomization-tf:
+    shortCut: Shift-T
+    confirm: true
+    scopes:
+      - terraform
+    description: Toggle suspend/resume
+    command: sh
+    background: false
+    args:
+      - -c
+      - "tfctl $([ $(kubectl get terraforms.infra.contrib.fluxcd.io -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") --context $CONTEXT -n $NAMESPACE $NAME | less"
   reconcile-git:
     shortCut: Shift-Z
     confirm: false
@@ -153,6 +164,17 @@ plugin:
     args:
       - -c
       - "flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME |& less"
+  reconcile-tf:
+    shortCut: Shift-Z
+    confirm: false
+    description: Flux reconcile
+    scopes:
+      - terraform
+    command: sh
+    background: false
+    args:
+      - -c
+      - "tfctl reconcile $NAME --context $CONTEXT -n $NAMESPACE | less"
   submit-argo-workflow-template:
     shortCut: t
     confirm: true
