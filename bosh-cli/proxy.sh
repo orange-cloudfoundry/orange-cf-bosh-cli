@@ -2,16 +2,18 @@
 #===========================================================================
 # Set/unset internet/intranet proxy
 # Parameters :
-# --intranet, -a : Set intranet proxy
-# --internet, -e : Set internet proxy
+# --intranet, -a  : Set intranet proxy
+# --internet, -e  : Set internet proxy
+# --switch, -s    : Set switch proxy
 #===========================================================================
 
 #--- Check scripts options
 usage() {
   printf "\n%bUSAGE:" "${RED}"
   printf "\n  proxy [OPTIONS]\n\nOPTIONS:"
-  printf "\n  %-40s %s" "--intranet, -a " "Set intranet proxy"
-  printf "\n  %-40s %s" "--internet, -e" "Set internet proxy"
+  printf "\n  %-20s %s" "--intranet, -a " "Set intranet proxy"
+  printf "\n  %-20s %s" "--internet, -e" "Set internet proxy"
+  printf "\n  %-20s %s" "--switch, -s" "Set switch proxy"
   printf "%b\n\n" "${STD}"
   flagError=1
 }
@@ -22,14 +24,19 @@ proxyStatus=`env | grep -i "http_proxy"`
 
 case "$1" in
   "-a"|"--intranet")
-      PROXY_TYPE="intranet"
-      PROXY="http://intranet-http-proxy.internal.paas:3129"
-      NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas" ;;
+    PROXY_TYPE="intranet"
+    PROXY="http://intranet-http-proxy.internal.paas:3129"
+    NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,172.17.11.0/24,192.168.0.0/16,.internal.paas" ;;
 
   "-e"|"--internet")
     PROXY_TYPE="internet"
     PROXY="http://system-internet-http-proxy.internal.paas:3128"
-    NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,192.168.0.0/16,172.17.11.0/24,.internal.paas,${INTRANET_DOMAINS}" ;;
+    NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,172.17.11.0/24,192.168.0.0/16,.internal.paas,${INTRANET_DOMAINS}" ;;
+
+  "-s"|"--switch")
+    PROXY_TYPE="switch"
+    PROXY="http://switch-http-proxy.internal.paas:3127"
+    NO_PROXY="127.0.0.1,localhost,169.254.0.0/16,172.17.11.0/24,192.168.0.0/16,.internal.paas" ;;
 
   "") if [ "${proxyStatus}" = "" ] ; then
         PROXY_TYPE="internet"

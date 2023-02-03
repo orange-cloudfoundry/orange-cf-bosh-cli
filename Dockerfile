@@ -5,30 +5,31 @@ ARG DEBIAN_FRONTEND=noninteractive
 #--- Clis versions
 ENV ARGO_CLI_VERSION="3.4.3" \
     BBR_VERSION="1.9.38" \
-    BOSH_CLI_VERSION="7.1.1" \
+    BOSH_CLI_VERSION="7.1.2" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CF_CLI_VERSION="8.5.0" \
-    CF_UAAC_VERSION="4.9.0" \
+    CF_UAAC_VERSION="4.14.0" \
     CREDHUB_VERSION="2.9.10" \
     FLUX_VERSION="0.33.0" \
     FLY_VERSION="7.8.2" \
-    GOVC_VERSION="0.30.0" \
+    GOVC_VERSION="0.30.2" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.9.4" \
     JQ_VERSION="1.6" \
-    KAPP_VERSION="0.54.1" \
+    KAPP_VERSION="0.54.3" \
     KCTRL_VERSION="0.44.1" \
-    KLBD_VERSION="0.36.1" \
+    KLBD_VERSION="0.36.4" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.23.9" \
     KUBECTL_WHOAMI_VERSION="0.0.44" \
     KUSTOMIZE_VERSION="4.5.7" \
-    K9S_VERSION="0.26.7" \
+    K9S_VERSION="0.27.2" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
     OC_CLI_VERSION="4.10.25" \
-    RBAC_TOOL_VERSION="1.13.0" \
+    OCM_CLI_VERSION="0.1.65" \
+    RBAC_TOOL_VERSION="1.14.1" \
     REDIS_CLI_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
@@ -37,9 +38,11 @@ ENV ARGO_CLI_VERSION="3.4.3" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     TFCTL_CLI_VERSION="0.13.1" \
-    VENDIR_VERSION="0.32.2" \
+    VCLUSTER_VERSION="0.14.0" \
+    VENDIR_VERSION="0.32.5" \
     YAML_PATH_VERSION="0.4" \
-    YTT_VERSION="0.44.0"
+    YQ_VERSION="4.30.8" \
+    YTT_VERSION="0.44.3"
 
 #--- Packages list, ruby env for COA and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -115,12 +118,14 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add KUBECTL_WHOAMI\n' && curl -sSL "https://github.com/rajatjindal/kubectl-whoami/releases/download/v${KUBECTL_WHOAMI_VERSION}/kubectl-whoami_v${KUBECTL_WHOAMI_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/kubectl-whoami /usr/local/bin/ && \
     printf '\n=> Add KUSTOMIZE-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/kustomize /usr/local/bin/kustomize && \
     printf '\n=> Add KUSTOMIZE-CLI completion\n' && chmod 755 /usr/local/bin/kustomize && /usr/local/bin/kustomize completion bash > /etc/bash_completion.d/kustomize && \
-    printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
+    printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-amd64/mc" && \
     printf '\n=> Add MONGO-SHELL-CLI\n' && curl -sSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}.tgz" | tar -xz -C /tmp && cd /tmp/mongodb-linux-x86_64-${MONGO_SHELL_VERSION}/bin && mv mongo mongostat mongotop /usr/local/bin && \
     printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu20.04_amd64.deb" && dpkg -i /tmp/mysql-shell.deb && \
     printf '\n=> Add OC-CLI\n' && curl -sSL "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_CLI_VERSION}/openshift-client-linux-${OC_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && mv /tmp/oc /usr/local/bin/oc && \
     printf '\n=> Add OC-CLI completion\n' && chmod 755 /usr/local/bin/oc && /usr/local/bin/oc completion bash > /etc/bash_completion.d/oc && \
+    printf '\n=> Add OCM-CLI\n' && curl -sSLo /usr/local/bin/ocm "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_CLI_VERSION}/ocm-linux-amd64" && \
+    printf '\n=> Add OCM-CLI completion\n' && chmod 755 /usr/local/bin/ocm && /usr/local/bin/ocm completion bash > /etc/bash_completion.d/ocm && \
     printf '\n=> Add RBAC-TOOL-CLI\n' && curl -sSL "https://github.com/alcideio/rbac-tool/releases/download/v${RBAC_TOOL_VERSION}/rbac-tool_v${RBAC_TOOL_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/rbac-tool /usr/local/bin/rbac-tool && \
     printf '\n=> Add RBAC-TOOL-CLI completion\n' && chmod 755 /usr/local/bin/rbac-tool && /usr/local/bin/rbac-tool bash-completion > /etc/bash_completion.d/rbac-tool && \
     printf '\n=> Add REDIS-CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
@@ -129,41 +134,18 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
     printf '\n=> Add TFCTL-CLI\n' && curl -sSL "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_CLI_VERSION}/tfctl_Linux_amd64.tar.gz" | tar -xz -C /usr/local/bin && \
+    printf '\n=> Add VCLUSTER-CLI\n' && curl -sSLo /usr/local/bin/vcluster "https://github.com/loft-sh/vcluster/releases/download/v${VCLUSTER_VERSION}/vcluster-linux-amd64" && \
+    printf '\n=> Add VCLUSTER-CLI completion\n' && chmod 755 /usr/local/bin/vcluster && /usr/local/bin/vcluster completion bash > /etc/bash_completion.d/vcluster && \
     printf '\n=> Add VENDIR-CLI\n' && curl -sSLo /usr/local/bin/vendir "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-amd64" && \
     printf '\n=> Add YAML-PATH-CLI\n' && curl -sSL "https://github.com/psycofdj/yaml-path/releases/download/v${YAML_PATH_VERSION}/yaml-path-${YAML_PATH_VERSION}.linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/yaml-path-${YAML_PATH_VERSION}.linux-amd64/yaml-path /usr/local/bin && \
+    printf '\n=> Add YQ-CLI\n' && curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" && \
+    printf '\n=> Add YQ-CLI completion\n' && chmod 755 /usr/local/bin/yq && yq shell-completion bash | grep -v Succeeded > /etc/bash_completion.d/yq && \
     printf '\n=> Add YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add YTT-CLI completion\n' && chmod 755 /usr/local/bin/ytt && ytt completion bash | grep -v Succeeded > /etc/bash_completion.d/ytt && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
-    printf '\nYour are logged into an ubuntu docker tools container :\n' > /etc/motd && \
-    printf 'Admin clis:\n' >> /etc/motd && \
-    printf "  %-20s %s\n" "bosh (${BOSH_CLI_VERSION})" "Bosh cli (https://bosh.io/docs/cli-v2.html)" >> /etc/motd && \
-    printf "  %-20s %s\n" "cf (${CF_CLI_VERSION})" "Cloud Foundry cli (https://github.com/cloudfoundry/cli/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "credhub (${CREDHUB_VERSION})" "Credhub cli (https://github.com/cloudfoundry-incubator/credhub-cli/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "fly (${FLY_VERSION})" "Concourse cli (https://github.com/concourse/fly/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "gcloud" "GCP cli (https://cloud.google.com/sdk/gcloud)" >> /etc/motd && \
-    printf "  %-20s %s\n" "govc (${GOVC_VERSION})" "vSphere cli (https://github.com/vmware/govmomi/tree/master/govc/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "shield (${SHIELD_VERSION})" "Shield cli (https://docs.pivotal.io/partners/starkandwayne-shield/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "uaac (${CF_UAAC_VERSION})" "Cloud Foundry UAA cli (https://github.com/cloudfoundry/cf-uaac/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "vendir (${VENDIR_VERSION})" "Define and fetch components to target directory (https://github.com/vmware-tanzu/carvel-vendir/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "ytt (${YTT_VERSION})" "YAML Templating Tool (https://carvel.dev/ytt/)" >> /etc/motd && \
-    printf 'Services clis:\n' >> /etc/motd && \
-    printf "  %-20s %s\n" "mongo (${MONGO_SHELL_VERSION})" "MongoDB shell cli (https://docs.mongodb.com/manual/mongo/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "mysqlsh (${MYSQL_SHELL_VERSION})" "MySQL shell cli (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "redis (${REDIS_CLI_VERSION})" "Redis cli (https://redis.io/topics/rediscli)" >> /etc/motd && \
-    printf 'Kubernetes tools:\n' >> /etc/motd && \
-    printf "  %-20s %s\n" "argo (${ARGO_CLI_VERSION})" "Kubernetes Workflow Engine (https://argoproj.github.io/argo-workflows/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "flux (${FLUX_VERSION})" "Kubernetes Gitops cli (https://fluxcd.io/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "helm (${HELM_VERSION})" "Kubernetes Package Manager (https://docs.helm.sh/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "kapp (${KAPP_VERSION})" "Kubernetes YAML tool (https://carvel.dev/kapp/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "kctrl (${KCTRL_VERSION})" "Kubernetes kapp-controller tool (https://carvel.dev/kapp-controller/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "klbd (${KLBD_VERSION})" "Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "kubectl (${KUBECTL_VERSION})" "Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "kustomize (${KUSTOMIZE_VERSION})" "Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "k9s (${K9S_VERSION})" "Kubernetes admin tool (https://github.com/derailed/k9s/)" >> /etc/motd && \
-    printf "  %-20s %s\n" "tfctl(${TFCTL_CLI_VERSION})" "Kubernetes Terraform-controller cli (https://github.com/weaveworks/tf-controller/)" >> /etc/motd && \
-    printf '\nNotes :\n' >> /etc/motd && \
-    printf '  "tools" command gives available tools.\n' >> /etc/motd && \
-    printf '  All path except "/data/shared" are not persistant (do not save data on it).\n\n' >> /etc/motd && \
+     printf '\nYour are logged into an ubuntu docker tools container :' > /etc/motd && \
+    printf '\n- "tools" command display available tools.' >> /etc/motd && \
+    printf '\n- All path except "/data/shared" are not persistant (do not save data on it).\n\n' >> /etc/motd && \
     chmod 644 /etc/motd && \
     printf '\n=====================================================\n Configure user account\n=====================================================\n' && \
     mv /tmp/bosh-cli/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \

@@ -34,12 +34,15 @@ printf '\n=> Check MINIO-CLI\n' ; mc --version
 printf '\n=> Check MONGO_SHELL_CLI\n' ; mongo --version
 printf '\n=> Check MYSQL-SHELL-CLI\n' ; mysqlsh --version
 printf '\n=> Check OC-CLI\n' ; oc version
+printf '\n=> Check OCM-CLI\n' ; ocm version
 printf '\n=> Check RBAC-TOOL-CLI\n' ; rbac-tool version
 printf '\n=> Check REDIS-CLI\n' ; redis --version
 printf '\n=> Check SHIELD-CLI\n' ; shield --version
 printf '\n=> Check SPRUCE-CLI\n' ; spruce --version
 printf '\n=> Check TERRAFORM-CLI\n' ; terraform --version
+printf '\n=> Check VCLUSTER-CLI\n' ; vcluster --version
 printf '\n=> Check VENDIR-CLI\n' ; vendir -v
+printf '\n=> Check YQ-CLI\n' ; yq --version
 printf '\n=> Check YTT-CLI\n' ; ytt --version
 printf "\n====================================================\n=> Check complete.\n"
 set +e

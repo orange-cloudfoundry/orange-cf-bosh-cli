@@ -3,6 +3,21 @@
 # Log to kubernetes clusters for clis (kubectl, helm, k9s)
 #===========================================================================
 
+#--- Check scripts options
+flagError=0
+usage() {
+  printf "\n%bUSAGE:" "${RED}"
+  printf "\n  log-k8s [OPTIONS]\n\nOPTIONS:"
+  printf "\n  %-20s %s" "--proxy, -p " "Set proxy in kubeconfig"
+  printf "%b\n\n" "${STD}" ; flagError=1
+}
+
+case "$1" in
+  "-p"|"--proxy") PROXY_MODE=1 ;;
+  "") PROXY_MODE=0 ;;
+  *) usage ;;
+esac
+
 #--- Update propertie value from KUBECONFIG file
 updateKubeConfig() {
   key_path="$1"
@@ -73,25 +88,27 @@ selectCluster() {
 }
 
 #--- Log to credhub
-flagError=0
-flag=$(credhub f > /dev/null 2>&1)
-if [ $? != 0 ] ; then
-  printf "\n%bLDAP user and password :%b\n" "${REVERSE}${GREEN}" "${STD}"
-  printf "username: " ; read LDAP_USER
-  credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
-  if [ $? != 0 ] ; then
-    printf "\n%bERROR : LDAP authentication failed with \"${LDAP_USER}\" account.%b\n" "${RED}" "${STD}" ; flagError=1
+if [ ${flagError} = 0 ] ; then
+  #--- Create k8s configration directory
+  if [ ! -d ${HOME}/.kube ] ; then
+    mkdir ${HOME}/.kube > /dev/null 2>&1
   fi
-fi
 
-#--- Create k8s configration directory
-if [ ! -d ${HOME}/.kube ] ; then
-  mkdir ${HOME}/.kube > /dev/null 2>&1
+  #--- Log to credhub
+  flag=$(credhub f > /dev/null 2>&1)
+  if [ $? != 0 ] ; then
+    printf "\n%bLDAP user and password :%b\n" "${REVERSE}${GREEN}" "${STD}"
+    printf "username: " ; read LDAP_USER
+    credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
+    if [ $? != 0 ] ; then
+      printf "\n%bERROR : LDAP authentication failed with \"${LDAP_USER}\" account.%b\n" "${RED}" "${STD}" ; flagError=1
+    fi
+  fi
 fi
 
 #--- Log to k8s
 if [ ${flagError} = 0 ] ; then
-  #--- Get all k3s clusters configuration
+  #--- Get all clusters configuration
   TARGET_KUBECONFIG=""
   clear
   printf "\n%bGet clusters properties...%b\n" "${YELLOW}${REVERSE}" "${STD}"
@@ -109,6 +126,19 @@ if [ ${flagError} = 0 ] ; then
     fi
   done
 
+  #--- Concatenate all clusters config files
+  export KUBECONFIG="$(echo "${TARGET_KUBECONFIG}" | sed -e "s+^:++")"
+  kubectl config view --flatten > ${HOME}/.kube/config
+  export KUBECONFIG="${HOME}/.kube/config"
+
+  #--- Add proxy-url config if select option
+  if [ ${PROXY_MODE} = 1 ] ; then
+    sed -i "/^    server: .*/i \ \ \ \ proxy-url: http://localhost:8888" ${KUBECONFIG}
+    printf "\n%b\"${KUBECONFIG}\" clusters configuration file with proxy available.%b\n" "${YELLOW}${REVERSE}" "${STD}" ; flagError=1
+  fi
+fi
+
+if [ ${flagError} = 0 ] ; then
   #--- Select kubernetes cluster to work with
   flag=0
   while [ ${flag} = 0 ] ; do
@@ -136,11 +166,6 @@ if [ ${flagError} = 0 ] ; then
   fi
 
   if [ ${flagError} = 0 ] ; then
-    #--- Concatenate all clusters config files
-    export KUBECONFIG="$(echo "${TARGET_KUBECONFIG}" | sed -e "s+^:++")"
-    kubectl config view --flatten > ${HOME}/.kube/config
-    export KUBECONFIG="${HOME}/.kube/config"
-
     #--- Connect to cluster
     if [ "${K8S_TYPE_CLUSTER}" = "openshift" ] ; then
       proxyStatus="$(env | grep "https_proxy" | grep "internet")"
