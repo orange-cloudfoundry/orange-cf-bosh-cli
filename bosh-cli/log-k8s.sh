@@ -198,6 +198,7 @@ if [ ${flagError} = 0 ] ; then
 
     if [ ${flagError} = 0 ] ; then
       printf "\n\n%bCluster \"${K8S_CONTEXT}\" available.%b\n" "${YELLOW}${REVERSE}" "${STD}"
+      export KUBECONFIG="${HOME}/.kube/config"
     fi
   fi
 fi
