@@ -100,7 +100,10 @@ echo -en "\033]0;${MY_BOSH_USER}@${SITE_NAME}\007"
 export GREP_COLORS="fn=1;34:se=1;34:mt=1;33"
 
 #--- bosh cli completion
-eval "$(/home/bosh/bosh-complete-linux bash-source)"
+source <(/home/bosh/bosh-complete-linux bash-source)
+
+#--- tfctl cli completion
+source <(tfctl completion bash)
 
 #--- kubectl plugin completion
 source <(kubectl get-all completion bash | sed -e "s+ get-all$+ kubectl-get_all+g")

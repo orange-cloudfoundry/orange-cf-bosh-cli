@@ -165,6 +165,7 @@ if [ ${flagError} = 0 ] ; then
     fi
   fi
 
+  export KUBECONFIG="${HOME}/.kube/config"
   if [ ${flagError} = 0 ] ; then
     #--- Connect to cluster
     if [ "${K8S_TYPE_CLUSTER}" = "openshift" ] ; then
@@ -197,8 +198,7 @@ if [ ${flagError} = 0 ] ; then
     fi
 
     if [ ${flagError} = 0 ] ; then
-      printf "\n\n%bCluster \"${K8S_CONTEXT}\" available.%b\n" "${YELLOW}${REVERSE}" "${STD}"
-      export KUBECONFIG="${HOME}/.kube/config"
+      printf "\n%bCluster \"${K8S_CONTEXT}\" available.%b\n" "${YELLOW}${REVERSE}" "${STD}"
     fi
   fi
 fi

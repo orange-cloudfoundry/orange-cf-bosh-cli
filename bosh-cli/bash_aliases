@@ -12,7 +12,7 @@ alias bosh-depls-failed="bosh is --json | jq -r '.Tables[].Rows[]|select(.proces
 alias bosh-events="bosh events | grep \"hm \" | grep -E \"create|delete\""
 alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
 alias clean-prometheus-tasks='for var in $(bosh tasks | grep "prometheus" | grep -E "queued|processing" | sed -e "s+\t.*++g") ; do bosh cancel-task $var ; done'
-alias credhub-get='function __cg() { log-credhub -i ; credhub get -n $1 -j | jq .value -r; }; __cg'
+alias credhub-get='function __cg() { index=$2 ; log-credhub -i ; credhub get -n $1 --versions=$(($index + 1)) -j | jq -r .versions[$index].value; }; __cg'
 alias fly='fly -t concourse'
 alias hm-bosh-tasks="bosh tasks -a -r=20000 --json | jq -r '.Tables[].Rows[]|select(.user == \"hm\")|.started_at + \" \" + .id + \" \" +  .description + \" \" + .deployment + \" => \" + .result'"
 alias k='/usr/local/bin/kubectl'
