@@ -3,14 +3,14 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_CLI_VERSION="3.4.3" \
+ENV ARGO_CLI_VERSION="3.4.5" \
     BBR_VERSION="1.9.38" \
-    BOSH_CLI_VERSION="7.1.2" \
+    BOSH_CLI_VERSION="7.1.3" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CF_CLI_VERSION="8.5.0" \
     CF_UAAC_VERSION="4.14.0" \
-    CREDHUB_VERSION="2.9.10" \
+    CREDHUB_VERSION="2.9.11" \
     FLUX_VERSION="0.33.0" \
     FLY_VERSION="7.8.2" \
     GOVC_VERSION="0.30.2" \
@@ -24,7 +24,7 @@ ENV ARGO_CLI_VERSION="3.4.3" \
     KUBECTL_VERSION="1.23.9" \
     KUBECTL_WHOAMI_VERSION="0.0.44" \
     KUSTOMIZE_VERSION="4.5.7" \
-    K9S_VERSION="0.27.2" \
+    K9S_VERSION="0.27.3" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.25-1" \
     OC_CLI_VERSION="4.10.25" \
@@ -145,7 +145,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
      printf '\nYour are logged into an ubuntu docker tools container :' > /etc/motd && \
     printf '\n- "tools" command display available tools.' >> /etc/motd && \
-    printf '\n- All path except "/data/shared" are not persistant (do not save data on it).\n\n' >> /etc/motd && \
+    printf '\n- "/data" is the only persistant volume (do not save data on other fs).\n\n' >> /etc/motd && \
     chmod 644 /etc/motd && \
     printf '\n=====================================================\n Configure user account\n=====================================================\n' && \
     mv /tmp/bosh-cli/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \

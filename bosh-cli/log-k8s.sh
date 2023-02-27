@@ -115,7 +115,7 @@ if [ ${flagError} = 0 ] ; then
   if [ "${SITE_NAME}" = "fe-int" ] ; then
     MAX_ITEMS=7
   else
-    MAX_ITEMS=6
+    MAX_ITEMS=5
   fi
 
   for value in $(seq 1 ${MAX_ITEMS}) ; do
