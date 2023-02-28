@@ -143,7 +143,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add YTT-CLI completion\n' && chmod 755 /usr/local/bin/ytt && ytt completion bash | grep -v Succeeded > /etc/bash_completion.d/ytt && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
-     printf '\nYour are logged into an ubuntu docker tools container :' > /etc/motd && \
+    printf '\nYour are logged into an ubuntu docker tools container :' > /etc/motd && \
     printf '\n- "tools" command display available tools.' >> /etc/motd && \
     printf '\n- "/data" is the only persistant volume (do not save data on other fs).\n\n' >> /etc/motd && \
     chmod 644 /etc/motd && \
