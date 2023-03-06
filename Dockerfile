@@ -13,6 +13,7 @@ ENV ARGO_CLI_VERSION="3.4.5" \
     CREDHUB_VERSION="2.9.11" \
     FLUX_VERSION="0.33.0" \
     FLY_VERSION="7.8.2" \
+    GITHUB_VERSION="2.23.0" \
     GOVC_VERSION="0.30.2" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.9.4" \
@@ -101,6 +102,8 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add GCLOUD-CLI\n' && echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && chmod 1777 /tmp && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && apt-get update && apt-get install -y --no-install-recommends google-cloud-cli && \
     printf '\n=> Add GIT-FILTER-REPO\n' && curl -sSLo /usr/local/bin/git-filter-repo "https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo" && \
+    printf '\n=> Add GITHUB-CLI\n' && curl -sSL "https://github.com/cli/cli/releases/download/v${GITHUB_VERSION}/gh_${GITHUB_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/gh_${GITHUB_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh && \
+    printf '\n=> Add GITHUB-CLI completion\n' && chmod 755 /usr/local/bin/gh && /usr/local/bin/gh completion -s bash > /etc/bash_completion.d/gh && \
     printf '\n=> Add GOVC-CLI\n' && curl -sSL "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/govc /usr/local/bin/govc && \
     printf '\n=> Add GO3FR-CLI\n' && curl -sSL "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/gof3r_${GO3FR_VERSION}_linux_amd64/gof3r /usr/local/bin/go3fr && \
     printf '\n=> Add HELM-CLI\n' && curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && \
