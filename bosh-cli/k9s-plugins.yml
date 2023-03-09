@@ -31,7 +31,7 @@ plugin:
     background: false
     args:
       - -c
-      - "kubectl get --all-namespaces --context $CONTEXT helmreleases.helm.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' |& less"
+      - "kubectl get helmreleases.helm.toolkit.fluxcd.io --all-namespaces --context $CONTEXT -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' |& less"
   get-suspended-kustomizations:
     shortCut: Shift-S
     confirm: false
@@ -42,7 +42,7 @@ plugin:
     background: false
     args:
       - -c
-      - "kubectl get --all-namespaces --context $CONTEXT kustomizations.kustomize.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' |& less"
+      - "kubectl get kustomizations.kustomize.toolkit.fluxcd.io --all-namespaces --context $CONTEXT -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' |& less"
   kapp-inspect:
     shortCut: Shift-Z
     confirm: false

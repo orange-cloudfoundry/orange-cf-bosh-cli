@@ -2,6 +2,7 @@
 alias checkout='function __gco() { git checkout $1 ; git pull --rebase; }; __gco'
 alias commit='function __gcm() { git add . ; git commit -m "$1" ; unset -f __gcm; }; __gcm'
 alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow)%d%Creset %s %Cgreen(%cn %ci)%Creset'\'' --abbrev-commit'
+alias init-git='/usr/local/bin/init-git.sh'
 alias prune='git fetch --prune'
 alias pull='git pull --rebase ; git fetch --prune'
 alias push='git pull --rebase ; git fetch --prune ; git push'
@@ -11,11 +12,14 @@ alias status='git status'
 alias bosh-depls-failed="bosh is --json | jq -r '.Tables[].Rows[]|select(.process_state == (\"failing\",\"unresponsive agent\"))|.deployment + \" (\" + .instance + \") : \" + .process_state'"
 alias bosh-events="bosh events | grep \"hm \" | grep -E \"create|delete\""
 alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
+alias check-k8s='. /usr/local/bin/check-k8s.sh'
 alias clean-prometheus-tasks='for var in $(bosh tasks | grep "prometheus" | grep -E "queued|processing" | sed -e "s+\t.*++g") ; do bosh cancel-task $var ; done'
 alias credhub-get='function __cg() { index=$2 ; log-credhub -i ; credhub get -n $1 --versions=$(($index + 1)) -j | jq -r .versions[$index].value; }; __cg'
 alias fly='fly -t concourse'
 alias hm-bosh-tasks="bosh tasks -a -r=20000 --json | jq -r '.Tables[].Rows[]|select(.user == \"hm\")|.started_at + \" \" + .id + \" \" +  .description + \" \" + .deployment + \" => \" + .result'"
 alias k='/usr/local/bin/kubectl'
+alias kube-tail='/usr/local/bin/kube-tail.sh'
+alias kt='/usr/local/bin/kube-tail.sh'
 alias k9s='if [ -f ${K9SCONFIG}/config.yml ] ; then sed -i "s+logoless:.*+logoless: true+" ${K9SCONFIG}/config.yml ; fi ; k9s'
 alias k9s-screen='/usr/local/bin/k9s-screen.sh'
 alias k8s-token='/usr/local/bin/k8s-token.sh'
@@ -31,6 +35,7 @@ alias log-uaac='. /usr/local/bin/log-uaac.sh'
 alias os='openstack'
 alias prune-workers='fly prune-worker -a'
 alias recreate-workers='bosh -d concourse recreate worker --canaries=0 --max-in-flight=10'
+alias set-ns='function __sn() { kubectl config set-context --current --namespace=$1; }; __sn'
 alias switch='. /usr/local/bin/switch.sh'
 
 #--- Docker aliases
