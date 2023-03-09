@@ -36,12 +36,12 @@ checkClusterResources() {
 
       if (ts == "True" || tr == "False") {
         k=$2 ; gsub("/.*", "", k) ; n=$2 ; gsub(".*/", "", n)
-        printf "%-6s %-6s %-16s %s \n", ts, tr, k, $1"/"n
+        printf "%-6s %-6s %-16s %s \n", tr, ts, k, $1"/"n
       }
     }')"
 
     if [ "${result}" != "" ] ; then
-      printf "\n%bSUSP.  READY  KIND             NAMESPACE/NAME                                                                  %b\n${result}\n" "${REVERSE}${GREEN}" "${STD}"
+      printf "\n%bREADY  SUSP.  KIND             NAMESPACE/NAME                                                                  %b\n${result}\n" "${REVERSE}${GREEN}" "${STD}"
     fi
   fi
 }
