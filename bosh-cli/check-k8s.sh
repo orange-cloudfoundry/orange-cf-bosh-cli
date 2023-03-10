@@ -3,9 +3,6 @@
 # Check k8s clusters (uses kubeconfig to select clusters to check)
 #===========================================================================
 
-#--- Load common parameters and functions
-. $(dirname $(which $0))/functions.sh
-
 #--- Check cluster resources in error
 checkClusterResources() {
   context="$1"
@@ -62,5 +59,3 @@ if [ "${choice}" = "" ] ; then
 else
   checkClusterResources "${choice}"
 fi
-
-printf "\n"

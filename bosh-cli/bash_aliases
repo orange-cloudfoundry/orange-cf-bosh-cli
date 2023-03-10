@@ -12,7 +12,7 @@ alias status='git status'
 alias bosh-depls-failed="bosh is --json | jq -r '.Tables[].Rows[]|select(.process_state == (\"failing\",\"unresponsive agent\"))|.deployment + \" (\" + .instance + \") : \" + .process_state'"
 alias bosh-events="bosh events | grep \"hm \" | grep -E \"create|delete\""
 alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
-alias check-k8s='. /usr/local/bin/check-k8s.sh'
+alias check-k8s='/usr/local/bin/check-k8s.sh'
 alias clean-prometheus-tasks='for var in $(bosh tasks | grep "prometheus" | grep -E "queued|processing" | sed -e "s+\t.*++g") ; do bosh cancel-task $var ; done'
 alias credhub-get='function __cg() { index=$2 ; log-credhub -i ; credhub get -n $1 --versions=$(($index + 1)) -j | jq -r .versions[$index].value; }; __cg'
 alias fly='fly -t concourse'
