@@ -49,8 +49,18 @@ checkClusterResources() {
 unset https_proxy http_proxy no_proxy
 export KUBECONFIG="${HOME}/.kube/config"
 CLUSTER_CTX="$(kubectl config view -o json | jq -r ".contexts[].name")"
-printf "\n%bSelect a k8s context :%b\n${CLUSTER_CTX}" "${REVERSE}${GREEN}" "${STD}"
-printf "\n\n%bYour choice (<Enter> to select all) :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+
+if [ "$1" = "" ] ; then
+  printf "\n%bSelect a k8s context :%b\n${CLUSTER_CTX}" "${REVERSE}${GREEN}" "${STD}"
+  printf "\n\n%bYour choice (<Enter> to select all) :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+else
+  flagCtx="$(echo "${CLUSTER_CTX}" | grep "$1")"
+  if [ "${flagCtx}" = "" ] ; then
+    printf "\n%bCluster \"$1\" unknown...%b\n" "${RED}" "${STD}" ; exit 1
+  else
+    choice="$1"
+  fi
+fi
 
 if [ "${choice}" = "" ] ; then
   for ctx in ${CLUSTER_CTX} ; do
