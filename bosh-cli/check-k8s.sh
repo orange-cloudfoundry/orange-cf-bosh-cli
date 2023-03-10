@@ -8,7 +8,7 @@ checkClusterResources() {
   context="$1"
   printf "\n%b\"${context}\" suspended/failed resources...%b\n" "${REVERSE}${YELLOW}" "${STD}"
 
-  #--- Check not ready nodes
+  #--- Check nodes
   result="$(kubectl get nodes -A --context ${context} --request-timeout=1s --no-headers=true 2>&1)"
   flagTimeout="$(echo "${result}" | grep "Unable to connect to the server")"
   if [ "${flagTimeout}" != "" ] ; then
@@ -20,7 +20,7 @@ checkClusterResources() {
     fi
 
     #--- Check pods
-    result="$(kubectl get pods -A --context ${context} --no-headers=true | grep -vE "Running|Completed" | awk '{printf "%-18s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
+    result="$(kubectl get pods -A --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-18s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
     if [ "${result}" != "" ] ; then
       printf "\n%bSTATUS             READY  POD                                                                                  %b\n${result}\n" "${REVERSE}${GREEN}" "${STD}"
     fi
