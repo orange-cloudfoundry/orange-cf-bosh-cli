@@ -16,13 +16,13 @@ checkClusterResources() {
   else
     result="$(echo "${result}" | grep -v "Ready" | awk '{printf "%-18s %s\n", $2, $1}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS             NODE                                                                                        %b\n${result}\n" "${REVERSE}${GREEN}" "${STD}"
+      printf "\n%bSTATUS             NODE                                                                                        %b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check pods
     result="$(kubectl get pods -A --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-18s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS             READY  POD                                                                                  %b\n${result}\n" "${REVERSE}${GREEN}" "${STD}"
+      printf "\n%bSTATUS             READY  POD                                                                                  %b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
@@ -38,7 +38,7 @@ checkClusterResources() {
     }')"
 
     if [ "${result}" != "" ] ; then
-      printf "\n%bREADY  SUSP.  KIND             NAMESPACE/NAME                                                                  %b\n${result}\n" "${REVERSE}${GREEN}" "${STD}"
+      printf "\n%bREADY  SUSP.  KIND             NAMESPACE/NAME                                                                  %b\n${result}\n" "${GREEN}" "${STD}"
     fi
   fi
 }
