@@ -38,6 +38,7 @@ ENV ARGO_CLI_VERSION="3.4.5" \
     SPRUCE_VERSION="1.30.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
+    TEST_KUBE_VERSION="1.10.6" \
     TFCTL_CLI_VERSION="0.13.1" \
     VCLUSTER_VERSION="0.14.0" \
     VENDIR_VERSION="0.32.5" \
@@ -136,6 +137,8 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" && \
     printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
+    printf '\n=> Add TEST_KUBE_CLI\n' && curl -sSL "https://github.com/kubeshop/testkube/releases/download/v${TEST_KUBE_VERSION}/testkube_${TEST_KUBE_VERSION}_Linux_x86_64.tar.gz" | tar -xz -C /tmp && mv /tmp/kubectl-testkube /usr/local/bin/kubectl-testkube && ln -s /usr/local/bin/kubectl-testkube /usr/local/bin/testkube && ln -s /usr/local/bin/kubectl-testkube /usr/local/bin/tk && \
+    printf '\n=> Add TEST_KUBE_CLI completion\n' && chmod 755 /usr/local/bin/testkube && /usr/local/bin/testkube completion bash > /etc/bash_completion.d/testkube && sed -i "s+__start_testkube testkube+__start_testkube testkube tk+g" /etc/bash_completion.d/testkube && \
     printf '\n=> Add TFCTL-CLI\n' && curl -sSL "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_CLI_VERSION}/tfctl_Linux_amd64.tar.gz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add VCLUSTER-CLI\n' && curl -sSLo /usr/local/bin/vcluster "https://github.com/loft-sh/vcluster/releases/download/v${VCLUSTER_VERSION}/vcluster-linux-amd64" && \
     printf '\n=> Add VCLUSTER-CLI completion\n' && chmod 755 /usr/local/bin/vcluster && /usr/local/bin/vcluster completion bash > /etc/bash_completion.d/vcluster && \
