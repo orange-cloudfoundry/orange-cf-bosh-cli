@@ -5,22 +5,22 @@ ARG DEBIAN_FRONTEND=noninteractive
 #--- Clis versions
 ENV ARGO_CLI_VERSION="3.4.5" \
     BBR_VERSION="1.9.38" \
-    BOSH_CLI_VERSION="7.1.4" \
+    BOSH_CLI_VERSION="7.2.0" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CF_CLI_VERSION="8.5.0" \
     CF_UAAC_VERSION="4.14.0" \
-    CREDHUB_VERSION="2.9.12" \
+    CREDHUB_VERSION="2.9.13" \
     FLUX_VERSION="0.33.0" \
     FLY_VERSION="7.8.2" \
-    GITHUB_VERSION="2.23.0" \
+    GITHUB_VERSION="2.25.1" \
     GOVC_VERSION="0.30.4" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.9.4" \
     JQ_VERSION="1.6" \
-    KAPP_VERSION="0.54.3" \
-    KCTRL_VERSION="0.44.1" \
-    KLBD_VERSION="0.36.4" \
+    KAPP_VERSION="0.55.0" \
+    KCTRL_VERSION="0.45.0" \
+    KLBD_VERSION="0.37.0" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.23.9" \
     KUBECTL_WHOAMI_VERSION="0.0.44" \
@@ -43,8 +43,8 @@ ENV ARGO_CLI_VERSION="3.4.5" \
     VCLUSTER_VERSION="0.14.0" \
     VENDIR_VERSION="0.32.5" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.30.8" \
-    YTT_VERSION="0.44.3"
+    YQ_VERSION="4.32.2" \
+    YTT_VERSION="0.40.4"
 
 #--- Packages list, ruby env for COA and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -148,6 +148,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add YQ-CLI completion\n' && chmod 755 /usr/local/bin/yq && yq shell-completion bash | grep -v Succeeded > /etc/bash_completion.d/yq && \
     printf '\n=> Add YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${YTT_VERSION}/ytt-linux-amd64" && \
     printf '\n=> Add YTT-CLI completion\n' && chmod 755 /usr/local/bin/ytt && ytt completion bash | grep -v Succeeded > /etc/bash_completion.d/ytt && \
+    printf '\n=> Add XDG-TOOL\n' && printf '#!/bin/bash\necho "Simulating browser invocation from xdg-open call with params: $@"\nsleep 1\nexit 0\n' > /usr/bin/xdg-open && chmod 755 /usr/bin/xdg-open && \
     printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
     printf '\nYour are logged into an ubuntu docker tools container :' > /etc/motd && \
     printf '\n- "tools" command display available tools.' >> /etc/motd && \
