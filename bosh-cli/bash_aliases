@@ -18,6 +18,8 @@ alias credhub-get='function __cg() { index=$2 ; log-credhub -i ; credhub get -n 
 alias fly='fly -t concourse'
 alias hm-bosh-tasks="bosh tasks -a -r=20000 --json | jq -r '.Tables[].Rows[]|select(.user == \"hm\")|.started_at + \" \" + .id + \" \" +  .description + \" \" + .deployment + \" => \" + .result'"
 alias k='/usr/local/bin/kubectl'
+alias kctx='/usr/local/bin/kubectx'
+alias kns='/usr/local/bin/kubens'
 alias kube-tail='/usr/local/bin/kube-tail.sh'
 alias kt='/usr/local/bin/kube-tail.sh'
 alias k9s='if [ -f ${K9SCONFIG}/config.yml ] ; then sed -i "s+logoless:.*+logoless: true+" ${K9SCONFIG}/config.yml ; fi ; k9s'
