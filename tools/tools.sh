@@ -40,7 +40,6 @@ display "log-k8s" "Log with kubernetes cli"
 display "oc" "Openshift cli"
 display "ocm" "Openshift manager cli"
 display "rbac-tool" "Kubernetes rbac cli"
-display "set-ns" "Set kubernetes namespace"
 display "testkube/tk" "Kubernetes test-kube cli"
 display "tfctl" "Kubernetes terraform-controller tool"
 

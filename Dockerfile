@@ -1,14 +1,14 @@
-FROM ubuntu:20.04 AS orange_cli
+FROM ubuntu:22.04 AS orange_cli
 USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
 ENV ARGO_CLI_VERSION="3.4.5" \
     BBR_VERSION="1.9.38" \
-    BOSH_CLI_VERSION="7.2.0" \
+    BOSH_CLI_VERSION="7.2.2" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
-    CF_CLI_VERSION="8.5.0" \
+    CF_CLI_VERSION="8.6.1" \
     CF_UAAC_VERSION="4.14.0" \
     CREDHUB_VERSION="2.9.13" \
     FLUX_VERSION="0.33.0" \
@@ -28,7 +28,7 @@ ENV ARGO_CLI_VERSION="3.4.5" \
     KUSTOMIZE_VERSION="4.5.7" \
     K9S_VERSION="0.27.3" \
     MONGO_SHELL_VERSION="4.0.25" \
-    MYSQL_SHELL_VERSION="8.0.25-1" \
+    MYSQL_SHELL_VERSION="8.0.33-1" \
     OC_CLI_VERSION="4.10.25" \
     OCM_CLI_VERSION="0.1.65" \
     RBAC_TOOL_VERSION="1.14.1" \
@@ -36,7 +36,7 @@ ENV ARGO_CLI_VERSION="3.4.5" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
     SHIELD_VERSION="8.8.5" \
-    SPRUCE_VERSION="1.30.1" \
+    SPRUCE_VERSION="1.30.2" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     TEST_KUBE_VERSION="1.10.6" \
@@ -47,11 +47,11 @@ ENV ARGO_CLI_VERSION="3.4.5" \
     YQ_VERSION="4.32.2" \
     YTT_VERSION="0.40.4"
 
-#--- Packages list, ruby env for COA and plugins
+#--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
     TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg htop less locales nano python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux byobu yarnpkg vim" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois iperf3" \
-    DEV_PACKAGES="python-dev build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
+    DEV_PACKAGES="build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
     PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:${PATH}" \
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
@@ -61,13 +61,13 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
     OS_ARCH_1="x86_64" \
     OS_ARCH_2="amd64"
 
-ADD bosh-cli/* /tmp/bosh-cli/
-ADD bosh-cli/completion/* /tmp/bosh-cli/completion/
+ADD tools/* /tmp/tools/
+ADD tools/completion/* /tmp/tools/completion/
 
 RUN printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
     apt-get update && apt-get install -y --no-install-recommends apt-utils dialog && \
     apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} && \
-    cp /usr/bin/chardetect3 /usr/local/bin/chardetect && locale-gen en_US.UTF-8 && \
+    locale-gen en_US.UTF-8 && \
     printf '\n=====================================================\n Install ruby tools\n=====================================================\n' && \
     curl -sSL https://rvm.io/mpapis.asc | gpg --import - && curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - && curl -sSL https://get.rvm.io | bash -s stable && \
     /bin/bash -l -c "source /etc/profile.d/rvm.sh ; rvm install ${RUBY_VERSION}" && \
@@ -76,7 +76,7 @@ RUN printf '\n=====================================================\n Install sy
     /bin/bash -l -c "gem install cf-uaac -v ${CF_UAAC_VERSION} --no-document" && \
     /bin/bash -l -c "gem install mdless --no-document" && \
     /bin/bash -l -c "rvm cleanup all" && \
-    printf '\n=====================================================\n Setup bosh account, ssh and supervisor\n=====================================================\n' && \
+    printf '\n=====================================================\n Setup account, ssh, supervisor and system banner\n=====================================================\n' && \
     echo "root:$(date +%s | sha256sum | base64 | head -c 32 ; echo)" | chpasswd && \
     useradd -m -g users -G sudo,rvm -s /bin/bash bosh && echo "bosh ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/bosh && \
     echo "bosh:$(date +%s | sha256sum | base64 | head -c 32 ; echo)" | chpasswd && \
@@ -90,7 +90,10 @@ RUN printf '\n=====================================================\n Install sy
     sed -i 's/^#Upstream http some.*/upstream http system-internet-http-proxy.internal.paas:3128 ".openshiftapps.com"/' /etc/tinyproxy/tinyproxy.conf && \
     sed -i 's/^ConnectPort 443/#ConnectPort 443/' /etc/tinyproxy/tinyproxy.conf && \
     sed -i 's/^ConnectPort 563/#ConnectPort 563/' /etc/tinyproxy/tinyproxy.conf && \
-    printf '\n=====================================================\n Install ops tools\n=====================================================\n' && \
+    printf '\nYour are logged into an ubuntu docker tools container :' > /etc/motd && \
+    printf '\n- "tools" command display available tools.' >> /etc/motd && \
+    printf '\n- "/data" is the only persistant volume (do not save data on other fs).\n\n' >> /etc/motd && chmod 644 /etc/motd && \
+    printf '\n=====================================================\n Install clis and tools\n=====================================================\n' && \
     printf '\n=> Add ARGO-CLI\n' && curl -sSLo /tmp/argo.gz "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_CLI_VERSION}/argo-linux-${OS_ARCH_2}.gz" && gunzip /tmp/argo.gz && mv /tmp/argo /usr/local/bin/argo && \
     printf '\n=> Add ARGO-CLI completion\n' && chmod 755 /usr/local/bin/argo && argo completion bash > /etc/bash_completion.d/argo && \
     printf '\n=> Add BBR-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" | tar -x -C /tmp && mv /tmp/releases/bbr /usr/local/bin/bbr && \
@@ -130,7 +133,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
     printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_2}/mc" && \
     printf '\n=> Add MONGO-SHELL-CLI\n' && curl -sSL "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}.tgz" | tar -xz -C /tmp && cd /tmp/mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}/bin && mv mongo mongostat mongotop /usr/local/bin && \
-    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu20.04_${OS_ARCH_2}.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu22.04_${OS_ARCH_2}.deb" && dpkg -i /tmp/mysql-shell.deb && \
     printf '\n=> Add OC-CLI\n' && curl -sSL "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_CLI_VERSION}/openshift-client-linux-${OC_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && mv /tmp/oc /usr/local/bin/oc && \
     printf '\n=> Add OC-CLI completion\n' && chmod 755 /usr/local/bin/oc && /usr/local/bin/oc completion bash > /etc/bash_completion.d/oc && \
     printf '\n=> Add OCM-CLI\n' && curl -sSLo /usr/local/bin/ocm "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_CLI_VERSION}/ocm-linux-${OS_ARCH_2}" && \
@@ -154,20 +157,15 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${YTT_VERSION}/ytt-linux-${OS_ARCH_2}" && \
     printf '\n=> Add YTT-CLI completion\n' && chmod 755 /usr/local/bin/ytt && ytt completion bash | grep -v Succeeded > /etc/bash_completion.d/ytt && \
     printf '\n=> Add XDG-TOOL\n' && printf '#!/bin/bash\necho "Simulating browser invocation from xdg-open call with params: $@"\nsleep 1\nexit 0\n' > /usr/bin/xdg-open && chmod 755 /usr/bin/xdg-open && \
-    printf '\n=====================================================\n Set system banner\n=====================================================\n' && \
-    printf '\nYour are logged into an ubuntu docker tools container :' > /etc/motd && \
-    printf '\n- "tools" command display available tools.' >> /etc/motd && \
-    printf '\n- "/data" is the only persistant volume (do not save data on other fs).\n\n' >> /etc/motd && \
-    chmod 644 /etc/motd && \
     printf '\n=====================================================\n Configure user account\n=====================================================\n' && \
-    mv /tmp/bosh-cli/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \
-    mv /tmp/bosh-cli/bash_profile /home/bosh/bash_profile && \
-    mv /tmp/bosh-cli/bash_aliases /home/bosh/.bash_aliases && \
+    mv /tmp/tools/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \
+    mv /tmp/tools/bash_profile /home/bosh/bash_profile && \
+    mv /tmp/tools/bash_aliases /home/bosh/.bash_aliases && \
     mkdir -p /home/bosh/.ssh && chmod 700 /home/bosh /home/bosh/.ssh && \
-    mkdir -p /home/bosh/.k9s && mv /tmp/bosh-cli/k9s-plugins.yml /home/bosh/.k9s/plugin.yml && \
-    mv /tmp/bosh-cli/completion/* /etc/bash_completion.d/ && chmod 755 /etc/bash_completion.d/* && \
-    mv /tmp/bosh-cli/*.sh /usr/local/bin/ && mv /tmp/bosh-cli/sshd.conf /etc/supervisor/conf.d/ && \
-    printf '\n=====================================================\n Cleanup and configure system\n=====================================================\n' && \
+    mkdir -p /home/bosh/.k9s && mv /tmp/tools/k9s-plugins.yml /home/bosh/.k9s/plugin.yml && \
+    mv /tmp/tools/completion/* /etc/bash_completion.d/ && chmod 755 /etc/bash_completion.d/* && \
+    mv /tmp/tools/*.sh /usr/local/bin/ && mv /tmp/tools/sshd.conf /etc/supervisor/conf.d/ && \
+    printf '\n=====================================================\n Cleanup system\n=====================================================\n' && \
     apt-get autoremove -y && apt-get clean && apt-get purge && \
     rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/* && find /var/log -type f -delete && \
     touch /var/log/lastlog && chgrp utmp /var/log/lastlog && chmod 664 /var/log/lastlog && \
@@ -183,5 +181,5 @@ EXPOSE 22
 FROM orange_cli AS tests
 RUN /usr/local/bin/check-available-clis.sh
 
-#--- Export bosh-cli image
+#--- Export image
 FROM orange_cli

@@ -30,8 +30,18 @@ fi
 cp /home/bosh/.bashrc ${HOME}/.bashrc
 cp /home/bosh/.bash_aliases ${HOME}/.bash_aliases
 
-#--- Redefine GIT config file path
+#--- Redefine GIT config file
 export XDG_CONFIG_HOME=${HOME}
+
+#--- Fix clone/pull errors with ubuntu 22.04
+export GNUTLS_CPUID_OVERRIDE=0x1
+
+#--- Set git credentials cache
+GIT_CREDS_DIR="${HOME}/.cache/git/credential"
+if [ ! -d ${GIT_CREDS_DIR} ] ; then
+  mkdir -p ${GIT_CREDS_DIR}
+fi
+chmod 0700 ${GIT_CREDS_DIR} > /dev/null 2>&1
 
 #--- Redefine command history file path
 export HISTFILE=${HOME}/.bash_history

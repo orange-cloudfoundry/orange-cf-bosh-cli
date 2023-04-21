@@ -33,6 +33,7 @@ configureGit "core.preloadindex" "true"
 
 configureGit "credential.helper" "cache --timeout=86400"
 configureGit "http.postbuffer" "524288000"
+configureGit "http.sslverify" "false"
 configureGit "grep.linenumber" "true"
 configureGit "push.default" "tracking"
 
@@ -50,6 +51,16 @@ if [ $? != 0 ] ; then
     printf "\n%bERROR : LDAP authentication failed with \"${LDAP_USER}\" account.%b\n" "${RED}" "${STD}" ; flagError=1
   fi
 fi
+
+#--- Fix clone/pull errors with ubuntu 22.04
+export GNUTLS_CPUID_OVERRIDE=0x1
+
+#--- Set git credentials cache
+GIT_CREDS_DIR="${HOME}/.cache/git/credential"
+if [ ! -d ${GIT_CREDS_DIR} ] ; then
+  mkdir -p ${GIT_CREDS_DIR}
+fi
+chmod 0700 ${GIT_CREDS_DIR} > /dev/null 2>&1
 
 #--- Clone repositories
 if [ ! -d ${HOME}/bosh ] ; then

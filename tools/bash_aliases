@@ -37,7 +37,6 @@ alias log-uaac='. /usr/local/bin/log-uaac.sh'
 alias os='openstack'
 alias prune-workers='fly prune-worker -a'
 alias recreate-workers='bosh -d concourse recreate worker --canaries=0 --max-in-flight=10'
-alias set-ns='function __sn() { kubectl config set-context --current --namespace=$1; }; __sn'
 alias switch='. /usr/local/bin/switch.sh'
 
 #--- Docker aliases
