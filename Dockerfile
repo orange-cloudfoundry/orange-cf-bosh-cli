@@ -3,30 +3,31 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_CLI_VERSION="3.4.5" \
+ENV ARGO_CLI_VERSION="3.4.7" \
     BBR_VERSION="1.9.38" \
-    BOSH_CLI_VERSION="7.2.2" \
+    BOSH_CLI_VERSION="7.2.3" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CF_CLI_VERSION="8.6.1" \
     CF_UAAC_VERSION="4.14.0" \
-    CREDHUB_VERSION="2.9.13" \
+    CILIUM_VERSION="0.14.2" \
+    CREDHUB_VERSION="2.9.14" \
     FLUX_VERSION="0.33.0" \
-    FLY_VERSION="7.8.2" \
-    GITHUB_VERSION="2.25.1" \
+    FLY_VERSION="7.9.1" \
+    GITHUB_VERSION="2.28.0" \
     GOVC_VERSION="0.30.4" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.9.4" \
     JQ_VERSION="1.6" \
-    KAPP_VERSION="0.55.0" \
+    KAPP_VERSION="0.55.1" \
     KCTRL_VERSION="0.45.0" \
-    KLBD_VERSION="0.37.0" \
+    KLBD_VERSION="0.37.1" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.23.9" \
     KUBECTL_WHOAMI_VERSION="0.0.44" \
     KUBECTX_VERSION="0.9.4" \
     KUSTOMIZE_VERSION="4.5.7" \
-    K9S_VERSION="0.27.3" \
+    K9S_VERSION="0.27.4" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
     OC_CLI_VERSION="4.10.25" \
@@ -39,13 +40,13 @@ ENV ARGO_CLI_VERSION="3.4.5" \
     SPRUCE_VERSION="1.30.2" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TEST_KUBE_VERSION="1.10.6" \
-    TFCTL_CLI_VERSION="0.13.1" \
-    VCLUSTER_VERSION="0.14.0" \
-    VENDIR_VERSION="0.32.5" \
+    TEST_KUBE_VERSION="1.11.18" \
+    TFCTL_CLI_VERSION="0.14.0" \
+    VCLUSTER_VERSION="0.15.0" \
+    VENDIR_VERSION="0.33.2" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.32.2" \
-    YTT_VERSION="0.40.4"
+    YQ_VERSION="4.33.3" \
+    YTT_VERSION="0.45.1"
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -103,6 +104,8 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add CF-CLI completion\n' && curl -sSLo /etc/bash_completion.d/cf "https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf7" && \
     printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plugin in \$(echo \"${CF_PLUGINS}\") ; do cf install-plugin \"\${plugin}\" -r CF-Community -f ; done" && \
     printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
+    printf '\n=> Add CILIUM-CLI\n' && curl -sSL "https://github.com/cilium/cilium-cli/releases/download/v${CILIUM_VERSION}/cilium-linux-${OS_ARCH_2}.tar.gz" | tar -xz -C /usr/local/bin && \
+    printf '\n=> Add CILIUM-CLI completion\n' && chmod 755 /usr/local/bin/cilium && cilium completion bash > /etc/bash_completion.d/cilium && \
     printf '\n=> Add CREDHUB-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add FLUX-CLI\n' && curl -sSL "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /usr/local/bin && \
     printf '\n=> Add FLUX-CLI completion\n' && chmod 755 /usr/local/bin/flux && flux completion bash > /etc/bash_completion.d/flux && \
