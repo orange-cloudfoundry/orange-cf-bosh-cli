@@ -185,3 +185,28 @@ plugin:
     args:
       - -c
       - "argo submit --from workflowtemplate/$NAME -n $NAMESPACE |& less"
+  # See inspiration at https://github.com/derailed/k9s/pull/1850#issuecomment-1310880245
+  debug:
+    shortCut: Shift-D
+    confirm: true
+    description: Add debug eph container
+    scopes:
+      - containers
+    command: kubectl
+    background: false
+    args:
+      - debug
+      - -it
+      - -n
+      - $NAMESPACE
+      - $POD
+      - --target
+      - $NAME
+      - --image
+      # TODO: find a newer maintained image including lsof
+      - rancherlabs/swiss-army-knife:2
+      -  --share-processes
+      # Note: decided to not include capability to copy a pod. This is risky as it would probably leak to pod leaks
+      #- --copy-to=debug-$POD
+      - --
+      - bash
