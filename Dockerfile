@@ -1,10 +1,10 @@
-ROM ubuntu:22.04 AS orange_cli
+FROM ubuntu:22.04 AS orange_cli
 USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
 ENV ARGO_CLI_VERSION="3.4.7" \
-    BBR_VERSION="1.9.38" \
+    BBR_VERSION="1.9.45" \
     BOSH_CLI_VERSION="7.2.3" \
     BOSH_CLI_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
