@@ -70,6 +70,7 @@ fi
 cd ${HOME}/bosh
 unset http_proxy https_proxy no_proxy
 
+#--- Clone secrets repo
 if [ -d ${HOME}/bosh/secrets ] ; then
   printf "\n%bGit secrets repository already exists (delete it before if you want to reinitialize repository).%b\n" "${REVERSE}${YELLOW}" "${STD}"
 else
@@ -81,6 +82,7 @@ else
   fi
 fi
 
+#--- Clone template repo
 if [ -d ${HOME}/bosh/template ] ; then
   printf "\n%bGit template repository already exists (delete it before if you want to reinitialize repository).%b\n" "${REVERSE}${YELLOW}" "${STD}"
 else
@@ -96,5 +98,17 @@ else
   git clone ${TEMPLATE_URL} template 2>&1
   if [ ! -d template ] ; then
     printf "\nERROR: Git clone template repository failed.\n" ; exit 1
+  fi
+fi
+
+#--- Clone gitops repo
+if [ -d ${HOME}/bosh/gitops ] ; then
+  printf "\n%bGit ops repository already exists (delete it before if you want to reinitialize repository).%b\n" "${REVERSE}${YELLOW}" "${STD}"
+else
+  printf "\n%bClone gitops repository%b\n" "${REVERSE}${YELLOW}" "${STD}"
+  GITOPS_URL="$(echo "${SECRETS_URL}" | sed -e "s+paas-templates-secrets+cf-ops-automation+g")"
+  git clone ${GITOPS_URL} gitops 2>&1
+  if [ ! -d gitops ] ; then
+    printf "\nERROR: Git clone gitops repository failed.\n" ; exit 1
   fi
 fi
