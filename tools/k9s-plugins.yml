@@ -193,7 +193,7 @@ plugin:
       - containers
     command: bash
     background: false
-    confirm: false
+    confirm: true
     args:
       - -c
       - "kubectl debug -it -n=$NAMESPACE $POD --target=$NAME --image=rancherlabs/swiss-army-knife:2 --share-processes -- bash"
