@@ -19,6 +19,7 @@ ENV ARGO_CLI_VERSION="3.4.7" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.9.4" \
     JQ_VERSION="1.6" \
+    JWT_VERSION="5.0.3" \
     KAPP_VERSION="0.56.0" \
     KCTRL_VERSION="0.45.1" \
     KLBD_VERSION="0.37.1" \
@@ -27,6 +28,7 @@ ENV ARGO_CLI_VERSION="3.4.7" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
     KUBECTX_VERSION="0.9.4" \
     KUSTOMIZE_VERSION="4.5.7" \
+    KYVERNO_VERSION="1.9.5" \
     K9S_VERSION="0.27.4" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
@@ -65,7 +67,12 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
 ADD tools/* /tmp/tools/
 ADD tools/completion/* /tmp/tools/completion/
 
-RUN printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
+RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 "$3" ; } && \
+    installZip() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | gunzip > /usr/local/bin/$2 ; } && \
+    installTar() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -x -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
+    installTargz() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -xz -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
+    addCompletion() { printf "\n=> Add $1 CLI completion\n" ; chmod 755 /usr/local/bin/$2 ; /usr/local/bin/$2 $3 > /etc/bash_completion.d/$2 ; } && \
+    printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
     apt-get update && apt-get install -y --no-install-recommends apt-utils dialog && \
     apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} && \
     locale-gen en_US.UTF-8 && \
@@ -95,70 +102,71 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n- "tools" command display available tools.' >> /etc/motd && \
     printf '\n- "/data" is the only persistant volume (do not save data on other fs).\n\n' >> /etc/motd && chmod 644 /etc/motd && \
     printf '\n=====================================================\n Install clis and tools\n=====================================================\n' && \
-    printf '\n=> Add ARGO-CLI\n' && curl -sSLo /tmp/argo.gz "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_CLI_VERSION}/argo-linux-${OS_ARCH_2}.gz" && gunzip /tmp/argo.gz && mv /tmp/argo /usr/local/bin/argo && \
-    printf '\n=> Add ARGO-CLI completion\n' && chmod 755 /usr/local/bin/argo && argo completion bash > /etc/bash_completion.d/argo && \
-    printf '\n=> Add BBR-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" | tar -x -C /tmp && mv /tmp/releases/bbr /usr/local/bin/bbr && \
-    printf '\n=> Add BOSH-CLI\n' && curl -sSLo /usr/local/bin/bosh "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_VERSION}-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add BOSH-CLI completion\n' && curl -sSLo /home/bosh/bosh-complete-linux "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_CLI_COMPLETION_VERSION}/bosh-complete-linux" && chmod 755 /home/bosh/bosh-complete-linux && \
-    printf '\n=> Add CF-CLI\n' && curl -sSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI_VERSION}&source=github-rel" | tar -xz -C /tmp && mv /tmp/cf8 /usr/local/bin/cf && \
-    printf '\n=> Add CF-CLI completion\n' && curl -sSLo /etc/bash_completion.d/cf "https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf7" && \
+    installZip    "ARGO" "argo" "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_CLI_VERSION}/argo-linux-${OS_ARCH_2}.gz" && \
+    addCompletion "ARGO" "argo" "completion bash" && \
+    installTar    "BBR" "bbr" "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" "releases/bbr" && \
+    installBinary "BOSH" "bosh" "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_VERSION}-linux-${OS_ARCH_2}" && \
+    installTargz  "CF" "cf" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI_VERSION}&source=github-rel" "cf8" && \
+    printf '\n=> Add CF CLI completion\n' && curl -sSLo /etc/bash_completion.d/cf "https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf8" && \
     printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plugin in \$(echo \"${CF_PLUGINS}\") ; do cf install-plugin \"\${plugin}\" -r CF-Community -f ; done" && \
     printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
-    printf '\n=> Add CILIUM-CLI\n' && curl -sSL "https://github.com/cilium/cilium-cli/releases/download/v${CILIUM_VERSION}/cilium-linux-${OS_ARCH_2}.tar.gz" | tar -xz -C /usr/local/bin && \
-    printf '\n=> Add CILIUM-CLI completion\n' && chmod 755 /usr/local/bin/cilium && cilium completion bash > /etc/bash_completion.d/cilium && \
-    printf '\n=> Add CREDHUB-CLI\n' && curl -sSL "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" | tar -xz -C /usr/local/bin && \
-    printf '\n=> Add FLUX-CLI\n' && curl -sSL "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /usr/local/bin && \
-    printf '\n=> Add FLUX-CLI completion\n' && chmod 755 /usr/local/bin/flux && flux completion bash > /etc/bash_completion.d/flux && \
-    printf '\n=> Add FLY-CLI\n' && curl -sSL "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-${OS_ARCH_2}.tgz" | tar -xz -C /usr/local/bin && \
-    printf '\n=> Add GCLOUD-CLI\n' && echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && chmod 1777 /tmp && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && apt-get update && apt-get install -y --no-install-recommends google-cloud-cli && \
-    printf '\n=> Add GIT-FILTER-REPO\n' && curl -sSLo /usr/local/bin/git-filter-repo "https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo" && \
-    printf '\n=> Add GITHUB-CLI\n' && curl -sSL "https://github.com/cli/cli/releases/download/v${GITHUB_VERSION}/gh_${GITHUB_VERSION}_linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && mv /tmp/gh_${GITHUB_VERSION}_linux_${OS_ARCH_2}/bin/gh /usr/local/bin/gh && \
-    printf '\n=> Add GITHUB-CLI completion\n' && chmod 755 /usr/local/bin/gh && /usr/local/bin/gh completion -s bash > /etc/bash_completion.d/gh && \
-    printf '\n=> Add GOVC-CLI\n' && curl -sSL "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_${OS_ARCH_1}.tar.gz" | tar -xz -C /tmp && mv /tmp/govc /usr/local/bin/govc && \
-    printf '\n=> Add GO3FR-CLI\n' && curl -sSL "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && mv /tmp/gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_2}/gof3r /usr/local/bin/go3fr && \
-    printf '\n=> Add HELM-CLI\n' && curl -sSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && mv /tmp/linux-${OS_ARCH_2}/helm /usr/local/bin/helm && \
-    printf '\n=> Add HELM-CLI completion\n' && chmod 755 /usr/local/bin/helm && /usr/local/bin/helm completion bash > /etc/bash_completion.d/helm && \
-    printf '\n=> Add JQ-CLI\n' && curl -sSLo /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
-    printf '\n=> Add KAPP-CLI\n' && curl -sSLo /usr/local/bin/kapp "https://github.com/k14s/kapp/releases/download/v${KAPP_VERSION}/kapp-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add KAPP-CLI completion\n' && chmod 755 /usr/local/bin/kapp && kapp completion bash | grep -v Succeeded > /etc/bash_completion.d/kapp && \
-    printf '\n=> Add KCTRL-CLI\n' && curl -sSLo /usr/local/bin/kctrl "https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v${KCTRL_VERSION}/kctrl-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add KCTRL-CLI completion\n' && chmod 755 /usr/local/bin/kctrl && kctrl completion bash | grep -v Succeeded > /etc/bash_completion.d/kctrl && \
-    printf '\n=> Add KLBD-CLI\n' && curl -sSLo /usr/local/bin/klbd "https://github.com/k14s/kbld/releases/download/v${KLBD_VERSION}/kbld-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add KREW-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/krew/releases/download/v${KREW_VERSION}/krew-linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && chmod 1777 /tmp && \
-    printf '\n=> Add KUBECTL-CLI\n' && curl -sSLo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/${OS_ARCH_2}/kubectl" && \
-    printf '\n=> Add KUBECTL-CLI completion\n' && chmod 755 /usr/local/bin/kubectl && /usr/local/bin/kubectl completion bash > /etc/bash_completion.d/kubectl && sed -i "s+__start_kubectl kubectl+__start_kubectl kubectl k+g" /etc/bash_completion.d/kubectl && \
-    printf '\n=> Add KUBECTL_PLUGINS\n' && su -l bosh -s /bin/bash -c "export KREW_ROOT=/home/bosh/.krew ; export PATH=/home/bosh/.krew/bin:${PATH} ; /tmp/krew-linux_${OS_ARCH_2} install krew ; export IFS=, ; for plugin in \$(echo \"${KUBECTL_PLUGINS}\") ; do kubectl krew install \${plugin} ; done" && \
-    printf '\n=> Add KUBECTL_WHOAMI\n' && curl -sSL "https://github.com/rajatjindal/kubectl-whoami/releases/download/v${KUBECTL_WHOAMI_VERSION}/kubectl-whoami_v${KUBECTL_WHOAMI_VERSION}_linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && mv /tmp/kubectl-whoami /usr/local/bin/ && \
-    printf '\n=> Add KUBECTX-CLI\n' && curl -sSL "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubectx_v${KUBECTX_VERSION}_linux_${OS_ARCH_1}.tar.gz" | tar -xz -C /tmp && mv /tmp/kubectx /usr/local/bin/kubectx && \
-    printf '\n=> Add KUBENS-CLI\n' && curl -sSL "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubens_v${KUBECTX_VERSION}_linux_${OS_ARCH_1}.tar.gz" | tar -xz -C /tmp && mv /tmp/kubens /usr/local/bin/kubens && \
-    printf '\n=> Add KUSTOMIZE-CLI\n' && curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && mv /tmp/kustomize /usr/local/bin/kustomize && \
-    printf '\n=> Add KUSTOMIZE-CLI completion\n' && chmod 755 /usr/local/bin/kustomize && /usr/local/bin/kustomize completion bash > /etc/bash_completion.d/kustomize && \
-    printf '\n=> Add K9S-CLI\n' && curl -sSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && mv /tmp/k9s /usr/local/bin/k9s && \
-    printf '\n=> Add MINIO-CLI\n' && curl -sSLo /usr/local/bin/mc "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_2}/mc" && \
-    printf '\n=> Add MONGO-SHELL-CLI\n' && curl -sSL "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}.tgz" | tar -xz -C /tmp && cd /tmp/mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}/bin && mv mongo mongostat mongotop /usr/local/bin && \
-    printf '\n=> Add MYSQL-SHELL-CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu22.04_${OS_ARCH_2}.deb" && dpkg -i /tmp/mysql-shell.deb && \
-    printf '\n=> Add OC-CLI\n' && curl -sSL "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_CLI_VERSION}/openshift-client-linux-${OC_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && mv /tmp/oc /usr/local/bin/oc && \
-    printf '\n=> Add OC-CLI completion\n' && chmod 755 /usr/local/bin/oc && /usr/local/bin/oc completion bash > /etc/bash_completion.d/oc && \
-    printf '\n=> Add OCM-CLI\n' && curl -sSLo /usr/local/bin/ocm "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_CLI_VERSION}/ocm-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add OCM-CLI completion\n' && chmod 755 /usr/local/bin/ocm && /usr/local/bin/ocm completion bash > /etc/bash_completion.d/ocm && \
-    printf '\n=> Add RBAC-TOOL-CLI\n' && curl -sSL "https://github.com/alcideio/rbac-tool/releases/download/v${RBAC_TOOL_VERSION}/rbac-tool_v${RBAC_TOOL_VERSION}_linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && mv /tmp/rbac-tool /usr/local/bin/rbac-tool && \
-    printf '\n=> Add RBAC-TOOL-CLI completion\n' && chmod 755 /usr/local/bin/rbac-tool && /usr/local/bin/rbac-tool bash-completion > /etc/bash_completion.d/rbac-tool && \
-    printf '\n=> Add REDIS-CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
-    printf '\n=> Add SHIELD-CLI\n' && curl -sSLo /usr/local/bin/shield "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add SPRUCE-CLI\n' && curl -sSLo /usr/local/bin/spruce "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add TERRAFORM-CLI\n' && curl -sSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${OS_ARCH_2}.zip" && unzip -q /tmp/terraform.zip -d /usr/local/bin && \
-    printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /bin/bash -c "$(wget https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O -)" && \
-    printf '\n=> Add TEST_KUBE_CLI\n' && curl -sSL "https://github.com/kubeshop/testkube/releases/download/v${TEST_KUBE_VERSION}/testkube_${TEST_KUBE_VERSION}_Linux_${OS_ARCH_1}.tar.gz" | tar -xz -C /tmp && mv /tmp/kubectl-testkube /usr/local/bin/kubectl-testkube && ln -s /usr/local/bin/kubectl-testkube /usr/local/bin/testkube && ln -s /usr/local/bin/kubectl-testkube /usr/local/bin/tk && \
-    printf '\n=> Add TEST_KUBE_CLI completion\n' && chmod 755 /usr/local/bin/testkube && /usr/local/bin/testkube completion bash > /etc/bash_completion.d/testkube && sed -i "s+__start_testkube testkube+__start_testkube testkube tk+g" /etc/bash_completion.d/testkube && \
-    printf '\n=> Add TFCTL-CLI\n' && curl -sSL "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_CLI_VERSION}/tfctl_Linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /usr/local/bin && \
-    printf '\n=> Add VCLUSTER-CLI\n' && curl -sSLo /usr/local/bin/vcluster "https://github.com/loft-sh/vcluster/releases/download/v${VCLUSTER_VERSION}/vcluster-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add VCLUSTER-CLI completion\n' && chmod 755 /usr/local/bin/vcluster && /usr/local/bin/vcluster completion bash > /etc/bash_completion.d/vcluster && \
-    printf '\n=> Add VENDIR-CLI\n' && curl -sSLo /usr/local/bin/vendir "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add YAML-PATH-CLI\n' && curl -sSL "https://github.com/psycofdj/yaml-path/releases/download/v${YAML_PATH_VERSION}/yaml-path-${YAML_PATH_VERSION}.linux-${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && mv /tmp/yaml-path-${YAML_PATH_VERSION}.linux-${OS_ARCH_2}/yaml-path /usr/local/bin && \
-    printf '\n=> Add YQ-CLI\n' && curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${OS_ARCH_2}" && \
-    printf '\n=> Add YQ-CLI completion\n' && chmod 755 /usr/local/bin/yq && yq shell-completion bash | grep -v Succeeded > /etc/bash_completion.d/yq && \
-    printf '\n=> Add YTT-CLI\n' && curl -sSLo /usr/local/bin/ytt "https://github.com/k14s/ytt/releases/download/v${YTT_VERSION}/ytt-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add YTT-CLI completion\n' && chmod 755 /usr/local/bin/ytt && ytt completion bash | grep -v Succeeded > /etc/bash_completion.d/ytt && \
+    installTargz  "CILIUM" "cilium" "https://github.com/cilium/cilium-cli/releases/download/v${CILIUM_VERSION}/cilium-linux-${OS_ARCH_2}.tar.gz" "cilium" && \
+    addCompletion "CILIUM" "cilium" "completion bash" && \
+    installTargz  "CREDHUB" "credhub" "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" "credhub" && \
+    installTargz  "FLUX" "flux" "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_${OS_ARCH_2}.tar.gz" "flux" && \
+    addCompletion "FLUX" "flux" "completion bash" && \
+    installTargz  "FLY" "fly" "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-${OS_ARCH_2}.tgz" "fly" && \
+    printf '\n=> Add GCLOUD CLI\n' && echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && chmod 1777 /tmp && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && apt-get update && apt-get install -y --no-install-recommends google-cloud-cli && \
+    installBinary "GIT-FILTER-REPO" "git-filter-repo" "https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo" && \
+    installTargz  "GITHUB" "gh" "https://github.com/cli/cli/releases/download/v${GITHUB_VERSION}/gh_${GITHUB_VERSION}_linux_${OS_ARCH_2}.tar.gz" "gh_${GITHUB_VERSION}_linux_${OS_ARCH_2}/bin/gh" && \
+    addCompletion "GITHUB" "gh" "completion bash" && \
+    installTargz  "GOVC" "govc" "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_${OS_ARCH_1}.tar.gz" "govc" && \
+    installTargz  "GO3FR" "go3fr" "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_2}.tar.gz" "gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_2}/gof3r" && \
+    installTargz  "HELM" "helm" "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${OS_ARCH_2}.tar.gz" "linux-${OS_ARCH_2}/helm" && \
+    addCompletion "HELM" "helm" "completion bash" && \
+    installBinary "JQ" "jq" "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
+    installTargz  "JWT" "jwt" "https://github.com/mike-engel/jwt-cli/releases/download/${JWT_VERSION}/jwt-linux.tar.gz" "jwt" && \
+    installBinary "KAPP" "kapp" "https://github.com/k14s/kapp/releases/download/v${KAPP_VERSION}/kapp-linux-${OS_ARCH_2}" && \
+    addCompletion "KAPP" "kapp" "completion bash" && \
+    installBinary "KCTRL" "kctrl" "https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v${KCTRL_VERSION}/kctrl-linux-${OS_ARCH_2}" && \
+    addCompletion "KCTRL" "kctrl" "completion bash" && \
+    installBinary "KLBD" "klbd" "https://github.com/k14s/kbld/releases/download/v${KLBD_VERSION}/kbld-linux-${OS_ARCH_2}" && \
+    installBinary "KUBECTL" "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/${OS_ARCH_2}/kubectl" && \
+    addCompletion "KUBECTL" "kubectl" "completion bash" && sed -i "s+__start_kubectl kubectl+__start_kubectl kubectl k+g" /etc/bash_completion.d/kubectl && \
+    printf '\n=> Add KUBECTL_PLUGINS\n' && curl -sSL "https://github.com/kubernetes-sigs/krew/releases/download/v${KREW_VERSION}/krew-linux_${OS_ARCH_2}.tar.gz" | tar -xz -C /tmp && chmod 1777 /tmp && su -l bosh -s /bin/bash -c "export KREW_ROOT=/home/bosh/.krew ; export PATH=/home/bosh/.krew/bin:${PATH} ; /tmp/krew-linux_${OS_ARCH_2} install krew ; export IFS=, ; for plugin in \$(echo \"${KUBECTL_PLUGINS}\") ; do kubectl krew install \${plugin} ; done" && \
+    installTargz  "KUBECTL_WHOAMI" "kubectl-whoami" "https://github.com/rajatjindal/kubectl-whoami/releases/download/v${KUBECTL_WHOAMI_VERSION}/kubectl-whoami_v${KUBECTL_WHOAMI_VERSION}_linux_${OS_ARCH_2}.tar.gz" "kubectl-whoami" && \
+    installTargz  "KUBECTX" "kubectx" "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubectx_v${KUBECTX_VERSION}_linux_${OS_ARCH_1}.tar.gz" "kubectx" && \
+    installTargz  "KUBENS" "kubens" "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubens_v${KUBECTX_VERSION}_linux_${OS_ARCH_1}.tar.gz" "kubens" && \
+    installTargz  "KUSTOMIZE" "kustomize" "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${OS_ARCH_2}.tar.gz" "kustomize" && \
+    addCompletion "KUSTOMIZE" "kustomize" "completion bash" && \
+    installTargz  "KYVERNO" "kyverno" "https://github.com/kyverno/kyverno/releases/download/v${KYVERNO_VERSION}/kyverno-cli_v${KYVERNO_VERSION}_linux_x86_64.tar.gz" "kyverno" && \
+    addCompletion "KYVERNO" "kyverno" "completion bash" && \
+    installTargz  "K9S" "k9s" "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${OS_ARCH_2}.tar.gz" "k9s" && \
+    installBinary "MINIO" "mc" "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_2}/mc" && \
+    installTargz  "MONGO-SHELL" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}.tgz" "mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
+    printf '\n=> Add MYSQL-SHELL CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu22.04_${OS_ARCH_2}.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    installTargz  "OC" "oc" "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_CLI_VERSION}/openshift-client-linux-${OC_CLI_VERSION}.tar.gz" "oc" && \
+    addCompletion "OC" "oc" "completion bash" && \
+    installBinary "OCM" "ocm" "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_CLI_VERSION}/ocm-linux-${OS_ARCH_2}" && \
+    addCompletion "OCM" "ocm" "completion bash" && \
+    installTargz  "RBAC-TOOL" "rbac-tool" "https://github.com/alcideio/rbac-tool/releases/download/v${RBAC_TOOL_VERSION}/rbac-tool_v${RBAC_TOOL_VERSION}_linux_${OS_ARCH_2}.tar.gz" "rbac-tool" && \
+    addCompletion "RBAC-TOOL" "rbac-tool" "bash-completion" && \
+    printf '\n=> Add REDIS CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
+    installBinary "SHIELD" "shield" "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-${OS_ARCH_2}" && \
+    installBinary "SPRUCE" "spruce" "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-${OS_ARCH_2}" && \
+    installZip    "TERRAFORM" "terraform" "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${OS_ARCH_2}.zip" && \
+    printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && wget -nv https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O /tmp/install.sh && chmod 755 /tmp/install.sh /usr/local/bin/terraform && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /tmp/install.sh && \
+    installTargz  "TEST-KUBE" "kubectl-testkube" "https://github.com/kubeshop/testkube/releases/download/v${TEST_KUBE_VERSION}/testkube_${TEST_KUBE_VERSION}_Linux_${OS_ARCH_1}.tar.gz" "kubectl-testkube" && cd /usr/local/bin/ && ln -s kubectl-testkube testkube && ln -s kubectl-testkube tk && \
+    addCompletion "TEST-KUBE" "testkube" "completion bash" && sed -i "s+__start_testkube testkube+__start_testkube testkube tk+g" /etc/bash_completion.d/testkube && \
+    installTargz  "TFCTL" "tfctl" "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_CLI_VERSION}/tfctl_Linux_${OS_ARCH_2}.tar.gz" "tfctl" && \
+    installBinary "VCLUSTER" "vcluster" "https://github.com/loft-sh/vcluster/releases/download/v${VCLUSTER_VERSION}/vcluster-linux-${OS_ARCH_2}" && \
+    addCompletion "VCLUSTER" "vcluster" "completion bash" && \
+    installBinary "VENDIR" "vendir" "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-${OS_ARCH_2}" && \
+    installTargz  "YAML-PATH" "yaml-path" "https://github.com/psycofdj/yaml-path/releases/download/v${YAML_PATH_VERSION}/yaml-path-${YAML_PATH_VERSION}.linux-${OS_ARCH_2}.tar.gz" "yaml-path-${YAML_PATH_VERSION}.linux-${OS_ARCH_2}/yaml-path" && \
+    installBinary "YQ" "yq" "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${OS_ARCH_2}" && \
+    addCompletion "YQ" "yq" "shell-completion bash" && \
+    installBinary "YTT" "ytt" "https://github.com/k14s/ytt/releases/download/v${YTT_VERSION}/ytt-linux-${OS_ARCH_2}" && \
+    addCompletion "YTT" "ytt" "completion bash" && \
     printf '\n=> Add XDG-TOOL\n' && printf '#!/bin/bash\necho "Simulating browser invocation from xdg-open call with params: $@"\nsleep 1\nexit 0\n' > /usr/bin/xdg-open && chmod 755 /usr/bin/xdg-open && \
     printf '\n=====================================================\n Configure user account\n=====================================================\n' && \
     mv /tmp/tools/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \
