@@ -42,7 +42,7 @@ ENV ARGO_CLI_VERSION="3.4.7" \
     SPRUCE_VERSION="1.30.2" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TEST_KUBE_VERSION="1.11.22" \
+    TEST_KUBE_VERSION="1.12.3" \
     TFCTL_CLI_VERSION="0.14.2" \
     VCLUSTER_VERSION="0.15.0" \
     VENDIR_VERSION="0.33.2" \
@@ -52,7 +52,7 @@ ENV ARGO_CLI_VERSION="3.4.7" \
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg htop less locales nano python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux byobu yarnpkg vim" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg htop ldapscripts less locales nano python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux byobu yarnpkg vim" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois iperf3" \
     DEV_PACKAGES="build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
