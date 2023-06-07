@@ -3,12 +3,12 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_CLI_VERSION="3.4.7" \
+ENV ARGO_VERSION="3.4.7" \
     BBR_VERSION="1.9.45" \
-    BOSH_CLI_VERSION="7.2.3" \
-    BOSH_CLI_COMPLETION_VERSION="1.2.0" \
+    BOSH_VERSION="7.2.3" \
+    BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
-    CF_CLI_VERSION="8.6.1" \
+    CF_VERSION="8.6.1" \
     CF_UAAC_VERSION="4.14.0" \
     CILIUM_VERSION="0.14.3" \
     CREDHUB_VERSION="2.9.15" \
@@ -32,18 +32,18 @@ ENV ARGO_CLI_VERSION="3.4.7" \
     K9S_VERSION="0.27.4" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
-    OC_CLI_VERSION="4.10.25" \
-    OCM_CLI_VERSION="0.1.65" \
+    OC_VERSION="4.10.25" \
+    OCM_VERSION="0.1.65" \
     RBAC_TOOL_VERSION="1.14.1" \
-    REDIS_CLI_VERSION="6.2.4" \
+    REDIS_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
     SHIELD_VERSION="8.8.5" \
     SPRUCE_VERSION="1.30.2" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TEST_KUBE_VERSION="1.12.3" \
-    TFCTL_CLI_VERSION="0.14.2" \
+    TESTKUBE_VERSION="1.12.3" \
+    TFCTL_VERSION="0.14.2" \
     VCLUSTER_VERSION="0.15.0" \
     VENDIR_VERSION="0.33.2" \
     YAML_PATH_VERSION="0.4" \
@@ -102,12 +102,12 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     printf '\n- "tools" command display available tools.' >> /etc/motd && \
     printf '\n- "/data" is the only persistant volume (do not save data on other fs).\n\n' >> /etc/motd && chmod 644 /etc/motd && \
     printf '\n=====================================================\n Install clis and tools\n=====================================================\n' && \
-    installZip    "ARGO" "argo" "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_CLI_VERSION}/argo-linux-${OS_ARCH_2}.gz" && \
+    installZip    "ARGO" "argo" "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-${OS_ARCH_2}.gz" && \
     addCompletion "ARGO" "argo" "completion bash" && \
     installTar    "BBR" "bbr" "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" "releases/bbr" && \
-    installBinary "BOSH" "bosh" "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_VERSION}-linux-${OS_ARCH_2}" && \
-    printf '\n=> Add BOSH CLI completion\n' && curl -sSLo /home/bosh/bosh-complete-linux "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_CLI_COMPLETION_VERSION}/bosh-complete-linux" && chmod 755 /home/bosh/bosh-complete-linux && \
-    installTargz  "CF" "cf" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI_VERSION}&source=github-rel" "cf8" && \
+    installBinary "BOSH" "bosh" "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_VERSION}-linux-${OS_ARCH_2}" && \
+    printf '\n=> Add BOSH CLI completion\n' && curl -sSLo /home/bosh/bosh-complete-linux "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_COMPLETION_VERSION}/bosh-complete-linux" && chmod 755 /home/bosh/bosh-complete-linux && \
+    installTargz  "CF" "cf" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_VERSION}&source=github-rel" "cf8" && \
     printf '\n=> Add CF CLI completion\n' && curl -sSLo /etc/bash_completion.d/cf "https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf8" && \
     printf '\n=> Add CF-PLUGINS\n' && su -l bosh -s /bin/bash -c "export IFS=, ; for plugin in \$(echo \"${CF_PLUGINS}\") ; do cf install-plugin \"\${plugin}\" -r CF-Community -f ; done" && \
     printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
@@ -146,20 +146,20 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installBinary "MINIO" "mc" "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_2}/mc" && \
     installTargz  "MONGO-SHELL" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}.tgz" "mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_1}-${MONGO_SHELL_VERSION}/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
     printf '\n=> Add MYSQL-SHELL CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu22.04_${OS_ARCH_2}.deb" && dpkg -i /tmp/mysql-shell.deb && \
-    installTargz  "OC" "oc" "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_CLI_VERSION}/openshift-client-linux-${OC_CLI_VERSION}.tar.gz" "oc" && \
+    installTargz  "OC" "oc" "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz" "oc" && \
     addCompletion "OC" "oc" "completion bash" && \
-    installBinary "OCM" "ocm" "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_CLI_VERSION}/ocm-linux-${OS_ARCH_2}" && \
+    installBinary "OCM" "ocm" "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_VERSION}/ocm-linux-${OS_ARCH_2}" && \
     addCompletion "OCM" "ocm" "completion bash" && \
     installTargz  "RBAC-TOOL" "rbac-tool" "https://github.com/alcideio/rbac-tool/releases/download/v${RBAC_TOOL_VERSION}/rbac-tool_v${RBAC_TOOL_VERSION}_linux_${OS_ARCH_2}.tar.gz" "rbac-tool" && \
     addCompletion "RBAC-TOOL" "rbac-tool" "bash-completion" && \
-    printf '\n=> Add REDIS CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_CLI_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_CLI_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_CLI_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
+    printf '\n=> Add REDIS CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
     installBinary "SHIELD" "shield" "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-${OS_ARCH_2}" && \
     installBinary "SPRUCE" "spruce" "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-${OS_ARCH_2}" && \
     installZip    "TERRAFORM" "terraform" "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${OS_ARCH_2}.zip" && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && wget -nv https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O /tmp/install.sh && chmod 755 /tmp/install.sh /usr/local/bin/terraform && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /tmp/install.sh && \
-    installTargz  "TEST-KUBE" "kubectl-testkube" "https://github.com/kubeshop/testkube/releases/download/v${TEST_KUBE_VERSION}/testkube_${TEST_KUBE_VERSION}_Linux_${OS_ARCH_1}.tar.gz" "kubectl-testkube" && cd /usr/local/bin/ && ln -s kubectl-testkube testkube && ln -s kubectl-testkube tk && \
-    addCompletion "TEST-KUBE" "testkube" "completion bash" && sed -i "s+__start_testkube testkube+__start_testkube testkube tk+g" /etc/bash_completion.d/testkube && \
-    installTargz  "TFCTL" "tfctl" "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_CLI_VERSION}/tfctl_Linux_${OS_ARCH_2}.tar.gz" "tfctl" && \
+    installTargz  "TESTKUBE" "kubectl-testkube" "https://github.com/kubeshop/testkube/releases/download/v${TESTKUBE_VERSION}/testkube_${TESTKUBE_VERSION}_Linux_${OS_ARCH_1}.tar.gz" "kubectl-testkube" && cd /usr/local/bin/ && ln -s kubectl-testkube testkube && ln -s kubectl-testkube tk && \
+    addCompletion "TESTKUBE" "testkube" "completion bash" && sed -i "s+__start_testkube testkube+__start_testkube testkube tk+g" /etc/bash_completion.d/testkube && \
+    installTargz  "TFCTL" "tfctl" "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_VERSION}/tfctl_Linux_${OS_ARCH_2}.tar.gz" "tfctl" && \
     installBinary "VCLUSTER" "vcluster" "https://github.com/loft-sh/vcluster/releases/download/v${VCLUSTER_VERSION}/vcluster-linux-${OS_ARCH_2}" && \
     addCompletion "VCLUSTER" "vcluster" "completion bash" && \
     installBinary "VENDIR" "vendir" "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-${OS_ARCH_2}" && \

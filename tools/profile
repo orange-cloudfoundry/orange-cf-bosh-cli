@@ -104,6 +104,11 @@ if [ ! -L ${HOME}/.cf/plugins ] ; then
   ln -s /home/bosh/.cf/plugins ${HOME}/.cf/plugins
 fi
 
+#--- Set testkube configuration
+if [ ! -f ${HOME}/.testkube/config.json ] ; then
+  testkube config namespace 02-testkube > /dev/null 2>&1
+fi
+
 #--- Redefine Path to binary
 export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${HOME}/bosh/template/admin:${HOME}/.krew/bin:${PATH}
 
