@@ -44,7 +44,7 @@ plugin:
       - -c
       - "kubectl get kustomizations.kustomize.toolkit.fluxcd.io --all-namespaces --context $CONTEXT -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' |& less"
   kapp-inspect:
-    shortCut: Shift-Z
+    shortCut: Shift-I
     description: Kapp inspect
     scopes:
       - app
