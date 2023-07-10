@@ -59,6 +59,18 @@ plugin:
     args:
       - -c
       - "kubectl logs -f $POD -c $NAME --context $CONTEXT -n $NAMESPACE | less"
+  #--- View all information from helm releases in current namespace
+  helm-get-all:
+    shortCut: Shift-K
+    description: Helm Get All
+    scopes:
+      - helmreleases
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - "helm get all $NAME -n $NAMESPACE | less"
   #--- View user-supplied values when helm chart was created in current namespace
   helm-values:
     shortCut: v
@@ -121,7 +133,7 @@ plugin:
       - "kubectl get kustomizations.kustomize.toolkit.fluxcd.io --all-namespaces --context $CONTEXT -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' |& less"
   #--- Get selected k8s application informations in current namespace
   kapp-inspect:
-    shortCut: Shift-Z
+    shortCut: Shift-I
     description: Kapp inspect
     scopes:
       - app

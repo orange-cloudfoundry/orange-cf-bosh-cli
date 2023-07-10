@@ -5,24 +5,26 @@ ARG DEBIAN_FRONTEND=noninteractive
 #--- Clis versions
 ENV ARGO_VERSION="3.4.7" \
     BBR_VERSION="1.9.45" \
-    BOSH_VERSION="7.2.3" \
+    BOSH_VERSION="7.2.4" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
-    CF_VERSION="8.6.1" \
+    CF_VERSION="8.7.1" \
     CF_UAAC_VERSION="4.14.0" \
     CILIUM_VERSION="0.14.3" \
-    CREDHUB_VERSION="2.9.15" \
+    CREDHUB_VERSION="2.9.17" \
     FLUX_VERSION="0.41.2" \
     FLY_VERSION="7.9.1" \
-    GITHUB_VERSION="2.29.0" \
-    GOVC_VERSION="0.30.4" \
+    GITLAB_VERSION="1.31.0" \
+    GITHUB_VERSION="2.31.0" \
+    GOSS_VERSION="0.3.23" \
+    GOVC_VERSION="0.30.5" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.9.4" \
     JQ_VERSION="1.6" \
-    JWT_VERSION="5.0.3" \
-    KAPP_VERSION="0.56.0" \
-    KCTRL_VERSION="0.45.1" \
-    KLBD_VERSION="0.37.1" \
+    JWT_VERSION="6.0.0" \
+    KAPP_VERSION="0.57.1" \
+    KCTRL_VERSION="0.46.1" \
+    KLBD_VERSION="0.37.4" \
     KREW_VERSION="0.4.3" \
     KUBECTL_VERSION="1.24.9" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
@@ -42,13 +44,13 @@ ENV ARGO_VERSION="3.4.7" \
     SPRUCE_VERSION="1.30.2" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TESTKUBE_VERSION="1.12.3" \
-    TFCTL_VERSION="0.14.2" \
-    VCLUSTER_VERSION="0.15.0" \
-    VENDIR_VERSION="0.33.2" \
+    TESTKUBE_VERSION="1.13.0" \
+    TFCTL_VERSION="0.15.1" \
+    VCLUSTER_VERSION="0.15.2" \
+    VENDIR_VERSION="0.34.3" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.33.3" \
-    YTT_VERSION="0.45.1"
+    YQ_VERSION="4.34.1" \
+    YTT_VERSION="0.45.3"
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -119,8 +121,12 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installTargz  "FLY" "fly" "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-${OS_ARCH_2}.tgz" "fly" && \
     printf '\n=> Add GCLOUD CLI\n' && echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && chmod 1777 /tmp && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && apt-get update && apt-get install -y --no-install-recommends google-cloud-cli && \
     installBinary "GIT-FILTER-REPO" "git-filter-repo" "https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo" && \
-    installTargz  "GITHUB" "gh" "https://github.com/cli/cli/releases/download/v${GITHUB_VERSION}/gh_${GITHUB_VERSION}_linux_${OS_ARCH_2}.tar.gz" "gh_${GITHUB_VERSION}_linux_${OS_ARCH_2}/bin/gh" && \
-    addCompletion "GITHUB" "gh" "completion bash" && \
+    printf '\n=> Add GITLAB CLI\n' && curl -sSLo /tmp/glab_${GITLAB_VERSION}_Linux_x86_64.deb "https://gitlab.com/gitlab-org/cli/-/releases/v${GITLAB_VERSION}/downloads/glab_${GITLAB_VERSION}_Linux_x86_64.deb" && dpkg -i /tmp/glab_${GITLAB_VERSION}_Linux_x86_64.deb && \
+    printf "\n=> Add GITLAB CLI completion\n" ; /usr/bin/glab completion bash > /etc/bash_completion.d/glab && \
+    installTargz  "GITHUB CLI" "gh" "https://github.com/cli/cli/releases/download/v${GITHUB_VERSION}/gh_${GITHUB_VERSION}_linux_${OS_ARCH_2}.tar.gz" "gh_${GITHUB_VERSION}_linux_${OS_ARCH_2}/bin/gh" && \
+    addCompletion "GITHUB CLI" "gh" "completion bash" && \
+    installBinary "GOSS" "goss" "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss-linux-${OS_ARCH_2}" && \
+    installBinary "KGOSS" "kgoss" "https://raw.githubusercontent.com/orange-cloudfoundry/goss/kgoss-kubectl-opts/extras/kgoss/kgoss" && \
     installTargz  "GOVC" "govc" "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_${OS_ARCH_1}.tar.gz" "govc" && \
     installTargz  "GO3FR" "go3fr" "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_2}.tar.gz" "gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_2}/gof3r" && \
     installTargz  "HELM" "helm" "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${OS_ARCH_2}.tar.gz" "linux-${OS_ARCH_2}/helm" && \
