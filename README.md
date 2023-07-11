@@ -48,7 +48,7 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 
 ### How to get it
 Pull the image from github container registry:  
-<code>docker pull orangecloudfoundry/orange-cf-bosh-cli:<image_tag></code>
+<code>docker pull ghcr.io/orange-cloudfoundry/orange-cf-bosh-cli:<image_tag></code>
 
 ### How to build it
 Clone the repository:  
