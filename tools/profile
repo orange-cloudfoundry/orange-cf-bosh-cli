@@ -114,7 +114,7 @@ fi
 #--- Redefine Path to binary
 export PATH=.:/data/shared/${MY_BOSH_USER}/bin:${HOME}/bosh/template/admin:${HOME}/.krew/bin:${PATH}
 
-##--- Load user bash profile
+#--- Load user bash profile
 cp /home/bosh/bash_profile ${HOME}/.bash_profile
 . ${HOME}/.bash_profile
 cd ${HOME}

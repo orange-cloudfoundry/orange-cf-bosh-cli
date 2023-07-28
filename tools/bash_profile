@@ -110,3 +110,8 @@ fi
 #--- kubectl plugin completion
 source <(kubectl get-all completion bash | sed -e "s+ get-all$+ kubectl-get_all+g")
 source <(kubectl kuttl completion bash)
+
+#--- Load cf cli cmdb functions in user profile
+if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
+  source /usr/local/bin/cf-cli-cmdb-functions.bash
+fi
