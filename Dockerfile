@@ -36,6 +36,7 @@ ENV ARGO_VERSION="3.4.9" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
     OC_VERSION="4.10.25" \
     OCM_VERSION="0.1.67" \
+    POPEYE_VERSION="0.11.1" \
     RBAC_TOOL_VERSION="1.14.4" \
     REDIS_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="2.3.18" \
@@ -156,6 +157,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     addCompletion "OC" "oc" "completion bash" && \
     installBinary "OCM" "ocm" "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_VERSION}/ocm-linux-${OS_ARCH_2}" && \
     addCompletion "OCM" "ocm" "completion bash" && \
+    installTargz  "POPEYE" "popeye" "https://github.com/derailed/popeye/releases/download/v${POPEYE_VERSION}/popeye_Linux_x86_64.tar.gz" "popeye" && \
     installTargz  "RBAC-TOOL" "rbac-tool" "https://github.com/alcideio/rbac-tool/releases/download/v${RBAC_TOOL_VERSION}/rbac-tool_v${RBAC_TOOL_VERSION}_linux_${OS_ARCH_2}.tar.gz" "rbac-tool" && \
     addCompletion "RBAC-TOOL" "rbac-tool" "bash-completion" && \
     printf '\n=> Add REDIS CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
