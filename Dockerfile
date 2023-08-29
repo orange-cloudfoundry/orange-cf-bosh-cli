@@ -3,34 +3,34 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_VERSION="3.4.9" \
+ENV ARGO_VERSION="3.4.10" \
     BBR_VERSION="1.9.47" \
-    BOSH_VERSION="7.3.1" \
+    BOSH_VERSION="7.4.0" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CF_VERSION="8.7.1" \
-    CF_UAAC_VERSION="4.14.0" \
-    CILIUM_VERSION="0.15.4" \
-    CREDHUB_VERSION="2.9.18" \
+    CF_UAAC_VERSION="4.15.0" \
+    CILIUM_VERSION="0.15.6" \
+    CREDHUB_VERSION="2.9.19" \
     FLUX_VERSION="0.41.2" \
     FLY_VERSION="7.9.1" \
-    GITLAB_VERSION="1.31.0" \
-    GITHUB_VERSION="2.32.1" \
-    GOSS_VERSION="0.3.23" \
-    GOVC_VERSION="0.30.5" \
+    GITLAB_VERSION="1.32.0" \
+    GITHUB_VERSION="2.33.0" \
+    GOSS_VERSION="0.4.0" \
+    GOVC_VERSION="0.30.7" \
     GO3FR_VERSION="0.5.0" \
-    HELM_VERSION="3.9.4" \
+    HELM_VERSION="3.12.0" \
     JQ_VERSION="1.6" \
     JWT_VERSION="6.0.0" \
     KAPP_VERSION="0.58.0" \
-    KCTRL_VERSION="0.46.1" \
-    KLBD_VERSION="0.37.4" \
+    KCTRL_VERSION="0.47.0" \
+    KLBD_VERSION="0.37.5" \
     KREW_VERSION="0.4.4" \
     KUBECTL_VERSION="1.24.9" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
     KUBECTX_VERSION="0.9.5" \
     KUSTOMIZE_VERSION="4.5.7" \
-    KYVERNO_VERSION="1.10.2" \
+    KYVERNO_VERSION="1.10.3" \
     K9S_VERSION="0.27.4" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
@@ -45,17 +45,17 @@ ENV ARGO_VERSION="3.4.9" \
     SPRUCE_VERSION="1.30.2" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TESTKUBE_VERSION="1.13.7" \
+    TESTKUBE_VERSION="1.14.1" \
     TFCTL_VERSION="0.15.1" \
-    VCLUSTER_VERSION="0.15.2" \
-    VENDIR_VERSION="0.34.3" \
+    VCLUSTER_VERSION="0.15.7" \
+    VENDIR_VERSION="0.34.4" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.34.2" \
-    YTT_VERSION="0.45.3"
+    YQ_VERSION="4.35.1" \
+    YTT_VERSION="0.45.4"
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg htop ldapscripts less locales nano python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux byobu yarnpkg vim" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg htop ldapscripts less locales nano psmisc python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux byobu yarnpkg vim" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois iperf3" \
     DEV_PACKAGES="build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
@@ -63,7 +63,7 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report" \
-    KUBECTL_PLUGINS="ctx,get-all,ns,kuttl,who-can" \
+    KUBECTL_PLUGINS="cnpg,ctx,get-all,ns,kuttl,who-can" \
     OS_ARCH_1="x86_64" \
     OS_ARCH_2="amd64"
 
@@ -158,6 +158,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installBinary "OCM" "ocm" "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_VERSION}/ocm-linux-${OS_ARCH_2}" && \
     addCompletion "OCM" "ocm" "completion bash" && \
     installTargz  "POPEYE" "popeye" "https://github.com/derailed/popeye/releases/download/v${POPEYE_VERSION}/popeye_Linux_x86_64.tar.gz" "popeye" && \
+    addCompletion "POPEYE" "popeye" "completion bash" && \
     installTargz  "RBAC-TOOL" "rbac-tool" "https://github.com/alcideio/rbac-tool/releases/download/v${RBAC_TOOL_VERSION}/rbac-tool_v${RBAC_TOOL_VERSION}_linux_${OS_ARCH_2}.tar.gz" "rbac-tool" && \
     addCompletion "RBAC-TOOL" "rbac-tool" "bash-completion" && \
     printf '\n=> Add REDIS CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
