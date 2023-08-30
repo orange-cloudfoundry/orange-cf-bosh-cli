@@ -81,8 +81,9 @@ selectCluster() {
     "3") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-supervision" ; K8S_CONTEXT="supervision" ;;
     "4") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
     "5") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
-    "6") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
-    "7") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
+    "6") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-k8s-ha-datastore" ; K8S_CONTEXT="ha-datastore" ;;
+    "7") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
+    "8") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
     *) flag=0 ; clear ;;
   esac
 }
@@ -113,9 +114,9 @@ if [ ${flagError} = 0 ] ; then
   clear
   printf "\n%bGet clusters properties...%b\n" "${YELLOW}${REVERSE}" "${STD}"
   if [ "${SITE_NAME}" = "fe-int" ] ; then
-    MAX_ITEMS=7
+    MAX_ITEMS=8
   else
-    MAX_ITEMS=5
+    MAX_ITEMS=6
   fi
 
   for value in $(seq 1 ${MAX_ITEMS}) ; do
@@ -149,9 +150,10 @@ if [ ${flagError} = 0 ] ; then
     printf "%b3%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b4%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b5%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b6%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b6%b : ha datastore\n" "${GREEN}${BOLD}" "${STD}"
     if [ "${SITE_NAME}" = "fe-int" ] ; then
-      printf "%b7%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b8%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
     fi
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     selectCluster "${choice}"
