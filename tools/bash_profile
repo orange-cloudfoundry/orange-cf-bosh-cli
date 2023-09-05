@@ -7,6 +7,7 @@ export GREEN='\033[32m'
 export YELLOW='\033[33m'
 export BLUE='\033[34m'
 export CYAN='\033[36m'
+export WHITE='\033[37m'
 export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
@@ -84,8 +85,15 @@ set_k8s_prompt()
 }
 
 set_prompt() {
-  export PS1="\n${REVERSE}${GREEN}${MY_BOSH_USER}@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${BLUE}\w${STD}\n$ "
+  export PS1="\n${REVERSE}${SITE_TYPE_COLOR}${MY_BOSH_USER}@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${WHITE}\w${STD}\n$ "
 }
+
+case "${SITE_TYPE}" in
+  "integration") SITE_TYPE_COLOR="${BLUE}" ;;
+  "preproduction") SITE_TYPE_COLOR="${GREEN}" ;;
+  "production") SITE_TYPE_COLOR="${RED}" ;;
+  *) SITE_TYPE_COLOR="${BLUE}" ;;
+esac
 
 set_prompt
 
