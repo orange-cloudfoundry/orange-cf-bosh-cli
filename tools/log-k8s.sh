@@ -1,22 +1,20 @@
 #!/bin/bash
 #===========================================================================
 # Log to kubernetes clusters for clis (kubectl, helm, k9s)
+# Parameters :
+# --context, -c  : Select k8s context
+# --proxy, -p    : Set proxy for 
 #===========================================================================
 
 #--- Check scripts options
-flagError=0
+flagError=0 ; PROXY_MODE=0 ; context="" ; nbParameters=$#
 usage() {
   printf "\n%bUSAGE:" "${RED}"
   printf "\n  log-k8s [OPTIONS]\n\nOPTIONS:"
-  printf "\n  %-20s %s" "--proxy, -p " "Set proxy in kubeconfig"
+  printf "\n  %-40s %s" "--context, -c \"cluster context name\"" "Set k8s cluster context"
+  printf "\n  %-40s %s" "--proxy, -p " "Set proxy in kubeconfig"
   printf "%b\n\n" "${STD}" ; flagError=1
 }
-
-case "$1" in
-  "-p"|"--proxy") PROXY_MODE=1 ;;
-  "") PROXY_MODE=0 ;;
-  *) usage ;;
-esac
 
 #--- Update propertie value from KUBECONFIG file
 updateKubeConfig() {
@@ -76,17 +74,31 @@ getClusterConfiguration() {
 #--- Select k8s cluster
 selectCluster() {
   case "$1" in
-    "1") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-core-connectivity-k8s" ; K8S_CONTEXT="core-connectivity" ;;
-    "2") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="01-ci-k8s" ; K8S_CONTEXT="ci-k8s" ;;
-    "3") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-supervision" ; K8S_CONTEXT="supervision" ;;
-    "4") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
-    "5") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
-    "6") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-k8s-ha-datastore" ; K8S_CONTEXT="ha-datastore" ;;
-    "7") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
-    "8") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
-    *) flag=0 ; clear ;;
+    "1"|"core-connectivity") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-core-connectivity-k8s" ; K8S_CONTEXT="core-connectivity" ;;
+    "2"|"ci-k8s") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="01-ci-k8s" ; K8S_CONTEXT="ci-k8s" ;;
+    "3"|"supervision") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-supervision" ; K8S_CONTEXT="supervision" ;;
+    "4"|"marketplace") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
+    "5"|"shared-services") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
+    "6"|"ha-datastore") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-k8s-ha-datastore" ; K8S_CONTEXT="ha-datastore" ;;
+    "7"|"sandbox") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
+    "8"|"openshift-gcp") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
+    *) flag=0 ; flagError=1 ; clear ;;
   esac
 }
+
+#--- Check scripts options
+while [ ${nbParameters} -gt 0 ] ; do
+  case "$1" in
+    "-c"|"--context")
+      if [ "$2" = "" ] ; then
+        usage ; nbParameters=0
+      else
+        context="$2" ; shift ; shift ; nbParameters=$#
+      fi ;;
+    "-p"|"--proxy") PROXY_MODE=1 ; shift ; nbParameters=$# ;;
+    *) usage ; nbParameters=0 ;;
+  esac
+done
 
 #--- Log to credhub
 if [ ${flagError} = 0 ] ; then
@@ -142,22 +154,26 @@ fi
 if [ ${flagError} = 0 ] ; then
   #--- Select kubernetes cluster to work with
   flag=0
-  while [ ${flag} = 0 ] ; do
-    flag=1
-    printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-    printf "%b1%b : core connectivity\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b2%b : ci\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b3%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b4%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b5%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b6%b : ha datastore\n" "${GREEN}${BOLD}" "${STD}"
-    if [ "${SITE_NAME}" = "fe-int" ] ; then
-      printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b8%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
-    fi
-    printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
-    selectCluster "${choice}"
-  done
+  if [ "${context}" = "" ] ; then
+    while [ ${flag} = 0 ] ; do
+      flag=1
+      printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
+      printf "%b1%b : core connectivity\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b2%b : ci\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b3%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b4%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b5%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b6%b : ha datastore\n" "${GREEN}${BOLD}" "${STD}"
+      if [ "${SITE_NAME}" = "fe-int" ] ; then
+        printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
+        printf "%b8%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
+      fi
+      printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+      selectCluster "${choice}"
+    done
+  else
+    selectCluster "${context}"
+  fi
 
   #--- Concatenate clusters config files and set current context
   export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
