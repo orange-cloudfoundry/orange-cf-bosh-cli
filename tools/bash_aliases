@@ -16,6 +16,7 @@ alias check-k8s='/usr/local/bin/check-k8s.sh'
 alias clean-prometheus-tasks='for var in $(bosh tasks | grep "prometheus" | grep -E "queued|processing" | sed -e "s+\t.*++g") ; do bosh cancel-task $var ; done'
 alias credhub-get='function __cg() { index=$2 ; log-credhub -i ; credhub get -n $1 --versions=$(($index + 1)) -j | jq -r .versions[$index].value; }; __cg'
 alias fly='fly -t concourse'
+alias get-minio-token='kctx core-connectivity ; kubectl -n 60-minio-operator get secret $(kubectl -n 60-minio-operator get serviceaccount console-sa -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode'
 alias hm-bosh-tasks="bosh tasks -a -r=20000 --json | jq -r '.Tables[].Rows[]|select(.user == \"hm\")|.started_at + \" \" + .id + \" \" +  .description + \" \" + .deployment + \" => \" + .result'"
 alias k='/usr/local/bin/kubectl'
 alias kctx='/usr/local/bin/kubectx'

@@ -3,30 +3,30 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_VERSION="3.4.10" \
+ENV ARGO_VERSION="3.4.11" \
     BBR_VERSION="1.9.47" \
     BOSH_VERSION="7.4.0" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
-    CF_VERSION="8.7.1" \
+    CF_VERSION="8.7.3" \
     CF_UAAC_VERSION="4.15.0" \
-    CILIUM_VERSION="0.15.6" \
-    CREDHUB_VERSION="2.9.19" \
+    CILIUM_VERSION="0.15.8" \
+    CREDHUB_VERSION="2.9.21" \
     FLUX_VERSION="0.41.2" \
-    FLY_VERSION="7.9.1" \
-    GITLAB_VERSION="1.32.0" \
-    GITHUB_VERSION="2.33.0" \
-    GOSS_VERSION="0.4.0" \
+    FLY_VERSION="7.10.0" \
+    GITLAB_VERSION="1.33.0" \
+    GITHUB_VERSION="2.35.0" \
+    GOSS_VERSION="0.4.2" \
     GOVC_VERSION="0.30.7" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.12.0" \
     JQ_VERSION="1.6" \
     JWT_VERSION="6.0.0" \
-    KAPP_VERSION="0.58.0" \
+    KAPP_VERSION="0.59.0" \
     KCTRL_VERSION="0.47.0" \
     KLBD_VERSION="0.37.5" \
     KREW_VERSION="0.4.4" \
-    KUBECTL_VERSION="1.24.9" \
+    KUBECTL_VERSION="1.24.12" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
     KUBECTX_VERSION="0.9.5" \
     KUSTOMIZE_VERSION="4.5.7" \
@@ -42,16 +42,16 @@ ENV ARGO_VERSION="3.4.10" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
     SHIELD_VERSION="8.8.6" \
-    SPRUCE_VERSION="1.30.2" \
+    SPRUCE_VERSION="1.31.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TESTKUBE_VERSION="1.14.1" \
+    TESTKUBE_VERSION="1.14.4" \
     TFCTL_VERSION="0.15.1" \
     VCLUSTER_VERSION="0.15.7" \
-    VENDIR_VERSION="0.34.4" \
+    VENDIR_VERSION="0.35.0" \
     YAML_PATH_VERSION="0.4" \
     YQ_VERSION="4.35.1" \
-    YTT_VERSION="0.45.4"
+    YTT_VERSION="0.45.6"
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -116,7 +116,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
     installTargz  "CILIUM" "cilium" "https://github.com/cilium/cilium-cli/releases/download/v${CILIUM_VERSION}/cilium-linux-${OS_ARCH_2}.tar.gz" "cilium" && \
     addCompletion "CILIUM" "cilium" "completion bash" && \
-    installTargz  "CREDHUB" "credhub" "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz" "credhub" && \
+    installTargz  "CREDHUB" "credhub" "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${OS_ARCH_2}-${CREDHUB_VERSION}.tgz" "credhub" && \
     installTargz  "FLUX" "flux" "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_${OS_ARCH_2}.tar.gz" "flux" && \
     addCompletion "FLUX" "flux" "completion bash" && \
     installTargz  "FLY" "fly" "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-${OS_ARCH_2}.tgz" "fly" && \
