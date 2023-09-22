@@ -25,16 +25,11 @@ fi
 #--- Set dynamic user prompt
 set_proxy_prompt()
 {
-  case "${https_proxy}" in
-    "http://intranet-http-proxy.internal.paas:3129") PROXY_TYPE="intranet" ;;
-    "http://system-internet-http-proxy.internal.paas:3128") PROXY_TYPE="internet" ;;
-    "") PROXY_TYPE="" ;;
-  esac
-
-  if [ "${PROXY_TYPE}" = "" ] ; then
-    echo ""
-  else
+  if [ ! -z "${PROXY_TYPE}" ] ; then
     echo "${PROXY_SYMBOL}${PROXY_TYPE} proxy "
+  else
+    unset PROXY_TYPE PROXY_HOST PROXY_PORT http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
+    echo ""
   fi
 }
 
