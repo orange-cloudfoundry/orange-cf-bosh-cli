@@ -1,6 +1,6 @@
 #!/bin/bash
 #===========================================================================
-# Log with bosh cli V2
+# Log with bosh cli
 # Parameters :
 # --target, -t      : Bosh director target (micro, master, ops...)
 # --deployment, -d  : Bosh deployment name
@@ -139,5 +139,4 @@ if [ ${flagError} = 0 ] ; then
     fi
   fi
 fi
-
 printf "\n"
