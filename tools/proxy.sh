@@ -4,8 +4,8 @@
 # Parameters :
 # -a, --intranet  : Set intranet proxy
 # -i, --internet  : Set internet proxy
-# -s, --switch    : Set switch proxy
-# -c, --corporate : Set corporate proxy
+# -s, --switch    : Set switch proxy (use intranet/internet proxy)
+# -c, --corporate : Set internet corporate proxy
 #===========================================================================
 
 #--- Check scripts options
@@ -14,8 +14,8 @@ usage() {
   printf "\n  proxy [OPTIONS]\n\nOPTIONS:"
   printf "\n  %-20s %s" "-a, --intranet" "Set intranet proxy"
   printf "\n  %-20s %s" "-i, --internet" "Set internet proxy"
-  printf "\n  %-20s %s" "-s, --switch" "Set switch proxy"
-  printf "\n  %-20s %s" "-c, --corporate" "Set corporate proxy"
+  printf "\n  %-20s %s" "-s, --switch" "Set switch proxy (use intranet/internet proxy)"
+  printf "\n  %-20s %s" "-c, --corporate" "Set internet corporate proxy"
   printf "%b\n\n" "${STD}"
   flagError=1
 }
@@ -52,17 +52,20 @@ case "$1" in
   "-a"|"--intranet")
     PROXY_TYPE="intranet"
     PROXY_HOST="intranet-http-proxy.internal.paas"
-    PROXY_PORT="3129" ;;
+    PROXY_PORT="3129"
+    NO_PROXY="${NO_PROXY_INTERNAL}" ;;
 
   "-i"|"--internet"|"")
     PROXY_TYPE="internet"
     PROXY_HOST="system-internet-http-proxy.internal.paas"
-    PROXY_PORT="3128" ;;
+    PROXY_PORT="3128"
+    NO_PROXY="${NO_PROXY_INTERNAL},${INTRANET_DOMAINS}" ;;
 
   "-s"|"--switch")
     PROXY_TYPE="switch"
     PROXY_HOST="switch-http-proxy.internal.paas"
-    PROXY_PORT="3127" ;;
+    PROXY_PORT="3127"
+    NO_PROXY="${NO_PROXY_INTERNAL}" ;;
 
   "-c"|"--corporate")
     PROXY_TYPE="corporate"
@@ -70,7 +73,8 @@ case "$1" in
     if [ ${flagError} = 0 ] ; then
       getCredhubValue "PROXY_HOST" "/secrets/multi_region_region_1_corporate_internet_proxy_host"
       getCredhubValue "PROXY_PORT" "/secrets/multi_region_region_1_corporate_internet_proxy_port"
-    fi ;;
+    fi
+    NO_PROXY="${NO_PROXY_INTERNAL},${INTRANET_DOMAINS}" ;;
 
   *) usage ;;
 esac
@@ -87,8 +91,8 @@ if [ ${flagError} = 0 ] ; then
     export HTTP_PROXY=${PROXY}
     export https_proxy=${PROXY}
     export HTTPS_PROXY=${PROXY}
-    export NO_PROXY="${NO_PROXY_INTERNAL},${INTRANET_DOMAINS}"
     export no_proxy=${NO_PROXY}
+    export NO_PROXY
   fi
 
   #--- Don't set prompt if NO_PROMPT var is not empty

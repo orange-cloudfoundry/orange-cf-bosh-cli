@@ -58,7 +58,7 @@ while [ ${nbParameters} -gt 0 ] ; do
 done
 
 #--- Get vm properties
-printf "\n%bvm properties...%b\n" "${REVERSE}${YELLOW}" "${STD}"
+printf "\n%bGet \"${vm_name}\" properties...%b\n" "${REVERSE}${YELLOW}" "${STD}"
 vm_info="$(govc vm.info -json ${vm_name} | jq -r '.VirtualMachines[]' 2> /dev/null)"
 if [ "${vm_info}" = "" ] ; then
   printf "\n%bERROR : No existing vm with name \"${vm_name}\".%b\n\n" "${RED}" "${STD}" ; exit 1
@@ -76,8 +76,8 @@ nb_cpus="$(echo "${vm_info}" | jq -r '.Summary.Config.NumCpu')"
 memory_size="$(echo "${vm_info}" | jq -r '.Summary.Config.MemorySizeMB')"
 nb_diks="$(echo "${vm_info}" | jq -r '.Summary.Config.NumVirtualDisks')"
 nb_ethernet="$(echo "${vm_info}" | jq -r '.Summary.Config.NumEthernetCards')"
-vm_ips="$(echo "${vm_info}" | jq -r '.Guest?.Net[]?.IpAddress[]' | tr '\n' ' ')"
-if [ "${vm_ips}" =  "" ] ; then
+vm_ips="$(echo "${vm_info}" | jq -r '.Guest?.Net[]?.IpAddress[]?' | tr '\n' ' ')"
+if [ "${vm_ips}" = "" ] ; then
   vm_ips="$(echo "${vm_info}" | jq -r '.Guest.IpAddress')"
 fi
 macAddress="$(echo "${vm_info}" | jq -r '.Config.Hardware.Device[]|.MacAddress' | grep -v "^$" | grep -v "null" | tr '\n' ' ')"

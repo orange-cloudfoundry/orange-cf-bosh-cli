@@ -13,20 +13,28 @@ getCredhubValue() {
   fi
 }
 
-#--- Log to credhub
+#--- Check if connected to intranet/switch proxy
 flagError=0
-flag=$(credhub f > /dev/null 2>&1)
-if [ $? != 0 ] ; then
-  printf "\n%bLDAP user and password :%b\n" "${REVERSE}${GREEN}" "${STD}"
-  printf "username: " ; read LDAP_USER
-  credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
+flag_proxy="$(echo "${http_proxy}" | grep -E ":3127|:3129")"
+if [ "${flag_proxy}" = "" ] ; then
+  printf "\n%bERROR : You must set intranet/switch proxy before using this script.%b\n\n" "${RED}" "${STD}" ; flagError=1
+fi
+
+#--- Log to credhub
+if [ ${flagError} = 0 ] ; then
+  flag=$(credhub f > /dev/null 2>&1)
   if [ $? != 0 ] ; then
-    printf "\n%bERROR : LDAP authentication failed with \"${LDAP_USER}\" account.%b\n\n" "${RED}" "${STD}" ; flagError=1
+    printf "\n%bLDAP user and password :%b\n" "${REVERSE}${GREEN}" "${STD}"
+    printf "username: " ; read LDAP_USER
+    credhub login --server=https://credhub.internal.paas:8844 -u ${LDAP_USER}
+    if [ $? != 0 ] ; then
+      printf "\n%bERROR : LDAP authentication failed with \"${LDAP_USER}\" account.%b\n\n" "${RED}" "${STD}" ; flagError=1
+    fi
   fi
 fi
 
+#--- Select vcenter
 if [ ${flagError} = 0 ] ; then
-  #--- Select vcenter
   flag=0
   while [ ${flag} = 0 ] ; do
     flag=1
