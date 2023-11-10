@@ -10,7 +10,7 @@ ENV ARGO_VERSION="3.4.11" \
     BOSH_GEN_VERSION="0.101.2" \
     CF_VERSION="8.7.3" \
     CF_UAAC_VERSION="4.15.0" \
-    CILIUM_VERSION="0.15.8" \
+    CILIUM_VERSION="0.15.13" \
     CREDHUB_VERSION="2.9.21" \
     FLUX_VERSION="0.41.2" \
     FLY_VERSION="7.9.1" \
@@ -20,6 +20,7 @@ ENV ARGO_VERSION="3.4.11" \
     GOVC_VERSION="0.30.7" \
     GO3FR_VERSION="0.5.0" \
     HELM_VERSION="3.12.0" \
+    HUBBLE_VERSION="0.12.2" \
     JQ_VERSION="1.6" \
     JWT_VERSION="6.0.0" \
     KAPP_VERSION="0.59.0" \
@@ -132,6 +133,8 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installTargz  "GO3FR" "go3fr" "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_2}.tar.gz" "gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_2}/gof3r" && \
     installTargz  "HELM" "helm" "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${OS_ARCH_2}.tar.gz" "linux-${OS_ARCH_2}/helm" && \
     addCompletion "HELM" "helm" "completion bash" && \
+    installTargz  "HUBBLE" "hubble" "https://github.com/cilium/hubble/releases/download/v${HUBBLE_VERSION}/hubble-linux-${OS_ARCH_2}.tar.gz" "hubble" && \
+    addCompletion "HUBBLE" "hubble" "completion bash" && \
     installBinary "JQ" "jq" "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
     installTargz  "JWT" "jwt" "https://github.com/mike-engel/jwt-cli/releases/download/${JWT_VERSION}/jwt-linux.tar.gz" "jwt" && \
     installBinary "KAPP" "kapp" "https://github.com/k14s/kapp/releases/download/v${KAPP_VERSION}/kapp-linux-${OS_ARCH_2}" && \

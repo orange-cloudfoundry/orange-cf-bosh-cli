@@ -36,6 +36,7 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `argo` - Kubernetes workflow management (https://argoproj.github.io/argo-workflows/)
 * `flux` - Kubernetes Gitops management (https://fluxcd.io/docs/cmd/)
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
+* `hubble` - Kubernetes Monitoring management (https://github.com/cilium/hubble/)
 * `kapp` - Kubernetes YAML tool (https://github.com/k14s/kapp/)
 * `klbd` - Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)
 * `kubectl` - Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
