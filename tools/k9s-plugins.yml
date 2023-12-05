@@ -190,7 +190,7 @@ plugin:
     confirm: true
     args:
       - -c
-      - "flux $([ $(kubectl get helmreleases --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") helmrelease --context $CONTEXT -n $NAMESPACE $NAME |& less"
+      - "suspend-resume-hr.sh $CONTEXT $NAMESPACE $NAME"
   #--- Suspend/reconcile selected kustomization in current namespace
   toggle-kustomization:
     shortCut: Shift-T
