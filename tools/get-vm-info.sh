@@ -40,7 +40,7 @@ while [ ${nbParameters} -gt 0 ] ; do
         usage
       else
         vm_macaddress="$(echo "${vm_macaddress}" | tr [:upper:] [:lower:])"
-        vm_id="$(govc object.collect -json -type m / config.hardware.device | jq -r '. | select(.ChangeSet[].Val.VirtualDevice[].MacAddress == "'$vm_macaddress'") | [.Obj.Type, .Obj.Value] | join(":")')"
+        vm_id="$(govc object.collect -json -type m / config.hardware.device | jq -r '. | select(.changeSet[].val.virtualDevice[].macAddress == "'$vm_macaddress'") | [.obj.type, .obj.value] | join(":")')"
         if [ "${vm_id}" = "" ] ; then
           printf "\n%bERROR :  No existing vm with mac address \"${vm_macaddress}\".%b\n\n" "${RED}" "${STD}" ; exit 1
         fi
@@ -59,40 +59,40 @@ done
 
 #--- Get vm properties
 printf "\n%bGet \"${vm_name}\" properties...%b\n" "${REVERSE}${YELLOW}" "${STD}"
-vm_info="$(govc vm.info -json ${vm_name} | jq -r '.VirtualMachines[]' 2> /dev/null)"
+vm_info="$(govc vm.info -json ${vm_name} | jq -r '.virtualMachines[]' 2> /dev/null)"
 if [ "${vm_info}" = "" ] ; then
   printf "\n%bERROR : No existing vm with name \"${vm_name}\".%b\n\n" "${RED}" "${STD}" ; exit 1
 fi
 
 vm_host="$(govc vm.info ${vm_name} | awk '/Host/ {print $2}')"
-datastore="$(echo "${vm_info}" | jq -r '.Config.DatastoreUrl[].Name')"
-power_state="$(echo "${vm_info}" | jq -r '.Summary.Runtime.PowerState')"
-vm_uptime="$(echo "${vm_info}" | jq -r '.Summary.QuickStats.UptimeSeconds')"
+datastore="$(echo "${vm_info}" | jq -r '.config.datastoreUrl[].name')"
+power_state="$(echo "${vm_info}" | jq -r '.summary.runtime.powerState')"
+vm_uptime="$(echo "${vm_info}" | jq -r '.summary.quickStats.uptimeSeconds')"
 vm_uptime_days="$(expr ${vm_uptime} / 86400)"
 vm_uptime_hours="$(expr ${vm_uptime} % 86400 / 3600)"
 vm_uptime_mn="$(expr ${vm_uptime} % 3600 / 60)"
 vm_uptime="$(printf "%d days %d hours %d mn\n" ${vm_uptime_days} ${vm_uptime_hours} ${vm_uptime_mn})"
-nb_cpus="$(echo "${vm_info}" | jq -r '.Summary.Config.NumCpu')"
-memory_size="$(echo "${vm_info}" | jq -r '.Summary.Config.MemorySizeMB')"
-nb_diks="$(echo "${vm_info}" | jq -r '.Summary.Config.NumVirtualDisks')"
-nb_ethernet="$(echo "${vm_info}" | jq -r '.Summary.Config.NumEthernetCards')"
-vm_ips="$(echo "${vm_info}" | jq -r '.Guest?.Net[]?.IpAddress[]?' | tr '\n' ' ')"
+nb_cpus="$(echo "${vm_info}" | jq -r '.summary.config.numCpu')"
+memory_size="$(echo "${vm_info}" | jq -r '.summary.config.memorySizeMB')"
+nb_diks="$(echo "${vm_info}" | jq -r '.summary.config.numVirtualDisks')"
+nb_ethernet="$(echo "${vm_info}" | jq -r '.summary.config.numEthernetCards')"
+vm_ips="$(echo "${vm_info}" | jq -r '.guest?.net[]?.ipAddress[]?' | tr '\n' ' ')"
 if [ "${vm_ips}" = "" ] ; then
-  vm_ips="$(echo "${vm_info}" | jq -r '.Guest.IpAddress')"
+  vm_ips="$(echo "${vm_info}" | jq -r '.guest.ipAddress')"
 fi
-macAddress="$(echo "${vm_info}" | jq -r '.Config.Hardware.Device[]|.MacAddress' | grep -v "^$" | grep -v "null" | tr '\n' ' ')"
+macAddress="$(echo "${vm_info}" | jq -r '.config.hardware.device[]|.macAddress' | grep -v "^$" | grep -v "null" | tr '\n' ' ')"
 
-bosh_properties="$(echo "${vm_info}" | jq -r '.Value')"
+bosh_properties="$(echo "${vm_info}" | jq -r '.value')"
 if [ "${bosh_properties}" != "null" ] ; then
-  tags="$(echo "${vm_info}" | jq -r '.AvailableField[]')"
-  key="$(echo "${tags}" | jq -r '.|select(.Name == "director")|.Key')"
-  director="$(echo "${bosh_properties}" | jq -r --arg KEY "${key}" '.[]|select(.Key|tostring == $KEY)|.Value')"
-  key="$(echo "${tags}" | jq -r '.|select(.Name == "deployment")|.Key')"
-  deployment="$(echo "${bosh_properties}" | jq -r --arg KEY "${key}" '.[]|select(.Key|tostring == $KEY)|.Value')"
-  key="$(echo "${tags}" | jq -r '.|select(.Name == "name")|.Key')"
-  instance="$(echo "${bosh_properties}" | jq -r --arg KEY "${key}" '.[]|select(.Key|tostring == $KEY)|.Value')"
-  key="$(echo "${tags}" | jq -r '.|select(.Name == "created_at")|.Key')"
-  created="$(echo "${bosh_properties}" | jq -r --arg KEY "${key}" '.[]|select(.Key|tostring == $KEY)|.Value')"
+  tags="$(echo "${vm_info}" | jq -r '.availableField[]')"
+  key="$(echo "${tags}" | jq -r '.|select(.name == "director")|.key')"
+  director="$(echo "${bosh_properties}" | jq -r --arg KEY "${key}" '.[]|select(.key|tostring == $KEY)|.value')"
+  key="$(echo "${tags}" | jq -r '.|select(.name == "deployment")|.key')"
+  deployment="$(echo "${bosh_properties}" | jq -r --arg KEY "${key}" '.[]|select(.key|tostring == $KEY)|.value')"
+  key="$(echo "${tags}" | jq -r '.|select(.name == "name")|.key')"
+  instance="$(echo "${bosh_properties}" | jq -r --arg KEY "${key}" '.[]|select(.key|tostring == $KEY)|.value')"
+  key="$(echo "${tags}" | jq -r '.|select(.name == "created_at")|.key')"
+  created="$(echo "${bosh_properties}" | jq -r --arg KEY "${key}" '.[]|select(.key|tostring == $KEY)|.value')"
   printf "bosh director   : ${director}\n"
   printf "bosh deployment : ${deployment}\n"
   printf "bosh instance   : ${instance}\n"
