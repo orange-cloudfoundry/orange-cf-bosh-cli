@@ -64,7 +64,7 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report" \
-    KUBECTL_PLUGINS="cnpg,ctx,foreach,gadget, get-all,ns,kuttl,who-can" \
+    KUBECTL_PLUGINS="cnpg,ctx,foreach,gadget,get-all,ns,kuttl,who-can" \
     OS_ARCH_1="x86_64" \
     OS_ARCH_2="amd64"
 
