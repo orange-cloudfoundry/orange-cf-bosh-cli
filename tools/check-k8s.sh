@@ -20,9 +20,9 @@ checkClusterResources() {
     fi
 
     #--- Check pods
-    result="$(kubectl get pods -A --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-18s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
+    result="$(kubectl get pods -A --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-32s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS             READY  POD                                                                                  %b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bSTATUS                           READY  POD                                                                                  %b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
@@ -39,6 +39,12 @@ checkClusterResources() {
 
     if [ "${result}" != "" ] ; then
       printf "\n%bREADY  SUSP.  KIND             NAMESPACE/NAME                                                                  %b\n${result}\n" "${GREEN}" "${STD}"
+    fi
+
+    #--- Check pending services
+    pending_services="$(kubectl get svc -A --context ${context} --request-timeout=1s --no-headers=true 2>&1 | grep "LoadBalancer" | grep "<none>" | awk '{print $1"/"$2}')"
+    if [ "${pending_services}" != "" ] ; then
+      printf "\n%bK8S pending services%b\n${pending_services}\n" "${GREEN}" "${STD}"
     fi
   fi
 }
