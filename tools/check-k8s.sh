@@ -26,23 +26,23 @@ checkClusterResources() {
     fi
 
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
-    result="$(flux get all -A --context ${context} | awk '{print $1 " " $2 " " $3 " " $4 " " $5}' | grep -E " False | True " | awk '{
-      if ($3 == "False" || $3 == "True") {
-        if($4 == "False" || $4 == "True") {ts=$3 ; tr=$4} else {ts="False" ; tr=$3}
-      } else {ts=$4 ; tr=$5}
-
-      if (ts == "True" || tr == "False") {
-        k=$2 ; gsub("/.*", "", k) ; n=$2 ; gsub(".*/", "", n)
-        printf "%-6s %-6s %-16s %s \n", tr, ts, k, $1"/"n
+    result="$(flux get all -A --context ${context} | tr -s '\t' ' ' | grep -E "kustomization/|helmchart/|helmrelease/|helmrepository/|gitrepository/" | grep -E " False | True " | sed -e "s+ +|+" | sed -E "s+ (False|True) (False|True)(.*)+|\1 \2+" | sed -e "s+ .*|+|+" -e "s+|+ +g" | awk '{
+      namespace=$1
+      kind=$2 ; gsub("/.*", "", kind)
+      name=$2 ; gsub(".*/", "", name)
+      suspended=$3
+      ready=$4
+      if (suspended == "True" || ready == "False") {
+        printf "%-8s %-6s %-16s %s \n", ready, suspended, kind, namespace"/"name
       }
     }')"
 
     if [ "${result}" != "" ] ; then
-      printf "\n%bREADY  SUSP.  KIND             NAMESPACE/NAME                                                                  %b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bREADY    SUSP.  KIND             NAMESPACE/NAME                                                                  %b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check pending services
-    pending_services="$(kubectl get svc -A --context ${context} --request-timeout=1s --no-headers=true 2>&1 | grep "LoadBalancer" | grep "<none>" | awk '{print $1"/"$2}')"
+    pending_services="$(kubectl get svc -A --context ${context} --request-timeout=1s --no-headers=true 2>&1 | grep " LoadBalancer " | grep -E "<none>|<pending>" | awk '{print $1"/"$2}')"
     if [ "${pending_services}" != "" ] ; then
       printf "\n%bK8S pending services%b\n${pending_services}\n" "${GREEN}" "${STD}"
     fi

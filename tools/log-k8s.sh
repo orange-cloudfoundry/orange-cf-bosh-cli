@@ -158,12 +158,12 @@ if [ ${flagError} = 0 ] ; then
     while [ ${flag} = 0 ] ; do
       flag=1
       printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-      printf "%b1%b : core connectivity\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b1%b : core-connectivity\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b2%b : ci\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b3%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b4%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b5%b : shared services\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b6%b : ha datastore\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b5%b : shared-services\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b6%b : ha-datastore\n" "${GREEN}${BOLD}" "${STD}"
       if [ "${SITE_NAME}" = "fe-int" ] ; then
         printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
         printf "%b8%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
