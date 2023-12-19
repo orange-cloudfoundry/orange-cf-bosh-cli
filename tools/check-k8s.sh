@@ -26,13 +26,13 @@ checkClusterResources() {
     fi
 
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
-    result="$(flux get all -A --context ${context} | tr -s '\t' ' ' | grep -E "kustomization/|helmchart/|helmrelease/|helmrepository/|gitrepository/" | grep -E " False | True " | sed -e "s+ +|+" | sed -E "s+ (False|True) (False|True)(.*)+|\1 \2+" | sed -e "s+ .*|+|+" -e "s+|+ +g" | awk '{
+    result="$(flux get all -A --context ${context} | tr -s '\t' ' ' | grep -E "kustomization/|helmchart/|helmrelease/|helmrepository/|gitrepository/" | grep -E " False | True | Unknown " | sed -e "s+ +|+" | sed -E "s+ (False|True) (False|True)(.*)+|\1 \2+" | sed -e "s+ .*|+|+" -e "s+|+ +g" | awk '{
       namespace=$1
       kind=$2 ; gsub("/.*", "", kind)
       name=$2 ; gsub(".*/", "", name)
       suspended=$3
       ready=$4
-      if (suspended == "True" || ready == "False") {
+      if (suspended == "True" || ready == "False" || ready == "Unknown") {
         printf "%-8s %-6s %-16s %s \n", ready, suspended, kind, namespace"/"name
       }
     }')"
