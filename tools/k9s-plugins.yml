@@ -1,4 +1,16 @@
 plugin:
+  #--- Open root shell from nodes
+  node-shell:
+    shortCut: Shift-S
+    description: Root shell
+    scopes:
+      - nodes
+    command: bash
+    background: false
+    confirm: true
+    args:
+      - -c
+      - "root-shell.sh $NAME"
   #--- Get events for selected k8s objects every 5s
   watch-events:
     shortCut: Shift-E
