@@ -48,7 +48,7 @@ chmod 0700 ${GIT_CREDS_DIR} > /dev/null 2>&1
 #--- Redefine command history file path
 export HISTFILE=${HOME}/.bash_history
 
-#--- Set vi configuration
+#--- Enhance vi configuration
 if [ ! -d ${HOME}/.vim/plugin ] ; then
   mkdir -p ${HOME}/.vim/plugin
 fi
@@ -79,13 +79,19 @@ EOF
 #--- Set kubeclt read-only editor
 export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh"
 
-#--- Set k9s config path and create k9s plugins
-export K9SCONFIG=${HOME}/.k9s
-if [ ! -d ${K9SCONFIG} ] ; then
-  mkdir -p ${K9SCONFIG}
+#--- Set k9s config path, delete obsolete configurations and create k9s plugins
+export K9S_CONFIG_DIR=${HOME}/.k9s
+if [ ! -d ${K9S_CONFIG_DIR} ] ; then
+  mkdir -p ${K9S_CONFIG_DIR}
+fi
+if [ -f ${K9S_CONFIG_DIR}/config.yml ] ; then
+  rm -f {K9S_CONFIG_DIR}/config.yml > /dev/null 2>&1
+fi
+if [ -f ${K9S_CONFIG_DIR}/plugin.yml ] ; then
+  rm -f {K9S_CONFIG_DIR}/plugin.yml > /dev/null 2>&1
 fi
 
-cp /home/bosh/.k9s/plugin.yml ${K9SCONFIG}/plugin.yml
+cp /home/bosh/.k9s/plugins.yaml ${K9S_CONFIG_DIR}/plugins.yaml
 
 #--- Set kubectl krew repository
 if [ -d /home/bosh/.krew ] ; then
@@ -93,7 +99,7 @@ if [ -d /home/bosh/.krew ] ; then
   ln -s /home/bosh/.krew ${HOME}/.krew
 fi
 
-#--- Set Cloud Foundry plugins repository
+#--- Set Cloud-Foundry plugins repository
 if [ -L ${HOME}/.cf ] ; then
   rm ${HOME}/.cf
 else

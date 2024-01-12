@@ -1,5 +1,27 @@
-plugin:
-  #--- Open root shell from nodes
+plugins:
+  #--- cnpg status
+  cnpg-status:
+    shortCut: s
+    description: cnpg status
+    scopes:
+      - cluster
+    command: bash
+    background: false
+    args:
+      - -c
+      - "kubectl cnpg status $NAME -n $NAMESPACE --context $CONTEXT |& less -R"
+  #--- cnpg shell from cluster
+  cnpg-psql:
+    shortCut: p
+    description: PSQL shell
+    scopes:
+      - cluster
+    command: bash
+    background: false
+    args:
+      - -c
+      - "kubectl cnpg psql $NAME -n $NAMESPACE --context $CONTEXT"
+  #--- root shell from nodes
   node-shell:
     shortCut: Shift-S
     description: Root shell
