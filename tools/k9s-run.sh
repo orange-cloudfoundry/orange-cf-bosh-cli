@@ -3,9 +3,17 @@
 # Run k9s with custom configuration
 #===========================================================================
 
-#--- Customize k9s configuration
 K9S_CONFIG_FILE="${K9S_CONFIG_DIR}/config.yaml"
 
+#--- Clean obsolete configuration files
+if [ -f ${K9S_CONFIG_DIR}/config.yml ] ; then
+  rm -f {K9S_CONFIG_DIR}/config.yml > /dev/null 2>&1
+fi
+if [ -f ${K9S_CONFIG_DIR}/plugin.yml ] ; then
+  rm -f {K9S_CONFIG_DIR}/plugin.yml > /dev/null 2>&1
+fi
+
+#--- Customize k9s configuration
 if [ -f ${K9S_CONFIG_FILE} ] ; then
   #--- Disable K9S logo to display options
   sed -i "s+logoless:.*+logoless: true+" ${K9S_CONFIG_FILE}
@@ -17,4 +25,5 @@ if [ -f ${K9S_CONFIG_FILE} ] ; then
   sed -i "s+skipLatestRevCheck:.*+skipLatestRevCheck: true+" ${K9S_CONFIG_FILE}
 fi
 
+#--- Run k9s binary
 k9s

@@ -80,15 +80,9 @@ EOF
 export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh"
 
 #--- Set k9s config path, delete obsolete configurations and create k9s plugins
-export K9S_CONFIG_DIR=${HOME}/.k9s
+export K9S_CONFIG_DIR="${HOME}/.k9s"
 if [ ! -d ${K9S_CONFIG_DIR} ] ; then
   mkdir -p ${K9S_CONFIG_DIR}
-fi
-if [ -f ${K9S_CONFIG_DIR}/config.yml ] ; then
-  rm -f {K9S_CONFIG_DIR}/config.yml > /dev/null 2>&1
-fi
-if [ -f ${K9S_CONFIG_DIR}/plugin.yml ] ; then
-  rm -f {K9S_CONFIG_DIR}/plugin.yml > /dev/null 2>&1
 fi
 
 cp /home/bosh/.k9s/plugins.yaml ${K9S_CONFIG_DIR}/plugins.yaml
