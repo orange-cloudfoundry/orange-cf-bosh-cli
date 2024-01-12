@@ -7,10 +7,10 @@ K9S_CONFIG_FILE="${K9S_CONFIG_DIR}/config.yaml"
 
 #--- Clean obsolete configuration files
 if [ -f ${K9S_CONFIG_DIR}/config.yml ] ; then
-  rm -f {K9S_CONFIG_DIR}/config.yml > /dev/null 2>&1
+  rm -f ${K9S_CONFIG_DIR}/config.yml > /dev/null 2>&1
 fi
 if [ -f ${K9S_CONFIG_DIR}/plugin.yml ] ; then
-  rm -f {K9S_CONFIG_DIR}/plugin.yml > /dev/null 2>&1
+  rm -f ${K9S_CONFIG_DIR}/plugin.yml > /dev/null 2>&1
 fi
 
 #--- Customize k9s configuration

@@ -79,7 +79,7 @@ EOF
 #--- Set kubeclt read-only editor
 export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh"
 
-#--- Set k9s config path, delete obsolete configurations and create k9s plugins
+#--- Set k9s config path and create k9s plugins
 export K9S_CONFIG_DIR="${HOME}/.k9s"
 if [ ! -d ${K9S_CONFIG_DIR} ] ; then
   mkdir -p ${K9S_CONFIG_DIR}
