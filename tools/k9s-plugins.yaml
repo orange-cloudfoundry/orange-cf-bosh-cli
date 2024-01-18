@@ -119,7 +119,7 @@ plugins:
       - "helm get values $COL-NAME -n $NAMESPACE --kube-context $CONTEXT | less"
   #--- Get flux managed objects status in current namespace
   flux-trace:
-    shortCut: b
+    shortCut: g
     description: Flux trace
     scopes:
       - all
