@@ -13,7 +13,7 @@ status="$(kubectl get helmreleases --context ${context} --namespace ${namespace}
 if [ "${status}" = "true" ] ; then
   printf "\n%bResuming \"${name}\" helmrelease in \"${namespace}\" namespace...%b\n" "${REVERSE}${YELLOW}" "${STD}"
   printf "$(date +%H:%M:%S) => Resuming \"${name}\" helmrelease in \"${namespace}\" namespace\n" > ${LOG_FILE}
-  nohup flux resume hr ${name} --namespace ${namespace} >> ${LOG_FILE} 2>&1 &
+  nohup flux resume hr ${name} --context ${context} --namespace ${namespace} >> ${LOG_FILE} 2>&1 &
   background_pid="$!"
   tail -f ${LOG_FILE} &
   display_pid="$!"
@@ -33,7 +33,7 @@ if [ "${status}" = "true" ] ; then
   kill ${display_pid}
 else
   printf "\n%bSuspending \"${name}\" helmrelease in \"${namespace}\" namespace...%b\n" "${REVERSE}${YELLOW}" "${STD}"
-  flux suspend hr ${name} --namespace ${namespace}
+  flux suspend hr ${name} --context ${context} --namespace ${namespace}
 fi
 
 printf "\n%bPress \"Enter\" to quit...%b " "${YELLOW}" "${STD}" ; read next
