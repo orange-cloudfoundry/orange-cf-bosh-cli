@@ -45,12 +45,6 @@ alias log-k8s='. /usr/local/bin/log-k8s.sh'
 alias testkube='function __tk() { cmd="$1" ; params="$@" ; if [ "${cmd}" = "get" ] || [ "${cmd}" = "g" ] ; then flag="--label kusto=$(kubectl ns -c)" ; else flag="" ; fi ; tk ${params} ${flag} ; }; __tk'
 alias tk='testkube'
 
-#--- Docker aliases
-alias dim='docker images'
-alias dps='docker ps -a'
-alias dprune='docker container prune'
-alias dsh='function __dsh() { docker exec -it $1 sh; }; __dsh'
-
 #--- Tools aliases
 alias diff='colordiff'
 alias f='function __f() { printf "%100s\n"|tr " " "=";find . ! -regex ".*[/]\.git[/]?.*" ! -regex ".*last-deployment-failure\.yml" -type f,l -not -xtype l -not -xtype d -print0 | xargs -0 grep -I -i --color "$1";unset -f __f;printf "%100s\n"|tr " " "="; }; __f'
