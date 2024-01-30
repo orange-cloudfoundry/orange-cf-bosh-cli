@@ -186,7 +186,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     mv /tmp/tools/bash_profile /home/bosh/bash_profile && \
     mv /tmp/tools/bash_aliases /home/bosh/.bash_aliases && \
     mkdir -p /home/bosh/.ssh && chmod 700 /home/bosh /home/bosh/.ssh && \
-    mkdir -p /home/bosh/.k9s && mv /tmp/tools/k9s-plugins.yaml /home/bosh/.k9s/plugins.yaml && \
+    mkdir -p /home/bosh/.k9s/skins && mv /tmp/tools/k9s-plugins.yaml /home/bosh/.k9s/plugins.yaml && mv /tmp/tools/k9s-skin.yaml /home/bosh/.k9s/skins/skin.yaml && \
     mv /tmp/tools/completion/* /etc/bash_completion.d/ && chmod 755 /etc/bash_completion.d/* && \
     mv /tmp/tools/*.sh /usr/local/bin/ && mv /tmp/tools/sshd.conf /etc/supervisor/conf.d/ && \
     printf '\n=====================================================\n Cleanup system\n=====================================================\n' && \

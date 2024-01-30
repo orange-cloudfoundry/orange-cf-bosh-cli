@@ -1,0 +1,121 @@
+# Environment specific color
+# integration: lightskyblue
+# preproduction: lightgreen
+# production: indianred
+environment: &environment lightskyblue
+
+# Global syles
+background: &background black
+foreground: &foreground "#808082"     #--- Grey
+
+k9s:
+  # Header clusterInfoView styles
+  info:
+    fgColor: *environment
+    sectionColor: white
+
+  # General K9s styles
+  body:
+    bgColor: *background
+    fgColor: *foreground
+    logoColor: *environment
+
+  # Dialog frame styles
+  dialog:
+    bgColor: *background
+    fgColor: white
+    buttonBgColor: *background
+    buttonFgColor: *foreground
+    buttonFocusBgColor: *environment
+    buttonFocusFgColor: *foreground
+    labelFgColor: *foreground
+    fieldFgColor: *environment
+
+  # Command prompt styles
+  prompt:
+    bgColor: *background
+    fgColor: *foreground
+    suggestColor: *environment
+
+  # Frame styles
+  frame:
+    # Header shortcuts menu styles
+    menu:
+      fgColor: white
+      keyColor: dodgerblue
+      numKeyColor: fuchsia
+
+    # Frame borders styles
+    border:
+      fgColor: *environment
+      focusColor: *environment
+
+    # Frame border title styles
+    title:
+      fgColor: *environment
+      bgColor: *background
+      highlightColor: fuchsia
+      counterColor: fuchsia
+      filterColor: fuchsia
+
+    # Resource status and update styles
+    status:
+      newColor: white
+      modifyColor: greenyellow
+      addColor: orange
+      errorColor: indianred
+      highlightColor: orange
+      killColor: purple
+      completedColor: lightslategray
+
+    # Footer object navigation history styles
+    crumbs:
+      fgColor: black
+      bgColor: lightslategray
+      activeColor: orange
+
+  # Specific views styles
+  views:
+    # Chart drawing
+    charts:
+      bgColor: default
+      defaultDialColors:
+        - lightgreen
+        - red
+      defaultChartColors:
+        - lightgreen
+        - red
+
+    # TableView attributes
+    table:
+      bgColor: *background
+      fgColor: white
+      markColor: darkgoldenrod
+      header:
+        bgColor: *environment
+        fgColor: "#2e2e2e"
+        sorterColor: lightyellow
+
+    # Xray style
+    xray:
+      bgColor: *background
+      fgColor: white
+      cursorColor: *environment
+      graphicColor: lightslategray
+      showIcons: false
+
+    # YAML info styles
+    yaml:
+      keyColor: blue
+      colonColor: white
+      valueColor: white
+
+    # Logs styles
+    logs:
+      bgColor: *background
+      fgColor: white
+      indicator:
+        fgColor: *environment
+        bgColor: *background
+        toggleOnColor: orange
+        toggleOffColor: white

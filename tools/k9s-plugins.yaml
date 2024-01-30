@@ -35,8 +35,8 @@ plugins:
       - "root-shell.sh $NAME"
   #--- Get events for selected k8s objects every 5s
   watch-events:
-    shortCut: Shift-E
-    description: Get Events
+    shortCut: Shift-H
+    description: Watch Events
     scopes:
       - all
     command: bash

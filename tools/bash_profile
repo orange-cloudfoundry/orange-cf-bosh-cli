@@ -84,12 +84,13 @@ set_prompt() {
 }
 
 case "${SITE_TYPE}" in
-  "integration") SITE_TYPE_COLOR="${BLUE}" ;;
-  "preproduction") SITE_TYPE_COLOR="${GREEN}" ;;
-  "production") SITE_TYPE_COLOR="${RED}" ;;
-  *) SITE_TYPE_COLOR="${BLUE}" ;;
+  "integration") SITE_TYPE_COLOR="${BLUE}" ; export K9S_SKIN_COLOR="lightskyblue" ; unset K9S_RUN_MODE ;;
+  "preproduction") SITE_TYPE_COLOR="${GREEN}" ; export K9S_SKIN_COLOR="lightgreen" ; export K9S_RUN_MODE="--readonly" ;;
+  "production") SITE_TYPE_COLOR="${RED}" ; export K9S_SKIN_COLOR="indianred" ; export K9S_RUN_MODE="--readonly" ;;
+  *) SITE_TYPE_COLOR="${BLUE}" ; export K9S_SKIN_COLOR="lightskyblue" ; unset K9S_RUN_MODE ;;
 esac
 
+#--- Set prompt
 set_prompt
 
 #--- Set locales
@@ -110,9 +111,10 @@ if [ -f ${HOME}/.kube/config ] ; then
   source <(tfctl completion bash)
 fi
 
-#--- kubectl plugin completion
+#--- kubectl plugins completion
 source <(kubectl get-all completion bash | sed -e "s+ get-all$+ kubectl-get_all+g")
 source <(kubectl kuttl completion bash)
+source <(kubectl cnpg completion bash)
 
 #--- Load cf cli cmdb functions in user profile
 if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then

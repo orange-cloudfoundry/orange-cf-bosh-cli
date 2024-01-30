@@ -6,7 +6,7 @@
 #--- Check ssh security
 sudo /usr/local/bin/check_ssh_security.sh "user_login"
 
-#--- Load docker injected variables
+#--- Load injected variables
 if [ -f /var/tmp/bosh-cli/bosh-cli.env ] ; then
   . /var/tmp/bosh-cli/bosh-cli.env
 fi
@@ -48,7 +48,7 @@ chmod 0700 ${GIT_CREDS_DIR} > /dev/null 2>&1
 #--- Redefine command history file path
 export HISTFILE=${HOME}/.bash_history
 
-#--- Enhance vi configuration
+#--- Enhance vi configuration for yaml
 if [ ! -d ${HOME}/.vim/plugin ] ; then
   mkdir -p ${HOME}/.vim/plugin
 fi
@@ -81,11 +81,12 @@ export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh"
 
 #--- Set k9s config path and create k9s plugins
 export K9S_CONFIG_DIR="${HOME}/.k9s"
-if [ ! -d ${K9S_CONFIG_DIR} ] ; then
-  mkdir -p ${K9S_CONFIG_DIR}
+if [ ! -d ${K9S_CONFIG_DIR}/skins ] ; then
+  mkdir -p ${K9S_CONFIG_DIR}/skins
 fi
 
 cp /home/bosh/.k9s/plugins.yaml ${K9S_CONFIG_DIR}/plugins.yaml
+cp /home/bosh/.k9s/skins/skin.yaml ${K9S_CONFIG_DIR}/skins/skin.yaml
 
 #--- Set kubectl krew repository
 if [ -d /home/bosh/.krew ] ; then

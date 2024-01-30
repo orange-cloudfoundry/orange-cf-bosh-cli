@@ -5,7 +5,7 @@
 
 K9S_CONFIG_FILE="${K9S_CONFIG_DIR}/config.yaml"
 
-#--- Clean obsolete configuration files
+#--- Delete obsolete configuration files (yaml files replace yml)
 if [ -f ${K9S_CONFIG_DIR}/config.yml ] ; then
   rm -f ${K9S_CONFIG_DIR}/config.yml > /dev/null 2>&1
 fi
@@ -23,7 +23,15 @@ if [ -f ${K9S_CONFIG_FILE} ] ; then
 
   #--- Disable k9s lastrev check
   sed -i "s+skipLatestRevCheck:.*+skipLatestRevCheck: true+" ${K9S_CONFIG_FILE}
+
+  #--- Set k9s skin environment color
+  sed -i '/skin: .*/d' ${K9S_CONFIG_FILE}
+  sed -i '/ noIcons: /a\    skin: skin' ${K9S_CONFIG_FILE}
+  sed -i "s+environment: .*+environment: \&environment ${K9S_SKIN_COLOR}+" ${K9S_CONFIG_DIR}/skins/skin.yaml
 fi
 
-#--- Run k9s binary
-k9s
+#--- Delete obsolete logs
+rm /tmp/k9s.* > /dev/null 2>&1
+
+#--- Run k9s binary (defaut is read-only mode)
+k9s ${K9S_RUN_MODE}
