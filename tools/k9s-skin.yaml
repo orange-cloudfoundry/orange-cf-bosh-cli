@@ -6,7 +6,7 @@ environment: &environment lightskyblue
 
 # Global syles
 background: &background black
-foreground: &foreground "#808082"     #--- Grey
+foreground: &foreground "#2e2e2e"
 
 k9s:
   # Header clusterInfoView styles
@@ -17,7 +17,7 @@ k9s:
   # General K9s styles
   body:
     bgColor: *background
-    fgColor: *foreground
+    fgColor:  yellow
     logoColor: *environment
 
   # Dialog frame styles
@@ -28,13 +28,13 @@ k9s:
     buttonFgColor: *foreground
     buttonFocusBgColor: *environment
     buttonFocusFgColor: *foreground
-    labelFgColor: *foreground
-    fieldFgColor: *environment
+    labelFgColor: white
+    fieldFgColor: white
 
   # Command prompt styles
   prompt:
     bgColor: *background
-    fgColor: *foreground
+    fgColor: white
     suggestColor: *environment
 
   # Frame styles
@@ -93,7 +93,7 @@ k9s:
       markColor: darkgoldenrod
       header:
         bgColor: *environment
-        fgColor: "#2e2e2e"
+        fgColor: *foreground
         sorterColor: lightyellow
 
     # Xray style

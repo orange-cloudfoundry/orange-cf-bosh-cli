@@ -11,8 +11,7 @@ FLUX_TRACE="$(flux trace ${NAME} --kind ${KIND} --api-version ${API_VERSION} --n
 printf "%b" "${YELLOW}"
 cat << EOF
 
-kubectl edit is disabled to avoid flux failing track and revert changes.
-(See https://github.com/orange-cloudfoundry/paas-templates/issues/1419 for full details).
+kubectl edit mode is disabled to avoid flux failing track and revert changes.
 For update, use a feature branch instead.
 EOF
 

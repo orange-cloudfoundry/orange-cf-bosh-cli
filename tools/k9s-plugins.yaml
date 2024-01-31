@@ -24,7 +24,7 @@ plugins:
   #--- Get events for selected k8s objects every 5s
   watch-events:
     shortCut: Shift-H
-    description: Watch Events
+    description: Watch events
     scopes:
       - all
     command: bash
