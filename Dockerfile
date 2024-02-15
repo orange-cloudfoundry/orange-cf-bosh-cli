@@ -3,41 +3,41 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_VERSION="3.5.2" \
+ENV ARGO_VERSION="3.5.4" \
     BBR_VERSION="1.9.47" \
     BOSH_VERSION="7.5.2" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
-    CF_VERSION="8.7.7" \
+    CF_VERSION="8.7.8" \
     CF_UAAC_VERSION="4.21.0" \
     CILIUM_VERSION="0.15.20" \
     CREDHUB_VERSION="2.9.25" \
     FLUX_VERSION="0.41.2" \
     FLY_VERSION="7.9.1" \
     GITLAB_VERSION="1.36.0" \
-    GITHUB_VERSION="2.42.0" \
+    GITHUB_VERSION="2.43.1" \
     GOSS_VERSION="0.4.4" \
-    GOVC_VERSION="0.34.2" \
+    GOVC_VERSION="0.35.0" \
     GO3FR_VERSION="0.5.0" \
-    HELM_VERSION="3.12.0" \
-    HUBBLE_VERSION="0.12.3" \
+    HELM_VERSION="3.14.0" \
+    HUBBLE_VERSION="0.13.0" \
     JQ_VERSION="1.7.1" \
     JWT_VERSION="6.0.0" \
-    KAPP_VERSION="0.59.2" \
-    KCTRL_VERSION="0.49.0" \
-    KLBD_VERSION="0.38.2" \
+    KAPP_VERSION="0.60.0" \
+    KCTRL_VERSION="0.50.0" \
+    KLBD_VERSION="0.39.0" \
     KREW_VERSION="0.4.4" \
-    KUBECTL_VERSION="1.24.12" \
+    KUBECTL_VERSION="1.24.17" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
     KUBECTX_VERSION="0.9.5" \
     KUSTOMIZE_VERSION="4.5.7" \
     KYVERNO_VERSION="1.9.5" \
-    K9S_VERSION="0.31.7" \
+    K9S_VERSION="0.31.8" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
     OC_VERSION="4.10.25" \
     OCM_VERSION="0.1.67" \
-    POPEYE_VERSION="0.11.2" \
+    POPEYE_VERSION="0.11.3" \
     RBAC_TOOL_VERSION="1.15.0" \
     REDIS_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="2.3.18" \
@@ -47,12 +47,13 @@ ENV ARGO_VERSION="3.5.2" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     TESTKUBE_VERSION="1.16.22" \
-    TFCTL_VERSION="0.14.5" \
-    VCLUSTER_VERSION="0.18.1" \
-    VENDIR_VERSION="0.38.0" \
+    TFCTL_VERSION="0.15.1" \
+    VAULT_VERSION="1.15.5" \
+    VCLUSTER_VERSION="0.19.0" \
+    VENDIR_VERSION="0.39.0" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.40.5" \
-    YTT_VERSION="0.46.3"
+    YQ_VERSION="4.40.7" \
+    YTT_VERSION="0.48.0"
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -172,6 +173,8 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installTargz  "TESTKUBE" "kubectl-testkube" "https://github.com/kubeshop/testkube/releases/download/v${TESTKUBE_VERSION}/testkube_${TESTKUBE_VERSION}_Linux_${OS_ARCH_X86_64}.tar.gz" "kubectl-testkube" && cd /usr/local/bin/ && ln -s kubectl-testkube testkube && ln -s kubectl-testkube tk && \
     addCompletion "TESTKUBE" "testkube" "completion bash" && sed -i "s+__start_testkube testkube+__start_testkube testkube tk+g" /etc/bash_completion.d/testkube && \
     installTargz  "TFCTL" "tfctl" "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_VERSION}/tfctl_Linux_${OS_ARCH_AMD}.tar.gz" "tfctl" && \
+    installZip    "VAULT" "vault" "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${OS_ARCH_AMD}.zip" && chmod 755 /usr/local/bin/vault && \
+    printf '\n=> Add VAULT CLI completion\n' && /usr/local/bin/vault -autocomplete-install && \
     installBinary "VCLUSTER" "vcluster" "https://github.com/loft-sh/vcluster/releases/download/v${VCLUSTER_VERSION}/vcluster-linux-${OS_ARCH_AMD}" && \
     addCompletion "VCLUSTER" "vcluster" "completion bash" && \
     installBinary "VENDIR" "vendir" "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v${VENDIR_VERSION}/vendir-linux-${OS_ARCH_AMD}" && \

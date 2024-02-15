@@ -44,7 +44,7 @@ logToCredhub() {
 }
 
 flagError=0 ; PROXY=""
-NO_PROXY_INTERNAL="127.0.0.1,localhost,169.254.0.0/16,172.17.11.0/24,192.168.0.0/16,.internal.paas"
+NO_PROXY_INTERNAL="127.0.0.1,localhost,169.254.0.0/16,172.17.11.0/24,192.168.0.0/16,.internal.paas,.internal.paas.,.svc.cluster.local,.svc.cluster.local.,.cluster.local,.cluster.local."
 
 case "$1" in
   "") PROXY_TYPE="" ;;

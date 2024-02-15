@@ -58,11 +58,11 @@ set_bosh_prompt()
 
 set_k8s_prompt()
 {
-  K8S_CONTEXT="$(kubectl ctx -c 2> /dev/null)"
+  K8S_CONTEXT="$(kubectx ctx -c 2> /dev/null)"
   if [ $? != 0 ] ; then
     echo ""
   else
-    K8S_NS="$(kubectl ns -c 2> /dev/null)"
+    K8S_NS="$(kubens -c 2> /dev/null)"
     if [ $? != 0 ] ; then
       if [ -z ${KUBE_EDITOR} ] ; then
         echo "${K8S_SYMBOL}  ${K8S_CONTEXT} (W) "
@@ -97,7 +97,7 @@ set_prompt
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US
 
-#--- Set terminal name (could be changed with "t" alias)
+#--- Set terminal name (could be changed with "tn" alias)
 echo -en "\033]0;${MY_BOSH_USER}@${SITE_NAME}\007"
 
 #--- Grep colorization
