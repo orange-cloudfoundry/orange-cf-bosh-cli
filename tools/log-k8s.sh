@@ -75,13 +75,11 @@ getClusterConfiguration() {
 selectCluster() {
   case "$1" in
     "1"|"core-connectivity") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-core-connectivity-k8s" ; K8S_CONTEXT="core-connectivity" ;;
-    "2"|"ci-k8s") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="01-ci-k8s" ; K8S_CONTEXT="ci-k8s" ;;
-    "3"|"supervision") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-supervision" ; K8S_CONTEXT="supervision" ;;
-    "4"|"marketplace") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
-    "5"|"shared-services") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
-    "6"|"ha-datastore") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-k8s-ha-datastore" ; K8S_CONTEXT="ha-datastore" ;;
-    "7"|"sandbox") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="k3s-sandbox" ; K8S_CONTEXT="sandbox" ;;
-    "8"|"openshift-gcp") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
+    "2"|"supervision") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-supervision" ; K8S_CONTEXT="supervision" ;;
+    "3"|"marketplace") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
+    "4"|"shared-services") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
+    "5"|"ha-datastore") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-k8s-ha-datastore" ; K8S_CONTEXT="ha-datastore" ;;
+    "6"|"openshift-gcp") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
     *) flag=0 ; flagError=1 ; clear ;;
   esac
 }
@@ -159,14 +157,12 @@ if [ ${flagError} = 0 ] ; then
       flag=1
       printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
       printf "%b1%b : core-connectivity\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b2%b : ci\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b3%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b4%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b5%b : shared-services\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b6%b : ha-datastore\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b2%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b3%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b4%b : shared-services\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b5%b : ha-datastore\n" "${GREEN}${BOLD}" "${STD}"
       if [ "${SITE_NAME}" = "fe-int" ] ; then
-        printf "%b7%b : sandbox\n" "${GREEN}${BOLD}" "${STD}"
-        printf "%b8%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
+        printf "%b6%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
       fi
       printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
       selectCluster "${choice}"
