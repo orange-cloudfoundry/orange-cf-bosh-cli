@@ -5,17 +5,17 @@ ARG DEBIAN_FRONTEND=noninteractive
 #--- Clis versions
 ENV ARGO_VERSION="3.5.4" \
     BBR_VERSION="1.9.47" \
-    BOSH_VERSION="7.5.2" \
+    BOSH_VERSION="7.5.4" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CF_VERSION="8.7.8" \
     CF_UAAC_VERSION="4.21.0" \
-    CILIUM_VERSION="0.15.20" \
-    CREDHUB_VERSION="2.9.25" \
+    CILIUM_VERSION="0.15.23" \
+    CREDHUB_VERSION="2.9.27" \
     FLUX_VERSION="0.41.2" \
     FLY_VERSION="7.9.1" \
     GITLAB_VERSION="1.36.0" \
-    GITHUB_VERSION="2.43.1" \
+    GITHUB_VERSION="2.45.0" \
     GOSS_VERSION="0.4.4" \
     GOVC_VERSION="0.35.0" \
     GO3FR_VERSION="0.5.0" \
@@ -25,20 +25,20 @@ ENV ARGO_VERSION="3.5.4" \
     JWT_VERSION="6.0.0" \
     KAPP_VERSION="0.60.0" \
     KCTRL_VERSION="0.50.0" \
-    KLBD_VERSION="0.39.0" \
+    KLBD_VERSION="0.41.0" \
     KREW_VERSION="0.4.4" \
-    KUBECTL_VERSION="1.24.17" \
+    KUBECTL_VERSION="1.25.16" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
     KUBECTX_VERSION="0.9.5" \
     KUSTOMIZE_VERSION="4.5.7" \
     KYVERNO_VERSION="1.9.5" \
-    K9S_VERSION="0.31.8" \
+    K9S_VERSION="0.32.1" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
     OC_VERSION="4.10.25" \
-    OCM_VERSION="0.1.67" \
-    POPEYE_VERSION="0.11.3" \
-    RBAC_TOOL_VERSION="1.15.0" \
+    OCM_VERSION="0.1.72" \
+    POPEYE_VERSION="0.20.4" \
+    RBAC_TOOL_VERSION="1.16.0" \
     REDIS_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
@@ -46,13 +46,13 @@ ENV ARGO_VERSION="3.5.4" \
     SPRUCE_VERSION="1.31.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TESTKUBE_VERSION="1.16.22" \
+    TESTKUBE_VERSION="1.16.33" \
     TFCTL_VERSION="0.15.1" \
-    VAULT_VERSION="1.15.5" \
-    VCLUSTER_VERSION="0.19.0" \
-    VENDIR_VERSION="0.39.0" \
+    VAULT_VERSION="1.15.6" \
+    VCLUSTER_VERSION="0.19.3" \
+    VENDIR_VERSION="0.40.0" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.40.7" \
+    YQ_VERSION="4.42.1" \
     YTT_VERSION="0.48.0"
 
 #--- Packages list, ruby env and plugins
@@ -110,7 +110,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installZip    "ARGO" "argo" "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-${OS_ARCH_AMD}.gz" && \
     addCompletion "ARGO" "argo" "completion bash" && \
     installTar    "BBR" "bbr" "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" "releases/bbr" && \
-    installBinary "BOSH" "bosh" "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_VERSION}-linux-${OS_ARCH_AMD}" && \
+    installBinary "BOSH" "bosh" "https://github.com/cloudfoundry/bosh-cli/releases/download/v${BOSH_VERSION}/bosh-cli-${BOSH_VERSION}-linux-${OS_ARCH_AMD}" && \
     printf '\n=> Add BOSH CLI completion\n' && curl -sSLo /home/bosh/bosh-complete-linux "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_COMPLETION_VERSION}/bosh-complete-linux" && chmod 755 /home/bosh/bosh-complete-linux && \
     installTargz  "CF" "cf" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_VERSION}&source=github-rel" "cf8" && \
     printf '\n=> Add CF CLI completion\n' && curl -sSLo /etc/bash_completion.d/cf "https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf8" && \

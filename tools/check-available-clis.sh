@@ -26,6 +26,7 @@ printf '\n=> Check GITHUB-CLI\n' ; gh version
 printf '\n=> Check GOSS-CLI\n' ; goss --version
 printf '\n=> Check GOVC-CLI\n' ; govc version
 printf '\n=> Check GO3FR-CLI\n' ; go3fr --version
+printf '\n=> Check GITHUB-CLI\n' ; gh --version
 printf '\n=> Check HELM-CLI\n' ; helm version
 printf '\n=> Check HUBBLE-CLI\n' ; hubble version
 printf '\n=> Check JQ-CLI\n' ; jq --version
