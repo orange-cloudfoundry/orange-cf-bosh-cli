@@ -57,7 +57,7 @@ set_bosh_prompt()
 
 set_k8s_prompt()
 {
-  K8S_CONTEXT="$(kubectx ctx -c 2> /dev/null)"
+  K8S_CONTEXT="$(kubectx -c 2> /dev/null)"
   if [ $? != 0 ] ; then
     echo ""
   else
