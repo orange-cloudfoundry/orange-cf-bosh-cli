@@ -33,6 +33,7 @@ if [ -f ${K9S_CONFIG_FILE} ] ; then
   sed -i "s+skipLatestRevCheck:.*+skipLatestRevCheck: true+" ${K9S_CONFIG_FILE}
 
   #--- Set k9s skin environment color
+  sed -i '/skin: .*/d' ${K9S_CONFIG_FILE}
   sed -i '/ noIcons: /a\    skin: skin' ${K9S_CONFIG_FILE}
   sed -i "s+environment:.*+environment: \&environment ${K9S_SKIN_COLOR}+" ${K9S_CONFIG_DIR}/skins/skin.yaml
 
