@@ -3,8 +3,8 @@
 # Show k9s screen shots
 #===========================================================================
 
-K9S_SCREEN_DIR="/tmp/bosh/k9s/screen-dumps"
-RES_FILE="/tmp/bosh/k9s/k9s-screens-bosh.txt"
+K9S_SCREEN_DIR="${HOME}/.k9s/screen-dumps"
+RES_FILE="${HOME}/.k9s/k9s-screens.txt"
 
 #--- Replace file name with space with dash before display
 find ${K9S_SCREEN_DIR} -type f -name "* *" | while read file ; do mv "${file}" ${file// /-} ; done
