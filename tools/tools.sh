@@ -25,6 +25,7 @@ printf "\n%bKUBERNETES TOOLS (to use with log-k8s)%b\n" "${GREEN}${BOLD}${REVERS
 display "argo" "Kubernetes Workflow Management"
 display "check-k8s" "Check kubernetes clusters (uses kubeconfig to select clusters)"
 display "cilium" "Kubernetes Security and Networking cli"
+display "crossplane" "Crossplane cli"
 display "flux" "Kubernetes Gitops Management"
 display "get-minio-token" "Get token to use minio operator web-ui"
 display "helm" "Kubernetes Package Manager"

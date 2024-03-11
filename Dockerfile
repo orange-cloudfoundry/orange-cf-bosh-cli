@@ -12,6 +12,7 @@ ENV ARGO_VERSION="3.5.4" \
     CF_UAAC_VERSION="4.21.0" \
     CILIUM_VERSION="0.15.23" \
     CREDHUB_VERSION="2.9.27" \
+    CROSSPLANE_CLI="1.15.0" \
     FLUX_VERSION="0.41.2" \
     FLY_VERSION="7.9.1" \
     GITLAB_VERSION="1.36.0" \
@@ -119,6 +120,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installTargz  "CILIUM" "cilium" "https://github.com/cilium/cilium-cli/releases/download/v${CILIUM_VERSION}/cilium-linux-${OS_ARCH_AMD}.tar.gz" "cilium" && \
     addCompletion "CILIUM" "cilium" "completion bash" && \
     installTargz  "CREDHUB" "credhub" "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${OS_ARCH_AMD}-${CREDHUB_VERSION}.tgz" "credhub" && \
+    installBinary  "CROSSPLANE" "crossplane" "https://releases.crossplane.io/stable/v${CROSSPLANE_CLI}/bin/linux_${OS_ARCH_AMD}/crank" && \
     installTargz  "FLUX" "flux" "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "flux" && \
     addCompletion "FLUX" "flux" "completion bash" && \
     installTargz  "FLY" "fly" "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-${OS_ARCH_AMD}.tgz" "fly" && \
