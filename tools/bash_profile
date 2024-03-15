@@ -79,7 +79,7 @@ set_k8s_prompt()
 }
 
 set_prompt() {
-  export PS1="\n${REVERSE}${SITE_TYPE_COLOR}${MY_BOSH_USER}@${SITE_NAME} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${WHITE}\w${STD}\n$ "
+  export PS1="\n${REVERSE}${SITE_TYPE_COLOR}${MY_BOSH_USER}@${SITE_TYPE} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${WHITE}\w${STD}\n$ "
 }
 
 case "${SITE_TYPE}" in
