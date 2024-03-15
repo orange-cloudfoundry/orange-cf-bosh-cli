@@ -20,8 +20,8 @@ K9S_CONFIG_FILE="${K9S_CONFIG_DIR}/config.yaml"
 #--- Check if new k9s version
 K9S_VERSION="$(/usr/local/bin/k9s version | grep "Version:" | awk '{print $2}')"
 if [ ! -f ${K9S_CONFIG_DIR}/k9s.${K9S_VERSION} ] ; then
-  rm -f ${K9S_CONFIG_FILE} k9s.v* > /dev/null 2>&1
-  > k9s.${K9S_VERSION}
+  rm -f ${K9S_CONFIG_FILE} ${K9S_CONFIG_DIR}/k9s.v* > /dev/null 2>&1
+  > ${K9S_CONFIG_DIR}/k9s.${K9S_VERSION}
 fi
 
 #--- Customize k9s configuration
