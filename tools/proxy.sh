@@ -53,27 +53,32 @@ case "$1" in
     PROXY_TYPE="intranet"
     PROXY_HOST="intranet-http-proxy.internal.paas"
     PROXY_PORT="3129"
+    PROXY="http://${PROXY_HOST}:${PROXY_PORT}"
     NO_PROXY="${NO_PROXY_INTERNAL}" ;;
 
   "-i"|"--internet"|"")
     PROXY_TYPE="internet"
     PROXY_HOST="system-internet-http-proxy.internal.paas"
     PROXY_PORT="3128"
+    PROXY="http://${PROXY_HOST}:${PROXY_PORT}"
     NO_PROXY="${NO_PROXY_INTERNAL},${INTRANET_DOMAINS}" ;;
 
   "-s"|"--switch")
     PROXY_TYPE="switch"
     PROXY_HOST="switch-http-proxy.internal.paas"
     PROXY_PORT="3127"
+    PROXY="http://${PROXY_HOST}:${PROXY_PORT}"
     NO_PROXY="${NO_PROXY_INTERNAL}" ;;
 
   "-c"|"--corporate")
     PROXY_TYPE="corporate"
     logToCredhub
     if [ ${flagError} = 0 ] ; then
-      getCredhubValue "PROXY_HOST" "/secrets/multi_region_region_1_corporate_internet_proxy_host"
-      getCredhubValue "PROXY_PORT" "/secrets/multi_region_region_1_corporate_internet_proxy_port"
+      getCredhubValue "PROXY_HOST" "/secrets/multi_region_region_1_corporate_internet_http_proxy_host"
+      getCredhubValue "PROXY_PORT" "/secrets/multi_region_region_1_corporate_internet_http_proxy_port"
+      getCredhubValue "PROXY_ACCESS" "/secrets/multi_region_region_1_corporate_internet_http_proxy_access"
     fi
+    PROXY="http://${PROXY_ACCESS}@${PROXY_HOST}"
     NO_PROXY="${NO_PROXY_INTERNAL},${INTRANET_DOMAINS}" ;;
 
   *) usage ;;
@@ -85,7 +90,6 @@ if [ ${flagError} = 0 ] ; then
     unset PROXY_TYPE PROXY_HOST PROXY_PORT http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
   else
     printf "\n%bSet \"${PROXY_TYPE}\" proxy%b\n" "${REVERSE}${YELLOW}" "${STD}"
-    PROXY="http://${PROXY_HOST}:${PROXY_PORT}"
     export PROXY_TYPE
     export http_proxy=${PROXY}
     export HTTP_PROXY=${PROXY}
