@@ -122,7 +122,7 @@ plugins:
     shortCut: x
     description: Get all
     scopes:
-      - all
+      - pod
     command: bash
     background: false
     confirm: false
