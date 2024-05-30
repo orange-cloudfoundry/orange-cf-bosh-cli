@@ -12,9 +12,10 @@ nbParameters=$# ; vm_ip="" ; vm_name="" ; vm_macaddress=""
 usage() {
   printf "\n%bUSAGE:" "${RED}"
   printf "\n  vm-info [OPTIONS]\n\nOPTIONS:"
-  printf "\n  %-40s %s" "--ip, -i <vm ip>" "Get vm informations by ip"
-  printf "\n  %-40s %s" "--macaddress, -m <vm mac address>" "Get vm informations by mac address"
-  printf "\n  %-40s %s" "--name, -n <vm name>" "Get vm informations by name"
+  printf "\n  %-40s %s" "-d, --disk-id <vm disk id>" "Get vm informations by disk id"
+  printf "\n  %-40s %s" "-i, --ip <vm ip>" "Get vm informations by ip"
+  printf "\n  %-40s %s" "-m, --macaddress <vm mac address>" "Get vm informations by mac address"
+  printf "\n  %-40s %s" "-n, --name <vm name>" "Get vm informations by name"
   printf "%b\n\n" "${STD}" ; exit 1
 }
 
@@ -33,6 +34,19 @@ while [ ${nbParameters} -gt 0 ] ; do
         if [ "${vm_name}" = "" ] ; then
           printf "\n%bERROR : No existing vm with ip \"${vm_ip}\".%b\n\n" "${RED}" "${STD}" ; exit 1
         fi
+      fi ;;
+
+    "-d"|"--disk-id") vm_disk_id="$2" ; shift ; shift ; nbParameters=$#
+      if [ "${vm_disk_id}" = "" ] ; then
+        usage
+      else
+        vm_disk_id="$(echo "${vm_disk_id}" | tr [:upper:] [:lower:])"
+        vm_id="$(govc object.collect -json -type m / config.hardware.device | jq -r '.|select(.changeSet[].val._value[].backing.fileName|tostring|match("'$vm_disk_id'")) | [.obj.type, .obj.value] | join(":")')"
+        if [ "${vm_id}" = "" ] ; then
+          printf "\n%bERROR :  No existing vm with disk id \"${vm_disk_id}\".%b\n\n" "${RED}" "${STD}" ; exit 1
+        fi
+        vm_ipath="$(echo "${vm_id}" | xargs govc ls -L | xargs -I {} -n 1 echo "{}")"
+        vm_name="$(govc vm.info -vm.ipath="${vm_ipath}" | grep "Name:" | awk '{print $2}')"
       fi ;;
 
     "-m"|"--macaddress") vm_macaddress="$2" ; shift ; shift ; nbParameters=$#
@@ -64,28 +78,28 @@ if [ "${vm_info}" = "" ] ; then
   printf "\n%bERROR : No existing vm with name \"${vm_name}\".%b\n\n" "${RED}" "${STD}" ; exit 1
 fi
 
-vm_host="$(govc vm.info ${vm_name} | awk '/Host/ {print $2}')"
-hw_version="$(echo "${vm_info}" | jq -r '.config.version')"
-datastore="$(echo "${vm_info}" | jq -r '.config.datastoreUrl[].name')"
-power_state="$(echo "${vm_info}" | jq -r '.summary.runtime.powerState')"
-vm_uptime="$(echo "${vm_info}" | jq -r '.summary.quickStats.uptimeSeconds')"
+vm_host="$(govc vm.info ${vm_name} | awk '/Host/ {print $2}' 2> /dev/null)"
+hw_version="$(echo "${vm_info}" | jq -r '.config.version' 2> /dev/null)"
+vm_datastore="$(echo "${vm_info}"| jq -r '.config.datastoreUrl[].name' 2> /dev/null | tr '\n' ',' | sed -e "s+,$++" -e "s+,+, +g")"
+power_state="$(echo "${vm_info}" | jq -r '.summary.runtime.powerState' 2> /dev/null)"
+vm_uptime="$(echo "${vm_info}" | jq -r '.summary.quickStats.uptimeSeconds' 2> /dev/null)"
 vm_uptime_days="$(expr ${vm_uptime} / 86400)"
 vm_uptime_hours="$(expr ${vm_uptime} % 86400 / 3600)"
 vm_uptime_mn="$(expr ${vm_uptime} % 3600 / 60)"
 vm_uptime="$(printf "%d days %d hours %d mn\n" ${vm_uptime_days} ${vm_uptime_hours} ${vm_uptime_mn})"
-nb_cpus="$(echo "${vm_info}" | jq -r '.summary.config.numCpu')"
-memory_size="$(echo "${vm_info}" | jq -r '.summary.config.memorySizeMB')"
-nb_diks="$(echo "${vm_info}" | jq -r '.summary.config.numVirtualDisks')"
-nb_ethernet="$(echo "${vm_info}" | jq -r '.summary.config.numEthernetCards')"
-vm_ips="$(echo "${vm_info}" | jq -r '.guest?.net[]?.ipAddress[]?' | tr '\n' ' ')"
+nb_cpus="$(echo "${vm_info}" | jq -r '.summary.config.numCpu' 2> /dev/null)"
+memory_size="$(echo "${vm_info}" | jq -r '.summary.config.memorySizeMB' 2> /dev/null)"
+nb_diks="$(echo "${vm_info}" | jq -r '.summary.config.numVirtualDisks' 2> /dev/null)"
+nb_ethernet="$(echo "${vm_info}" | jq -r '.summary.config.numEthernetCards' 2> /dev/null)"
+vm_ips="$(echo "${vm_info}" | jq -r '.guest?.net[]?.ipAddress[]?' 2> /dev/null | tr '\n' ' ')"
 if [ "${vm_ips}" = "" ] ; then
-  vm_ips="$(echo "${vm_info}" | jq -r '.guest.ipAddress')"
+  vm_ips="$(echo "${vm_info}" | jq -r '.guest.ipAddress' 2> /dev/null)"
 fi
-macAddress="$(echo "${vm_info}" | jq -r '.config.hardware.device[]|.macAddress' | grep -v "^$" | grep -v "null" | tr '\n' ' ')"
+macAddress="$(echo "${vm_info}" | jq -r '.config.hardware.device[]|.macAddress' 2> /dev/null | grep -v "^$" | grep -v "null" | tr '\n' ' ')"
 
 bosh_properties="$(echo "${vm_info}" | jq -r '.value')"
 if [ "${bosh_properties}" != "null" ] ; then
-  tags="$(echo "${vm_info}" | jq -r '.availableField[]')"
+  tags="$(echo "${vm_info}" | jq -r '.availableField[]' 2> /dev/null)"
   key="$(echo "${tags}" | jq -r '.|select(.name == "director")|.key')"
   director="$(echo "${bosh_properties}" | jq -r --arg KEY "${key}" '.[]|select(.key|tostring == $KEY)|.value')"
   key="$(echo "${tags}" | jq -r '.|select(.name == "deployment")|.key')"
@@ -102,7 +116,7 @@ fi
 
 printf "vm name         : ${vm_name}\n"
 printf "vm host         : ${vm_host}\n"
-printf "vm datastore    : ${datastore}\n"
+printf "vm datastore    : ${vm_datastore}\n"
 printf "vm hw version   : ${hw_version}\n"
 printf "vm power state  : ${power_state}\n"
 printf "vm uptime       : ${vm_uptime}\n"
