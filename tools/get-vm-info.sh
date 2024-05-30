@@ -65,6 +65,7 @@ if [ "${vm_info}" = "" ] ; then
 fi
 
 vm_host="$(govc vm.info ${vm_name} | awk '/Host/ {print $2}')"
+hw_version="$(echo "${vm_info}" | jq -r '.config.version')"
 datastore="$(echo "${vm_info}" | jq -r '.config.datastoreUrl[].name')"
 power_state="$(echo "${vm_info}" | jq -r '.summary.runtime.powerState')"
 vm_uptime="$(echo "${vm_info}" | jq -r '.summary.quickStats.uptimeSeconds')"
@@ -102,6 +103,7 @@ fi
 printf "vm name         : ${vm_name}\n"
 printf "vm host         : ${vm_host}\n"
 printf "vm datastore    : ${datastore}\n"
+printf "vm hw version   : ${hw_version}\n"
 printf "vm power state  : ${power_state}\n"
 printf "vm uptime       : ${vm_uptime}\n"
 printf "cpus            : ${nb_cpus}\n"
