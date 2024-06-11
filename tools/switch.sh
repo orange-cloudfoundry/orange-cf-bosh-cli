@@ -8,7 +8,7 @@ if [ $? != 0 ] ; then
   printf "\n\n%bERROR : You are not connected to bosh director.%b\n\n" "${RED}" "${STD}"
 else
   #--- Select specific deployment (BOSH_DEPLOYMENT variable)
-  deployments=$(bosh deployments --column=Name | grep -vE "^Name$|^Succeeded$|^[0-9]* deployments$")
+  deployments="$(bosh deployments --json | jq -r '.Tables[].Rows[].name' | pr -3t -W 130)"
   if [ "$1" != "" ] ; then
     flag=$(echo "${deployments}" | grep "$1")
     if [ "${flag}" = "" ] ; then
