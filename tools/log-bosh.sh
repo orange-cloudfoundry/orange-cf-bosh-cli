@@ -119,7 +119,7 @@ if [ ${flagError} = 0 ] ; then
       if [ ${flagError} = 0 ] ; then
         if [ ${flag_interactive} = 1 ] ; then
           deployments="$(bosh deployments --json | jq -r '.Tables[].Rows[].name' | pr -3t -W 130)"
-          printf "\n%bSelect a specific deployment in the list, or suffix your bosh commands with -d <deployment_name>:%b\n%s" "${REVERSE}${GREEN}" "${STD}" "${deployments}"
+          printf "\n%bSelect a deployment, or suffix your bosh commands with -d <deployment_name> :%b\n\n%s" "${REVERSE}${GREEN}" "${STD}" "${deployments}"
           printf "\n\n%bYour choice (<Enter> to select all) :%b " "${GREEN}${BOLD}" "${STD}" ; read BOSH_DEPLOYMENT
 
           if [ "${BOSH_DEPLOYMENT}" = "" ] ; then
