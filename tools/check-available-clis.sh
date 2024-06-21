@@ -18,7 +18,6 @@ printf '\n=> Check BOSH-CLI\n' ; bosh --version
 printf '\n=> Check CF-CLI\n' ; cf --version
 printf '\n=> Check CILIUM-CLI\n' ; cilium version
 printf '\n=> Check CREDHUB-CLI\n' ; credhub --version
-printf '\n=> Check CROSSPLANE-CLI\n' ; crossplane --version
 printf '\n=> Check FLUX-CLI\n' ; flux --version
 printf '\n=> Check FLY-CLI\n' ; fly --version
 printf '\n=> Check GCLOUD-CLI\n' ; gcloud --version
