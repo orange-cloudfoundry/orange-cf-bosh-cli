@@ -3,7 +3,7 @@
 # Log to kubernetes clusters for clis (kubectl, helm, k9s)
 # Parameters :
 # --context, -c  : Select k8s context
-# --proxy, -p    : Set proxy for 
+# --proxy, -p    : Set proxy
 #===========================================================================
 
 #--- Check scripts options
@@ -55,35 +55,6 @@ updateKubeConfig() {
   fi
 }
 
-#--- Get k8s cluster configuration from credhub
-getClusterConfiguration() {
-  credhub g -n /kubeconfigs/${K8S_CLUSTER} -j 2> /dev/null | jq -r '.value' > ${KUBECONFIG}
-  if [ -s ${KUBECONFIG} ] ; then
-    updateKubeConfig "clusters.name" "${K8S_CLUSTER}"
-    updateKubeConfig "contexts.context.cluster" "${K8S_CLUSTER}"
-    updateKubeConfig "contexts.name" "${K8S_CONTEXT}"
-    updateKubeConfig "users.name" "${K8S_CONTEXT}"
-    updateKubeConfig "contexts.context.user" "${K8S_CONTEXT}"
-    updateKubeConfig "current-context" "${K8S_CONTEXT}"
-    TARGET_KUBECONFIG="${TARGET_KUBECONFIG}:${KUBECONFIG}"
-  else
-    rm -f ${KUBECONFIG} > /dev/null 2>&1
-  fi
-}
-
-#--- Select k8s cluster
-selectCluster() {
-  case "$1" in
-    "1"|"core-connectivity") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-core-connectivity-k8s" ; K8S_CONTEXT="core-connectivity" ;;
-    "2"|"supervision") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-supervision" ; K8S_CONTEXT="supervision" ;;
-    "3"|"marketplace") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-marketplace" ; K8S_CONTEXT="marketplace" ;;
-    "4"|"shared-services") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-shared-services" ; K8S_CONTEXT="shared-services" ;;
-    "5"|"ha-datastore") K8S_TYPE_CLUSTER="k3s" ; K8S_CLUSTER="00-k8s-ha-datastore" ; K8S_CONTEXT="ha-datastore" ;;
-    "6"|"openshift-gcp") K8S_TYPE_CLUSTER="openshift" ; K8S_CLUSTER="openshift-gcp" ; K8S_CONTEXT="openshift-gcp" ; CREDHUB_ENDPOINT="/secrets/external/gcp_poc_openshift_cluster_api_url" ;;
-    *) flag=0 ; flagError=1 ; clear ;;
-  esac
-}
-
 #--- Check scripts options
 while [ ${nbParameters} -gt 0 ] ; do
   case "$1" in
@@ -117,25 +88,37 @@ if [ ${flagError} = 0 ] ; then
   fi
 fi
 
-#--- Log to k8s
+#--- Generate kubeconfig files for all clusters
 if [ ${flagError} = 0 ] ; then
-  #--- Get all clusters configuration
-  TARGET_KUBECONFIG=""
   clear
   printf "\n%bGet clusters properties...%b\n" "${YELLOW}${REVERSE}" "${STD}"
-  if [ "${SITE_NAME}" = "fe-int" ] ; then
-    MAX_ITEMS=8
-  else
-    MAX_ITEMS=6
-  fi
 
-  for value in $(seq 1 ${MAX_ITEMS}) ; do
-    selectCluster "${value}"
-    if [ "${K8S_TYPE_CLUSTER}" = "k3s" ] ; then
-      export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
-      getClusterConfiguration
+  #--- Get clusters list
+  TARGET_KUBECONFIG="" ; K8S_CONTEXTS=""
+  cluster_paths="$(credhub f | grep -E "name: /kubeconfigs/|name: /secrets/kubeconfigs/" | awk '{print $3}' | sort)"
+
+  for path in ${cluster_paths} ; do
+    K8S_CLUSTER="$(echo "${path}" | sed -e "s+.*kubeconfigs\/++")"
+    K8S_CONTEXT="$(echo "${path}" | sed -e "s+.*kubeconfigs\/++" -e "s+-k8s++" -e "s+00-++")"
+    K8S_CONTEXTS="${K8S_CONTEXTS} ${K8S_CONTEXT}"
+    export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
+
+    #--- Get k8s cluster configuration from credhub
+    credhub g -n ${path} -j 2> /dev/null | jq -r '.value' > ${KUBECONFIG}
+    if [ -s ${KUBECONFIG} ] ; then
+      updateKubeConfig "clusters.name" "${K8S_CLUSTER}"
+      updateKubeConfig "contexts.context.cluster" "${K8S_CLUSTER}"
+      updateKubeConfig "contexts.name" "${K8S_CONTEXT}"
+      updateKubeConfig "users.name" "${K8S_CONTEXT}"
+      updateKubeConfig "contexts.context.user" "${K8S_CONTEXT}"
+      updateKubeConfig "current-context" "${K8S_CONTEXT}"
+      TARGET_KUBECONFIG="${TARGET_KUBECONFIG}:${KUBECONFIG}"
+    else
+      rm -f ${KUBECONFIG} > /dev/null 2>&1
     fi
   done
+
+  K8S_CONTEXTS="$(echo "${K8S_CONTEXTS}" | sed -e "s+^ ++" | tr " " "\n")"
 
   #--- Concatenate all clusters config files
   export KUBECONFIG="$(echo "${TARGET_KUBECONFIG}" | sed -e "s+^:++")"
@@ -149,70 +132,22 @@ if [ ${flagError} = 0 ] ; then
   fi
 fi
 
+#--- Select a cluster
 if [ ${flagError} = 0 ] ; then
-  #--- Select kubernetes cluster to work with
-  flag=0
-  if [ "${context}" = "" ] ; then
-    while [ ${flag} = 0 ] ; do
-      flag=1
-      printf "\n%bKubernetes cluster :%b\n\n" "${REVERSE}${GREEN}" "${STD}"
-      printf "%b1%b : core-connectivity\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b2%b : supervision\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b3%b : marketplace\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b4%b : shared-services\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b5%b : ha-datastore\n" "${GREEN}${BOLD}" "${STD}"
-      if [ "${SITE_NAME}" = "fe-int" ] ; then
-        printf "%b6%b : openshift gcp\n" "${GREEN}${BOLD}" "${STD}"
-      fi
-      printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
-      selectCluster "${choice}"
-    done
-  else
-    selectCluster "${context}"
-  fi
-
-  #--- Concatenate clusters config files and set current context
-  export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
-  if [ "${K8S_TYPE_CLUSTER}" = "k3s" ] ; then
-    if [ ! -f ${KUBECONFIG} ] ; then
-      printf "\n%bERROR : No configuration file for \"${K8S_CLUSTER}\" cluster.%b\n" "${RED}" "${STD}" ; flagError=1
-    fi
-  fi
-
   export KUBECONFIG="${HOME}/.kube/config"
-  if [ ${flagError} = 0 ] ; then
-    #--- Connect to cluster
-    if [ "${K8S_TYPE_CLUSTER}" = "openshift" ] ; then
-      proxyStatus="$(env | grep "https_proxy" | grep "internet")"
-      if [ "${proxyStatus}" = "" ] ; then
-        printf "\n%bERROR : You need to set internet proxy to use \"${K8S_CLUSTER}\" cluster.%b\n" "${RED}" "${STD}" ; flagError=1
-      else
-        #--- Connect to openshift cluster
-        OC_ENDPOINT="$(credhub g -n ${CREDHUB_ENDPOINT} -j 2> /dev/null | jq -r '.value')"
-        message="$(oc login --server=${OC_ENDPOINT})"
-        printf "\n%b${message}%b " "${YELLOW}${BOLD}" "${STD}"
-        printf "\n\n%bOpenshift API token :%b " "${GREEN}${BOLD}" "${STD}" ; read -s API_TOKEN
-        oc login --token=${API_TOKEN} --server=${OC_ENDPOINT} > /dev/null 2>&1
-        flagError=$?
-        if [ ${flagError} != 0 ] ; then
-          printf "\n%bERROR : Invalid token \"${API_TOKEN}\".\n${message}\n%b" "${RED}" "${STD}"
-        fi
 
-        #--- Rename cluster context
-        current_context="$(kubectl ctx -c)"
-        kubectl config rename-context ${current_context} ${K8S_CONTEXT} > /dev/null 2>&1
-      fi
+  if [ "${context}" = "" ] ; then
+    contexts="$(kubectl config view -o json | jq -r ".contexts[].name" | sort | pr -3t -W 130)"
+    printf "\n%bSelect a cluster :%b\n%s" "${REVERSE}${GREEN}" "${STD}" "${contexts}"
+    printf "\n\n%bYour choice (<Enter> to select none) :%b " "${GREEN}${BOLD}" "${STD}" ; read context
+  fi
+
+  if [ "${context}" != "" ] ; then
+    check_selected="$(echo "${K8S_CONTEXTS}" | grep "^${context}$")"
+    if [ "${check_selected}" = "" ] ; then
+      printf "\n%bERROR : Cluster \"${context}\" unknown...%b\n" "${RED}" "${STD}"
     else
-      #--- Set context to use for selected k3s cluster
-      kubectl config use-context ${K8S_CONTEXT} > /dev/null 2>&1
-      flagError=$?
-      if [ ${flagError} != 0 ] ; then
-        printf "\n%bERROR : Unable to set context for \"${K8S_CLUSTER}\" cluster.%b\n" "${RED}" "${STD}"
-      fi
-    fi
-
-    if [ ${flagError} = 0 ] ; then
-      printf "\n%bCluster \"${K8S_CONTEXT}\" available.%b\n" "${YELLOW}${REVERSE}" "${STD}"
+      kctx ${context}
     fi
   fi
 fi

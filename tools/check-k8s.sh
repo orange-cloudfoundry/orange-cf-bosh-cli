@@ -54,24 +54,24 @@ checkClusterResources() {
 #===================================================================================
 unset https_proxy http_proxy no_proxy
 export KUBECONFIG="${HOME}/.kube/config"
-CLUSTER_CTX="$(kubectl config view -o json | jq -r ".contexts[].name")"
+contexts="$(kubectl config view -o json | jq -r ".contexts[].name" | sort | pr -3t -W 130)"
 
 if [ "$1" = "" ] ; then
-  printf "\n%bSelect a k8s context :%b\n${CLUSTER_CTX}" "${REVERSE}${GREEN}" "${STD}"
-  printf "\n\n%bYour choice (<Enter> to select all) :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
+  printf "\n%bSelect a cluster :%b\n${contexts}" "${REVERSE}${GREEN}" "${STD}"
+  printf "\n\n%bYour choice (<Enter> to select all) :%b " "${GREEN}${BOLD}" "${STD}" ; read context
 else
-  flagCtx="$(echo "${CLUSTER_CTX}" | grep "$1")"
+  flagCtx="$(echo "${contexts}" | grep "^$1$")"
   if [ "${flagCtx}" = "" ] ; then
     printf "\n%bCluster \"$1\" unknown...%b\n" "${RED}" "${STD}" ; exit 1
   else
-    choice="$1"
+    context="$1"
   fi
 fi
 
-if [ "${choice}" = "" ] ; then
-  for ctx in ${CLUSTER_CTX} ; do
+if [ "${context}" = "" ] ; then
+  for ctx in ${contexts} ; do
     checkClusterResources "${ctx}"
   done
 else
-  checkClusterResources "${choice}"
+  checkClusterResources "${context}"
 fi
