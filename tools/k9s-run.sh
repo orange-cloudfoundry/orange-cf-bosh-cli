@@ -45,5 +45,12 @@ if [ -f ${K9S_CONFIG_FILE} ] ; then
   done
 fi
 
-#--- Run k9s binary (defaut is read-only mode)
-k9s ${K9S_RUN_MODE}
+#--- Select current context to use for k9s session
+current_ctx="$(kubectx -c)"
+export KUBECONFIG="${HOME}/.kube/${current_ctx}.yml"
+if [ -s ${KUBECONFIG} ] ; then
+  #--- Run k9s binary (defaut is read-only mode)
+  k9s ${K9S_RUN_MODE}
+else
+  printf "\n%bERROR : k8s context \"${KUBECONFIG}\" unknown.%b\n" "${RED}" "${STD}"
+fi
