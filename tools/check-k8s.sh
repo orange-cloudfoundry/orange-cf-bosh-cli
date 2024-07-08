@@ -26,7 +26,7 @@ checkClusterResources() {
     fi
 
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
-    result="$(flux get all -A --context ${context} | tr -s '\t' ' ' | grep -E "kustomization/|helmchart/|helmrelease/|helmrepository/|gitrepository/" | grep -E " False | True | Unknown " | sed -e "s+ +|+" | sed -E "s+ (False|True) (False|True)(.*)+|\1 \2+" | sed -e "s+ .*|+|+" -e "s+|+ +g" | awk '{
+    result="$(flux get all -A --context ${context} | tr -s '\t' ' ' | grep -E "kustomization/|helmchart/|helmrelease/|helmrepository/|gitrepository/" | grep -E " False | True | Unknown " | sed -e "s+ +|+" | sed -E "s+ (False|True|Unknown) (False|True|Unknown)(.*)+|\1 \2+" | sed -e "s+ .*|+|+" -e "s+|+ +g" | awk '{
       namespace=$1
       kind=$2 ; gsub("/.*", "", kind)
       name=$2 ; gsub(".*/", "", name)
@@ -54,10 +54,11 @@ checkClusterResources() {
 #===================================================================================
 unset https_proxy http_proxy no_proxy
 export KUBECONFIG="${HOME}/.kube/config"
-contexts="$(kubectl config view -o json | jq -r ".contexts[].name" | sort | pr -3t -W 130)"
+contexts="$(kubectl config view -o json | jq -r ".contexts[].name")"
+display_contexts="$(echo "${contexts}" | sort | pr -3t -W 130)"
 
 if [ "$1" = "" ] ; then
-  printf "\n%bSelect a cluster :%b\n${contexts}" "${REVERSE}${GREEN}" "${STD}"
+  printf "\n%bSelect a cluster :%b\n${display_contexts}" "${REVERSE}${GREEN}" "${STD}"
   printf "\n\n%bYour choice (<Enter> to select all) :%b " "${GREEN}${BOLD}" "${STD}" ; read context
 else
   flagCtx="$(echo "${contexts}" | grep "^$1$")"
