@@ -205,10 +205,9 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 
 ## k9s shorcuts
 
-|Shotcut        |Description          |
+|Shortcut       |Description          |
 |---------------|---------------------|
-|`<0>`          | all                 |
-|`<1>`          | default             |
+|`<0>`          | All objects         |
 |`<?>`          | Help                |
 |`<:q>`         | Quit                |
 |`<enter>`      | View                |
@@ -218,6 +217,7 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`<tab>`        | Field Next          |
 |`</term>`      | Filter mode         |
 |`<a>`          | Attach              |
+|`<b>`          | Bench               |
 |`<c>`          | Copy                |
 |`<d>`          | Describe            |
 |`<e>`          | Edit                |
@@ -228,13 +228,19 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`<j>`          | Down                |
 |`<k>`          | Up                  |
 |`<l>`          | Right/Logs          |
+|`<m>`          | Mark                |
+|`<n>`          | Next match          |
+|`<o>`          | Show mode           |
 |`<p>`          | Logs Previous       |
+|`<r>`          | Toggle Auto-Refresh |
 |`<s>`          | Shell               |
 |`<t>`          | Trigger cron        |
 |`<u>`          | Use/UsedBy          |
+|`<v>`          | Vulnerabilities     |
 |`<x>`          | Get all             |
 |`<y>`          | YAML                |
 |`<z>`          | Flux trace          |
+<BR>
 |`<ctrl-a>`     | Aliases             |
 |`<ctrl-b>`     | Page Up             |
 |`<ctrl-d>`     | Delete              |
@@ -242,6 +248,7 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`<ctrl-f>`     | Page Down           |
 |`<ctrl-g>`     | Toggle Crumbs       |
 |`<ctrl-k>`     | Kill                |
+|`<ctrl-q>`     | Sort MEM/L          |
 |`<ctrl-r>`     | Refresh/Reload      |
 |`<ctrl-s>`     | Save                |
 |`<ctrl-u>`     | Command Clear       |
@@ -250,14 +257,37 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`<ctrl-z>`     | Toggle Faults       |
 |`<ctrl-\>`     | Mark Clear          |
 |`<ctrl-space>` | Mark Range          |
+<BR>
 |`<shift-a>`    | Sort Age            |
+|`<shift-b>`    | Sort Binding        |
 |`<shift-c>`    | Sort CPU            |
+|`<shift-d>`    | Sort desired        |
+|`<shift-e>`    | Sort errors         |
 |`<shift-f>`    | Port-Forward        |
 |`<shift-g>`    | Goto Bottom         |
-|`<shift-l>`    | Sort Available      |
+|`<shift-h>`    | Watch events        |
+|`<shift-i>`    | Sort IP             |
+|`<shift-k>`    | Sort Kind           |
+|`<shift-l>`    | Sort MEM            |
+|`<shift-m>`    | Sort Name           |
 |`<shift-n>`    | Sort Name           |
+|`<shift-o>`    | Sort Node           |
+|`<shift-p>`    | Sort Ready          |
 |`<shift-r>`    | Sort Ready          |
 |`<shift-s>`    | Sort Status         |
 |`<shift-t>`    | Toggle hr/ks        |
 |`<shift-u>`    | Sort UpToDate       |
+|`<shift-v>`    | Sort Volume         |
+|`<shift-w>`    | Sort Warning        |
+|`<shift-x>`    | Sort CPU/R          |
 |`<shift-z>`    | Flux reconcile      |
+<BR>
+|`F1`           | View kustomizations |
+|`F2`           | View namespaces     |
+|`F3`           | View pods           |
+|`F4`           | View deployments    |
+|`F5`           | View daemonsets     |
+|`F6`           | View services       |
+|`F7`           | View helmreleases   |
+|`F8`           | View volumes        |
+|`F1`           | View replicas       |

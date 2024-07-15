@@ -15,7 +15,7 @@ ENV ARGO_VERSION="3.5.4" \
     CROSSPLANE_CLI="1.16.0" \
     FLUX_VERSION="2.2.3" \
     FLY_VERSION="7.9.1" \
-    GITLAB_VERSION="1.42.0" \
+    GITLAB_VERSION="1.43.0" \
     GITHUB_VERSION="2.51.0" \
     GOSS_VERSION="0.4.7" \
     GOVC_VERSION="0.37.3" \
@@ -191,7 +191,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     mv /tmp/tools/bash_profile /home/bosh/bash_profile && \
     mv /tmp/tools/bash_aliases /home/bosh/.bash_aliases && \
     mkdir -p /home/bosh/.ssh && chmod 700 /home/bosh /home/bosh/.ssh && \
-    mkdir -p /home/bosh/.k9s/skins && mv /tmp/tools/k9s-plugins.yaml /home/bosh/.k9s/plugins.yaml && mv /tmp/tools/k9s-skin.yaml /home/bosh/.k9s/skins/skin.yaml && \
+    mkdir -p /home/bosh/.k9s/skins && mv /tmp/tools/k9s-plugins.yaml /home/bosh/.k9s/plugins.yaml && mv /tmp/tools/k9s-skin.yaml /home/bosh/.k9s/skins/skin.yaml && mv /tmp/tools/k9s-hotkeys.yaml /home/bosh/.k9s/hotkeys.yaml && \
     mv /tmp/tools/completion/* /etc/bash_completion.d/ && chmod 755 /etc/bash_completion.d/* && \
     mv /tmp/tools/*.sh /usr/local/bin/ && mv /tmp/tools/sshd.conf /etc/supervisor/conf.d/ && \
     printf '\n=====================================================\n Cleanup system\n=====================================================\n' && \

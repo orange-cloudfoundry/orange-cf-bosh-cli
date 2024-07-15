@@ -3,6 +3,19 @@
 # Run k9s with custom configuration
 #===========================================================================
 
+#--- Get k9s parameters
+if [ $# = 0 ] ; then
+  #--- Default is read-only run mode (managed by "kube-mode")
+  K9S_PARAMS="${K9S_RUN_MODE}"
+else
+  check_parameters="$(echo "$@" | grep -E "completion|help|info|version")"
+  if [ "${check_parameters}" = "" ] ; then
+    K9S_PARAMS="$@ ${K9S_RUN_MODE}"
+  else
+    K9S_PARAMS="$@"
+  fi
+fi
+
 #--- Delete obsolete configuration files (yaml files replace yml in k9s breaking changes)
 if [ -f ${K9S_CONFIG_DIR}/config.yml ] ; then
   rm -f ${K9S_CONFIG_DIR}/config.yml > /dev/null 2>&1
@@ -32,6 +45,9 @@ if [ -f ${K9S_CONFIG_FILE} ] ; then
   #--- Disable k9s lastrev check
   sed -i "s+skipLatestRevCheck:.*+skipLatestRevCheck: true+" ${K9S_CONFIG_FILE}
 
+  #--- Disable k9s exit on CTRL/C
+  sed -i "s+noExitOnCtrlC:.*+noExitOnCtrlC: true+" ${K9S_CONFIG_FILE}
+
   #--- Set k9s skin environment color
   sed -i '/skin: .*/d' ${K9S_CONFIG_FILE}
   sed -i '/ noIcons: /a\    skin: skin' ${K9S_CONFIG_FILE}
@@ -49,8 +65,7 @@ fi
 current_ctx="$(kubectx -c)"
 export KUBECONFIG="${HOME}/.kube/${current_ctx}.yml"
 if [ -s ${KUBECONFIG} ] ; then
-  #--- Run k9s binary (defaut is read-only mode)
-  k9s ${K9S_RUN_MODE}
+  k9s ${K9S_PARAMS}
 else
   printf "\n%bERROR : k8s context \"${KUBECONFIG}\" unknown.%b\n" "${RED}" "${STD}"
 fi

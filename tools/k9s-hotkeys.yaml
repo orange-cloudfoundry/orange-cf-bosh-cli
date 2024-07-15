@@ -1,0 +1,37 @@
+hotKeys:
+  f1:
+    shortCut: F1
+    description: kustomizations
+    command: kustomizations
+  f2:
+    shortCut: F2
+    description: namespaces
+    command: namespaces
+  f3:
+    shortCut: F3
+    description: pods
+    command: pods
+  f4:
+    shortCut: F4
+    description: deployments
+    command: deployments
+  f5:
+    shortCut: F5
+    description: daemonsets
+    command: daemonsets
+  f6:
+    shortCut: F6
+    description: services
+    command: services
+  f7:
+    shortCut: F7
+    description: helmreleases
+    command: helmreleases
+  f8:
+    shortCut: F8
+    description: configmaps
+    command: configmaps
+  f9:
+    shortCut: F9
+    description: secrets
+    command: secrets
