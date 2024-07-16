@@ -11,10 +11,22 @@ plugins:
     args:
       - -c
       - kubectl debug -it -n=$NAMESPACE $POD --target=$NAME --image=nicolaka/netshoot:v0.11 --share-processes -- bash
+  #-- Display kubectl command to run in separate shell
+  kubectl-get-cmd:
+    shortCut: Shift-B
+    description: Display shell cmd
+    scopes:
+      - all
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - (printf "Copy/Paste command in separate shell:\n\n" ; if [ "$NAMESPACE" != "" -a  "$NAMESPACE" != "-"  ] ; then printf "kubectl get --context $CONTEXT -n $NAMESPACE $RESOURCE_NAME $NAME\n\n" ; else printf "kubectl get --context $CONTEXT $RESOURCE_NAME $NAME\n\n" ; fi ) |& less -KR
   #--- Show ssl cert
   show-cert:
-    shortCut: Shift-J
-    description: Show cert
+    shortCut: Shift-C
+    description: Show certs
     scopes:
       - secrets
     command: bash
@@ -23,10 +35,46 @@ plugins:
     args:
       - -c
       - kubectl get secret --context $CONTEXT -n $NAMESPACE $NAME -o jsonpath="{.data.caFile}{.data.ca\.crt}{.data.tls\.crt}" | base64 -d | grep -v "^#" | awk -v cmd='openssl x509 -text -noout -certopt no_header,no_version,no_serial,no_pubkey,no_sigdump' '/-----BEGIN/{close(cmd);print "====================================================================================="};{print | cmd}' |& less -KR
+  #--- Get cert-manager certificates status
+  cert-status:
+    shortCut: Shift-S
+    description: Certificate status
+    scopes:
+      - certificates
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - cmctl status certificate --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
+  #--- Inspect certificate with cert-manager
+  cert-inspect:
+    shortCut: Shift-I
+    description: Inspect certificate
+    scopes:
+      - secrets
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - cmctl inspect secret --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
+  #--- Renew certificate with cert-manager
+  cert-renew:
+    shortCut: Shift-R
+    description: Certificate renew
+    scopes:
+      - certificates
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - cmctl renew --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
   #--- Show cnpg cluster status
   show-cnpg-status:
     shortCut: s
-    description: cnpg status
+    description: Cnpg status
     scopes:
       - cluster
     command: bash
@@ -48,7 +96,7 @@ plugins:
       - kubectl cnpg psql $NAME -n $NAMESPACE --context $CONTEXT
   #--- Display events from selected k8s objects every 5s
   watch-events:
-    shortCut: Shift-H
+    shortCut: w
     description: Watch events
     scopes:
       - all
@@ -58,46 +106,24 @@ plugins:
     args:
       - -c
       - watch -n 5 kubectl get events --context $CONTEXT -n $NAMESPACE --field-selector involvedObject.name=$NAME
-  #--- Display logs from selected deployment in raw mode
-  display-deployment-logs:
+  #--- Display logs in raw mode from selected resource
+  display-logs:
     shortCut: Ctrl-L
-    description: "Display logs"
+    description: Display logs
     scopes:
-      - deployment
+      - deployments
+      - daemonsets
+      - pods
     command: bash
     background: false
     confirm: false
     args:
       - -c
-      - kubectl logs -f deployment/$NAME --context $CONTEXT -n $NAMESPACE |& less -KR
-  #--- Display logs from selected daemonset in raw mode
-  display-daemonset-logs:
-    shortCut: Ctrl-L
-    description: "Display logs"
-    scopes:
-      - daemonset
-    command: bash
-    background: false
-    confirm: false
-    args:
-      - -c
-      - kubectl logs -f daemonset/$NAME --context $CONTEXT -n $NAMESPACE |& less -KR
-  #--- Display logs from selected pod in raw mode
-  display-pod-logs:
-    shortCut: Ctrl-L
-    description: "Display logs"
-    scopes:
-      - pod
-    command: bash
-    background: false
-    confirm: false
-    args:
-      - -c
-      - kubectl logs -f pod/$NAME --context $CONTEXT -n $NAMESPACE |& less -KR
+      - kubectl logs $(echo $RESOURCE_NAME | sed -e s/s$//g)/$NAME --context $CONTEXT -n $NAMESPACE |& less -KR
   #--- Display logs from selected container in raw mode
   display-container-logs:
     shortCut: Ctrl-L
-    description: "Display logs"
+    description: Display logs
     scopes:
       - containers
     command: bash
@@ -105,11 +131,35 @@ plugins:
     confirm: false
     args:
       - -c
-      - kubectl logs -f $POD -c $NAME --context $CONTEXT -n $NAMESPACE |& less -KR
-  #--- View all information from helm releases in current namespace
-  helm-get-all:
-    shortCut: Shift-K
-    description: Helm Get All
+      - kubectl logs $POD -c $NAME --context $CONTEXT -n $NAMESPACE |& less -KR
+  #--- Get flux managed objects status in current namespace
+  flux-inventory:
+    shortCut: x
+    description: Flux inventory
+    scopes:
+      - namespaces
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - flux trace --context $CONTEXT --kind namespace --api-version $RESOURCE_GROUP/$RESOURCE_VERSION $NAME |& less -KR
+  #--- Get all k8s objects created in current namespace
+  namespace-inventory:
+    shortCut: n
+    description: Namespace inventory
+    scopes:
+      - namespaces
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - kubectl get-all --context $CONTEXT --namespace $NAME |& less -KR
+  #--- Get all information from helm releases in current namespace
+  helm-inventory:
+    shortCut: Shift-H
+    description: Helm inventory
     scopes:
       - helmreleases
     command: bash
@@ -121,7 +171,7 @@ plugins:
   #--- View user-supplied values when helm chart was created in current namespace
   helm-values:
     shortCut: v
-    description: Values
+    description: Helm values
     scopes:
       - helm
     command: bash
@@ -130,54 +180,18 @@ plugins:
     args:
       - -c
       - helm get values $COL-NAME -n $NAMESPACE --kube-context $CONTEXT |& less -KR
-  #--- Get flux managed objects status in current namespace
-  flux-trace:
-    shortCut: g
-    description: Flux trace
-    scopes:
-      - all
-    command: bash
-    background: false
-    confirm: false
-    args:
-      - -c
-      - flux trace --context $CONTEXT $NAME --kind `echo $RESOURCE_NAME | sed -E 's/(s|es)$//g'` --api-version $RESOURCE_GROUP/$RESOURCE_VERSION --namespace $NAMESPACE $NAME |& less -KR
-  #--- Get all k8s objects created in current namespace
-  get-all:
-    shortCut: x
-    description: namespace inventory
-    scopes:
-      - pod
-    command: bash
-    background: false
-    confirm: false
-    args:
-      - -c
-      - kubectl get-all --context $CONTEXT --namespace $NAMESPACE |& less -KR
   #--- Get suspended helmreleases in all namespaces
   get-suspended-helmreleases:
     shortCut: Shift-S
     description: List suspended
     scopes:
-      - helmrelease
+      - helmreleases
     command: bash
     background: false
     confirm: false
     args:
       - -c
       - kubectl get helmreleases.helm.toolkit.fluxcd.io --all-namespaces --context $CONTEXT -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' |& less -KR
-  #--- Suspend/reconcile selected helmrelease in current namespace
-  suspend-resume-helmrelease:
-    shortCut: Shift-T
-    description: suspend/resume
-    scopes:
-      - helmreleases
-    command: bash
-    background: false
-    confirm: true
-    args:
-      - -c
-      - suspend-resume-hr.sh $CONTEXT $NAMESPACE $NAME
   #--- Get suspended kustomizations in all namespaces
   get-suspended-kustomizations:
     shortCut: Shift-S
@@ -190,10 +204,22 @@ plugins:
     args:
       - -c
       - kubectl get kustomizations.kustomize.toolkit.fluxcd.io --all-namespaces --context $CONTEXT -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' |& less -KR
+  #--- Suspend/reconcile selected helmrelease in current namespace
+  suspend-resume-helmrelease:
+    shortCut: Shift-T
+    description: Suspend/resume
+    scopes:
+      - helmreleases
+    command: bash
+    background: false
+    confirm: true
+    args:
+      - -c
+      - suspend-resume-hr.sh $CONTEXT $NAMESPACE $NAME
   #--- Suspend/reconcile selected kustomization in current namespace
   suspend-resume-kustomization:
     shortCut: Shift-T
-    description: suspend/resume
+    description: Suspend/resume
     scopes:
       - kustomizations
     command: bash
@@ -206,8 +232,8 @@ plugins:
   suspend-resume-gitrepo:
     shortCut: Shift-T
     scopes:
-      - gitrepo
-    description: suspend/resume
+      - gitrepositories
+    description: Suspend/resume
     command: bash
     background: false
     confirm: true
@@ -215,29 +241,17 @@ plugins:
       - -c
       - flux --context $CONTEXT $([ $(kubectl --context $CONTEXT get gitrepo -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") source git -n $NAMESPACE $NAME |& less -KR
   #--- Suspend/reconcile selected terraform in current namespace
-  suspend-resume-kustomization-tf:
+  suspend-resume-tf:
     shortCut: Shift-T
     scopes:
       - terraform
-    description: suspend/resume
+    description: Suspend/resume
     command: bash
     background: false
     confirm: true
     args:
       - -c
       - tfctl $([ $(kubectl get terraforms.infra.contrib.fluxcd.io -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
-  #--- Reconcile selected flux kustomization in current namespace
-  reconcile-kustomization:
-    shortCut: Shift-Z
-    description: Flux reconcile
-    scopes:
-      - kustomizations
-    command: bash
-    background: false
-    confirm: false
-    args:
-      - -c
-      - flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
   #--- Reconcile selected flux gitrepository in current namespace
   reconcile-git:
     shortCut: Shift-Z
@@ -250,30 +264,6 @@ plugins:
     args:
       - -c
       - flux reconcile source git --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
-  #--- Reconcile selected flux helmrepository in current namespace
-  reconcile-helm-repo:
-    shortCut: Shift-Z
-    description: Flux reconcile
-    scopes:
-      - helmrepositories
-    command: bash
-    background: false
-    confirm: false
-    args:
-      - -c
-      - flux reconcile source helm --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
-  #--- Reconcile selected flux ocirepository in current namespace
-  reconcile-oci-repo:
-    shortCut: Shift-Z
-    description: Flux reconcile
-    scopes:
-      - ocirepositories
-    command: bash
-    background: false
-    confirm: false
-    args:
-      - -c
-      - flux reconcile source oci --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
   #--- Reconcile selected flux helmrelease in current namespace
   reconcile-helmrelease:
     shortCut: Shift-Z
@@ -286,6 +276,42 @@ plugins:
     args:
       - -c
       - flux reconcile helmrelease --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
+  #--- Reconcile selected flux helmrepository in current namespace
+  reconcile-helm-repo:
+    shortCut: Shift-Z
+    description: Flux reconcile
+    scopes:
+      - helmrepositories
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - flux reconcile source helm --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
+  #--- Reconcile selected flux kustomization in current namespace
+  reconcile-kustomization:
+    shortCut: Shift-Z
+    description: Flux reconcile
+    scopes:
+      - kustomizations
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
+  #--- Reconcile selected flux ocirepository in current namespace
+  reconcile-oci-repo:
+    shortCut: Shift-Z
+    description: Flux reconcile
+    scopes:
+      - ocirepositories
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - flux reconcile source oci --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
   #--- Reconcile selected flux terraform in current namespace
   reconcile-tf:
     shortCut: Shift-Z
@@ -299,9 +325,9 @@ plugins:
       - -c
       - tfctl reconcile $NAME --context $CONTEXT -n $NAMESPACE |& less -KR
   #--- Run selected argo workflow in current namespace
-  submit-argo-workflow-template:
+  run-argo-workflow-template:
     shortCut: t
-    description: Submit argo workflow
+    description: Run argo workflow
     scopes:
       - workflowtemplates
     command: bash
@@ -311,9 +337,9 @@ plugins:
       - -c
       - argo submit --from workflowtemplate/$NAME -n $NAMESPACE |& less -KR
   #--- Get selected k8s application informations in current namespace
-  kapp-inspect:
+  App-inspect:
     shortCut: Shift-I
-    description: Kapp inspect
+    description: App inspect
     scopes:
       - app
     command: bash
@@ -323,9 +349,9 @@ plugins:
       - -c
       - export FORCE_COLOR=1;kapp inspect -a $NAME.app --namespace $NAMESPACE --color --tty |& less -KR
   #--- Get selected k8s application status in current namespace
-  kctrl-app-status:
+  App-status:
     shortCut: Shift-Q
-    description: kctrl app status
+    description: App status
     scopes:
       - app
     command: bash
@@ -333,11 +359,11 @@ plugins:
     confirm: false
     args:
       - -c
-      - export FORCE_COLOR=1;kctrl app status -a $NAME --namespace $NAMESPACE --color --tty |& less -KR
+      - export FORCE_COLOR=1 ; kctrl app status -a $NAME --namespace $NAMESPACE --color --tty |& less -KR
   #--- Pause selected k8s application in current namespace
-  kctrl-app-pause:
+  App-pause:
     shortCut: Shift-T
-    description: kctrl app pause
+    description: App pause
     scopes:
       - app
     command: bash
@@ -345,11 +371,11 @@ plugins:
     confirm: false
     args:
       - -c
-      - export FORCE_COLOR=1;kctrl app pause -a $NAME --namespace $NAMESPACE --yes --color --tty |& less -KR
+      - export FORCE_COLOR=1 ; kctrl app pause -a $NAME --namespace $NAMESPACE --yes --color --tty |& less -KR
   #--- Reconcile selected k8s application in current namespace
-  kctrl-app-kick:
+  App-kick:
     shortCut: Shift-Z
-    description: kctrl app kick
+    description: App kick
     scopes:
       - app
     command: bash
@@ -357,4 +383,4 @@ plugins:
     confirm: false
     args:
       - -c
-      - export FORCE_COLOR=1;kctrl app kick -a $NAME --namespace $NAMESPACE --yes --color --tty |& less -KR
+      - export FORCE_COLOR=1 ; kctrl app kick -a $NAME --namespace $NAMESPACE --yes --color --tty |& less -KR
