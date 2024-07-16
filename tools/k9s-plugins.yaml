@@ -47,18 +47,6 @@ plugins:
     args:
       - -c
       - cmctl status certificate --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
-  #--- Inspect certificate with cert-manager
-  cert-inspect:
-    shortCut: Shift-I
-    description: Inspect certificate
-    scopes:
-      - secrets
-    command: bash
-    background: false
-    confirm: false
-    args:
-      - -c
-      - cmctl inspect secret --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
   #--- Renew certificate with cert-manager
   cert-renew:
     shortCut: Shift-R

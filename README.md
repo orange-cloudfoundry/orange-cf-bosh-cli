@@ -4,36 +4,19 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 
 ## Installed tools
 
-### Generic tools
-* `apg` - Automated Password Generator
+### Bosh tools
+* `bbr` - Bosh Backup and Restore cli (http://docs.cloudfoundry.org/bbr/)
 * `bosh` - Bosh cli (https://bosh.io/docs/cli-v2.html)
 * `bosh-gen` - Bosh releases creation (https://github.com/cloudfoundry-community/bosh-gen)
 * `cf` - Cloud Foundry cli (https://github.com/cloudfoundry/cli)
 * `credhub` - Credhub cli (https://github.com/cloudfoundry-incubator/credhub-cli)
 * `fly` - Concourse cli (https://github.com/concourse/fly)
-* `git` - Git cli
-* `git-filter-repo` - Git rewriting history tool (https://github.com/newren/git-filter-repo)
-* `jq` - JSON processing tool (https://stedolan.github.io/jq/)
-* `mdless` - Provides a formatted and highlighted view of Markdown files in Terminal (https://github.com/ttscoff/mdless)
-* `spruce` - YAML templating tool, for Bosh deployment manifests generation (https://github.com/geofffranks/spruce)
-* `terraform` - Terraform cli (https://www.terraform.io/)
 * `uaac` - Cloud Foundry UAA cli (https://github.com/cloudfoundry/cf-uaac)
-* `vendir` - Define and fetch components to target directory (https://github.com/vmware-tanzu/carvel-vendir/)
-* `yarn` - Package manager (https://yarnpkg.com/fr/)
-
-### Admin tools
-* `bbr` - Bosh Backup and Restore cli (http://docs.cloudfoundry.org/bbr/)
-* `gcloud` - Google Cloud Platform cli (https://cloud.google.com/sdk/gcloud)
-* `govc` - Vsphere cli (https://github.com/vmware/govmomi/tree/master/govc/)
-* `go3fr` - client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
-* `mc` - Minio S3 cli (https://github.com/minio/mc)
-* `mongo` - MongoDB shell cli (https://docs.mongodb.com/manual/mongo/)
-* `mysqlsh` - MySQL shell cli (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)
-* `redis` - Redis cli (https://redis.io/topics/rediscli/)
 * `shield` - Shield cli (https://docs.pivotal.io/partners/starkandwayne-shield/)
 
 ### Kubernetes tools
 * `argo` - Kubernetes workflow management (https://argoproj.github.io/argo-workflows/)
+* `cilium` - Kubernetes cilium network management (https://github.com/cilium/cilium-cli)
 * `flux` - Kubernetes Gitops management (https://fluxcd.io/docs/cmd/)
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
 * `hubble` - Kubernetes Monitoring management (https://github.com/cilium/hubble/)
@@ -43,6 +26,24 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `kustomize` Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)
 * `k9s` - Kubernetes cli (https://github.com/derailed/k9s)
 * `oc` - Openshift cli (https://docs.openshift.com/dedicated/welcome/)
+
+### Other tools
+* `cmctl` - Cert-manager cli (https://github.com/cert-manager/cmctl)
+* `gcloud` - Google Cloud Platform cli (https://cloud.google.com/sdk/gcloud)
+* `git` - Git cli
+* `git-filter-repo` - Git rewriting history tool (https://github.com/newren/git-filter-repo)
+* `govc` - Vsphere cli (https://github.com/vmware/govmomi/tree/master/govc/)
+* `go3fr` - client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
+* `mc` - Minio S3 cli (https://github.com/minio/mc)
+* `jq` - JSON processing tool (https://stedolan.github.io/jq/)
+* `mdless` - Provides a formatted and highlighted view of Markdown files in Terminal (https://github.com/ttscoff/mdless)
+* `mongo` - MongoDB shell cli (https://docs.mongodb.com/manual/mongo/)
+* `mysqlsh` - MySQL shell cli (https://dev.mysql.com/doc/mysql-shell-excerpt/5.7/en/)
+* `redis` - Redis cli (https://redis.io/topics/rediscli/)
+* `spruce` - YAML templating tool, for Bosh deployment manifests generation (https://github.com/geofffranks/spruce)
+* `terraform` - Terraform cli (https://www.terraform.io/)
+* `vendir` - Define and fetch components to target directory (https://github.com/vmware-tanzu/carvel-vendir/)
+* `yarn` - Package manager (https://yarnpkg.com/fr/)
 * `ytt` - YAML Templating Tool (https://github.com/k14s/ytt/)
 
 ## How to get it or build it
@@ -216,7 +217,6 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`F7`           | View helmreleases   |
 |`F8`           | View configmaps     |
 |`F1`           | View secrets        |
-|---------------|---------------------|
 
 ## k9s shorcuts
 
@@ -233,94 +233,93 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`</term>`      | Filter mode         |
 <BR>
 
-|Shortcut       |Description          |Scope                  |Plugin |
-|---------------|---------------------|-----------------------|-------|
-|`<a>`          | Attach              | pod, container        |       |
-|`<b>`          | Bench Run/Stop      | service, portforwards |       |
-|`<c>`          | Copy                | node, pod, container  |       |
-|`<d>`          | Describe            | all                   |       |
-|`<e>`          | Edit                | all                   |       |
-|`<f>`          | Show PortForward    | pod, container        |       |
-|`<g>`          | Goto Top            | all                   |       |
-|               | Namespace inventory | namespaces            | X     |
-|`<h>`          | Left                | all                   |       |
-|`<i>`          | Set Image           |                       |       |
-|`<j>`          | Down                | all                   |       |
-|`<k>`          | Up                  | all                   |       |
-|`<l>`          | Right/Logs          | all                   |       |
-|`<m>`          | Mark                |                       |       |
-|`<n>`          | Copy Namespace      | pod                   |       |
-|               | Flux inventory      | namespaces            | X     |
-|`<o>`          | Show Node           | pod                   |       |
-|`<p>`          | Logs Previous       |                       |       |
-|               | PSQL shell          | cluster               | X     |
-|`<r>`          | Toggle Auto-Refresh |                       |       |
-|`<s>`          | Shell               |                       |       |
-|               | Cnpg status         | cluster               | X     |
-|`<t>`          | Trigger cron        |                       |       |
-|               | Run argo workflow   | workflowtemplates     | X     |
-|`<u>`          | Use/UsedBy          |                       |       |
-|`<v>`          | Vulnerabilities     |                       |       |
-|               | Helm values         | helm                  | X     |
-|`<w>`          | Watch events        | all                   | X     |
-|`<x>`          | Decode              | secrets               |       |
-|`<y>`          | YAML                |                       |       |
-|`<z>`          | zorg                |                       |       |
+|Shortcut       |Description          |Scope                  | Plugin |
+|---------------|---------------------|-----------------------|--------|
+|`<a>`          | Attach              | pod, container        |        |
+|`<b>`          | Bench Run/Stop      | service, portforwards |        |
+|`<c>`          | Copy                | node, pod, container  |        |
+|`<d>`          | Describe            | all                   |        |
+|`<e>`          | Edit                | all                   |        |
+|`<f>`          | Show PortForward    | pod, container        |        |
+|`<g>`          | Goto Top            | all                   |        |
+|               | Namespace inventory | namespaces            | X      |
+|`<h>`          | Left                | all                   |        |
+|`<i>`          | Set Image           |                       |        |
+|`<j>`          | Down                | all                   |        |
+|`<k>`          | Up                  | all                   |        |
+|`<l>`          | Right/Logs          | all                   |        |
+|`<m>`          | Mark                |                       |        |
+|`<n>`          | Copy Namespace      | pod                   |        |
+|               | Flux inventory      | namespaces            | X      |
+|`<o>`          | Show Node           | pod                   |        |
+|`<p>`          | Logs Previous       |                       |        |
+|               | PSQL shell          | cluster               | X      |
+|`<r>`          | Toggle Auto-Refresh |                       |        |
+|`<s>`          | Shell               |                       |        |
+|               | Cnpg status         | cluster               | X      |
+|`<t>`          | Trigger cron        |                       |        |
+|               | Run argo workflow   | workflowtemplates     | X      |
+|`<u>`          | Use/UsedBy          |                       |        |
+|`<v>`          | Vulnerabilities     |                       |        |
+|               | Helm values         | helm                  | X      |
+|`<w>`          | Watch events        | all                   | X      |
+|`<x>`          | Decode              | secrets               |        |
+|`<y>`          | YAML                |                       |        |
+|`<z>`          | zorg                |                       |        |
 <BR>
 
-|Shortcut       |Description          |Scope                                  |Plugin |
-|---------------|---------------------|---------------------------------------|-------|
-|`<ctrl-a>`     | Aliases             |                                       |       |
-|`<ctrl-b>`     | Page Up             |                                       |       |
-|`<ctrl-d>`     | Delete              |                                       |       |
-|`<ctrl-e>`     | Toggle Header       |                                       |       |
-|`<ctrl-f>`     | Page Down           |                                       |       |
-|`<ctrl-g>`     | Toggle Crumbs       |                                       |       |
-|`<ctrl-k>`     | Kill                |                                       |       |
-|`<ctrl-l>`     | Display logs        | deployment, daemonset, pod, container | X     |
-|`<ctrl-q>`     | Sort MEM/L          |                                       |       |
-|`<ctrl-r>`     | Refresh/Reload      |                                       |       |
-|`<ctrl-s>`     | Save                |                                       |       |
-|`<ctrl-u>`     | Command Clear       |                                       |       |
-|`<ctrl-w>`     | Toggle Wide         |                                       |       |
-|`<ctrl-x>`     | Sort CPU/L          |                                       |       |
-|`<ctrl-\>`     | Mark Clear          |                                       |       |
-|`<ctrl-space>` | Mark Range          |                                       |       |
+|Shortcut       |Description          |Scope                                  | Plugin |
+|---------------|---------------------|---------------------------------------|--------|
+|`<ctrl-a>`     | Aliases             |                                       |        |
+|`<ctrl-b>`     | Page Up             |                                       |        |
+|`<ctrl-d>`     | Delete              |                                       |        |
+|`<ctrl-e>`     | Toggle Header       |                                       |        |
+|`<ctrl-f>`     | Page Down           |                                       |        |
+|`<ctrl-g>`     | Toggle Crumbs       |                                       |        |
+|`<ctrl-k>`     | Kill                |                                       |        |
+|`<ctrl-l>`     | Display logs        | deployment, daemonset, pod, container | X      |
+|`<ctrl-q>`     | Sort MEM/L          |                                       |        |
+|`<ctrl-r>`     | Refresh/Reload      |                                       |        |
+|`<ctrl-s>`     | Save                |                                       |        |
+|`<ctrl-u>`     | Command Clear       |                                       |        |
+|`<ctrl-w>`     | Toggle Wide         |                                       |        |
+|`<ctrl-x>`     | Sort CPU/L          |                                       |        |
+|`<ctrl-\>`     | Mark Clear          |                                       |        |
+|`<ctrl-space>` | Mark Range          |                                       |        |
 <BR>
 
-|Shortcut       |Description          |Scope                                                                                        |Plugin |
-|---------------|---------------------|---------------------------------------------------------------------------------------------|-------|
-|`<shift-a>`    | Sort Age            | all                                                                                         |       |
-|`<shift-b>`    | Sort Binding        | policy                                                                                      |       |
-|               | Display shell cmd   | all                                                                                         | X     |
-|`<shift-c>`    | Sort CPU            | all                                                                                         |       |
-|               | Show certs          | secrets                                                                                     | X     |
-|`<shift-d>`    | Sort desired        | ds/rs                                                                                       |       |
-|               | Add debug container | containers                                                                                  | X     |
-|`<shift-e>`    | Sort errors         | popeye                                                                                      |       |
-|`<shift-f>`    | Port-Forward        | containers, events                                                                          |       |
-|`<shift-g>`    | Goto Bottom         | all                                                                                         |       |
-|`<shift-h>`    | Helm inventory      | helmreleases                                                                                | X     |
-|`<shift-i>`    | Sort IP             | pods/popeye                                                                                 |       |
-|               | Inspect certificate | certificates                                                                                | X     |
-|`<shift-j>`    | NOT USED            |                                                                                             |       |
-|`<shift-k>`    | Sort Kind           | workloads, groups, users                                                                    |       |
-|`<shift-l>`    | Sort MEM            |                                                                                             |       |
-|`<shift-m>`    | Sort Name           |                                                                                             |       |
-|`<shift-n>`    | Sort Name           |                                                                                             |       |
-|`<shift-o>`    | Sort Node           |                                                                                             |       |
-|`<shift-p>`    | Sort Ready          |                                                                                             |       |
-|`<shift-r>`    | Sort Ready          |                                                                                             |       |
-|               | Certificate renew   | certificates                                                                                | X     |
-|`<shift-s>`    | Sort Status         | all                                                                                         |       |
-|               | List suspended      | helmreleases, kustomizations                                                                | X     |
-|               | Certificate status  | certificates                                                                                | X     |
-|`<shift-t>`    | Sort Restart        | all                                                                                         |       |
-|               | Suspend/resume      | helmreleases, kustomizations, gitrepositories, terraform                                    | X     |
-|`<shift-u>`    | Sort UpToDate       | dp/pf/ds                                                                                    |       |
-|`<shift-v>`    | Sort Volume         | reference/pvc/img_scan                                                                      |       |
-|`<shift-w>`    | Sort Warning        | popeye                                                                                      |       |
-|`<shift-x>`    | Sort CPU/R          | pod                                                                                         |       |
-|`<shift-y>`    | NOT USED            |                                                                                             |       |
-|`<shift-z>`    | Sort MEM/R          | pod                                                                                         |       |
-|               | Flux reconcile      | gitrepositories, helmreleases, helmrepositories, kustomizations, ocirepositories, terraform | X     |
+|Shortcut       |Description          |Scope                                                                                        | Plugin |
+|---------------|---------------------|---------------------------------------------------------------------------------------------|--------|
+|`<shift-a>`    | Sort Age            | all                                                                                         |        |
+|`<shift-b>`    | Sort Binding        | policy                                                                                      |        |
+|               | Display shell cmd   | all                                                                                         | X      |
+|`<shift-c>`    | Sort CPU            | all                                                                                         |        |
+|               | Show certs          | secrets                                                                                     | X      |
+|`<shift-d>`    | Sort desired        | ds/rs                                                                                       |        |
+|               | Add debug container | containers                                                                                  | X      |
+|`<shift-e>`    | Sort errors         | popeye                                                                                      |        |
+|`<shift-f>`    | Port-Forward        | containers, events                                                                          |        |
+|`<shift-g>`    | Goto Bottom         | all                                                                                         |        |
+|`<shift-h>`    | Helm inventory      | helmreleases                                                                                | X      |
+|`<shift-i>`    | Sort IP             | pods/popeye                                                                                 |        |
+|`<shift-j>`    | NOT USED            |                                                                                             |        |
+|`<shift-k>`    | Sort Kind           | workloads, groups, users                                                                    |        |
+|`<shift-l>`    | Sort MEM            |                                                                                             |        |
+|`<shift-m>`    | Sort Name           |                                                                                             |        |
+|`<shift-n>`    | Sort Name           |                                                                                             |        |
+|`<shift-o>`    | Sort Node           |                                                                                             |        |
+|`<shift-p>`    | Sort Ready          |                                                                                             |        |
+|`<shift-r>`    | Sort Ready          |                                                                                             |        |
+|               | Certificate renew   | certificates                                                                                | X      |
+|`<shift-s>`    | Sort Status         | all                                                                                         |        |
+|               | List suspended      | helmreleases, kustomizations                                                                | X      |
+|               | Certificate status  | certificates                                                                                | X      |
+|`<shift-t>`    | Sort Restart        | all                                                                                         |        |
+|               | Suspend/resume      | helmreleases, kustomizations, gitrepositories, terraform                                    | X      |
+|`<shift-u>`    | Sort UpToDate       | dp/pf/ds                                                                                    |        |
+|`<shift-v>`    | Sort Volume         | reference/pvc/img_scan                                                                      |        |
+|`<shift-w>`    | Sort Warning        | popeye                                                                                      |        |
+|`<shift-x>`    | Sort CPU/R          | pod                                                                                         |        |
+|`<shift-y>`    | NOT USED            |                                                                                             |        |
+|`<shift-z>`    | Sort MEM/R          | pod                                                                                         |        |
+|               | Flux reconcile      | gitrepositories, helmreleases, helmrepositories, kustomizations, ocirepositories, terraform | X      |
