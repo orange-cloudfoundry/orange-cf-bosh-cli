@@ -147,7 +147,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     addCompletion "KAPP" "kapp" "completion bash" && \
     installBinary "KCTRL" "kctrl" "https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v${KCTRL_VERSION}/kctrl-linux-${OS_ARCH_AMD}" && \
     addCompletion "KCTRL" "kctrl" "completion bash" && \
-    installBinary "KLBD" "klbd" "https://github.com/k14s/kbld/releases/download/v${KLBD_VERSION}/kbld-linux-${OS_ARCH_AMD}" && mv \
+    installBinary "KLBD" "klbd" "https://github.com/k14s/kbld/releases/download/v${KLBD_VERSION}/kbld-linux-${OS_ARCH_AMD}" && \
     installBinary "KUBECTL" "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/${OS_ARCH_AMD}/kubectl" && \
     addCompletion "KUBECTL" "kubectl" "completion bash" && sed -i "s+__start_kubectl kubectl+__start_kubectl kubectl k+g" /etc/bash_completion.d/kubectl && \
     printf '\n=> Add KUBECTL-PLUGINS\n' && curl -sSL "https://github.com/kubernetes-sigs/krew/releases/download/v${KREW_VERSION}/krew-linux_${OS_ARCH_AMD}.tar.gz" | tar -xz -C /tmp && chmod 1777 /tmp && su -l bosh -s /bin/bash -c "export KREW_ROOT=/home/bosh/.krew ; export PATH=/home/bosh/.krew/bin:${PATH} ; /tmp/krew-linux_${OS_ARCH_AMD} install krew ; export IFS=, ; for plugin in \$(echo \"${KUBECTL_PLUGINS}\") ; do kubectl krew install \${plugin} ; done" && \
