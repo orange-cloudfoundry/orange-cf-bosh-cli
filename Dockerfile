@@ -3,29 +3,28 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_VERSION="3.5.4" \
+ENV ARGO_VERSION="3.5.8" \
     BBR_VERSION="1.9.66" \
-    BOSH_VERSION="7.6.1" \
+    BOSH_VERSION="7.6.2" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CERT_MANAGER_VERSION="2.1.0" \
-    CF_VERSION="8.7.10" \
+    CF_VERSION="8.7.11" \
     CF_UAAC_VERSION="4.23.0" \
-    CILIUM_VERSION="0.16.10" \
-    CREDHUB_VERSION="2.9.31" \
+    CILIUM_VERSION="0.16.13" \
+    CREDHUB_VERSION="2.9.34" \
     CROSSPLANE_CLI="1.16.0" \
     FLUX_VERSION="2.2.3" \
     FLY_VERSION="7.9.1" \
     GITLAB_VERSION="1.43.0" \
-    GITHUB_VERSION="2.51.0" \
+    GITHUB_VERSION="2.52.0" \
     GOSS_VERSION="0.4.7" \
-    GOVC_VERSION="0.37.3" \
-    GO3FR_VERSION="0.5.0" \
+    GOVC_VERSION="0.38.0" \
     HELM_VERSION="3.14.0" \
     HUBBLE_VERSION="0.13.5" \
     JQ_VERSION="1.7.1" \
     JWT_VERSION="6.1.0" \
-    KAPP_VERSION="0.62.1" \
+    KAPP_VERSION="0.63.1" \
     KCTRL_VERSION="0.52.0" \
     KLBD_VERSION="0.43.2" \
     KREW_VERSION="0.4.4" \
@@ -48,19 +47,19 @@ ENV ARGO_VERSION="3.5.4" \
     SPRUCE_VERSION="1.31.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TESTKUBE_VERSION="1.17.63" \
+    TESTKUBE_VERSION="2.0.1" \
     TFCTL_VERSION="0.15.1" \
-    VAULT_VERSION="1.16.2" \
+    VAULT_VERSION="1.17.2" \
     VCLUSTER_VERSION="0.19.6" \
-    VENDIR_VERSION="0.40.2" \
+    VENDIR_VERSION="0.41.0" \
     YAML_PATH_VERSION="0.4" \
     YQ_VERSION="4.44.2" \
-    YTT_VERSION="0.49.1"
+    YTT_VERSION="0.50.0"
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg htop ldapscripts libldap-common less locales nano psmisc python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux byobu yarnpkg vim" \
-    NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute ldap-utils mtr-tiny netbase netcat net-tools tcpdump whois iperf3" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
+    NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute mtr-tiny netbase netcat net-tools tcpdump iperf3" \
     DEV_PACKAGES="build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
     PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:${PATH}" \
@@ -71,15 +70,9 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
     OS_ARCH_AMD="amd64" \
     OS_ARCH_X86_64="x86_64"
 
-COPY tools/* /tmp/tools/
-COPY tools/completion/* /tmp/tools/completion/
+COPY tools/ /tmp/tools/
 
-RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 "$3" ; } && \
-    installZip() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | gunzip > /usr/local/bin/$2 ; } && \
-    installTar() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -x -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
-    installTargz() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -xz -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
-    addCompletion() { printf "\n=> Add $1 CLI completion\n" ; chmod 755 /usr/local/bin/$2 ; /usr/local/bin/$2 $3 > /etc/bash_completion.d/$2 | true ; } && \
-    printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
+RUN printf '\n=====================================================\n Install system packages\n=====================================================\n' && \
     apt-get update && apt-get install -y --no-install-recommends apt-utils dialog && \
     apt-get install -y --no-install-recommends ${INIT_PACKAGES} ${TOOLS_PACKAGES} ${NET_PACKAGES} ${DEV_PACKAGES} ${RUBY_PACKAGES} && \
     locale-gen en_US.UTF-8 && \
@@ -91,25 +84,25 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     /bin/bash -l -c "gem install cf-uaac -v ${CF_UAAC_VERSION} --no-document" && \
     /bin/bash -l -c "gem install mdless --no-document" && \
     /bin/bash -l -c "rvm cleanup all" && \
-    printf '\n=====================================================\n Setup account, ssh, supervisor and system banner\n=====================================================\n' && \
+    printf '\n=====================================================\n Setup accounts\n=====================================================\n' && \
     echo "root:$(date +%s | sha256sum | base64 | head -c 32 ; echo)" | chpasswd && \
     useradd -m -g users -G sudo,rvm -s /bin/bash bosh && echo "bosh ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/bosh && \
     echo "bosh:$(date +%s | sha256sum | base64 | head -c 32 ; echo)" | chpasswd && \
-    mkdir -p /var/run/sshd /var/log/supervisor /data/shared && \
     sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd && \
-    sed -i 's/^PermitRootLogin .*/PermitRootLogin no/g' /etc/ssh/sshd_config && \
-    sed -i 's/^ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config && \
-    sed -i 's/^PubkeyAuthentication .*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && \
-    sed -i 's/^.*PasswordAuthentication yes.*/PasswordAuthentication no/g' /etc/ssh/sshd_config && \
+    sed -i 's/^PermitRootLogin .*/PermitRootLogin no/g' /etc/ssh/sshd_config && sed -i 's/^ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config && \
+    sed -i 's/^PubkeyAuthentication .*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && sed -i 's/^.*PasswordAuthentication yes.*/PasswordAuthentication no/g' /etc/ssh/sshd_config && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
-    sed -i 's/^#Upstream http some.*/upstream http system-internet-http-proxy.internal.paas:3128 ".openshiftapps.com"/' /etc/tinyproxy/tinyproxy.conf && \
-    sed -i 's/^ConnectPort 443/#ConnectPort 443/' /etc/tinyproxy/tinyproxy.conf && \
-    sed -i 's/^ConnectPort 563/#ConnectPort 563/' /etc/tinyproxy/tinyproxy.conf && \
-    printf '\nYour are logged into an ubuntu docker tools container :' > /etc/motd && \
-    printf '\n- "tools" command display available tools.' >> /etc/motd && \
-    printf '\n- "/data" is the only persistant volume (do not save data on other fs).\n\n' >> /etc/motd && chmod 644 /etc/motd && \
+    sed -i 's/^#Upstream http some.*/upstream http system-internet-http-proxy.internal.paas:3128 ".openshiftapps.com"/' /etc/tinyproxy/tinyproxy.conf && sed -i 's/^ConnectPort /#ConnectPort /' /etc/tinyproxy/tinyproxy.conf && \
+    printf '\nYour are logged into ubuntu tools container :\n- "tools" command display available tools.\n- "/data" is the only persistant volume (do not save data on other fs).\n\n' > /etc/motd && chmod 644 /etc/motd && \
+    mkdir -p /var/run/sshd /var/log/supervisor /data/shared /home/bosh/.ssh && chmod 700 /home/bosh /home/bosh/.ssh && \
     printf '\n=====================================================\n Install clis and tools\n=====================================================\n' && \
-    installZip    "ARGO" "argo" "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-${OS_ARCH_AMD}.gz" && \
+    installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 "$3" ; } && \
+    installGz() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | gunzip > /usr/local/bin/$2 ; } && \
+    installTar() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -x -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
+    installTargz() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -xz -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
+    installZip() { printf "\n=> Add $1 CLI\n" ; curl -sSLo "/tmp/$(basename $3)" "$3" ; unzip -o /tmp/$(basename $3) -d /tmp ; mv /tmp/$2 /usr/local/bin/$2 ; chmod 755 /usr/local/bin/$2 ; } && \
+    addCompletion() { printf "\n=> Add $1 CLI completion\n" ; chmod 755 /usr/local/bin/$2 ; /usr/local/bin/$2 $3 > /etc/bash_completion.d/$2 | true ; } && \
+    installGz     "ARGO" "argo" "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-${OS_ARCH_AMD}.gz" && \
     addCompletion "ARGO" "argo" "completion bash" && \
     installTar    "BBR" "bbr" "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" "releases/bbr" && \
     installBinary "BOSH" "bosh" "https://github.com/cloudfoundry/bosh-cli/releases/download/v${BOSH_VERSION}/bosh-cli-${BOSH_VERSION}-linux-${OS_ARCH_AMD}" && \
@@ -123,7 +116,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installTargz  "CILIUM" "cilium" "https://github.com/cilium/cilium-cli/releases/download/v${CILIUM_VERSION}/cilium-linux-${OS_ARCH_AMD}.tar.gz" "cilium" && \
     addCompletion "CILIUM" "cilium" "completion bash" && \
     installTargz  "CREDHUB" "credhub" "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${OS_ARCH_AMD}-${CREDHUB_VERSION}.tgz" "credhub" && \
-    installBinary  "CROSSPLANE" "crossplane" "https://releases.crossplane.io/stable/v${CROSSPLANE_CLI}/bin/linux_${OS_ARCH_AMD}/crank" && \
+    installBinary "CROSSPLANE" "crossplane" "https://releases.crossplane.io/stable/v${CROSSPLANE_CLI}/bin/linux_${OS_ARCH_AMD}/crank" && \
     installTargz  "FLUX" "flux" "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "flux" && \
     addCompletion "FLUX" "flux" "completion bash" && \
     installTargz  "FLY" "fly" "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-${OS_ARCH_AMD}.tgz" "fly" && \
@@ -136,7 +129,6 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installBinary "GOSS" "goss" "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss-linux-${OS_ARCH_AMD}" && \
     installBinary "KGOSS" "kgoss" "https://raw.githubusercontent.com/orange-cloudfoundry/goss/kgoss-kubectl-opts/extras/kgoss/kgoss" && \
     installTargz  "GOVC" "govc" "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_${OS_ARCH_X86_64}.tar.gz" "govc" && \
-    installTargz  "GO3FR" "go3fr" "https://github.com/rlmcpherson/s3gof3r/releases/download/v${GO3FR_VERSION}/gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "gof3r_${GO3FR_VERSION}_linux_${OS_ARCH_AMD}/gof3r" && \
     installTargz  "HELM" "helm" "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${OS_ARCH_AMD}.tar.gz" "linux-${OS_ARCH_AMD}/helm" && \
     addCompletion "HELM" "helm" "completion bash" && \
     installTargz  "HUBBLE" "hubble" "https://github.com/cilium/hubble/releases/download/v${HUBBLE_VERSION}/hubble-linux-${OS_ARCH_AMD}.tar.gz" "hubble" && \
@@ -178,7 +170,7 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     installTargz  "TESTKUBE" "kubectl-testkube" "https://github.com/kubeshop/testkube/releases/download/v${TESTKUBE_VERSION}/testkube_${TESTKUBE_VERSION}_Linux_${OS_ARCH_X86_64}.tar.gz" "kubectl-testkube" && cd /usr/local/bin/ && ln -s kubectl-testkube testkube && ln -s kubectl-testkube tk && \
     addCompletion "TESTKUBE" "testkube" "completion bash" && sed -i "s+__start_testkube testkube+__start_testkube testkube tk+g" /etc/bash_completion.d/testkube && \
     installTargz  "TFCTL" "tfctl" "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_VERSION}/tfctl_Linux_${OS_ARCH_AMD}.tar.gz" "tfctl" && \
-    installZip    "VAULT" "vault" "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${OS_ARCH_AMD}.zip" && chmod 755 /usr/local/bin/vault && \
+    installZip    "VAULT" "vault" "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     printf '\n=> Add VAULT CLI completion\n' && /usr/local/bin/vault -autocomplete-install && \
     installBinary "VCLUSTER" "vcluster" "https://github.com/loft-sh/vcluster/releases/download/v${VCLUSTER_VERSION}/vcluster-linux-${OS_ARCH_AMD}" && \
     addCompletion "VCLUSTER" "vcluster" "completion bash" && \
@@ -190,20 +182,15 @@ RUN installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 
     addCompletion "YTT" "ytt" "completion bash" && \
     printf '\n=> Add XDG-TOOL\n' && printf '#!/bin/bash\necho "Simulating browser invocation from xdg-open call with params: $@"\nsleep 1\nexit 0\n' > /usr/bin/xdg-open && chmod 755 /usr/bin/xdg-open && \
     printf '\n=====================================================\n Configure user account\n=====================================================\n' && \
-    mv /tmp/tools/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && \
-    mv /tmp/tools/bash_profile /home/bosh/bash_profile && \
-    mv /tmp/tools/bash_aliases /home/bosh/.bash_aliases && \
-    mkdir -p /home/bosh/.ssh && chmod 700 /home/bosh /home/bosh/.ssh && \
-    mkdir -p /home/bosh/.k9s/skins && mv /tmp/tools/k9s-plugins.yaml /home/bosh/.k9s/plugins.yaml && mv /tmp/tools/k9s-skin.yaml /home/bosh/.k9s/skins/skin.yaml && mv /tmp/tools/k9s-hotkeys.yaml /home/bosh/.k9s/hotkeys.yaml && \
-    mv /tmp/tools/completion/* /etc/bash_completion.d/ && chmod 755 /etc/bash_completion.d/* && \
-    mv /tmp/tools/*.sh /usr/local/bin/ && mv /tmp/tools/sshd.conf /etc/supervisor/conf.d/ && \
-    printf '\n=====================================================\n Cleanup system\n=====================================================\n' && \
-    apt-get autoremove -y && apt-get clean && apt-get purge && \
-    rm -fr /tmp/* /var/lib/apt/lists/* /var/tmp/* && find /var/log -type f -delete && \
-    touch /var/log/lastlog && chgrp utmp /var/log/lastlog && chmod 664 /var/log/lastlog && \
+    mv /tmp/tools/profiles/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && mv /tmp/tools/profiles/bash_profile /home/bosh/bash_profile && mv /tmp/tools/profiles/bash_aliases /home/bosh/.bash_aliases && mv /tmp/tools/profiles/sshd.conf /etc/supervisor/conf.d/ && \
+    mkdir -p /home/bosh/.k9s/skins && mv /tmp/tools/k9s/skin.yaml /home/bosh/.k9s/skins/skin.yaml && mv /tmp/tools/k9s/*.yaml /home/bosh/.k9s/ && \
+    mv /tmp/tools/completion/* /etc/bash_completion.d/ && chmod 755 /etc/bash_completion.d/* && mv /tmp/tools/scripts/*.sh /usr/local/bin/ && \
+    printf '\n=====================================================\n Cleanup image\n=====================================================\n' && \
+    apt-get remove --purge -y ${DEV_PACKAGES} ${RUBY_PACKAGES} && apt-get autoremove -y && apt-get clean && apt-get purge && rm -fr /var/lib/apt/lists/* && \
     chmod 1777 /tmp && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
-    rm -f /usr/local/bin/*.md /usr/local/bin/LICENSE && \
-    find /usr/local/bin -print0 | xargs -0 chown root:root && find /home/bosh /data -print0 | xargs -0 chown bosh:users
+    rm -fr /tmp/* /var/tmp/* && find /var/log -type f -delete && rm -f /usr/local/bin/*.md /usr/local/bin/LICENSE && \
+    find /usr/local/bin -print0 | xargs -0 chown root:root && find /home/bosh /data -print0 | xargs -0 chown bosh:users && \
+    touch /var/log/lastlog && chmod 664 /var/log/lastlog && chgrp utmp /var/log/lastlog
 
 #--- Run supervisord daemon
 CMD /usr/local/bin/supervisord.sh

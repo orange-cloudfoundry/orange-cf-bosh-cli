@@ -33,7 +33,6 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `git` - Git cli
 * `git-filter-repo` - Git rewriting history tool (https://github.com/newren/git-filter-repo)
 * `govc` - Vsphere cli (https://github.com/vmware/govmomi/tree/master/govc/)
-* `go3fr` - client for fast, parallelized and pipelined streaming access to S3 bucket (https://github.com/rlmcpherson/s3gof3r)
 * `mc` - Minio S3 cli (https://github.com/minio/mc)
 * `jq` - JSON processing tool (https://stedolan.github.io/jq/)
 * `mdless` - Provides a formatted and highlighted view of Markdown files in Terminal (https://github.com/ttscoff/mdless)

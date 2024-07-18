@@ -215,7 +215,7 @@ plugins:
     confirm: true
     args:
       - -c
-      - flux $([ $(kubectl get kustomizations --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") kustomization --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
+      - flux $([ $(kubectl get kustomizations --context $CONTEXT -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = "true" ] && echo resume || echo suspend) kustomization --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
   #--- Suspend/reconcile selected gitrepository in current namespace
   suspend-resume-gitrepo:
     shortCut: Shift-T
@@ -227,7 +227,7 @@ plugins:
     confirm: true
     args:
       - -c
-      - flux --context $CONTEXT $([ $(kubectl --context $CONTEXT get gitrepo -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") source git -n $NAMESPACE $NAME |& less -KR
+      - flux --context $CONTEXT $([ $(kubectl --context $CONTEXT get gitrepo -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = true ] && echo resume || echo suspend) source git -n $NAMESPACE $NAME |& less -KR
   #--- Suspend/reconcile selected terraform in current namespace
   suspend-resume-tf:
     shortCut: Shift-T
@@ -239,7 +239,7 @@ plugins:
     confirm: true
     args:
       - -c
-      - tfctl $([ $(kubectl get terraforms.infra.contrib.fluxcd.io -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = \"true\" ] && echo \"resume\" || echo \"suspend\") --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
+      - tfctl $([ $(kubectl get terraforms.infra.contrib.fluxcd.io -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1) = true ] && echo resume || echo suspend) --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
   #--- Reconcile selected flux gitrepository in current namespace
   reconcile-git:
     shortCut: Shift-Z
