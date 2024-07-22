@@ -58,10 +58,10 @@ ENV ARGO_VERSION="3.5.8" \
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core gawk gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute mtr-tiny netbase netcat net-tools tcpdump iperf3" \
     DEV_PACKAGES="build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
-    RUBY_PACKAGES="gawk g++ gcc autoconf automake bison libgdbm-dev libncurses5-dev libtool libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
+    RUBY_PACKAGES="g++ gcc autoconf automake bison libtool libgdbm-dev libncurses5-dev libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
     PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}/bin:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:${PATH}" \
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
@@ -186,7 +186,7 @@ RUN printf '\n=====================================================\n Install sy
     mkdir -p /home/bosh/.k9s/skins && mv /tmp/tools/k9s/skin.yaml /home/bosh/.k9s/skins/skin.yaml && mv /tmp/tools/k9s/*.yaml /home/bosh/.k9s/ && \
     mv /tmp/tools/completion/* /etc/bash_completion.d/ && chmod 755 /etc/bash_completion.d/* && mv /tmp/tools/scripts/*.sh /usr/local/bin/ && \
     printf '\n=====================================================\n Cleanup image\n=====================================================\n' && \
-    apt-get remove --purge -y ${DEV_PACKAGES} ${RUBY_PACKAGES} && apt-get autoremove -y && apt-get clean && apt-get purge && rm -fr /var/lib/apt/lists/* && \
+    apt-get autoremove -y && apt-get clean && apt-get purge && rm -fr /var/lib/apt/lists/* && \
     chmod 1777 /tmp && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
     rm -fr /tmp/* /var/tmp/* && find /var/log -type f -delete && rm -f /usr/local/bin/*.md /usr/local/bin/LICENSE && \
     find /usr/local/bin -print0 | xargs -0 chown root:root && find /home/bosh /data -print0 | xargs -0 chown bosh:users && \
