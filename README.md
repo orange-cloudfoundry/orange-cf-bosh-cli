@@ -309,7 +309,6 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`<shift-o>`    | Sort Node           |                                                                                             |        |
 |`<shift-p>`    | Sort Ready          |                                                                                             |        |
 |`<shift-r>`    | Sort Ready          |                                                                                             |        |
-|               | Certificate renew   | certificates                                                                                | X      |
 |`<shift-s>`    | Sort Status         | all                                                                                         |        |
 |               | List suspended      | helmreleases, kustomizations                                                                | X      |
 |               | Certificate status  | certificates                                                                                | X      |

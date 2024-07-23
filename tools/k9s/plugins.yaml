@@ -47,18 +47,6 @@ plugins:
     args:
       - -c
       - cmctl status certificate --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
-  #--- Renew certificate with cert-manager
-  cert-renew:
-    shortCut: Shift-R
-    description: Certificate renew
-    scopes:
-      - certificates
-    command: bash
-    background: false
-    confirm: false
-    args:
-      - -c
-      - cmctl renew --context $CONTEXT -n $NAMESPACE $NAME |& less -KR
   #--- Show cnpg cluster status
   show-cnpg-status:
     shortCut: s
