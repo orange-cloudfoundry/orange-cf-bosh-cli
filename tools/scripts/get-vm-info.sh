@@ -94,11 +94,8 @@ nb_cpus="$(echo "${vm_info}" | jq -r '.summary.config.numCpu' 2> /dev/null)"
 memory_size="$(echo "${vm_info}" | jq -r '.summary.config.memorySizeMB' 2> /dev/null)"
 nb_diks="$(echo "${vm_info}" | jq -r '.summary.config.numVirtualDisks' 2> /dev/null)"
 nb_ethernet="$(echo "${vm_info}" | jq -r '.summary.config.numEthernetCards' 2> /dev/null)"
-vm_ips="$(echo "${vm_info}" | jq -r '.guest?.net[]?.ipAddress[]?' 2> /dev/null | tr '\n' ' ')"
-if [ "${vm_ips}" = "" ] ; then
-  vm_ips="$(echo "${vm_info}" | jq -r '.guest.ipAddress' 2> /dev/null)"
-fi
-macAddress="$(echo "${vm_info}" | jq -r '.config.hardware.device[]|.macAddress' 2> /dev/null | grep -v "^$" | grep -v "null" | tr '\n' ' ')"
+vm_ips="$(echo "${vm_info}" | jq -r '.guest.net[]|select(.network!=null)|.network + " (" + .macAddress + ") " + .ipConfig.ipAddress[].ipAddress')"
+vm_ips="$(echo "${vm_ips}" | sed -e "2,\$s+^+                          +g")"
 
 bosh_properties="$(echo "${vm_info}" | jq -r '.value')"
 if [ "${bosh_properties}" != "null" ] ; then
@@ -131,7 +128,6 @@ printf "vm uptime               : ${vm_uptime}\n"
 printf "cpus                    : ${nb_cpus}\n"
 printf "memory size Mb          : ${memory_size}\n"
 printf "ethernet cards          : ${nb_ethernet}\n"
-printf "vm ips                  : ${vm_ips}\n"
-printf "vm macAddress           : ${macAddress}\n"
+printf "ips segments            : ${vm_ips}\n"
 printf "disks                   : ${nb_diks}\n"
 govc guest.df -vm ${vm_name} | grep -E "Filesystem|/home|/var/vcap/data|/var/vcap/store"
