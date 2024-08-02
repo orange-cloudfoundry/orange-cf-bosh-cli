@@ -6,6 +6,7 @@
 #--- Check cluster resources in error
 checkClusterResources() {
   context="$1"
+  kubectx ${context} > /dev/null 2>&1
   printf "\n%b\"${context}\" suspended/failed resources...%b\n" "${REVERSE}${YELLOW}" "${STD}"
 
   #--- Check nodes
@@ -16,13 +17,13 @@ checkClusterResources() {
   else
     result="$(echo "${result}" | grep -v "Ready" | awk '{printf "%-18s %s\n", $2, $1}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS             NODE                                                                                        %b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bSTATUS             NODE%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
-    #--- Check pods
-    result="$(kubectl get pods -A --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-32s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
+    #--- Check pvcs
+    result="$(kubectl get pvc -A --no-headers=true | grep -v "Bound" | awk '{printf "%-12s %-50s %s\n", $3, $4, $1"/"$2}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS                           READY  POD                                                                                  %b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bSTATUS       PVC                                                NAME%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
@@ -38,13 +39,19 @@ checkClusterResources() {
     }')"
 
     if [ "${result}" != "" ] ; then
-      printf "\n%bREADY    SUSP.  KIND             NAMESPACE/NAME                                                                  %b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bREADY    SUSP.  KIND             NAMESPACE/NAME%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check pending services
     pending_services="$(kubectl get svc -A --context ${context} --request-timeout=1s --no-headers=true 2>&1 | grep " LoadBalancer " | grep -E "<none>|<pending>" | awk '{print $1"/"$2}')"
     if [ "${pending_services}" != "" ] ; then
       printf "\n%bK8S pending services%b\n${pending_services}\n" "${GREEN}" "${STD}"
+    fi
+
+    #--- Check pods
+    result="$(kubectl get pods -A --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-32s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
+    if [ "${result}" != "" ] ; then
+      printf "\n%bSTATUS                           READY  POD%b\n${result}\n" "${GREEN}" "${STD}"
     fi
   fi
 }
