@@ -60,6 +60,7 @@ checkClusterResources() {
 #--- Check k8s cluster status
 #===================================================================================
 unset https_proxy http_proxy no_proxy
+current_context="$(kubectx -c 2> /dev/null)"
 export KUBECONFIG="${HOME}/.kube/config"
 contexts="$(kubectl config view -o json | jq -r ".contexts[].name")"
 display_contexts="$(echo "${contexts}" | sort | pr -3t -W 130)"
@@ -82,4 +83,9 @@ if [ "${context}" = "" ] ; then
   done
 else
   checkClusterResources "${context}"
+fi
+
+#--- Set inital context
+if [ "${current_context}" != "" ] ; then
+  kubectx ${current_context} > /dev/null 2>&1
 fi
