@@ -15,7 +15,7 @@ checkClusterResources() {
   if [ "${flagTimeout}" != "" ] ; then
     printf "\n%bCluster \"${context}\" not available...%b\n" "${RED}" "${STD}"
   else
-    result="$(echo "${result}" | grep -v "Ready" | awk '{printf "%-18s %s\n", $2, $1}' | sort)"
+    result="$(echo "${result}" | grep -v " Ready " | awk '{printf "%-18s %s\n", $2, $1}' | sort)"
     if [ "${result}" != "" ] ; then
       printf "\n%bSTATUS             NODE%b\n${result}\n" "${GREEN}" "${STD}"
     fi
