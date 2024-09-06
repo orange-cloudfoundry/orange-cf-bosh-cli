@@ -17,12 +17,7 @@ else
 fi
 
 #--- Delete obsolete configuration files (yaml files replace yml in k9s breaking changes)
-if [ -f ${K9S_CONFIG_DIR}/config.yml ] ; then
-  rm -f ${K9S_CONFIG_DIR}/config.yml > /dev/null 2>&1
-fi
-if [ -f ${K9S_CONFIG_DIR}/plugin.yml ] ; then
-  rm -f ${K9S_CONFIG_DIR}/plugin.yml > /dev/null 2>&1
-fi
+find ${K9S_CONFIG_DIR} -type f -wholename "*.yml" -exec rm -f {} \; > /dev/null 2>&1
 
 #--- Delete obsolete logs
 rm ${K9S_LOGS_DIR}/k9s* > /dev/null 2>&1
@@ -63,9 +58,8 @@ fi
 
 #--- Select current context to use for k9s session
 current_ctx="$(kubectx -c)"
-export KUBECONFIG="${HOME}/.kube/${current_ctx}.yml"
-if [ -s ${KUBECONFIG} ] ; then
-  k9s ${K9S_PARAMS}
+if [ "${current_ctx}" = "" ] ; then
+  printf "\n%bERROR : k8s context \"${current_ctx}\" unknown.%b\n" "${RED}" "${STD}"
 else
-  printf "\n%bERROR : k8s context \"${KUBECONFIG}\" unknown.%b\n" "${RED}" "${STD}"
+  k9s ${K9S_PARAMS}
 fi

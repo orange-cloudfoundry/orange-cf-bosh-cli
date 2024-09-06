@@ -34,9 +34,8 @@ printf '\n=> Check KAPP-CLI\n' ; kapp version
 printf '\n=> Check KCTRL-CLI\n' ; kctrl version
 printf '\n=> Check KLBD-CLI\n' ; klbd --version
 printf '\n=> Check KUBECTL-CLI\n' ; kubectl version --client --output=yaml
-printf '\n=> Check KUBECTX-CLI\n' ; kubectx --version
+printf '\n=> Check KUBECTX-CLI\n' ; switcher --version
 printf '\n=> Check KUBENS-CLI\n' ; kubens --version
-printf '\n=> Check KUSTOMIZE-CLI\n' ; kustomize version
 printf '\n=> Check KYVERNO-CLI\n' ; kyverno version
 printf '\n=> Check K9S-CLI\n' ; k9s version --short
 printf '\n=> Check MINIO-CLI\n' ; mc --version

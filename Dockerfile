@@ -3,37 +3,37 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_VERSION="3.5.8" \
-    BBR_VERSION="1.9.66" \
-    BOSH_VERSION="7.6.2" \
+ENV ARGO_VERSION="3.5.10" \
+    BBR_VERSION="1.9.68" \
+    BOSH_VERSION="7.7.0" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CERT_MANAGER_VERSION="2.1.0" \
     CF_VERSION="8.7.11" \
     CF_UAAC_VERSION="4.23.0" \
-    CILIUM_VERSION="0.16.13" \
-    CREDHUB_VERSION="2.9.34" \
-    CROSSPLANE_CLI="1.16.0" \
-    FLUX_VERSION="2.2.3" \
+    CILIUM_VERSION="0.16.16" \
+    CREDHUB_VERSION="2.9.36" \
+    CROSSPLANE_CLI="1.17.0" \
+    FLUX_VERSION="2.3.0" \
     FLY_VERSION="7.9.1" \
-    GITLAB_VERSION="1.43.0" \
-    GITHUB_VERSION="2.52.0" \
-    GOSS_VERSION="0.4.7" \
-    GOVC_VERSION="0.38.0" \
-    HELM_VERSION="3.14.0" \
-    HUBBLE_VERSION="0.13.5" \
+    GITLAB_VERSION="1.46.0" \
+    GITHUB_VERSION="2.55.0" \
+    GOSS_VERSION="0.4.8" \
+    GOVC_VERSION="0.42.0" \
+    HELM_VERSION="3.14.4" \
+    HUBBLE_VERSION="0.13.6" \
     JQ_VERSION="1.7.1" \
-    JWT_VERSION="6.1.0" \
-    KAPP_VERSION="0.63.1" \
-    KCTRL_VERSION="0.52.0" \
-    KLBD_VERSION="0.43.2" \
+    JWT_VERSION="6.1.1" \
+    KAPP_VERSION="0.63.3" \
+    KCTRL_VERSION="0.53.1" \
+    KLBD_VERSION="0.44.1" \
     KREW_VERSION="0.4.4" \
-    KUBECTL_VERSION="1.26.15" \
+    KUBECTL_VERSION="1.29.7" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
-    KUBECTX_VERSION="0.9.5" \
-    KUSTOMIZE_VERSION="5.3.0" \
+    KUBENS_VERSION="0.9.5" \
+    KUBESWITCH_VERSION="0.9.1" \
     KYVERNO_VERSION="1.9.5" \
-    K9S_VERSION="0.31.9" \
+    K9S_VERSION="0.32.5" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
     OC_VERSION="4.10.25" \
@@ -43,17 +43,17 @@ ENV ARGO_VERSION="3.5.8" \
     REDIS_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
-    SHIELD_VERSION="8.8.6" \
-    SPRUCE_VERSION="1.31.0" \
+    SHIELD_VERSION="8.8.7" \
+    SPRUCE_VERSION="1.31.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TESTKUBE_VERSION="2.0.1" \
+    TESTKUBE_VERSION="2.1.12" \
     TFCTL_VERSION="0.15.1" \
-    VAULT_VERSION="1.17.2" \
-    VCLUSTER_VERSION="0.19.6" \
-    VENDIR_VERSION="0.41.0" \
+    VAULT_VERSION="1.17.5" \
+    VCLUSTER_VERSION="0.19.7" \
+    VENDIR_VERSION="0.41.1" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.44.2" \
+    YQ_VERSION="4.44.3" \
     YTT_VERSION="0.50.0"
 
 #--- Packages list, ruby env and plugins
@@ -107,7 +107,7 @@ RUN printf '\n=====================================================\n Install sy
     installTar    "BBR" "bbr" "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v${BBR_VERSION}/bbr-${BBR_VERSION}.tar" "releases/bbr" && \
     installBinary "BOSH" "bosh" "https://github.com/cloudfoundry/bosh-cli/releases/download/v${BOSH_VERSION}/bosh-cli-${BOSH_VERSION}-linux-${OS_ARCH_AMD}" && \
     printf '\n=> Add BOSH CLI completion\n' && curl -sSLo /home/bosh/bosh-complete-linux "https://github.com/thomasmmitchell/bosh-complete/releases/download/v${BOSH_COMPLETION_VERSION}/bosh-complete-linux" && chmod 755 /home/bosh/bosh-complete-linux && \
-    installBinary "CERT-MANAGER" "cmctl" "https://github.com/cert-manager/cmctl/releases/download/v${CERT_MANAGER_VERSION}/cmctl_linux_amd64" && \
+    installBinary "CERT-MANAGER" "cmctl" "https://github.com/cert-manager/cmctl/releases/download/v${CERT_MANAGER_VERSION}/cmctl_linux_${OS_ARCH_AMD}" && \
     addCompletion "CERT-MANAGER" "cmctl" "completion bash" && \
     installTargz  "CF" "cf" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_VERSION}&source=github-rel" "cf8" && \
     printf '\n=> Add CF CLI completion\n' && curl -sSLo /etc/bash_completion.d/cf "https://raw.githubusercontent.com/cloudfoundry/cli-ci/master/ci/installers/completion/cf8" && \
@@ -144,10 +144,9 @@ RUN printf '\n=====================================================\n Install sy
     addCompletion "KUBECTL" "kubectl" "completion bash" && sed -i "s+__start_kubectl kubectl+__start_kubectl kubectl k+g" /etc/bash_completion.d/kubectl && \
     printf '\n=> Add KUBECTL-PLUGINS\n' && curl -sSL "https://github.com/kubernetes-sigs/krew/releases/download/v${KREW_VERSION}/krew-linux_${OS_ARCH_AMD}.tar.gz" | tar -xz -C /tmp && chmod 1777 /tmp && su -l bosh -s /bin/bash -c "export KREW_ROOT=/home/bosh/.krew ; export PATH=/home/bosh/.krew/bin:${PATH} ; /tmp/krew-linux_${OS_ARCH_AMD} install krew ; export IFS=, ; for plugin in \$(echo \"${KUBECTL_PLUGINS}\") ; do kubectl krew install \${plugin} ; done" && \
     installTargz  "KUBECTL-WHOAMI" "kubectl-whoami" "https://github.com/rajatjindal/kubectl-whoami/releases/download/v${KUBECTL_WHOAMI_VERSION}/kubectl-whoami_v${KUBECTL_WHOAMI_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "kubectl-whoami" && \
-    installTargz  "KUBECTX" "kubectx" "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubectx_v${KUBECTX_VERSION}_linux_${OS_ARCH_X86_64}.tar.gz" "kubectx" && \
-    installTargz  "KUBENS" "kubens" "https://github.com/ahmetb/kubectx/releases/download/v${KUBECTX_VERSION}/kubens_v${KUBECTX_VERSION}_linux_${OS_ARCH_X86_64}.tar.gz" "kubens" && \
-    installTargz  "KUSTOMIZE" "kustomize" "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "kustomize" && \
-    addCompletion "KUSTOMIZE" "kustomize" "completion bash" && \
+    installBinary "KUBECTX" "switcher" "https://github.com/danielfoehrKn/kubeswitch/releases/download/${KUBESWITCH_VERSION}/switcher_linux_${OS_ARCH_AMD}" && \
+    addCompletion "KUBECTX" "switcher" "completion bash" && \
+    installTargz  "KUBENS" "kubens" "https://github.com/ahmetb/kubectx/releases/download/v${KUBENS_VERSION}/kubens_v${KUBENS_VERSION}_linux_${OS_ARCH_X86_64}.tar.gz" "kubens" && \
     installTargz  "KYVERNO" "kyverno" "https://github.com/kyverno/kyverno/releases/download/v${KYVERNO_VERSION}/kyverno-cli_v${KYVERNO_VERSION}_linux_${OS_ARCH_X86_64}.tar.gz" "kyverno" && \
     addCompletion "KYVERNO" "kyverno" "completion bash" && \
     installTargz  "K9S" "k9s" "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${OS_ARCH_AMD}.tar.gz" "k9s" && \

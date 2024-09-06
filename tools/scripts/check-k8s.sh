@@ -26,6 +26,12 @@ checkClusterResources() {
       printf "\n%bSTATUS       PVC                                                NAME%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
+    #--- Check pvs
+    result="$(kubectl get pv -A --no-headers=true | grep -v "Bound" | awk '{printf "%-12s %-50s %s\n", $5, $1, $6}' | sort)"
+    if [ "${result}" != "" ] ; then
+      printf "\n%bSTATUS       PV                                                 NAME%b\n${result}\n" "${GREEN}" "${STD}"
+    fi
+
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
     result="$(flux get all -A --context ${context} | tr -s '\t' ' ' | grep -E "kustomization/|helmchart/|helmrelease/|helmrepository/|gitrepository/" | grep -E " False | True | Unknown " | sed -e "s+ +|+" | sed -E "s+ (False|True|Unknown) (False|True|Unknown)(.*)+|\1 \2+" | sed -e "s+ .*|+|+" -e "s+|+ +g" | awk '{
       namespace=$1

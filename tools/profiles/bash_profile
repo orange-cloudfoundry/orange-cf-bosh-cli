@@ -11,10 +11,22 @@ export WHITE='\033[37m'
 export STD='\033[0m'
 export BOLD='\033[1m'
 export REVERSE='\033[7m'
-export GIT_SYMBOL=$'\u2387'
-export PROXY_SYMBOL=$'\u26a1'
-export BOSH_SYMBOL=$'\u2601\ufe0f'
-export K8S_SYMBOL=$'\u2638\ufe0f'
+export GIT_ICON=$'\u2387'
+export PROXY_ICON=$'\u26a1'
+export BOSH_ICON=$'\u2601\ufe0f'
+export K8S_ICON=$'\u2638\ufe0f'
+export WRITE_ICON=$'\u270d'
+export READ_ICON=$'\U0001f512'
+
+#--- Source kctx functions
+if [ -f /usr/local/bin/switch-k8s-ctx.sh ] ; then
+  source /usr/local/bin/switch-k8s-ctx.sh
+fi
+
+#--- Load cf cli cmdb functions in user profile
+if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
+  source /usr/local/bin/cf-cli-cmdb-functions.bash
+fi
 
 #--- Get enabled proxy type for tmux context
 if [ -f ${HOME}/.bash_proxy ] ; then
@@ -25,7 +37,7 @@ fi
 set_proxy_prompt()
 {
   if [ ! -z "${PROXY_TYPE}" ] ; then
-    echo "${PROXY_SYMBOL}${PROXY_TYPE} proxy "
+    echo "${PROXY_ICON}${PROXY_TYPE} proxy "
   else
     unset PROXY_TYPE PROXY_HOST PROXY_PORT http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
     echo ""
@@ -36,7 +48,7 @@ set_git_prompt()
 {
   local BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
   if [ ! -z "${BRANCH}" ] ; then
-    echo "${GIT_SYMBOL} ${BRANCH} "
+    echo "${GIT_ICON} ${BRANCH} "
   else
     echo ""
   fi
@@ -46,9 +58,9 @@ set_bosh_prompt()
 {
   if [ ! -z "${BOSH_TARGET}" ] ; then
     if [ ! -z "${BOSH_DEPLOYMENT}" ] ; then
-      echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET}:${BOSH_DEPLOYMENT} "
+      echo "${BOSH_ICON}  bosh-${BOSH_TARGET}:${BOSH_DEPLOYMENT} "
     else
-      echo "${BOSH_SYMBOL}  bosh-${BOSH_TARGET} "
+      echo "${BOSH_ICON}  bosh-${BOSH_TARGET} "
     fi
   else
     echo ""
@@ -57,22 +69,22 @@ set_bosh_prompt()
 
 set_k8s_prompt()
 {
-  K8S_CONTEXT="$(kubectx -c 2> /dev/null)"
+  KCTX="$(kubectx -c 2> /dev/null)"
   if [ $? != 0 ] ; then
     echo ""
   else
-    K8S_NS="$(kubens -c 2> /dev/null)"
+    KNS="$(kubens -c 2> /dev/null)"
     if [ $? != 0 ] ; then
       if [ -z ${KUBE_EDITOR} ] ; then
-        echo "${K8S_SYMBOL}  ${K8S_CONTEXT} (W) "
+        echo "${K8S_ICON} ${WRITE_ICON}  ${KCTX} "
       else
-        echo "${K8S_SYMBOL}  ${K8S_CONTEXT} "
+        echo "${K8S_ICON} ${READ_ICON} ${KCTX} "
       fi
     else
       if [ -z ${KUBE_EDITOR} ] ; then
-        echo "${K8S_SYMBOL}  ${K8S_CONTEXT}:${K8S_NS} (W) "
+        echo "${K8S_ICON} ${WRITE_ICON}  ${KCTX}:${KNS} "
       else
-        echo "${K8S_SYMBOL}  ${K8S_CONTEXT}:${K8S_NS} "
+        echo "${K8S_ICON} ${READ_ICON} ${KCTX}:${KNS} "
       fi
     fi
   fi
@@ -95,6 +107,9 @@ set_prompt
 #--- Set locales
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US
+
+#--- Set default tabulation size to 8 (for "pr" multi-column display)
+tabs -8
 
 #--- Set terminal name (could be changed with "tn" alias)
 echo -en "\033]0;${MY_BOSH_USER}@${SITE_TYPE}\007"
@@ -121,8 +136,3 @@ fi
 source <(kubectl get-all completion bash | sed -e "s+ get-all$+ kubectl-get_all+g")
 source <(kubectl kuttl completion bash)
 source <(kubectl cnpg completion bash)
-
-#--- Load cf cli cmdb functions in user profile
-if [ -f /usr/local/bin/cf-cli-cmdb-functions.bash ] ; then
-  source /usr/local/bin/cf-cli-cmdb-functions.bash
-fi

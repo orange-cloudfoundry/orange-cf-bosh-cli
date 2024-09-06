@@ -17,13 +17,14 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 ### Kubernetes tools
 * `argo` - Kubernetes workflow management (https://argoproj.github.io/argo-workflows/)
 * `cilium` - Kubernetes cilium network management (https://github.com/cilium/cilium-cli)
+* `crossplane` - Kubernetes crossplane (https://docs.crossplane.io/latest/cli)
 * `flux` - Kubernetes Gitops management (https://fluxcd.io/docs/cmd/)
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
 * `hubble` - Kubernetes Monitoring management (https://github.com/cilium/hubble/)
 * `kapp` - Kubernetes YAML tool (https://github.com/k14s/kapp/)
 * `klbd` - Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)
 * `kubectl` - Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
-* `kustomize` Kubernetes template customize YAML files tool (https://github.com/kubernetes-sigs/kustomize/)
+* `kyverno` Kubernetes policy engine (https://github.com/kyverno/kyverno/)
 * `k9s` - Kubernetes cli (https://github.com/derailed/k9s)
 * `oc` - Openshift cli (https://docs.openshift.com/dedicated/welcome/)
 
