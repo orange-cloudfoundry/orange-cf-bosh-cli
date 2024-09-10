@@ -75,13 +75,13 @@ set_k8s_prompt()
   else
     KNS="$(kubens -c 2> /dev/null)"
     if [ $? != 0 ] ; then
-      if [ -z ${KUBE_EDITOR} ] ; then
+      if [ -z "${KUBE_EDITOR}" ] ; then
         echo "${K8S_ICON} ${WRITE_ICON}  ${KCTX} "
       else
         echo "${K8S_ICON} ${READ_ICON} ${KCTX} "
       fi
     else
-      if [ -z ${KUBE_EDITOR} ] ; then
+      if [ -z "${KUBE_EDITOR}" ] ; then
         echo "${K8S_ICON} ${WRITE_ICON}  ${KCTX}:${KNS} "
       else
         echo "${K8S_ICON} ${READ_ICON} ${KCTX}:${KNS} "
@@ -94,14 +94,13 @@ set_prompt() {
   export PS1="\n${REVERSE}${SITE_TYPE_COLOR}${MY_BOSH_USER}@${SITE_TYPE} ${YELLOW}$(set_proxy_prompt)${CYAN}\$(set_git_prompt)\$(set_bosh_prompt)\$(set_k8s_prompt)${WHITE}\w${STD}\n$ "
 }
 
+#--- Site customization
 case "${SITE_TYPE}" in
-  "integration") SITE_TYPE_COLOR="${BLUE}" ; export K9S_SKIN_COLOR="lightskyblue" ; unset K9S_RUN_MODE ; TMUX_BG_COLOR="blue" ;;
-  "preproduction") SITE_TYPE_COLOR="${GREEN}" ; export K9S_SKIN_COLOR="lightgreen" ; export K9S_RUN_MODE="--readonly" ; TMUX_BG_COLOR="green" ;;
-  "production") SITE_TYPE_COLOR="${RED}" ; export K9S_SKIN_COLOR="indianred" ; export K9S_RUN_MODE="--readonly" ; TMUX_BG_COLOR="red" ;;
-  *) SITE_TYPE_COLOR="${BLUE}" ; export K9S_SKIN_COLOR="lightskyblue" ; unset K9S_RUN_MODE ; TMUX_BG_COLOR="blue" ;;
+  "integration") SITE_TYPE_COLOR="${BLUE}" ; export K9S_SKIN_COLOR="lightskyblue" ; unset KUBE_EDITOR ; unset K9S_RUN_MODE ; TMUX_BG_COLOR="blue" ;;
+  "preproduction") SITE_TYPE_COLOR="${GREEN}" ; export K9S_SKIN_COLOR="lightgreen" ; export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh" ; export K9S_RUN_MODE="--readonly" ; TMUX_BG_COLOR="green" ;;
+  "production") SITE_TYPE_COLOR="${RED}" ; export K9S_SKIN_COLOR="indianred" ; export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh" ; export K9S_RUN_MODE="--readonly" ; TMUX_BG_COLOR="red" ;;
+  *) SITE_TYPE_COLOR="${BLUE}" ; export K9S_SKIN_COLOR="lightskyblue" ; unset KUBE_EDITOR ; unset K9S_RUN_MODE ; TMUX_BG_COLOR="blue" ;;
 esac
-
-#--- Set prompt
 set_prompt
 
 #--- Set locales

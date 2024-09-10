@@ -51,7 +51,7 @@ checkClusterResources() {
     #--- Check pending services
     pending_services="$(kubectl get svc -A --context ${context} --request-timeout=1s --no-headers=true 2>&1 | grep " LoadBalancer " | grep -E "<none>|<pending>" | awk '{print $1"/"$2}')"
     if [ "${pending_services}" != "" ] ; then
-      printf "\n%bK8S pending services%b\n${pending_services}\n" "${GREEN}" "${STD}"
+      printf "\n%bPending services%b\n${pending_services}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check pods
@@ -59,6 +59,21 @@ checkClusterResources() {
     if [ "${result}" != "" ] ; then
       printf "\n%bSTATUS                           READY  POD%b\n${result}\n" "${GREEN}" "${STD}"
     fi
+
+    #--- Get custom resources definitions with existing "deletionTimestamp"
+    result="$(kubectl get crds -o json 2>/dev/null | jq -r '.items[]?.metadata|select(.deletionTimestamp != null)|.name')"
+    if [ "${result}" != "" ] ; then
+      printf "\n%bCustom resources definitions with \"deletionTimestamp\"%b\n${result}\n" "${GREEN}" "${STD}"
+    fi
+
+    #--- Get custom resources with existing "deletionTimestamp"
+    # crds_list="$(kubectl get crds -o json 2>/dev/null | jq -r '.items[]?.metadata?.name')"
+    # for crd in ${crds_list} ; do
+    #   result="$(kubectl get ${crd} -A -o json 2>/dev/null | jq -r '.items[]?.metadata|select(.deletionTimestamp != null)|.name')"
+    #   if [ "${result}" != "" ] ; then
+    #     printf "\n%bCustom resources with \"deletionTimestamp\"%b\n${result}\n" "${GREEN}" "${STD}"
+    #   fi
+    # done
   fi
 }
 

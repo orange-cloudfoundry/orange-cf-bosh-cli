@@ -76,9 +76,6 @@ if has("autocmd") && g:yamlpath_auto
 endif
 EOF
 
-#--- Set kubeclt read-only editor
-export KUBE_EDITOR="/usr/local/bin/kubectl-ro-editor.sh"
-
 #--- k9s log file path
 export K9S_LOGS_DIR="/tmp"
 
