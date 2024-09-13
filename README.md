@@ -268,24 +268,25 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`<z>`          | zorg                |                       |        |
 <BR>
 
-|Shortcut       |Description          |Scope                                  | Plugin |
-|---------------|---------------------|---------------------------------------|--------|
-|`<ctrl-a>`     | Aliases             |                                       |        |
-|`<ctrl-b>`     | Page Up             |                                       |        |
-|`<ctrl-d>`     | Delete              |                                       |        |
-|`<ctrl-e>`     | Toggle Header       |                                       |        |
-|`<ctrl-f>`     | Page Down           |                                       |        |
-|`<ctrl-g>`     | Toggle Crumbs       |                                       |        |
-|`<ctrl-k>`     | Kill                |                                       |        |
-|`<ctrl-l>`     | Display logs        | deployment, daemonset, pod, container | X      |
-|`<ctrl-q>`     | Sort MEM/L          |                                       |        |
-|`<ctrl-r>`     | Refresh/Reload      |                                       |        |
-|`<ctrl-s>`     | Save                |                                       |        |
-|`<ctrl-u>`     | Command Clear       |                                       |        |
-|`<ctrl-w>`     | Toggle Wide         |                                       |        |
-|`<ctrl-x>`     | Sort CPU/L          |                                       |        |
-|`<ctrl-\>`     | Mark Clear          |                                       |        |
-|`<ctrl-space>` | Mark Range          |                                       |        |
+|Shortcut       |Description           |Scope                                  | Plugin |
+|---------------|----------------------|---------------------------------------|--------|
+|`<ctrl-a>`     | Aliases              |                                       |        |
+|`<ctrl-b>`     | Page Up              |                                       |        |
+|`<ctrl-d>`     | Delete               |                                       |        |
+|`<ctrl-e>`     | Toggle Header        |                                       |        |
+|`<ctrl-f>`     | Page Down            |                                       |        |
+|`<ctrl-g>`     | Toggle Crumbs        |                                       |        |
+|`<ctrl-j>`     | Display dependencies |                                       | X      |
+|`<ctrl-k>`     | Kill                 |                                       |        |
+|`<ctrl-l>`     | Display logs         | deployment, daemonset, pod, container | X      |
+|`<ctrl-q>`     | Sort MEM/L           |                                       |        |
+|`<ctrl-r>`     | Refresh/Reload       |                                       |        |
+|`<ctrl-s>`     | Save                 |                                       |        |
+|`<ctrl-u>`     | Command Clear        |                                       |        |
+|`<ctrl-w>`     | Toggle Wide          |                                       |        |
+|`<ctrl-x>`     | Sort CPU/L           |                                       |        |
+|`<ctrl-\>`     | Mark Clear           |                                       |        |
+|`<ctrl-space>` | Mark Range           |                                       |        |
 <BR>
 
 |Shortcut       |Description          |Scope                                                                                        | Plugin |
@@ -309,6 +310,7 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`<shift-n>`    | Sort Name           |                                                                                             |        |
 |`<shift-o>`    | Sort Node           |                                                                                             |        |
 |`<shift-p>`    | Sort Ready          |                                                                                             |        |
+|`<shift-q>`    | Blame               | all                                                                                         | X      |
 |`<shift-r>`    | Sort Ready          |                                                                                             |        |
 |`<shift-s>`    | Sort Status         | all                                                                                         |        |
 |               | List suspended      | helmreleases, kustomizations                                                                | X      |

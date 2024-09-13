@@ -90,6 +90,32 @@ plugins:
     background: false
     confirm: false
     dangerous: false
+  #--- Display last modified fields from managedFields 
+  display-blame:
+    shortCut: Ctrl-J
+    description: Display blame
+    scopes:
+      - all
+    command: bash
+    args:
+      - -c
+      - kubectl blame $RESOURCE_NAME $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+    background: false
+    confirm: false
+    dangerous: false
+  #--- Display resources dependencies
+  display-dependencies:
+    shortCut: Ctrl-N
+    description: Display dependencies
+    scopes:
+      - all
+    command: bash
+    args:
+      - -c
+      - kubectl lineage $RESOURCE_NAME $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+    background: false
+    confirm: false
+    dangerous: false
   #--- Display logs in raw mode from selected resource
   display-logs:
     shortCut: Ctrl-L

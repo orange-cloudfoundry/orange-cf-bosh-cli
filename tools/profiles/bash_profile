@@ -132,6 +132,7 @@ if [ -f ${HOME}/.kube/config ] ; then
 fi
 
 #--- kubectl plugins completion
+source <(kubectl gadget completion bash)
 source <(kubectl get-all completion bash | sed -e "s+ get-all$+ kubectl-get_all+g")
-source <(kubectl kuttl completion bash)
 source <(kubectl cnpg completion bash)
+source <(kubectl kuttl completion bash)

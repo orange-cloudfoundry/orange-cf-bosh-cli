@@ -8,7 +8,7 @@ alias pull='git pull --rebase ; git fetch --prune'
 alias push='git pull --rebase ; git fetch --prune ; git push'
 alias status='git status'
 
-#--- Bosh clis aliases
+#--- Bosh aliases
 alias bosh-depls-failed="bosh is --json | jq -r '.Tables[].Rows[]|select(.process_state == (\"failing\",\"unresponsive agent\"))|.deployment + \" (\" + .instance + \") : \" + .process_state'"
 alias bosh-events="bosh events | grep \"hm \" | grep -E \"create|delete\""
 alias bosh-task='function __bt() { bosh task $1 --debug | grep -vE " BEGIN| COMMIT| SELECT |INSERT INTO|DELETE FROM| UPDATE | WHERE |Renewing lock"; }; __bt'
@@ -21,10 +21,8 @@ alias log-cf='. /usr/local/bin/log-cf.sh'
 alias log-credhub='. /usr/local/bin/log-credhub.sh'
 alias log-fly='. /usr/local/bin/log-fly.sh'
 alias log-govc='. /usr/local/bin/log-govc.sh'
-alias log-openstack='. /usr/local/bin/log-openstack.sh'
 alias log-shield='. /usr/local/bin/log-shield.sh'
 alias log-uaac='. /usr/local/bin/log-uaac.sh'
-alias os='openstack'
 alias prune-workers='fly prune-worker -a'
 alias recreate-concourse-workers='bosh -d concourse recreate worker --canaries=0 --max-in-flight=10'
 alias switch='. /usr/local/bin/switch-bosh.sh'

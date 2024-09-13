@@ -58,7 +58,7 @@ ENV ARGO_VERSION="3.5.10" \
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core gawk gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc python3-tabulate python3-openstackclient s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core gawk gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute mtr-tiny netbase netcat net-tools tcpdump iperf3" \
     DEV_PACKAGES="build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="g++ gcc autoconf automake bison libtool libgdbm-dev libncurses5-dev libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
@@ -66,7 +66,7 @@ ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server opens
     GEM_HOME="/usr/local/rvm/gems/ruby-${RUBY_VERSION}" \
     GEM_PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}:/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global" \
     CF_PLUGINS="CLI-Recorder,doctor,manifest-generator,Statistics,Targets,Usage Report" \
-    KUBECTL_PLUGINS="cnpg,ctx,foreach,gadget,get-all,ns,kuttl,who-can" \
+    KUBECTL_PLUGINS="blame,cnpg,ctx,foreach,gadget,get-all,lineage,ns,kuttl,who-can" \
     OS_ARCH_AMD="amd64" \
     OS_ARCH_X86_64="x86_64"
 
