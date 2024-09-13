@@ -61,10 +61,9 @@ if [ ${flagError} = 0 ] ; then
     printf "%b3%b : bosh-ops\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b4%b : bosh-coab\n" "${GREEN}${BOLD}" "${STD}"
     printf "%b5%b : bosh-remote-r2\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b6%b : bosh-remote-r3\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b7%b : bosh-remote-r4\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b8%b : ops-routing (micro-depls/ops-routing)\n" "${GREEN}${BOLD}" "${STD}"
-    printf "%b9%b : cf (master-depls/cf)\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b6%b : bosh-remote-r4\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b7%b : ops-routing (micro-depls/ops-routing)\n" "${GREEN}${BOLD}" "${STD}"
+    printf "%b8%b : cf (master-depls/cf)\n" "${GREEN}${BOLD}" "${STD}"
     printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
     case "${choice}" in
       1) UAA_TARGET="https://192.168.10.10:8443" ; UAA_USER="uaa_admin" ; ADMIN_CLIENT_SECRET="$(getValue ${MICRO_BOSH_CREDENTIALS} /uaa_admin_client_secret)" ;;
@@ -72,10 +71,9 @@ if [ ${flagError} = 0 ] ; then
       3) UAA_TARGET="https://192.168.99.152:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-ops/uaa_admin_client_secret" ;;
       4) UAA_TARGET="https://192.168.99.155:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-coab/uaa_admin_client_secret" ;;
       5) UAA_TARGET="https://192.168.99.153:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r2/uaa_admin_client_secret" ;;
-      6) UAA_TARGET="https://192.168.99.156:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r3/uaa_admin_client_secret" ;;
-      7) UAA_TARGET="https://192.168.99.154:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r4/uaa_admin_client_secret" ;;
-      8) UAA_TARGET="https://uaa.${OPS_DOMAIN}" ; UAA_USER="admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/micro-bosh/ops-routing/uaa_admin_client_secret" ;;
-      9) UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; UAA_USER="admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/cf/uaa_admin_client_secret" ;;
+      6) UAA_TARGET="https://192.168.99.154:8443" ; UAA_USER="uaa_admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/bosh-remote-r4/uaa_admin_client_secret" ;;
+      7) UAA_TARGET="https://uaa.${OPS_DOMAIN}" ; UAA_USER="admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/micro-bosh/ops-routing/uaa_admin_client_secret" ;;
+      8) UAA_TARGET="https://uaa.${SYSTEM_DOMAIN}" ; UAA_USER="admin" ; getCredhubValue "ADMIN_CLIENT_SECRET" "/bosh-master/cf/uaa_admin_client_secret" ;;
       *) flag=0 ; clear ;;
     esac
   done
