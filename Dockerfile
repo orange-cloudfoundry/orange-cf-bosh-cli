@@ -58,7 +58,7 @@ ENV ARGO_VERSION="3.5.10" \
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core gawk gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
+    TOOLS_PACKAGES="apg bash-completion colordiff git-core gawk gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc python3-tabulate s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute mtr-tiny netbase netcat net-tools tcpdump iperf3" \
     DEV_PACKAGES="build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="g++ gcc autoconf automake bison libtool libgdbm-dev libncurses5-dev libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
