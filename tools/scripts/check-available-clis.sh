@@ -9,7 +9,6 @@ ruby -e 'puts "Ruby is installed"'
 printf "\n====================================================\n=> Check if python is available...\n====================================================\n"
 python3 --version
 printf "\n====================================================\n=> Check if expected system tools are available...\n====================================================\n"
-chardetect --version
 tabulate --help > /dev/null
 printf "\n====================================================\n=> Check if expected clis are available...\n====================================================\n"
 printf '\n=> Check ARGO-CLI\n' ; argo version
