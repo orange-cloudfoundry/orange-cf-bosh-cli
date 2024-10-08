@@ -106,7 +106,7 @@ if [ -d ${HOME}/bosh/gitops ] ; then
   printf "\n%bGit ops repository already exists (delete it before if you want to reinitialize repository).%b\n" "${REVERSE}${YELLOW}" "${STD}"
 else
   printf "\n%bClone gitops repository%b\n" "${REVERSE}${YELLOW}" "${STD}"
-  GITOPS_URL="$(echo "${SECRETS_URL}" | sed -e "s+paas-templates-secrets+cf-ops-automation+g")"
+  GITOPS_URL="$(echo "${SECRETS_URL}" | sed -e "s+paas-templates-secrets+gitops-fluxcd-repo+g")"
   git clone ${GITOPS_URL} gitops 2>&1
   if [ ! -d gitops ] ; then
     printf "\nERROR: Git clone gitops repository failed.\n" ; exit 1
