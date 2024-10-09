@@ -122,7 +122,7 @@ RUN printf '\n=====================================================\n Install sy
     installTargz  "FLY" "fly" "https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-${OS_ARCH_AMD}.tgz" "fly" && \
     printf '\n=> Add GCLOUD CLI\n' && echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && chmod 1777 /tmp && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && apt-get update && apt-get install -y --no-install-recommends google-cloud-cli && \
     installBinary "GIT-FILTER-REPO" "git-filter-repo" "https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo" && \
-    printf '\n=> Add GITLAB CLI\n' && curl -sSLo /tmp/glab_${GITLAB_VERSION}_Linux_${OS_ARCH_X86_64}.deb "https://gitlab.com/gitlab-org/cli/-/releases/v${GITLAB_VERSION}/downloads/glab_${GITLAB_VERSION}_Linux_${OS_ARCH_X86_64}.deb" && dpkg -i /tmp/glab_${GITLAB_VERSION}_Linux_${OS_ARCH_X86_64}.deb && \
+    printf '\n=> Add GITLAB CLI\n' && curl -sSLo /tmp/glab_${GITLAB_VERSION}_Linux_${OS_ARCH_X86_64}.deb "https://gitlab.com/gitlab-org/cli/-/releases/v${GITLAB_VERSION}/downloads/glab_${GITLAB_VERSION}_linux_${OS_ARCH_AMD}.deb" && dpkg -i /tmp/glab_${GITLAB_VERSION}_Linux_${OS_ARCH_X86_64}.deb && \
     printf "\n=> Add GITLAB CLI completion\n" ; /usr/bin/glab completion bash > /etc/bash_completion.d/glab && \
     installTargz  "GITHUB CLI" "gh" "https://github.com/cli/cli/releases/download/v${GITHUB_VERSION}/gh_${GITHUB_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "gh_${GITHUB_VERSION}_linux_${OS_ARCH_AMD}/bin/gh" && \
     addCompletion "GITHUB CLI" "gh" "completion bash" && \
