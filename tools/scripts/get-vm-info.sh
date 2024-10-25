@@ -30,10 +30,18 @@ while [ ${nbParameters} -gt 0 ] ; do
       if [ "${vm_ip}" = "" ] ; then
         usage
       else
-        vm_name="$(govc vm.info -vm.ip=${vm_ip} | grep "Name:" | sed -e "s+^Name: *++g")"
-        if [ "${vm_name}" = "" ] ; then
+        vm_ids="$(govc object.collect -json -type m / guest | jq -r '.|select(.changeSet[].val.ipAddress == "'$vm_ip'") | [.obj.type, .obj.value] | join(":")')"
+        for vm_id in ${vm_ids} ; do
+          result="$(echo "${vm_id}" | xargs govc ls -L | xargs -I {} -n 1 echo "{}" | grep "${GOVC_RESOURCE_POOL}")"
+          if [ "${result}" != "" ] ; then
+            vm_ipath="${result}"
+          fi
+        done
+
+        if [ "${vm_ipath}" = "" ] ; then
           printf "\n%bERROR : No existing vm with ip \"${vm_ip}\".%b\n" "${RED}" "${STD}" ; exit 1
         fi
+        vm_name="$(govc vm.info -vm.ipath="${vm_ipath}" | grep "Name:" | awk '{print $2}')"
       fi ;;
 
     "-d"|"--disk-id") vm_disk_id="$2" ; shift ; shift ; nbParameters=$#
@@ -54,7 +62,7 @@ while [ ${nbParameters} -gt 0 ] ; do
         usage
       else
         vm_macaddress="$(echo "${vm_macaddress}" | tr [:upper:] [:lower:])"
-        vm_id="$(govc object.collect -json -type m / config.hardware.device | jq -r '. | select(.changeSet[].val.virtualDevice[].macAddress == "'$vm_macaddress'") | [.obj.type, .obj.value] | join(":")')"
+        vm_id="$(govc object.collect -json -type m / guest | jq -r '.|select(.changeSet[].val.net[]?.macAddress == "'$vm_macaddress'") | [.obj.type, .obj.value] | join(":")')"
         if [ "${vm_id}" = "" ] ; then
           printf "\n%bERROR :  No existing vm with mac address \"${vm_macaddress}\".%b\n" "${RED}" "${STD}" ; exit 1
         fi
