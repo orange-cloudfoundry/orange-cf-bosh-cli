@@ -94,7 +94,6 @@ RUN printf '\n=====================================================\n Install sy
     sed -i 's/^PubkeyAuthentication .*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && sed -i 's/^.*PasswordAuthentication yes.*/PasswordAuthentication no/g' /etc/ssh/sshd_config && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
     sed -i 's/^#Upstream http some.*/upstream http system-internet-http-proxy.internal.paas:3128 ".openshiftapps.com"/' /etc/tinyproxy/tinyproxy.conf && sed -i 's/^ConnectPort /#ConnectPort /' /etc/tinyproxy/tinyproxy.conf && \
-    printf '\nYour are logged into ubuntu tools container :\n- "tools" command display available tools.\n- "/data" is the only persistant volume (do not save data on other fs).\n\n' > /etc/motd && chmod 644 /etc/motd && \
     mkdir -p /var/run/sshd /var/log/supervisor /data/shared /home/bosh/.ssh && chmod 700 /home/bosh /home/bosh/.ssh && \
     printf '\n=====================================================\n Install clis and tools\n=====================================================\n' && \
     installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 "$3" ; } && \
@@ -184,7 +183,9 @@ RUN printf '\n=====================================================\n Install sy
     addCompletion "YTT" "ytt" "completion bash" && \
     printf '\n=> Add XDG-TOOL\n' && printf '#!/bin/bash\necho "Simulating browser invocation from xdg-open call with params: $@"\nsleep 1\nexit 0\n' > /usr/bin/xdg-open && chmod 755 /usr/bin/xdg-open && \
     printf '\n=====================================================\n Configure user account\n=====================================================\n' && \
-    mv /tmp/tools/profiles/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && mv /tmp/tools/profiles/bash_profile /home/bosh/bash_profile && mv /tmp/tools/profiles/bash_aliases /home/bosh/.bash_aliases && mv /tmp/tools/profiles/sshd.conf /etc/supervisor/conf.d/ && \
+    mv /tmp/tools/profiles/motd /etc/motd && chmod 644 /etc/motd && \
+    mv /tmp/tools/profiles/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && mv /tmp/tools/profiles/bash_profile /home/bosh/bash_profile && \
+    mv /tmp/tools/profiles/bash_aliases /home/bosh/.bash_aliases && mv /tmp/tools/profiles/sshd.conf /etc/supervisor/conf.d/ && \
     mkdir -p /home/bosh/.k9s/skins && mv /tmp/tools/k9s/skin.yaml /home/bosh/.k9s/skins/skin.yaml && mv /tmp/tools/k9s/*.yaml /home/bosh/.k9s/ && \
     mv /tmp/tools/completion/* /etc/bash_completion.d/ && chmod 755 /etc/bash_completion.d/* && mv /tmp/tools/scripts/*.sh /usr/local/bin/ && \
     printf '\n=====================================================\n Cleanup image\n=====================================================\n' && \
