@@ -45,6 +45,7 @@ ENV ARGO_VERSION="3.5.10" \
     RUBY_VERSION="3.1.2" \
     SHIELD_VERSION="8.8.7" \
     SPRUCE_VERSION="1.31.1" \
+    TASK_VERSION="3.40.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
     TESTKUBE_VERSION="2.1.33" \
@@ -58,7 +59,7 @@ ENV ARGO_VERSION="3.5.10" \
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff git-core gawk gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc python3-tabulate s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
+    TOOLS_PACKAGES="apg bash-completion colordiff gettext-base git-core gawk gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc python3-tabulate s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute mtr-tiny netbase netcat net-tools tcpdump iperf3" \
     DEV_PACKAGES="build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="g++ gcc autoconf automake bison libtool libgdbm-dev libncurses5-dev libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
@@ -164,6 +165,8 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add REDIS CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
     installBinary "SHIELD" "shield" "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-${OS_ARCH_AMD}" && \
     installBinary "SPRUCE" "spruce" "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-${OS_ARCH_AMD}" && \
+    installTargz  "TASK" "task" "https://github.com/go-task/task/releases/download/v${TASK_VERSION}/task_linux_${OS_ARCH_AMD}.tar.gz" "task" && \
+    addCompletion "TASK" "task" "completion bash" && \
     installZip    "TERRAFORM" "terraform" "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && wget -nv https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O /tmp/install.sh && chmod 755 /tmp/install.sh /usr/local/bin/terraform && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /tmp/install.sh && \
     installTargz  "TESTKUBE" "kubectl-testkube" "https://github.com/kubeshop/testkube/releases/download/v${TESTKUBE_VERSION}/testkube_${TESTKUBE_VERSION}_Linux_${OS_ARCH_X86_64}.tar.gz" "kubectl-testkube" && cd /usr/local/bin/ && ln -s kubectl-testkube testkube && ln -s kubectl-testkube tk && \

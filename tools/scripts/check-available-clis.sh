@@ -47,6 +47,7 @@ printf '\n=> Check RBAC-TOOL-CLI\n' ; rbac-tool version
 printf '\n=> Check REDIS-CLI\n' ; redis --version
 printf '\n=> Check SHIELD-CLI\n' ; shield --version
 printf '\n=> Check SPRUCE-CLI\n' ; spruce --version
+printf '\n=> Check TASK-CLI\n' ; task --version
 printf '\n=> Check TERRAFORM-CLI\n' ; terraform --version
 printf '\n=> Check VAULT-CLI\n' ; vault version
 printf '\n=> Check VCLUSTER-CLI\n' ; vcluster --version
