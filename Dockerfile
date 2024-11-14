@@ -183,7 +183,7 @@ RUN printf '\n=====================================================\n Install sy
     addCompletion "YTT" "ytt" "completion bash" && \
     printf '\n=> Add XDG-TOOL\n' && printf '#!/bin/bash\necho "Simulating browser invocation from xdg-open call with params: $@"\nsleep 1\nexit 0\n' > /usr/bin/xdg-open && chmod 755 /usr/bin/xdg-open && \
     printf '\n=====================================================\n Configure user account\n=====================================================\n' && \
-    mv /tmp/tools/profiles/motd /etc/motd && chmod 644 /etc/motd && \
+    mv /tmp/tools/profiles/motd /etc/motd && chmod 644 /etc/motd && rm -f /etc/update-motd.d/60-unminimize && \
     mv /tmp/tools/profiles/profile /home/bosh/.profile && chmod 664 /home/bosh/.profile && mv /tmp/tools/profiles/bash_profile /home/bosh/bash_profile && \
     mv /tmp/tools/profiles/bash_aliases /home/bosh/.bash_aliases && mv /tmp/tools/profiles/sshd.conf /etc/supervisor/conf.d/ && \
     mkdir -p /home/bosh/.k9s/skins && mv /tmp/tools/k9s/skin.yaml /home/bosh/.k9s/skins/skin.yaml && mv /tmp/tools/k9s/*.yaml /home/bosh/.k9s/ && \
