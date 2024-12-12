@@ -30,7 +30,6 @@ alias switch='. /usr/local/bin/switch-bosh.sh'
 #--- k8s aliases
 alias check-k8s='/usr/local/bin/check-k8s.sh'
 alias flux='export FLUX_SYSTEM_NAMESPACE=fluxcd ; export KNS=$(/usr/local/bin/kubens -c 2> /dev/null) ; flux $@'
-alias get-minio-token='kctx core-connectivity ; kubectl -n 60-minio-operator get secret $(kubectl -n 60-minio-operator get serviceaccount console-sa -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode'
 alias k='/usr/local/bin/kubectl'
 alias kns='/usr/local/bin/kubens'
 alias kubens='/usr/local/bin/kubens'

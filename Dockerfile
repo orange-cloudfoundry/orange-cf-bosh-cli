@@ -3,59 +3,60 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ENV ARGO_VERSION="3.5.10" \
-    BBR_VERSION="1.9.68" \
-    BOSH_VERSION="7.8.0" \
+ENV ARGO_VERSION="3.6.2" \
+    BBR_VERSION="1.9.72" \
+    BOSH_VERSION="7.8.2" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
-    CERT_MANAGER_VERSION="2.1.0" \
-    CF_VERSION="8.8.2" \
-    CF_UAAC_VERSION="4.23.0" \
-    CILIUM_VERSION="0.16.19" \
-    CREDHUB_VERSION="2.9.38" \
-    CROSSPLANE_CLI="1.17.1" \
+    CERT_MANAGER_VERSION="2.1.1" \
+    CF_VERSION="8.9.0" \
+    CF_UAAC_VERSION="4.26.0" \
+    CILIUM_VERSION="0.16.22" \
+    CREDHUB_VERSION="2.9.39" \
+    CROSSPLANE_CLI="1.18.1" \
     FLUX_VERSION="2.3.0" \
     FLY_VERSION="7.9.1" \
-    GITLAB_VERSION="1.47.0" \
-    GITHUB_VERSION="2.58.0" \
+    GITLAB_VERSION="1.50.0" \
+    GITHUB_VERSION="2.63.2" \
     GOSS_VERSION="0.4.9" \
-    GOVC_VERSION="0.44.0" \
+    GOVC_VERSION="0.46.2" \
     HELM_VERSION="3.14.4" \
-    HUBBLE_VERSION="1.16.2" \
+    HUBBLE_VERSION="1.16.4" \
     JQ_VERSION="1.7.1" \
-    JWT_VERSION="6.1.1" \
-    KAPP_VERSION="0.63.3" \
-    KCTRL_VERSION="0.53.1" \
-    KLBD_VERSION="0.44.1" \
+    JWT_VERSION="6.2.0" \
+    KAPP_VERSION="0.64.0" \
+    KCTRL_VERSION="0.54.0" \
+    KLBD_VERSION="0.45.0" \
     KREW_VERSION="0.4.4" \
-    KUBECTL_VERSION="1.29.7" \
+    KUBECTL_VERSION="1.30.8" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
     KUBENS_VERSION="0.9.5" \
-    KUBESWITCH_VERSION="0.9.1" \
+    KUBESWITCH_VERSION="0.9.2" \
     KYVERNO_VERSION="1.9.5" \
-    K9S_VERSION="0.32.6" \
+    K9S_VERSION="0.32.7" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
     OC_VERSION="4.10.25" \
     OCM_VERSION="0.1.72" \
     POPEYE_VERSION="0.21.5" \
-    RBAC_TOOL_VERSION="1.19.0" \
+    PROMETHEUS_VERSION="3.0.1" \
+    RBAC_TOOL_VERSION="1.20.0" \
     REDIS_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
     SHIELD_VERSION="8.8.7" \
     SPRUCE_VERSION="1.31.1" \
-    TASK_VERSION="3.40.0" \
+    TASK_VERSION="3.40.1" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TESTKUBE_VERSION="2.1.33" \
+    TESTKUBE_VERSION="2.1.74" \
     TFCTL_VERSION="0.15.1" \
-    VAULT_VERSION="1.18.0" \
-    VCLUSTER_VERSION="0.20.1" \
-    VENDIR_VERSION="0.42.0" \
+    VAULT_VERSION="1.18.2" \
+    VCLUSTER_VERSION="0.21.2" \
+    VENDIR_VERSION="0.43.0" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.44.3" \
-    YTT_VERSION="0.50.0"
+    YQ_VERSION="4.44.6" \
+    YTT_VERSION="0.51.1"
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -140,7 +141,7 @@ RUN printf '\n=====================================================\n Install sy
     installBinary "KCTRL" "kctrl" "https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v${KCTRL_VERSION}/kctrl-linux-${OS_ARCH_AMD}" && \
     addCompletion "KCTRL" "kctrl" "completion bash" && \
     installBinary "KLBD" "klbd" "https://github.com/k14s/kbld/releases/download/v${KLBD_VERSION}/kbld-linux-${OS_ARCH_AMD}" && \
-    installBinary "KUBECTL" "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/${OS_ARCH_AMD}/kubectl" && \
+    installBinary "KUBECTL" "kubectl" "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/${OS_ARCH_AMD}/kubectl" && \
     addCompletion "KUBECTL" "kubectl" "completion bash" && sed -i "s+__start_kubectl kubectl+__start_kubectl kubectl k+g" /etc/bash_completion.d/kubectl && \
     printf '\n=> Add KUBECTL-PLUGINS\n' && curl -sSL "https://github.com/kubernetes-sigs/krew/releases/download/v${KREW_VERSION}/krew-linux_${OS_ARCH_AMD}.tar.gz" | tar -xz -C /tmp && chmod 1777 /tmp && su -l bosh -s /bin/bash -c "export KREW_ROOT=/home/bosh/.krew ; export PATH=/home/bosh/.krew/bin:${PATH} ; /tmp/krew-linux_${OS_ARCH_AMD} install krew ; export IFS=, ; for plugin in \$(echo \"${KUBECTL_PLUGINS}\") ; do kubectl krew install \${plugin} ; done" && \
     installTargz  "KUBECTL-WHOAMI" "kubectl-whoami" "https://github.com/rajatjindal/kubectl-whoami/releases/download/v${KUBECTL_WHOAMI_VERSION}/kubectl-whoami_v${KUBECTL_WHOAMI_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "kubectl-whoami" && \
