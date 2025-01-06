@@ -296,7 +296,7 @@ plugins:
     command: bash
     args:
       - -c
-      - flux reconcile helmrelease $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+      - flux reconcile helmrelease $NAME --force --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
     background: false
     confirm: false
     dangerous: true

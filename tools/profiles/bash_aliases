@@ -5,7 +5,7 @@ alias gitlog='git log --graph --pretty=format:'\''%C(yellow)%H%Creset -%C(yellow
 alias init-git='/usr/local/bin/init-git.sh'
 alias prune='git fetch --prune'
 alias pull='git pull --rebase ; git fetch --prune'
-alias push='git pull --rebase ; git fetch --prune ; git push'
+alias push='/usr/local/bin/git-push.sh'
 alias status='git status'
 
 #--- Bosh aliases
