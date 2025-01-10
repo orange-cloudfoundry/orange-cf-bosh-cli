@@ -16,6 +16,7 @@ printf '\n=> Check BBR-CLI\n' ; bbr --version
 printf '\n=> Check BOSH-CLI\n' ; bosh --version
 printf '\n=> Check CF-CLI\n' ; cf --version
 printf '\n=> Check CILIUM-CLI\n' ; cilium version
+printf '\n=> Check CNPG-CLI\n' ; cnpg version
 printf '\n=> Check CREDHUB-CLI\n' ; credhub --version
 printf '\n=> Check FLUX-CLI\n' ; flux --version
 printf '\n=> Check FLY-CLI\n' ; fly --version

@@ -12,6 +12,7 @@ ENV ARGO_VERSION="3.6.2" \
     CF_VERSION="8.9.0" \
     CF_UAAC_VERSION="4.26.0" \
     CILIUM_VERSION="0.16.22" \
+    CNPG_VERSION="1.23.3" \
     CREDHUB_VERSION="2.9.41" \
     CROSSPLANE_CLI="1.18.2" \
     FLUX_VERSION="2.3.0" \
@@ -116,6 +117,8 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=> Add CMDB-CLI-FUNCTIONS\n' && git clone --depth 1 https://github.com/orange-cloudfoundry/cf-cli-cmdb-scripts.git /tmp/cf-cli-cmdb-scripts && mv /tmp/cf-cli-cmdb-scripts/cf-cli-cmdb-functions.bash /usr/local/bin/cf-cli-cmdb-functions.bash && \
     installTargz  "CILIUM" "cilium" "https://github.com/cilium/cilium-cli/releases/download/v${CILIUM_VERSION}/cilium-linux-${OS_ARCH_AMD}.tar.gz" "cilium" && \
     addCompletion "CILIUM" "cilium" "completion bash" && \
+    installTargz  "CNPG" "cnpg" "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v${CNPG_VERSION}/kubectl-cnpg_${CNPG_VERSION}_linux_${OS_ARCH_X86_64}.tar.gz" "kubectl-cnpg" && \
+    addCompletion "CNPG" "cnpg" "completion bash" && \
     installTargz  "CREDHUB" "credhub" "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${OS_ARCH_AMD}-${CREDHUB_VERSION}.tgz" "credhub" && \
     installBinary "CROSSPLANE" "crossplane" "https://releases.crossplane.io/stable/v${CROSSPLANE_CLI}/bin/linux_${OS_ARCH_AMD}/crank" && \
     installTargz  "FLUX" "flux" "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "flux" && \
