@@ -41,6 +41,7 @@ printf '\n=> Check K9S-CLI\n' ; k9s version --short
 printf '\n=> Check MINIO-CLI\n' ; mc --version
 printf '\n=> Check MONGO_SHELL_CLI\n' ; mongo --version
 printf '\n=> Check MYSQL-SHELL-CLI\n' ; mysqlsh --version
+printf '\n=> Check NU-SHELL-CLI\n' ; nu --version
 printf '\n=> Check OC-CLI\n' ; oc version
 printf '\n=> Check OCM-CLI\n' ; ocm version
 printf '\n=> Check POPEYE-CLI\n' ; popeye version

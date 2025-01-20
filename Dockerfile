@@ -5,13 +5,13 @@ ARG DEBIAN_FRONTEND=noninteractive
 #--- Clis versions
 ENV ARGO_VERSION="3.6.2" \
     BBR_VERSION="1.9.72" \
-    BOSH_VERSION="7.8.6" \
+    BOSH_VERSION="7.8.7" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CERT_MANAGER_VERSION="2.1.1" \
     CF_VERSION="8.9.0" \
     CF_UAAC_VERSION="4.26.0" \
-    CILIUM_VERSION="0.16.22" \
+    CILIUM_VERSION="0.16.23" \
     CNPG_VERSION="1.23.3" \
     CREDHUB_VERSION="2.9.41" \
     CROSSPLANE_CLI="1.18.2" \
@@ -26,7 +26,7 @@ ENV ARGO_VERSION="3.6.2" \
     JQ_VERSION="1.7.1" \
     JWT_VERSION="6.2.0" \
     KAPP_VERSION="0.64.0" \
-    KCTRL_VERSION="0.54.1" \
+    KCTRL_VERSION="0.55.0" \
     KLBD_VERSION="0.45.0" \
     KREW_VERSION="0.4.4" \
     KUBECTL_VERSION="1.30.8" \
@@ -37,6 +37,7 @@ ENV ARGO_VERSION="3.6.2" \
     K9S_VERSION="0.32.7" \
     MONGO_SHELL_VERSION="4.0.25" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
+    NU_SHELL_VERSION="0.101.0" \
     OC_VERSION="4.10.25" \
     OCM_VERSION="0.1.72" \
     POPEYE_VERSION="0.21.6" \
@@ -101,7 +102,7 @@ RUN printf '\n=====================================================\n Install sy
     installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 "$3" ; } && \
     installGz() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | gunzip > /usr/local/bin/$2 ; } && \
     installTar() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -x -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
-    installTargz() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -xz -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
+    installTargz() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -x -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
     installZip() { printf "\n=> Add $1 CLI\n" ; curl -sSLo "/tmp/$(basename $3)" "$3" ; unzip -o /tmp/$(basename $3) -d /tmp ; mv /tmp/$2 /usr/local/bin/$2 ; chmod 755 /usr/local/bin/$2 ; } && \
     addCompletion() { printf "\n=> Add $1 CLI completion\n" ; chmod 755 /usr/local/bin/$2 ; /usr/local/bin/$2 $3 > /etc/bash_completion.d/$2 | true ; } && \
     installGz     "ARGO" "argo" "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-${OS_ARCH_AMD}.gz" && \
@@ -157,6 +158,7 @@ RUN printf '\n=====================================================\n Install sy
     installBinary "MINIO" "mc" "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_AMD}/mc" && \
     installTargz  "MONGO-SHELL" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_SHELL_VERSION}.tgz" "mongodb-linux-${OS_ARCH_X86_64}-${MONGO_SHELL_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_SHELL_VERSION}/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
     printf '\n=> Add MYSQL-SHELL CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu22.04_${OS_ARCH_AMD}.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    installTargz  "NU-SHELL" "nu" "https://github.com/nushell/nushell/releases/download/${NU_SHELL_VERSION}/nu-${NU_SHELL_VERSION}-${OS_ARCH_X86_64}-unknown-linux-gnu.tar.gz" "nu-${NU_SHELL_VERSION}-${OS_ARCH_X86_64}-unknown-linux-gnu/nu" && \
     installTargz  "OC" "oc" "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz" "oc" && \
     addCompletion "OC" "oc" "completion bash" && \
     installBinary "OCM" "ocm" "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_VERSION}/ocm-linux-${OS_ARCH_AMD}" && \
