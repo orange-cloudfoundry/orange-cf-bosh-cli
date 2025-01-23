@@ -15,9 +15,9 @@ checkClusterResources() {
   if [ "${flagTimeout}" != "" ] ; then
     printf "\n%bCluster \"${context}\" not available...%b\n" "${RED}" "${STD}"
   else
-    result="$(echo "${result}" | grep -v " Ready " | awk '{printf "%-18s %s\n", $2, $1}' | sort)"
+    result="$(echo "${result}" | grep -v " Ready " | awk '{printf "%-24s %s\n", $2, $1}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS             NODE%b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bSTATUS                   NODE%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check pvcs
@@ -30,6 +30,12 @@ checkClusterResources() {
     result="$(kubectl get pv -A --no-headers=true | grep -v "Bound" | awk '{printf "%-12s %-50s %s\n", $5, $1, $6}' | sort)"
     if [ "${result}" != "" ] ; then
       printf "\n%bSTATUS       PV                                                 NAME%b\n${result}\n" "${GREEN}" "${STD}"
+    fi
+
+    #--- Check longhorn volumes attachment
+    result="$(kubectl get volumes.longhorn.io -n 02-longhorn -o json | jq -r '.items[]|.status.state + "/" + .status.robustness + " " + .metadata.name + " " + .status.kubernetesStatus.workloadsStatus[].podName + "/" + .spec.nodeID' | grep -v "attached/healthy" | awk '{printf "%-18s %-40s %s\n", $1, $2, $3}')"
+    if [ "${result}" != "" ] ; then
+      printf "\n%bSTATUS             PVC                                      POD/NODE%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
