@@ -33,9 +33,12 @@ checkClusterResources() {
     fi
 
     #--- Check longhorn volumes attachment
-    result="$(kubectl get volumes.longhorn.io -n 02-longhorn -o json | jq -r '.items[]|.status.state + "/" + .status.robustness + " " + .metadata.name + " " + .status.kubernetesStatus.workloadsStatus[].podName + "/" + .spec.nodeID' | grep -v "attached/healthy" | awk '{printf "%-18s %-40s %s\n", $1, $2, $3}')"
-    if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS             PVC                                      POD/NODE%b\n${result}\n" "${GREEN}" "${STD}"
+    result="$(kubectl get volumes.longhorn.io -n 02-longhorn -o json 2>&1)"
+    if [ $? = 0 ] ; then
+      result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + " " + .metadata.name + " " + .status.kubernetesStatus.workloadsStatus[].podName + "/" + .spec.nodeID' | grep -v "attached/healthy" | awk '{printf "%-18s %-40s %s\n", $1, $2, $3}')"
+      if [ "${result}" != "" ] ; then
+        printf "\n%bSTATUS             PVC                                      POD/NODE%b\n${result}\n" "${GREEN}" "${STD}"
+      fi
     fi
 
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
@@ -45,7 +48,7 @@ checkClusterResources() {
       name=$2 ; gsub(".*/", "", name)
       suspended=$3
       ready=$4
-      if (suspended == "True" || ready == "False" || ready == "Unknown") {
+      if (suspended == "True" || ready == "False") {
         printf "%-8s %-6s %-16s %s \n", ready, suspended, kind, namespace"/"name
       }
     }')"
