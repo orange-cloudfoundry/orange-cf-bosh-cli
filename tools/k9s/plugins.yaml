@@ -283,7 +283,7 @@ plugins:
     command: bash
     args:
       - -c
-      - flux reconcile source git $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+      - flux reconcile source git $NAME --timeout 10s --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
     background: false
     confirm: false
     dangerous: true
@@ -296,7 +296,7 @@ plugins:
     command: bash
     args:
       - -c
-      - flux reconcile helmrelease $NAME --force --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+      - flux reconcile helmrelease $NAME --force --timeout 10s --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
     background: false
     confirm: false
     dangerous: true
@@ -309,7 +309,7 @@ plugins:
     command: bash
     args:
       - -c
-      - flux reconcile source helm $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+      - flux reconcile source helm $NAME --timeout 10s --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
     background: false
     confirm: false
     dangerous: true
@@ -322,7 +322,7 @@ plugins:
     command: bash
     args:
       - -c
-      - flux reconcile kustomization $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+      - flux reconcile kustomization $NAME --timeout 10s --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
     background: false
     confirm: false
     dangerous: true
@@ -335,7 +335,7 @@ plugins:
     command: bash
     args:
       - -c
-      - flux reconcile source oci $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+      - flux reconcile source oci $NAME --timeout 10s --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
     background: false
     confirm: false
     dangerous: true
