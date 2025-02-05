@@ -57,6 +57,12 @@ checkClusterResources() {
       printf "\n%bREADY    SUSP.  KIND             NAMESPACE/NAME%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
+    #--- Check drift events
+    result="$(kubectl events -A --types=Warning --no-headers=true | grep " DriftDetected " | sed -e "s+.* DriftDetected + DriftDetected +g" | awk '{printf "%-15s %s\n", $1, $2}' | sort)"
+    if [ "${result}" != "" ] ; then
+      printf "\n%bSTATUS          KIND%b\n${result}\n" "${GREEN}" "${STD}"
+    fi
+
     #--- Check pending services
     pending_services="$(kubectl get svc -A --context ${context} --request-timeout=1s --no-headers=true 2>&1 | grep " LoadBalancer " | grep -E "<none>|<pending>" | awk '{print $1"/"$2}')"
     if [ "${pending_services}" != "" ] ; then
