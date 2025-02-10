@@ -15,9 +15,9 @@ checkClusterResources() {
   if [ "${flagTimeout}" != "" ] ; then
     printf "\n%bCluster \"${context}\" not available...%b\n" "${RED}" "${STD}"
   else
-    result="$(echo "${result}" | grep -v " Ready " | awk '{printf "%-24s %s\n", $2, $1}' | sort)"
+    result="$(echo "${result}" | grep -v " Ready " | awk '{printf "%-27s %s\n", $2, $1}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS                   NODE%b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bSTATUS                      NODE%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check pvcs
@@ -42,7 +42,7 @@ checkClusterResources() {
     fi
 
     #--- Check suspended/not ready flux resources (kustomization, helmchart, helmrelease, helmrepository, gitrepository)
-    result="$(flux get all -A --context ${context} | tr -s '\t' ' ' | grep -E "kustomization/|helmchart/|helmrelease/|helmrepository/|gitrepository/" | grep -E " False | True | Unknown " | sed -e "s+ +|+" | sed -E "s+ (False|True|Unknown) (False|True|Unknown)(.*)+|\1 \2+" | sed -e "s+ .*|+|+" -e "s+|+ +g" | awk '{
+    failed_suspended_resources="$(flux get all -A --context ${context} | tr -s '\t' ' ' | grep -E "kustomization/|helmchart/|helmrelease/|helmrepository/|gitrepository/" | grep -E " False | True | Unknown " | sed -e "s+ +|+" | sed -E "s+ (False|True|Unknown) (False|True|Unknown)(.*)+|\1 \2+" | sed -e "s+ .*|+|+" -e "s+|+ +g" | awk '{
       namespace=$1
       kind=$2 ; gsub("/.*", "", kind)
       name=$2 ; gsub(".*/", "", name)
@@ -53,14 +53,26 @@ checkClusterResources() {
       }
     }')"
 
-    if [ "${result}" != "" ] ; then
-      printf "\n%bREADY    SUSP.  KIND             NAMESPACE/NAME%b\n${result}\n" "${GREEN}" "${STD}"
+    if [ "${failed_suspended_resources}" != "" ] ; then
+      printf "\n%bREADY    SUSP.  KIND             NAMESPACE/NAME%b\n${failed_suspended_resources}\n" "${GREEN}" "${STD}"
     fi
 
-    #--- Check drift events
-    result="$(kubectl events -A --types=Warning --no-headers=true | grep " DriftDetected " | sed -e "s+.* DriftDetected + DriftDetected +g" | awk '{printf "%-15s %s\n", $1, $2}' | sort)"
-    if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS          KIND%b\n${result}\n" "${GREEN}" "${STD}"
+    #--- Check drift events on helmreleases
+    result=""
+    drifted_helmReleases="$(kubectl events -A --types=Warning --no-headers=true | grep " DriftDetected *HelmRelease" | sed -e "s+.* state of release ++g" -e "s+ .*++g" -e "s+\.v.*++g" | sort)"
+    if [ "${drifted_helmReleases}" != "" ] ; then
+      #--- Check if HelmRelease status is failed/suspended
+      for helmrelease in ${drifted_helmReleases} ; do
+        status="$(echo "${failed_suspended_resources}" | grep "helmrelease" | grep "${helmrelease}")"
+        if [ "${status}" != "" ] ; then
+          result="${result}\nDriftDetected  ${helmrelease}"
+        fi
+      done
+
+      if [ "${result}" != "" ] ; then
+        printf "\n%bSTATUS         KIND%b" "${GREEN}" "${STD}"
+        printf "${result}\n"
+      fi
     fi
 
     #--- Check pending services
@@ -80,15 +92,6 @@ checkClusterResources() {
     if [ "${result}" != "" ] ; then
       printf "\n%bCustom resources definitions with \"deletionTimestamp\"%b\n${result}\n" "${GREEN}" "${STD}"
     fi
-
-    #--- Get custom resources with existing "deletionTimestamp"
-    # crds_list="$(kubectl get crds -o json 2>/dev/null | jq -r '.items[]?.metadata?.name')"
-    # for crd in ${crds_list} ; do
-    #   result="$(kubectl get ${crd} -A -o json 2>/dev/null | jq -r '.items[]?.metadata|select(.deletionTimestamp != null)|.name')"
-    #   if [ "${result}" != "" ] ; then
-    #     printf "\n%bCustom resources with \"deletionTimestamp\"%b\n${result}\n" "${GREEN}" "${STD}"
-    #   fi
-    # done
   fi
 }
 
