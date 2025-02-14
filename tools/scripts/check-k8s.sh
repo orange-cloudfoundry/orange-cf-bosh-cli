@@ -11,9 +11,9 @@ checkClusterResources() {
 
   #--- Check nodes
   result="$(kubectl get nodes -A --context ${context} --request-timeout=1s --no-headers=true 2>&1)"
-  flagTimeout="$(echo "${result}" | grep "Unable to connect to the server")"
+  flagTimeout="$(echo "${result}" | grep -E "Unable to connect to the server|E0214")"
   if [ "${flagTimeout}" != "" ] ; then
-    printf "\n%bCluster \"${context}\" not available...%b\n" "${RED}" "${STD}"
+    printf "\n%bCluster \"${context}\" not available or needs credentials to be accessed...%b\n" "${RED}" "${STD}"
   else
     result="$(echo "${result}" | grep -v " Ready " | awk '{printf "%-27s %s\n", $2, $1}' | sort)"
     if [ "${result}" != "" ] ; then
@@ -82,7 +82,7 @@ checkClusterResources() {
     fi
 
     #--- Check pods
-    result="$(kubectl get pods -A --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-32s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
+    result="$(kubectl get pods -A -l 'vcluster.loft.sh/managed-by notin (vcluster)' --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-32s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
     if [ "${result}" != "" ] ; then
       printf "\n%bSTATUS                           READY  POD%b\n${result}\n" "${GREEN}" "${STD}"
     fi
