@@ -11,7 +11,7 @@ checkClusterResources() {
 
   #--- Check nodes
   result="$(kubectl get nodes -A --context ${context} --request-timeout=1s --no-headers=true 2>&1)"
-  flagTimeout="$(echo "${result}" | grep -E "Unable to connect to the server|E0214")"
+  flagTimeout="$(echo "${result}" | grep -E "Unable to connect to the server|E0214|E0225")"
   if [ "${flagTimeout}" != "" ] ; then
     printf "\n%bCluster \"${context}\" not available or needs credentials to be accessed...%b\n" "${RED}" "${STD}"
   else
@@ -23,21 +23,21 @@ checkClusterResources() {
     #--- Check pvcs
     result="$(kubectl get pvc -A --no-headers=true | grep -v "Bound" | awk '{printf "%-12s %-50s %s\n", $3, $4, $1"/"$2}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS       PVC                                                NAME%b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bSTATUS       PVC                                                NAMESPACE/POD%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check pvs
     result="$(kubectl get pv -A --no-headers=true | grep -v "Bound" | awk '{printf "%-12s %-50s %s\n", $5, $1, $6}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS       PV                                                 NAME%b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bSTATUS       PV                                                 NAMESPACE/POD%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check longhorn volumes attachment
     result="$(kubectl get volumes.longhorn.io -n 02-longhorn -o json 2>&1)"
     if [ $? = 0 ] ; then
-      result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + " " + .metadata.name + " " + .status.kubernetesStatus.workloadsStatus[].podName + "/" + .spec.nodeID' | grep -v "attached/healthy" | awk '{printf "%-18s %-40s %s\n", $1, $2, $3}')"
+      result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + " " + .metadata.name + " " + (.spec.nodeID // "" | if . == "" then "-" end) + " " + .metadata.namespace + "/" + .status.kubernetesStatus.workloadsStatus[].podName' | grep -v "attached/healthy" | awk '{printf "%-18s %-40s %-30s %s\n", $1, $2, $3, $4}')"
       if [ "${result}" != "" ] ; then
-        printf "\n%bSTATUS             PVC                                      POD/NODE%b\n${result}\n" "${GREEN}" "${STD}"
+        printf "\n%bSTATUS             PVC                                      NODE                           NAMESPACE/POD%b\n${result}\n" "${GREEN}" "${STD}"
       fi
     fi
 
@@ -84,7 +84,7 @@ checkClusterResources() {
     #--- Check pods
     result="$(kubectl get pods -A -l 'vcluster.loft.sh/managed-by notin (vcluster)' --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-32s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
     if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS                           READY  POD%b\n${result}\n" "${GREEN}" "${STD}"
+      printf "\n%bSTATUS                           READY  NAMESPACE/POD%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Get custom resources definitions with existing "deletionTimestamp"
