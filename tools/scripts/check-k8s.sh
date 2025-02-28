@@ -11,7 +11,7 @@ checkClusterResources() {
 
   #--- Check nodes
   result="$(kubectl get nodes -A --context ${context} --request-timeout=1s --no-headers=true 2>&1)"
-  flagTimeout="$(echo "${result}" | grep -E "Unable to connect to the server|E0214|E0225")"
+  flagTimeout="$(echo "${result}" | grep -E "Unable to connect to the server|E02[0-9]*")"
   if [ "${flagTimeout}" != "" ] ; then
     printf "\n%bCluster \"${context}\" not available or needs credentials to be accessed...%b\n" "${RED}" "${STD}"
   else
@@ -98,10 +98,11 @@ checkClusterResources() {
 #===================================================================================
 #--- Check k8s cluster status
 #===================================================================================
+#--- Get clusters contexts (exclude virtual clusters with limited access)
 unset https_proxy http_proxy no_proxy
 current_context="$(kubectx -c 2> /dev/null)"
 export KUBECONFIG="${HOME}/.kube/config"
-contexts="$(kubectl config view -o json | jq -r ".contexts[].name")"
+contexts="$(kubectl config view -o json | jq -r ".contexts[].name" | grep -v "sm-consumer-")"
 display_contexts="$(echo "${contexts}" | sort | pr -3t -W 130)"
 
 if [ "$1" = "" ] ; then
