@@ -35,9 +35,9 @@ checkClusterResources() {
     #--- Check longhorn volumes attachment
     result="$(kubectl get volumes.longhorn.io -n 02-longhorn -o json 2>&1)"
     if [ $? = 0 ] ; then
-      result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + " " + .metadata.name + " " + (.spec.nodeID // "" | if . == "" then "-" end) + " " + .metadata.namespace + "/" + .status.kubernetesStatus.workloadsStatus[].podName' | grep -v "attached/healthy" | awk '{printf "%-18s %-40s %-30s %s\n", $1, $2, $3, $4}')"
+      result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + " " + .metadata.name + " " + (.spec.nodeID // "" | if . == "" then "-" end) + "/" + .metadata.namespace + "/" + .status.kubernetesStatus.workloadsStatus[].podName' | grep -v "attached/healthy" | awk '{printf "%-18s %-40s %s\n", $1, $2, $3, $4}')"
       if [ "${result}" != "" ] ; then
-        printf "\n%bSTATUS             PVC                                      NODE                           NAMESPACE/POD%b\n${result}\n" "${GREEN}" "${STD}"
+        printf "\n%bSTATUS             PVC                                      NODE/NAMESPACE/POD%b\n${result}\n" "${GREEN}" "${STD}"
       fi
     fi
 
@@ -82,9 +82,9 @@ checkClusterResources() {
     fi
 
     #--- Check pods
-    result="$(kubectl get pods -A -l 'vcluster.loft.sh/managed-by notin (vcluster)' --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-32s %-6s %s\n", $4, $3, $1"/"$2}' | sort)"
-    if [ "${result}" != "" ] ; then
-      printf "\n%bSTATUS                           READY  NAMESPACE/POD%b\n${result}\n" "${GREEN}" "${STD}"
+    failed_pods="$(kubectl get pods -A -o wide -l 'vcluster.loft.sh/managed-by notin (vcluster)' --context ${context} --no-headers=true | grep -vE "Running|Completed|ContainerCreating|Terminating" | awk '{printf "%-32s %-6s %s\n", $4, $3, $8"/"$1"/"$2}' | sort)"
+    if [ "${failed_pods}" != "" ] ; then
+      printf "\n%bSTATUS                           READY  NODE/NAMESPACE/POD%b\n${failed_pods}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Get custom resources definitions with existing "deletionTimestamp"
