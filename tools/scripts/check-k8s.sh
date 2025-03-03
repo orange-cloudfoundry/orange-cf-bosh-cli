@@ -21,13 +21,13 @@ checkClusterResources() {
     fi
 
     #--- Check pvcs
-    result="$(kubectl get pvc -A --no-headers=true | grep -v "Bound" | awk '{printf "%-12s %-50s %s\n", $3, $4, $1"/"$2}' | sort)"
+    result="$(kubectl get pvc -A --no-headers=true 2>&1 | grep -vE "Bound|No resources found" | awk '{printf "%-12s %-50s %s\n", $3, $4, $1"/"$2}' | sort)"
     if [ "${result}" != "" ] ; then
       printf "\n%bSTATUS       PVC                                                NAMESPACE/POD%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
     #--- Check pvs
-    result="$(kubectl get pv -A --no-headers=true | grep -v "Bound" | awk '{printf "%-12s %-50s %s\n", $5, $1, $6}' | sort)"
+    result="$(kubectl get pv -A --no-headers=true 2>&1 | grep -vE "Bound|No resources found" | awk '{printf "%-12s %-50s %s\n", $5, $1, $6}' | sort)"
     if [ "${result}" != "" ] ; then
       printf "\n%bSTATUS       PV                                                 NAMESPACE/POD%b\n${result}\n" "${GREEN}" "${STD}"
     fi
