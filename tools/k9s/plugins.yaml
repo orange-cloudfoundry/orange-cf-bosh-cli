@@ -192,7 +192,7 @@ plugins:
     command: bash
     args:
       - -c
-      - helm get values $COL-NAME --kube-context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+      - helm get values $COL-NAME --kube-context=$CONTEXT --namespace=$NAMESPACE --all |& less -KR
     background: false
     confirm: false
     dangerous: false
