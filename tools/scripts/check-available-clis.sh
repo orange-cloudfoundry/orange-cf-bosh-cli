@@ -30,7 +30,6 @@ printf '\n=> Check HELM-CLI\n' ; helm version
 printf '\n=> Check HUBBLE-CLI\n' ; hubble version
 printf '\n=> Check JQ-CLI\n' ; jq --version
 printf '\n=> Check JWT-CLI\n' ; jwt --version
-printf '\n=> Check KAPP-CLI\n' ; kapp version
 printf '\n=> Check KCTRL-CLI\n' ; kctrl version
 printf '\n=> Check KLBD-CLI\n' ; klbd --version
 printf '\n=> Check KUBECTL-CLI\n' ; kubectl version --client --output=yaml
