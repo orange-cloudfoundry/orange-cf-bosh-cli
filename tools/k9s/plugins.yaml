@@ -365,19 +365,6 @@ plugins:
     background: false
     confirm: false
     dangerous: true
-  #--- Get selected k8s application informations in current namespace
-  App-inspect:
-    shortCut: Shift-I
-    description: App inspect
-    scopes:
-      - app
-    command: bash
-    args:
-      - -c
-      - export FORCE_COLOR=1;kapp inspect -a $NAME.app --kubeconfig-context=$CONTEXT --namespace=$NAMESPACE --color --tty |& less -KR
-    background: false
-    confirm: false
-    dangerous: false
   #--- Get selected k8s application status in current namespace
   App-status:
     shortCut: Shift-Q

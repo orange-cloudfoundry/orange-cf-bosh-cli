@@ -25,7 +25,6 @@ ENV ARGO_VERSION="3.6.2" \
     HUBBLE_VERSION="1.16.6" \
     JQ_VERSION="1.7.1" \
     JWT_VERSION="6.2.0" \
-    KAPP_VERSION="0.64.0" \
     KCTRL_VERSION="0.55.0" \
     KLBD_VERSION="0.45.0" \
     KREW_VERSION="0.4.4" \
@@ -51,7 +50,6 @@ ENV ARGO_VERSION="3.6.2" \
     TASK_VERSION="3.41.0" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TERRAFORM_VERSION="0.11.14" \
-    TESTKUBE_VERSION="2.1.88" \
     TFCTL_VERSION="0.15.1" \
     VAULT_VERSION="1.18.3" \
     VCLUSTER_VERSION="0.22.3" \
@@ -140,8 +138,6 @@ RUN printf '\n=====================================================\n Install sy
     addCompletion "HUBBLE" "hubble" "completion bash" && \
     installBinary "JQ" "jq" "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
     installTargz  "JWT" "jwt" "https://github.com/mike-engel/jwt-cli/releases/download/${JWT_VERSION}/jwt-linux.tar.gz" "jwt" && \
-    installBinary "KAPP" "kapp" "https://github.com/k14s/kapp/releases/download/v${KAPP_VERSION}/kapp-linux-${OS_ARCH_AMD}" && \
-    addCompletion "KAPP" "kapp" "completion bash" && \
     installBinary "KCTRL" "kctrl" "https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v${KCTRL_VERSION}/kctrl-linux-${OS_ARCH_AMD}" && \
     addCompletion "KCTRL" "kctrl" "completion bash" && \
     installBinary "KLBD" "klbd" "https://github.com/k14s/kbld/releases/download/v${KLBD_VERSION}/kbld-linux-${OS_ARCH_AMD}" && \
@@ -174,8 +170,6 @@ RUN printf '\n=====================================================\n Install sy
     addCompletion "TASK" "task" "completion bash" && \
     installZip    "TERRAFORM" "terraform" "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && wget -nv https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O /tmp/install.sh && chmod 755 /tmp/install.sh /usr/local/bin/terraform && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /tmp/install.sh && \
-    installTargz  "TESTKUBE" "kubectl-testkube" "https://github.com/kubeshop/testkube/releases/download/v${TESTKUBE_VERSION}/testkube_${TESTKUBE_VERSION}_Linux_${OS_ARCH_X86_64}.tar.gz" "kubectl-testkube" && cd /usr/local/bin/ && ln -s kubectl-testkube testkube && ln -s kubectl-testkube tk && \
-    addCompletion "TESTKUBE" "testkube" "completion bash" && sed -i "s+__start_testkube testkube+__start_testkube testkube tk+g" /etc/bash_completion.d/testkube && \
     installTargz  "TFCTL" "tfctl" "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_VERSION}/tfctl_Linux_${OS_ARCH_AMD}.tar.gz" "tfctl" && \
     installZip    "VAULT" "vault" "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     printf '\n=> Add VAULT CLI completion\n' && /usr/local/bin/vault -autocomplete-install && \
