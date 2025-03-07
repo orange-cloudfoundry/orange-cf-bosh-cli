@@ -183,10 +183,10 @@ plugins:
     background: false
     confirm: false
     dangerous: false
-  #--- View user-supplied values when helm chart was created in current namespace
+  #--- View all chart values when helm chart was created in current namespace
   helm-values:
-    shortCut: v
-    description: Helm values
+    shortCut: a
+    description: All values
     scopes:
       - helm
     command: bash
