@@ -21,7 +21,6 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `flux` - Kubernetes Gitops management (https://fluxcd.io/docs/cmd/)
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
 * `hubble` - Kubernetes Monitoring management (https://github.com/cilium/hubble/)
-* `kapp` - Kubernetes YAML tool (https://github.com/k14s/kapp/)
 * `klbd` - Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)
 * `kubectl` - Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
 * `kyverno` Kubernetes policy engine (https://github.com/kyverno/kyverno/)
@@ -233,39 +232,39 @@ To log into first container (replace docker.bosh.release.deployment with IP or d
 |`</term>`      | Filter mode         |
 <BR>
 
-|Shortcut       |Description          |Scope                  | Plugin |
-|---------------|---------------------|-----------------------|--------|
-|`<a>`          | Attach              | pod, container        |        |
-|`<b>`          | Bench Run/Stop      | service, portforwards |        |
-|`<c>`          | Copy                | node, pod, container  |        |
-|`<d>`          | Describe            | all                   |        |
-|`<e>`          | Edit                | all                   |        |
-|`<f>`          | Show PortForward    | pod, container        |        |
-|`<g>`          | Goto Top            | all                   |        |
-|               | Namespace inventory | namespaces            | X      |
-|`<h>`          | Left                | all                   |        |
-|`<i>`          | Set Image           |                       |        |
-|`<j>`          | Down                | all                   |        |
-|`<k>`          | Up                  | all                   |        |
-|`<l>`          | Right/Logs          | all                   |        |
-|`<m>`          | Mark                |                       |        |
-|`<n>`          | Copy Namespace      | pod                   |        |
-|               | Flux inventory      | namespaces            | X      |
-|`<o>`          | Show Node           | pod                   |        |
-|`<p>`          | Logs Previous       |                       |        |
-|               | PSQL shell          | cluster               | X      |
-|`<r>`          | Toggle Auto-Refresh |                       |        |
-|`<s>`          | Shell               |                       |        |
-|               | Cnpg status         | cluster               | X      |
-|`<t>`          | Trigger cron        |                       |        |
-|               | Run argo workflow   | workflowtemplates     | X      |
-|`<u>`          | Use/UsedBy          |                       |        |
-|`<v>`          | Vulnerabilities     |                       |        |
-|               | Helm values         | helm                  | X      |
-|`<w>`          | Watch events        | all                   | X      |
-|`<x>`          | Decode              | secrets               |        |
-|`<y>`          | YAML                |                       |        |
-|`<z>`          | zorg                |                       |        |
+|Shortcut       |Description             |Scope                  | Plugin |
+|---------------|------------------------|-----------------------|--------|
+|`<a>`          | Attach/List all values | pod, container/chart  | X      |
+|`<b>`          | Bench Run/Stop         | service, portforwards |        |
+|`<c>`          | Copy                   | node, pod, container  |        |
+|`<d>`          | Describe               | all                   |        |
+|`<e>`          | Edit                   | all                   |        |
+|`<f>`          | Show PortForward       | pod, container        |        |
+|`<g>`          | Goto Top               | all                   |        |
+|               | Namespace inventory    | namespaces            | X      |
+|`<h>`          | Left                   | all                   |        |
+|`<i>`          | Set Image              |                       |        |
+|`<j>`          | Down                   | all                   |        |
+|`<k>`          | Up                     | all                   |        |
+|`<l>`          | Right/Logs             | all                   |        |
+|`<m>`          | Mark                   |                       |        |
+|`<n>`          | Copy Namespace         | pod                   |        |
+|               | Flux inventory         | namespaces            | X      |
+|`<o>`          | Show Node              | pod                   |        |
+|`<p>`          | Logs Previous          |                       |        |
+|               | PSQL shell             | cluster               | X      |
+|`<r>`          | Toggle Auto-Refresh    |                       |        |
+|`<s>`          | Shell                  |                       |        |
+|               | Cnpg status            | cluster               | X      |
+|`<t>`          | Trigger cron           |                       |        |
+|               | Run argo workflow      | workflowtemplates     | X      |
+|`<u>`          | Use/UsedBy             |                       |        |
+|`<v>`          | Vulnerabilities        |                       |        |
+|               | Helm values            | helm                  | X      |
+|`<w>`          | Watch events           | all                   | X      |
+|`<x>`          | Decode                 | secrets               |        |
+|`<y>`          | YAML                   |                       |        |
+|`<z>`          | zorg                   |                       |        |
 <BR>
 
 |Shortcut       |Description           |Scope                                  | Plugin |

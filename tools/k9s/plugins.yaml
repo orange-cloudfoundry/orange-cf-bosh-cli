@@ -8,7 +8,7 @@ plugins:
     command: bash
     args:
       - -c
-      - kubectl debug -it $POD --context=$CONTEXT --namespace=$NAMESPACE --target=$NAME --image=nicolaka/netshoot:v0.11 --share-processes -- bash
+      - kubectl debug -it $POD --context=$CONTEXT --namespace=$NAMESPACE --target=$NAME --image=nicolaka/netshoot:v0.13 --share-processes -- bash
     background: false
     confirm: false
     dangerous: true
@@ -53,7 +53,7 @@ plugins:
     dangerous: false
   #--- Show cnpg cluster status
   show-cnpg-status:
-    shortCut: s
+    shortCut: Shift-S
     description: Cnpg status
     scopes:
       - cluster

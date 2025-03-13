@@ -49,7 +49,7 @@ if [ -f ${K9S_CONFIG_FILE} ] ; then
   sed -i "s+environment:.*+environment: \&environment ${K9S_SKIN_COLOR}+" ${K9S_CONFIG_DIR}/skins/skin.yaml
 
   #--- Enable "nodeShell" feature for every known clusters
-  sed -i "s+image:.*+image: nicolaka/netshoot:v0.12+" ${K9S_CONFIG_FILE}
+  sed -i "s+image:.*+image: nicolaka/netshoot:v0.13+" ${K9S_CONFIG_FILE}
   clusters_config_files="$(find ${K9S_CONFIG_DIR} -name config.yaml | grep "/clusters/")"
   for cluster_config_file in ${clusters_config_files} ; do
     sed -i "s+nodeShell:.*+nodeShell: true+" ${cluster_config_file}
