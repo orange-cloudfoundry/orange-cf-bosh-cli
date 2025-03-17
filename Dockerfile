@@ -33,8 +33,9 @@ ENV ARGO_VERSION="3.6.5" \
     KUBENS_VERSION="0.9.5" \
     KUBESWITCH_VERSION="0.9.3" \
     KYVERNO_VERSION="1.9.5" \
-    K9S_VERSION="0.40.8" \
-    MONGO_SHELL_VERSION="4.0.25" \
+    K9S_VERSION="0.40.10" \
+    MONGO_BOSH_VERSION="4.0.25" \
+    MONGO_SHELL_VERSION="2.4.2" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
     NU_SHELL_VERSION="0.102.0" \
     OC_VERSION="4.10.25" \
@@ -152,7 +153,8 @@ RUN printf '\n=====================================================\n Install sy
     addCompletion "KYVERNO" "kyverno" "completion bash" && \
     installTargz  "K9S" "k9s" "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${OS_ARCH_AMD}.tar.gz" "k9s" && \
     installBinary "MINIO" "mc" "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_AMD}/mc" && \
-    installTargz  "MONGO-SHELL" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_SHELL_VERSION}.tgz" "mongodb-linux-${OS_ARCH_X86_64}-${MONGO_SHELL_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_SHELL_VERSION}/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
+    installTargz  "MONGO-BOSH" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}.tgz" "mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
+    installTargz  "MONGO-SHELL" "mongosh" "https://github.com/mongodb-js/mongosh/releases/download/v${MONGO_SHELL_VERSION}/mongosh-${MONGO_SHELL_VERSION}-linux-x64.tgz" "mongosh-${MONGO_SHELL_VERSION}-linux-x64/bin/mongosh" && \
     printf '\n=> Add MYSQL-SHELL CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu22.04_${OS_ARCH_AMD}.deb" && dpkg -i /tmp/mysql-shell.deb && \
     installTargz  "NU-SHELL" "nu" "https://github.com/nushell/nushell/releases/download/${NU_SHELL_VERSION}/nu-${NU_SHELL_VERSION}-${OS_ARCH_X86_64}-unknown-linux-gnu.tar.gz" "nu-${NU_SHELL_VERSION}-${OS_ARCH_X86_64}-unknown-linux-gnu/nu" && \
     installTargz  "OC" "oc" "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz" "oc" && \
