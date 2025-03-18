@@ -40,6 +40,7 @@ ENV ARGO_VERSION="3.6.5" \
     NU_SHELL_VERSION="0.102.0" \
     OC_VERSION="4.10.25" \
     OCM_VERSION="0.1.72" \
+    PINNIPED_VERSION="0.37.0" \
     POPEYE_VERSION="0.22.1" \
     PROMETHEUS_VERSION="3.2.1" \
     RBAC_TOOL_VERSION="1.20.0" \
@@ -161,6 +162,8 @@ RUN printf '\n=====================================================\n Install sy
     addCompletion "OC" "oc" "completion bash" && \
     installBinary "OCM" "ocm" "https://github.com/openshift-online/ocm-cli/releases/download/v${OCM_VERSION}/ocm-linux-${OS_ARCH_AMD}" && \
     addCompletion "OCM" "ocm" "completion bash" && \
+    installBinary "PINNIPED" "pinniped" "https://github.com/vmware-tanzu/pinniped/releases/download/v${PINNIPED_VERSION}/pinniped-cli-linux-${OS_ARCH_AMD}" && \
+    addCompletion "PINNIPED" "pinniped" "completion bash" && \
     installTargz  "POPEYE" "popeye" "https://github.com/derailed/popeye/releases/download/v${POPEYE_VERSION}/popeye_Linux_${OS_ARCH_AMD}.tar.gz" "popeye" && \
     addCompletion "POPEYE" "popeye" "completion bash" && \
     installTargz  "RBAC-TOOL" "rbac-tool" "https://github.com/alcideio/rbac-tool/releases/download/v${RBAC_TOOL_VERSION}/rbac-tool_v${RBAC_TOOL_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "rbac-tool" && \

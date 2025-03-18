@@ -17,6 +17,7 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 ### Kubernetes tools
 * `argo` - Kubernetes workflow management (https://argoproj.github.io/argo-workflows/)
 * `cilium` - Kubernetes cilium network management (https://github.com/cilium/cilium-cli)
+* `cnpg` - Cloud Native Postgres cli (https://github.com/cloudnative-pg/cloudnative-pg)
 * `crossplane` - Kubernetes crossplane (https://docs.crossplane.io/latest/cli)
 * `flux` - Kubernetes Gitops management (https://fluxcd.io/docs/cmd/)
 * `helm` - Kubernetes Package Manager (https://docs.helm.sh/)
@@ -25,7 +26,14 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `kubectl` - Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
 * `kyverno` Kubernetes policy engine (https://github.com/kyverno/kyverno/)
 * `k9s` - Kubernetes cli (https://github.com/derailed/k9s)
+* `nu` - NuShell cli (https://github.com/nushell/nushell/)
 * `oc` - Openshift cli (https://docs.openshift.com/dedicated/welcome/)
+* `pinniped` - identity services cli (https://github.com/vmware-tanzu/pinniped/)
+* `oc` - Openshift cli (https://docs.openshift.com/dedicated/welcome/)
+* `rbac-tool` - Rbac cli (https://github.com/alcideio/rbac-tool/)
+* `task` - Task runner cli (https://github.com/go-task/task/)
+* `vault` - Vault cli (https://releases.hashicorp.com/vault/)
+* `vcluster` - VCluster cli (https://github.com/loft-sh/vcluster/)
 
 ### Other tools
 * `cmctl` - Cert-manager cli (https://github.com/cert-manager/cmctl)
