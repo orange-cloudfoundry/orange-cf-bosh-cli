@@ -34,6 +34,7 @@ ENV ARGO_VERSION="3.6.5" \
     KUBESWITCH_VERSION="0.9.3" \
     KYVERNO_VERSION="1.9.5" \
     K9S_VERSION="0.40.10" \
+    LOKI_VERSION="3.4.2" \
     MONGO_BOSH_VERSION="4.0.25" \
     MONGO_SHELL_VERSION="2.4.2" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
@@ -103,7 +104,7 @@ RUN printf '\n=====================================================\n Install sy
     installGz() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | gunzip > /usr/local/bin/$2 ; } && \
     installTar() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -x -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
     installTargz() { printf "\n=> Add $1 CLI\n" ; curl -sSL "$3" | tar -xz -C /tmp && mv /tmp/$4 /usr/local/bin/$2 ; } && \
-    installZip() { printf "\n=> Add $1 CLI\n" ; curl -sSLo "/tmp/$(basename $3)" "$3" ; unzip -o /tmp/$(basename $3) -d /tmp ; mv /tmp/$2 /usr/local/bin/$2 ; chmod 755 /usr/local/bin/$2 ; } && \
+    installZip() { printf "\n=> Add $1 CLI\n" ; curl -sSLo "/tmp/$(basename $4)" "$4" ; unzip -o /tmp/$(basename $4) -d /tmp ; mv /tmp/$2 /usr/local/bin/$3 ; chmod 755 /usr/local/bin/$3 ; } && \
     addCompletion() { printf "\n=> Add $1 CLI completion\n" ; chmod 755 /usr/local/bin/$2 ; /usr/local/bin/$2 $3 > /etc/bash_completion.d/$2 | true ; } && \
     installGz     "ARGO" "argo" "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-${OS_ARCH_AMD}.gz" && \
     addCompletion "ARGO" "argo" "completion bash" && \
@@ -153,6 +154,7 @@ RUN printf '\n=====================================================\n Install sy
     installTargz  "KYVERNO" "kyverno" "https://github.com/kyverno/kyverno/releases/download/v${KYVERNO_VERSION}/kyverno-cli_v${KYVERNO_VERSION}_linux_${OS_ARCH_X86_64}.tar.gz" "kyverno" && \
     addCompletion "KYVERNO" "kyverno" "completion bash" && \
     installTargz  "K9S" "k9s" "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${OS_ARCH_AMD}.tar.gz" "k9s" && \
+    installZip    "LOKI" "logcli-linux-amd64" "loki" "https://github.com/grafana/loki/releases/download/v${LOKI_VERSION}/logcli-linux-${OS_ARCH_AMD}.zip" && \
     installBinary "MINIO" "mc" "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_AMD}/mc" && \
     installTargz  "MONGO-BOSH" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}.tgz" "mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
     installTargz  "MONGO-SHELL" "mongosh" "https://github.com/mongodb-js/mongosh/releases/download/v${MONGO_SHELL_VERSION}/mongosh-${MONGO_SHELL_VERSION}-linux-x64.tgz" "mongosh-${MONGO_SHELL_VERSION}-linux-x64/bin/mongosh" && \
@@ -173,10 +175,10 @@ RUN printf '\n=====================================================\n Install sy
     installBinary "SPRUCE" "spruce" "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-${OS_ARCH_AMD}" && \
     installTargz  "TASK" "task" "https://github.com/go-task/task/releases/download/v${TASK_VERSION}/task_linux_${OS_ARCH_AMD}.tar.gz" "task" && \
     addCompletion "TASK" "task" "completion bash" && \
-    installZip    "TERRAFORM" "terraform" "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
+    installZip    "TERRAFORM" "terraform" "terraform" "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && wget -nv https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O /tmp/install.sh && chmod 755 /tmp/install.sh /usr/local/bin/terraform && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /tmp/install.sh && \
     installTargz  "TFCTL" "tfctl" "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_VERSION}/tfctl_Linux_${OS_ARCH_AMD}.tar.gz" "tfctl" && \
-    installZip    "VAULT" "vault" "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
+    installZip    "VAULT" "vault" "vault" "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     printf '\n=> Add VAULT CLI completion\n' && /usr/local/bin/vault -autocomplete-install && \
     installBinary "VCLUSTER" "vcluster" "https://github.com/loft-sh/vcluster/releases/download/v${VCLUSTER_VERSION}/vcluster-linux-${OS_ARCH_AMD}" && \
     addCompletion "VCLUSTER" "vcluster" "completion bash" && \

@@ -37,6 +37,7 @@ printf '\n=> Check KUBECTX-CLI\n' ; switcher --version
 printf '\n=> Check KUBENS-CLI\n' ; kubens --version
 printf '\n=> Check KYVERNO-CLI\n' ; kyverno version
 printf '\n=> Check K9S-CLI\n' ; k9s version --short
+printf '\n=> Check LOKI-CLI\n' ; loki --version
 printf '\n=> Check MINIO-CLI\n' ; mc --version
 printf '\n=> Check MONGO_BOSH_CLI\n' ; mongo --version
 printf '\n=> Check MONGO_SHELL_CLI\n' ; mongosh --version
