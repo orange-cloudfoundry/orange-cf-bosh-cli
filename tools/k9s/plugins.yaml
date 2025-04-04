@@ -21,7 +21,7 @@ plugins:
     command: bash
     args:
       - -c
-      - (printf "Copy/Paste command in separate shell:\n\n" ; if [ "$NAMESPACE" != "" -a  "$NAMESPACE" != "-"  ] ; then printf "kubectl get $RESOURCE_NAME $NAME --context=$CONTEXT --namespace=$NAMESPACE\n\n" ; else printf "kubectl get $RESOURCE_NAME $NAME --context=$CONTEXT\n\n" ; fi ) |& less -KR
+      - (printf "Copy/Paste command in separate shell:\n\n" ; if [ "$NAMESPACE" != "" -a  "$NAMESPACE" != "-"  ] ; then printf "kubectl get $RESOURCE_NAME $NAME --context=$CONTEXT --namespace=$NAMESPACE\n\n" ; else printf "kubectl get $RESOURCE_NAME $NAME --context=$CONTEXT\n\n" ; fi) |& less -KR
     background: false
     confirm: false
     dangerous: false

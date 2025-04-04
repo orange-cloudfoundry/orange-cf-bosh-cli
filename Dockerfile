@@ -9,39 +9,39 @@ ENV ARGO_VERSION="3.6.5" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CERT_MANAGER_VERSION="2.1.1" \
-    CF_VERSION="8.11.0" \
+    CF_VERSION="8.12.0" \
     CF_UAAC_VERSION="4.28.0" \
     CILIUM_VERSION="0.16.24" \
     CNPG_VERSION="1.25.1" \
     CREDHUB_VERSION="2.9.44" \
-    CROSSPLANE_CLI="1.18.2" \
+    CROSSPLANE_CLI="1.18.4" \
     FLUX_VERSION="2.3.0" \
     FLY_VERSION="7.11.2" \
-    GITLAB_VERSION="1.53.0" \
-    GITHUB_VERSION="2.68.1" \
+    GITLAB_VERSION="1.55.0" \
+    GITHUB_VERSION="2.69.0" \
     GOSS_VERSION="0.4.9" \
     GOVC_VERSION="0.49.0" \
     HELM_VERSION="3.17.1" \
-    HUBBLE_VERSION="1.17.1" \
+    HUBBLE_VERSION="1.17.2" \
     JQ_VERSION="1.7.1" \
     JWT_VERSION="6.2.0" \
     KCTRL_VERSION="0.55.1" \
-    KLBD_VERSION="0.45.0" \
-    KREW_VERSION="0.4.4" \
-    KUBECTL_VERSION="1.30.8" \
+    KLBD_VERSION="0.45.1" \
+    KREW_VERSION="0.4.5" \
+    KUBECTL_VERSION="1.30.11" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
     KUBENS_VERSION="0.9.5" \
     KUBESWITCH_VERSION="0.9.3" \
     KYVERNO_VERSION="1.9.5" \
     K9S_VERSION="0.40.10" \
-    LOKI_VERSION="3.4.2" \
+    LOKI_VERSION="3.4.3" \
     MONGO_BOSH_VERSION="4.0.25" \
     MONGO_SHELL_VERSION="2.4.2" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
-    NU_SHELL_VERSION="0.102.0" \
+    NU_SHELL_VERSION="0.103.0" \
     OC_VERSION="4.10.25" \
     OCM_VERSION="0.1.72" \
-    PINNIPED_VERSION="0.37.0" \
+    PINNIPED_VERSION="0.38.0" \
     POPEYE_VERSION="0.22.1" \
     PROMETHEUS_VERSION="3.2.1" \
     RBAC_TOOL_VERSION="1.20.0" \
@@ -51,15 +51,16 @@ ENV ARGO_VERSION="3.6.5" \
     SHIELD_VERSION="8.8.7" \
     SPRUCE_VERSION="1.31.1" \
     TASK_VERSION="3.42.1" \
+    TERRAFORM_BOSH_VERSION="0.11.14" \
+    TERRAFORM_K8S_VERSION="1.11.3" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
-    TERRAFORM_VERSION="0.11.14" \
     TFCTL_VERSION="0.15.1" \
-    VAULT_VERSION="1.19.0" \
-    VCLUSTER_VERSION="0.23.0" \
-    VENDIR_VERSION="0.43.0" \
+    VAULT_VERSION="1.19.1" \
+    VCLUSTER_VERSION="0.24.0" \
+    VENDIR_VERSION="0.43.2" \
     YAML_PATH_VERSION="0.4" \
     YQ_VERSION="4.45.1" \
-    YTT_VERSION="0.51.1"
+    YTT_VERSION="0.51.2"
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -175,8 +176,9 @@ RUN printf '\n=====================================================\n Install sy
     installBinary "SPRUCE" "spruce" "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-${OS_ARCH_AMD}" && \
     installTargz  "TASK" "task" "https://github.com/go-task/task/releases/download/v${TASK_VERSION}/task_linux_${OS_ARCH_AMD}.tar.gz" "task" && \
     addCompletion "TASK" "task" "completion bash" && \
-    installZip    "TERRAFORM" "terraform" "terraform" "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
+    installZip    "TERRAFORM-BOSH" "terraform" "terraform" "https://releases.hashicorp.com/terraform/${TERRAFORM_BOSH_VERSION}/terraform_${TERRAFORM_BOSH_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && wget -nv https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O /tmp/install.sh && chmod 755 /tmp/install.sh /usr/local/bin/terraform && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /tmp/install.sh && \
+    installZip    "TERRAFORM-K8S" "terraform" "tf-k8s" "https://releases.hashicorp.com/terraform/${TERRAFORM_K8S_VERSION}/terraform_${TERRAFORM_K8S_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     installTargz  "TFCTL" "tfctl" "https://github.com/weaveworks/tf-controller/releases/download/v${TFCTL_VERSION}/tfctl_Linux_${OS_ARCH_AMD}.tar.gz" "tfctl" && \
     installZip    "VAULT" "vault" "vault" "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     printf '\n=> Add VAULT CLI completion\n' && /usr/local/bin/vault -autocomplete-install && \
