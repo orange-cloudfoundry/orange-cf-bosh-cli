@@ -53,7 +53,6 @@ printf '\n=> Check SPRUCE-CLI\n' ; spruce --version
 printf '\n=> Check TASK-CLI\n' ; task --version
 printf '\n=> Check TERRAFORM-BOSH-CLI\n' ; terraform --version
 printf '\n=> Check TERRAFORM-K8S-CLI\n' ; tf-k8s -version
-printf '\n=> Check TFCTL-CLI\n' ; tfctl version
 printf '\n=> Check VAULT-CLI\n' ; vault version
 printf '\n=> Check VCLUSTER-CLI\n' ; vcluster --version
 printf '\n=> Check VENDIR-CLI\n' ; vendir -v
