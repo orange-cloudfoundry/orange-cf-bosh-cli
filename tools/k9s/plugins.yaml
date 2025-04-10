@@ -274,6 +274,19 @@ plugins:
     background: false
     confirm: true
     dangerous: true
+  #--- Reconcile externalSecret in current namespace
+  reconcile-es:
+    shortCut: Shift-Z
+    description: ExternalSecret reconcile
+    scopes:
+      - es
+    command: bash
+    args:
+      - -c
+      - kubectl annotate es $NAME force-sync=$(date +%s) --context=$CONTEXT --namespace=$NAMESPACE --overwrite |& less -KR
+    background: false
+    confirm: false
+    dangerous: true
   #--- Reconcile selected gitrepository in current namespace
   reconcile-git:
     shortCut: Shift-Z
