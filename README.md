@@ -26,7 +26,7 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `kubectl` - Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
 * `kyverno` Kubernetes policy engine (https://github.com/kyverno/kyverno/)
 * `k9s` - Kubernetes cli (https://github.com/derailed/k9s)
-* `loki` - Loki cli (https://github.com/grafana/loki/)
+* `logcli` - Loki cli (https://github.com/grafana/loki/)
 * `nu` - NuShell cli (https://github.com/nushell/nushell/)
 * `oc` - Openshift cli (https://docs.openshift.com/dedicated/welcome/)
 * `pinniped` - Identity services cli (https://github.com/vmware-tanzu/pinniped/)

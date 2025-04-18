@@ -155,7 +155,7 @@ RUN printf '\n=====================================================\n Install sy
     installTargz  "KYVERNO" "kyverno" "https://github.com/kyverno/kyverno/releases/download/v${KYVERNO_VERSION}/kyverno-cli_v${KYVERNO_VERSION}_linux_${OS_ARCH_X86_64}.tar.gz" "kyverno" && \
     addCompletion "KYVERNO" "kyverno" "completion bash" && \
     installTargz  "K9S" "k9s" "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${OS_ARCH_AMD}.tar.gz" "k9s" && \
-    installZip    "LOKI" "logcli-linux-amd64" "loki" "https://github.com/grafana/loki/releases/download/v${LOKI_VERSION}/logcli-linux-${OS_ARCH_AMD}.zip" && \
+    installZip    "LOKI" "logcli-linux-amd64" "logcli" "https://github.com/grafana/loki/releases/download/v${LOKI_VERSION}/logcli-linux-${OS_ARCH_AMD}.zip" && \
     installBinary "MINIO" "mc" "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_AMD}/mc" && \
     installTargz  "MONGO-BOSH" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}.tgz" "mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
     installTargz  "MONGO-SHELL" "mongosh" "https://github.com/mongodb-js/mongosh/releases/download/v${MONGO_SHELL_VERSION}/mongosh-${MONGO_SHELL_VERSION}-linux-x64.tgz" "mongosh-${MONGO_SHELL_VERSION}-linux-x64/bin/mongosh" && \
