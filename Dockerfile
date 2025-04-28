@@ -64,7 +64,7 @@ ENV ARGO_VERSION="3.6.5" \
 
 #--- Packages list, ruby env and plugins
 ENV INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
-    TOOLS_PACKAGES="apg bash-completion colordiff gettext-base git-core gawk gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc python3-tabulate s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
+    TOOLS_PACKAGES="apg bash-completion bsdmainutils colordiff gettext-base git-core gawk gnupg htop ldapscripts ldap-utils libldap-common less locales psmisc python3-tabulate s3cmd silversearcher-ag supervisor tinyproxy tmux yarnpkg vim whois" \
     NET_PACKAGES="dnsutils iproute2 iputils-ping iputils-tracepath traceroute tcptraceroute mtr-tiny netbase netcat net-tools tcpdump iperf3" \
     DEV_PACKAGES="build-essential libc6-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libpq-dev libsqlite3-dev libmysqlclient-dev zlib1g-dev libcurl4-openssl-dev" \
     RUBY_PACKAGES="g++ gcc autoconf automake bison libtool libgdbm-dev libncurses5-dev libyaml-dev pkg-config sqlite3 libgmp-dev libreadline6-dev" \
@@ -200,7 +200,7 @@ RUN printf '\n=====================================================\n Install sy
     printf '\n=====================================================\n Cleanup image\n=====================================================\n' && \
     apt-get autoremove -y && apt-get clean && apt-get purge && rm -fr /var/lib/apt/lists/* && \
     chmod 1777 /tmp && chmod 755 /usr/local/bin/* /etc/profile.d/* && \
-    rm -fr /tmp/* /var/tmp/* && find /var/log -type f -delete && rm -f /usr/local/bin/*.md /usr/local/bin/LICENSE && \
+    rm -fr /tmp/* /var/tmp/* && find /tmp -type f -delete && find /var/log -type f -delete && rm -f /usr/local/bin/*.md /usr/local/bin/LICENSE && \
     find /usr/local/bin -print0 | xargs -0 chown root:root && find /home/bosh /data -print0 | xargs -0 chown bosh:users && \
     touch /var/log/lastlog && chmod 664 /var/log/lastlog && chgrp utmp /var/log/lastlog
 
