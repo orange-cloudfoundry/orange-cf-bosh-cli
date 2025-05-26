@@ -175,7 +175,7 @@ RUN printf '\n=====================================================\n Install sy
     installBinary "SHIELD" "shield" "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-${OS_ARCH_AMD}" && \
     installBinary "SPRUCE" "spruce" "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-${OS_ARCH_AMD}" && \
     installTargz  "TASK" "task" "https://github.com/go-task/task/releases/download/v${TASK_VERSION}/task_linux_${OS_ARCH_AMD}.tar.gz" "task" && \
-    addCompletion "TASK" "task" "completion bash" && \
+    addCompletion "TASK" "task" "--completion bash" && \
     installZip    "TERRAFORM-BOSH" "terraform" "terraform" "https://releases.hashicorp.com/terraform/${TERRAFORM_BOSH_VERSION}/terraform_${TERRAFORM_BOSH_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
     printf '\n=> Add TERRAFORM-CF-PROVIDER\n' && wget -nv https://raw.github.com/orange-cloudfoundry/terraform-provider-cloudfoundry/master/bin/install.sh -O /tmp/install.sh && chmod 755 /tmp/install.sh /usr/local/bin/terraform && export PROVIDER_CLOUDFOUNDRY_VERSION="v${TERRAFORM_PLUGIN_CF_VERSION}" && /tmp/install.sh && \
     installZip    "TERRAFORM-K8S" "terraform" "tf-k8s" "https://releases.hashicorp.com/terraform/${TERRAFORM_K8S_VERSION}/terraform_${TERRAFORM_K8S_VERSION}_linux_${OS_ARCH_AMD}.zip" && \
