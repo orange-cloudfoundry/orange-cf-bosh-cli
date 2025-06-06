@@ -49,6 +49,7 @@ printf '\n=> Check POPEYE-CLI\n' ; popeye version
 printf '\n=> Check RBAC-TOOL-CLI\n' ; rbac-tool version
 printf '\n=> Check REDIS-CLI\n' ; redis --version
 printf '\n=> Check SHIELD-CLI\n' ; shield --version
+printf '\n=> Check SPICEDB-CLI\n' ; zed version
 printf '\n=> Check SPRUCE-CLI\n' ; spruce --version
 printf '\n=> Check TASK-CLI\n' ; task --version
 printf '\n=> Check TERRAFORM-BOSH-CLI\n' ; terraform --version

@@ -49,6 +49,7 @@ ENV ARGO_VERSION="3.6.7" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
     SHIELD_VERSION="8.8.7" \
+    SPICEDB_VERSION="0.30.2" \
     SPRUCE_VERSION="1.31.1" \
     TASK_VERSION="3.43.3" \
     TERRAFORM_BOSH_VERSION="0.11.14" \
@@ -173,6 +174,8 @@ RUN printf '\n=====================================================\n Install sy
     addCompletion "RBAC-TOOL" "rbac-tool" "bash-completion" && \
     printf '\n=> Add REDIS CLI\n' && curl -sSL "https://download.redis.io/releases/redis-${REDIS_VERSION}.tar.gz" | tar -xz -C /tmp && cd /tmp/redis-${REDIS_VERSION} && make > /dev/null 2>&1 && mv /tmp/redis-${REDIS_VERSION}/src/redis-cli /usr/local/bin/redis && chmod 755 /usr/local/bin/redis && \
     installBinary "SHIELD" "shield" "https://github.com/shieldproject/shield/releases/download/v${SHIELD_VERSION}/shield-linux-${OS_ARCH_AMD}" && \
+    installTargz  "SPICEDB" "zed" "https://github.com/authzed/zed/releases/download/v${SPICEDB_VERSION}/zed_${SPICEDB_VERSION}_linux_${OS_ARCH_AMD}_gnu.tar.gz" "zed" && \
+    addCompletion "SPICEDB" "zed" "completion bash" && \
     installBinary "SPRUCE" "spruce" "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-${OS_ARCH_AMD}" && \
     installTargz  "TASK" "task" "https://github.com/go-task/task/releases/download/v${TASK_VERSION}/task_linux_${OS_ARCH_AMD}.tar.gz" "task" && \
     addCompletion "TASK" "task" "--completion bash" && \
