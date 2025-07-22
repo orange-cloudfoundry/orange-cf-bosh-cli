@@ -71,7 +71,7 @@ if [ ${flagError} = 0 ] ; then
   fi
 
   #--- Check bosh dns record
-  export BOSH_ENVIRONMENT=$(host bosh-${BOSH_TARGET}.internal.paas | awk '{print $4}')
+  export BOSH_ENVIRONMENT=$(host bosh-${BOSH_TARGET}.internal.paas. | awk '{print $4}')
   if [ "${BOSH_ENVIRONMENT}" = "found:" ] ; then
     printf "\n\n%bERROR : Bosh director \"${BOSH_TARGET}\" unknown (no dns record).%b\n\n" "${RED}" "${STD}"
   else

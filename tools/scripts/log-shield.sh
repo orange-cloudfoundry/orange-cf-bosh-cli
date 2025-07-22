@@ -31,14 +31,14 @@ if [ ${flagError} = 0 ] ; then
   getCredhubValue "OPS_DOMAIN" "/secrets/cloudfoundry_ops_domain"
 
   if [ ${flagError} = 0 ] ; then
-    shield api -k https://shieldv8-webui.${OPS_DOMAIN} paas-templates
+    shield api -k https://shield-webui.${OPS_DOMAIN} paas-templates
     if [ $? != 0 ] ; then
       printf "\n\n%bERROR : Config shield api failed.%b\n\n" "${RED}" "${STD}" ; flagError=1
     fi
   fi
 
   if [ ${flagError} = 0 ] ; then
-    getCredhubValue "ADMIN_PASSWORD" "/bosh-master/shieldv8/failsafe-password"
+    getCredhubValue "ADMIN_PASSWORD" "/bosh-ops/shield/failsafe-password"
   fi
 
   if [ ${flagError} = 0 ] ; then
