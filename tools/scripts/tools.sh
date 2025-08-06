@@ -37,6 +37,7 @@ display "check-k8s" "Check kubernetes clusters (uses kubeconfig to select cluste
 display "check-internet-proxy" "Check internet-proxy logs"
 display "check-intranet-proxy" "Check intranet-proxy logs"
 display "check-switch-proxy" "Check switch-proxy logs"
+display "cmctl" "cert manager cli"
 display "kctrl" "Kubernetes kapp-controller tool"
 display "klbd" "Kubernetes image build orchestrator tool"
 display "kubectl/k" "Kubernetes cli"
