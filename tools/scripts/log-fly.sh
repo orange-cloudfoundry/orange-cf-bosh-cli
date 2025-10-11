@@ -72,9 +72,8 @@ if [ ${flagError} = 0 ] ; then
       printf "%b3%b   : master-depls\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b4%b   : ops-depls\n" "${GREEN}${BOLD}" "${STD}"
       printf "%b5%b   : coab-depls\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b6%b   : gcp-depls\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b7%b   : remote-r2-depls\n" "${GREEN}${BOLD}" "${STD}"
-      printf "%b8%b   : remote-r4-depls\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b6%b   : remote-r2-depls\n" "${GREEN}${BOLD}" "${STD}"
+      printf "%b7%b   : remote-r4-depls\n" "${GREEN}${BOLD}" "${STD}"
       printf "\n%bYour choice :%b " "${GREEN}${BOLD}" "${STD}" ; read choice
       case "${choice}" in
         1) TEAM="main" ;;
@@ -82,9 +81,8 @@ if [ ${flagError} = 0 ] ; then
         3) TEAM="master-depls" ;;
         4) TEAM="ops-depls" ;;
         5) TEAM="coab-depls" ;;
-        6) TEAM="gcp-depls" ;;
-        7) TEAM="remote-r2-depls" ;;
-        8) TEAM="remote-r4-depls" ;;
+        6) TEAM="remote-r2-depls" ;;
+        7) TEAM="remote-r4-depls" ;;
         *) flag=0 ; clear ;;
       esac
     done
