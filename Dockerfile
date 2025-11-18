@@ -5,15 +5,15 @@ ARG DEBIAN_FRONTEND=noninteractive
 #--- Clis versions
 ENV ARGO_VERSION="3.7.3" \
     BBR_VERSION="1.9.75" \
-    BOSH_VERSION="7.9.12" \
+    BOSH_VERSION="7.9.13" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
     CERT_MANAGER_VERSION="2.3.0" \
     CF_VERSION="8.16.0" \
     CF_UAAC_VERSION="4.28.0" \
-    CILIUM_VERSION="0.18.7" \
-    CNPG_VERSION="1.27.0" \
-    CREDHUB_VERSION="2.9.50" \
+    CILIUM_VERSION="0.18.8" \
+    CNPG_VERSION="1.27.1" \
+    CREDHUB_VERSION="2.9.51" \
     CROSSPLANE_CLI="1.20.1" \
     FLUX_VERSION="2.5.1" \
     FLY_VERSION="7.11.2" \
@@ -22,43 +22,43 @@ ENV ARGO_VERSION="3.7.3" \
     GOSS_VERSION="0.4.9" \
     GOVC_VERSION="0.52.0" \
     HELM_VERSION="3.17.1" \
-    HUBBLE_VERSION="1.18.0" \
+    HUBBLE_VERSION="1.18.3" \
     JQ_VERSION="1.8.1" \
     JWT_VERSION="6.2.0" \
     KCTRL_VERSION="0.58.1" \
     KLBD_VERSION="0.46.0" \
     KREW_VERSION="0.4.5" \
-    KUBECTL_VERSION="1.31.13" \
+    KUBECTL_VERSION="1.32.10" \
     KUBECTL_WHOAMI_VERSION="0.0.46" \
     KUBENS_VERSION="0.9.5" \
     KUBESWITCH_VERSION="0.9.3" \
     KYVERNO_VERSION="1.14.4" \
-    K9S_VERSION="0.50.15" \
-    LOKI_VERSION="3.5.7" \
+    K9S_VERSION="0.50.16" \
+    LOKI_VERSION="3.6.0" \
     MONGO_BOSH_VERSION="4.0.25" \
     MONGO_SHELL_VERSION="2.4.2" \
     MYSQL_SHELL_VERSION="8.0.33-1" \
     NU_SHELL_VERSION="0.108.0" \
-    PINNIPED_VERSION="0.41.0" \
+    PINNIPED_VERSION="0.42.0" \
     POPEYE_VERSION="0.22.1" \
-    PROMETHEUS_VERSION="3.7.0" \
+    PROMETHEUS_VERSION="3.7.3" \
     RBAC_TOOL_VERSION="1.20.0" \
     REDIS_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="2.3.18" \
     RUBY_VERSION="3.1.2" \
     SHIELD_VERSION="9.0.0" \
-    SPICEDB_VERSION="0.33.0" \
+    SPICEDB_VERSION="0.33.1" \
     SPRUCE_VERSION="1.31.1" \
-    TASK_VERSION="3.45.4" \
+    TASK_VERSION="3.45.5" \
     TERRAFORM_BOSH_VERSION="0.11.14" \
     TERRAFORM_K8S_VERSION="1.11.3" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
     TFCTL_VERSION="0.15.1" \
     VAULT_VERSION="1.20.4" \
-    VCLUSTER_VERSION="0.29.1" \
-    VENDIR_VERSION="0.44.0" \
+    VCLUSTER_VERSION="0.30.1" \
+    VENDIR_VERSION="0.45.0" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.47.2" \
+    YQ_VERSION="4.48.2" \
     YTT_VERSION="0.52.1"
 
 #--- Packages list, ruby env and plugins
@@ -202,12 +202,12 @@ RUN printf '\n=====================================================\n Install sy
     touch /var/log/lastlog && chmod 664 /var/log/lastlog && chgrp utmp /var/log/lastlog
 
 #--- Run supervisord daemon
-CMD /usr/local/bin/supervisord.sh
+CMD ["/usr/local/bin/supervisord.sh"]
 EXPOSE 22
 
 #--- Check clis/tools availability
 FROM orange_cli AS tests
-RUN /usr/local/bin/check-available-clis.sh
+RUN ["/usr/local/bin/check-available-clis.sh"]
 
 #--- Export image
 FROM orange_cli

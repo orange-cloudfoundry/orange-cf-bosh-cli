@@ -38,7 +38,6 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 
 ### Other tools
 * `cmctl` - Cert-manager cli (https://github.com/cert-manager/cmctl)
-* `gcloud` - Google Cloud Platform cli (https://cloud.google.com/sdk/gcloud)
 * `git` - Git cli
 * `git-filter-repo` - Git rewriting history tool (https://github.com/newren/git-filter-repo)
 * `govc` - Vsphere cli (https://github.com/vmware/govmomi/tree/master/govc/)

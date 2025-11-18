@@ -79,7 +79,7 @@ plugins:
     dangerous: true
   #--- Display events from selected k8s objects every 5s
   watch-events:
-    shortCut: w
+    shortCut: Shift-H
     description: Watch events
     scopes:
       - all
