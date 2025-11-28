@@ -196,6 +196,19 @@ plugins:
     background: false
     confirm: false
     dangerous: false
+  #--- Get kustomizations substitute vars
+  get-substitute-vars:
+    shortCut: Ctrl-V
+    description: Substitute vars
+    scopes:
+      - kustomizations
+    command: bash
+    args:
+      - -c
+      - flux debug kustomization $NAME --show-vars |& less -KR
+    background: false
+    confirm: false
+    dangerous: false
   #--- Get suspended helmreleases in all namespaces
   get-suspended-helmreleases:
     shortCut: Shift-S
