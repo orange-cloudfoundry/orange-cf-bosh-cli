@@ -21,7 +21,7 @@ checkClusterResources() {
     fi
 
     #--- Check pvcs
-    result="$(kubectl get pvc -A --request-timeout=1s --no-headers=true 2>&1 | grep -vE "Bound|No resources found" | awk '{print $3" "$4" "$1"/"$2}' | sort)"
+    result="$(kubectl get pvc -A --request-timeout=1s -o json | jq -r '.items[]|.status.phase + "|" + .spec.volumeName + "|" + .metadata.namespace + "|" + .metadata.name + "|" + .metadata.annotations."volume.kubernetes.io/selected-node" + "|"' | grep -vE "Bound|No resources found" | sed -e "s+||+ - +g" -e "s+|+ +g" | awk '{print $1" "$2" "$3"/"$4}' | sort)"
     if [ "${result}" != "" ] ; then
       printf "\n" ; printf "%bSTATUS PVC NAMESPACE/POD%b\n${result}" "${GREEN}" "${STD}" | column -t
     fi
@@ -35,7 +35,7 @@ checkClusterResources() {
     #--- Check longhorn volumes attachment
     result="$(kubectl get volumes.longhorn.io -n 02-longhorn -o json --request-timeout=1s 2>&1)"
     if [ $? = 0 ] ; then
-      result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + " " + .metadata.name + " " + .metadata.namespace + "/" + .status.kubernetesStatus.workloadsStatus[].podName + " " + (.spec.nodeID // "" | if . == "" then "-" end)' | grep -v "attached/healthy" | awk '{print $1" "$2" "$3" "$4}')"
+      result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + "|" + .metadata.name + "|" + .metadata.namespace + "/" + .status.kubernetesStatus.workloadsStatus[].podName + "|" + .spec.nodeID + "|"' | grep -v "attached/healthy" | sed -e "s+||+ - +g" -e "s+|+ +g" | awk '{print $1" "$2" "$3" "$4}')"
       if [ "${result}" != "" ] ; then
         printf "\n" ; printf "%bSTATUS PVC NAMESPACE/POD NODE%b\n${result}" "${GREEN}" "${STD}" | column -t
       fi
@@ -75,7 +75,7 @@ checkClusterResources() {
     fi
 
     #--- Check pods (except vcluster ones)
-     failed_pods="$(kubectl get pods -A -o wide -l 'vcluster.loft.sh/managed-by notin (vcluster)' --context ${context} --request-timeout=1s --no-headers=true | grep -vE "Completed|ContainerCreating|Terminating" | sed -e "s+(.*)++g" | awk '{ready=$3;gsub("/.*","",ready);total=$3;gsub(".*/","",total);if(ready != total){print $4" "$3" "$1"/"$2" "$8}}' | sort)"
+    failed_pods="$(kubectl get pods -A -o wide -l 'vcluster.loft.sh/managed-by notin (vcluster)' --context ${context} --request-timeout=1s --no-headers=true | grep -vE "Completed|ContainerCreating|Terminating" | sed -e "s+(.*)++g" | awk '{ready=$3;gsub("/.*","",ready);total=$3;gsub(".*/","",total);if(ready != total){print $4" "$3" "$1"/"$2" "$8}}' | sort)"
     if [ "${failed_pods}" != "" ] ; then
       printf "\n" ; printf "%bSTATUS READY NAMESPACE/POD NODE%b\n${failed_pods}" "${GREEN}" "${STD}" | column -t
     fi
@@ -84,6 +84,12 @@ checkClusterResources() {
     result="$(kubectl get crds -o json --request-timeout=1s 2>/dev/null | jq -r '.items[]?.metadata|select(.deletionTimestamp != null)|.name')"
     if [ "${result}" != "" ] ; then
       printf "\n%bCRDS with \"deletionTimestamp\"%b\n${result}\n" "${GREEN}" "${STD}"
+    fi
+
+    #--- Check crossplane not synched resources
+    result="$(kubectl get crossplane -A --request-timeout=1s -o json 2>/dev/null | jq -r '.items[]|{kind} + .metadata + .status.conditions[]?|select((.type == "Synced") and .status == "False")|.kind + " " + .name + " " + .status')"
+    if [ "${result}" != "" ] ; then
+      printf "\n%bCrossplane resources not synched%b\n" "${GREEN}" "${STD}" ; printf "%bKIND NAME SYNCED%b\n${result}" "${GREEN}" "${STD}" | column -t
     fi
   fi
 }
