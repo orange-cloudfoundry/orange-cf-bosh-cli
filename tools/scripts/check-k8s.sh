@@ -89,7 +89,7 @@ checkClusterResources() {
     #--- Check crossplane not synched resources
     result="$(kubectl get crossplane -A --request-timeout=1s -o json 2>/dev/null | jq -r '.items[]|{kind} + .metadata + .status.conditions[]?|select((.type == "Synced") and .status == "False")|.kind + " " + .name + " " + .status')"
     if [ "${result}" != "" ] ; then
-      printf "\n\n%bKIND CROSSPLANE_NAME SYNCED%b\n${result}" "${GREEN}" "${STD}" | column -t
+      printf "\n" ; printf "%bKIND CROSSPLANE_NAME SYNCED%b\n${result}" "${GREEN}" "${STD}" | column -t
     fi
   fi
 }
