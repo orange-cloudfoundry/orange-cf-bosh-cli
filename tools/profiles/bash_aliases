@@ -33,6 +33,7 @@ alias check-k8s='/usr/local/bin/check-k8s.sh'
 alias check-internet-proxy='kubectl logs -f -n internet-proxy -l app=squid --max-log-requests=20'
 alias check-intranet-proxy='kubectl logs -f -n intranet-proxy -l app=squid --max-log-requests=20'
 alias check-switch-proxy='kubectl logs -f -n 30-switch-proxy -l app=squid --max-log-requests=20'
+alias check-resources-used="kubectl resource_capacity --util --pods --sort cpu.util | awk '{print \$1\" \"\$3\" \"\$8\" \"\$9\" \"\$14\" \"\$15}' | column -t | grep -v \"(0%)\""
 alias flux='export FLUX_SYSTEM_NAMESPACE=fluxcd ; export KNS=$(/usr/local/bin/kubens -c 2> /dev/null) ; flux $@'
 alias k='/usr/local/bin/kubectl'
 alias kns='/usr/local/bin/kubens'
