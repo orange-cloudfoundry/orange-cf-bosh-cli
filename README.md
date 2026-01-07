@@ -16,6 +16,7 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 
 ### Kubernetes tools
 * `argo` - Kubernetes workflow management (https://argoproj.github.io/argo-workflows/)
+* `cmctl` - Cert-manager cli (https://github.com/cert-manager/cmctl)
 * `cilium` - Kubernetes cilium network management (https://github.com/cilium/cilium-cli)
 * `cnpg` - Cloud Native Postgres cli (https://github.com/cloudnative-pg/cloudnative-pg)
 * `crossplane` - Kubernetes crossplane (https://docs.crossplane.io/latest/cli)
@@ -24,25 +25,29 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `hubble` - Kubernetes Monitoring management (https://github.com/cilium/hubble/)
 * `klbd` - Kubernetes image build orchestrator tool (https://github.com/k14s/kbld/)
 * `kubectl` - Kubernetes cli (https://kubernetes.io/docs/reference/generated/kubectl/overview/)
+* `kubens` - Kubernetes namespace selection cli (https://github.com/ahmetb/kubectx/)
+* `kubeswitch` - Kubernetes context selection cli (https://github.com/danielfoehrKn/kubeswitch)
 * `kyverno` Kubernetes policy engine (https://github.com/kyverno/kyverno/)
 * `k9s` - Kubernetes cli (https://github.com/derailed/k9s)
 * `logcli` - Loki cli (https://github.com/grafana/loki/)
 * `nu` - NuShell cli (https://github.com/nushell/nushell/)
-* `oc` - Openshift cli (https://docs.openshift.com/dedicated/welcome/)
 * `pinniped` - Identity services cli (https://github.com/vmware-tanzu/pinniped/)
-* `oc` - Openshift cli (https://docs.openshift.com/dedicated/welcome/)
+* `popeye` - Live Cluster Linter cli (https://github.com/derailed/popeye/)
 * `rbac-tool` - Rbac cli (https://github.com/alcideio/rbac-tool/)
 * `task` - Task runner cli (https://github.com/go-task/task/)
 * `vault` - Vault cli (https://releases.hashicorp.com/vault/)
 * `vcluster` - VCluster cli (https://github.com/loft-sh/vcluster/)
+* `zed` - SpiceDB cli (https://github.com/authzed/zed/)
 
 ### Other tools
-* `cmctl` - Cert-manager cli (https://github.com/cert-manager/cmctl)
-* `git` - Git cli
+* `gitlab` - Gitlab cli (https://gitlab.com/gitlab-org/cli/)
+* `github` - Github cli (https://github.com/cli/cli)
 * `git-filter-repo` - Git rewriting history tool (https://github.com/newren/git-filter-repo)
+* `goss` - Server Validation cli (https://github.com/goss-org/goss)
 * `govc` - Vsphere cli (https://github.com/vmware/govmomi/tree/master/govc/)
 * `mc` - Minio S3 cli (https://github.com/minio/mc)
 * `jq` - JSON processing tool (https://stedolan.github.io/jq/)
+* `jwt` - JSON web tokens tool (https://github.com/mike-engel/jwt-cli/)
 * `mdless` - Provides a formatted and highlighted view of Markdown files in Terminal (https://github.com/ttscoff/mdless)
 * `mongo` - MongoDB shell cli for bosh (https://docs.mongodb.com/manual/mongo/)
 * `mongosh` - MongoDB shell cli for k8s (https://docs.mongodb.com/manual/mongo/)
@@ -52,6 +57,7 @@ The container expose ssh port. Password or key (rsa only) authentication is supp
 * `terraform` - Terraform cli (https://www.terraform.io/)
 * `vendir` - Define and fetch components to target directory (https://github.com/vmware-tanzu/carvel-vendir/)
 * `yarn` - Package manager (https://yarnpkg.com/fr/)
+* `yq` -  YAML, JSON, INI and XML processor Tool (https://github.com/mikefarah/yq)
 * `ytt` - YAML Templating Tool (https://github.com/k14s/ytt/)
 
 ## How to get it or build it
