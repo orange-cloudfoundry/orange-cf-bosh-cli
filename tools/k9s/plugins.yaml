@@ -1,4 +1,18 @@
 plugins:
+  #--- Get loki logs for current namespace/pod
+  get-loki-logs:
+    shortCut: Shift-Y
+    description: Get loki logs
+    scopes:
+      - namespaces
+      - pods
+    command: bash
+    args:
+      - -c
+      - get-loki-logs.sh $CONTEXT $CLUSTER $NAMESPACE $NAME
+    background: false
+    confirm: false
+    dangerous: true
   #--- Create debug container for selected pod in current namespace
   debug:
     shortCut: Shift-D
