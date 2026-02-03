@@ -1,35 +1,8 @@
 plugins:
-  #--- Get loki logs for current namespace/pod
-  get-loki-logs:
-    shortCut: Shift-Y
-    description: Get loki logs
-    scopes:
-      - namespaces
-      - pods
-    command: bash
-    args:
-      - -c
-      - get-loki-logs.sh $CONTEXT $CLUSTER $NAMESPACE $NAME
-    background: false
-    confirm: false
-    dangerous: true
-  #--- Create debug container for selected pod in current namespace
-  debug:
-    shortCut: Shift-D
-    description: Add debug container
-    scopes:
-      - containers
-    command: bash
-    args:
-      - -c
-      - kubectl debug -it $POD --context=$CONTEXT --namespace=$NAMESPACE --target=$NAME --image=nicolaka/netshoot:v0.13 --share-processes -- bash
-    background: false
-    confirm: false
-    dangerous: true
   #-- Display kubectl command to run in separate shell
-  kubectl-get-cmd:
+  display-kubectl-cmd:
     shortCut: Shift-B
-    description: Display shell cmd
+    description: Display cmd
     scopes:
       - all
     command: bash
@@ -39,8 +12,8 @@ plugins:
     background: false
     confirm: false
     dangerous: false
-  #--- Show ssl cert
-  show-cert:
+  #--- Display ssl cert
+  display-cert:
     shortCut: Shift-C
     description: Show certs
     scopes:
@@ -52,81 +25,16 @@ plugins:
     background: false
     confirm: false
     dangerous: false
-  #--- Get cert-manager certificates status
-  cert-status:
-    shortCut: Shift-S
-    description: Certificate status
-    scopes:
-      - certificates
-    command: bash
-    args:
-      - -c
-      - cmctl status certificate $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
-    background: false
-    confirm: false
-    dangerous: false
-  #--- Show cnpg cluster status
-  show-cnpg-status:
-    shortCut: Shift-S
-    description: Cnpg status
-    scopes:
-      - cluster
-    command: bash
-    args:
-      - -c
-      - kubectl cnpg status $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
-    background: false
-    confirm: false
-    dangerous: false
-  #--- Run cnpg PSQL shell
-  cnpg-psql-shell:
-    shortCut: p
-    description: PSQL shell
-    scopes:
-      - cluster
-    command: bash
-    args:
-      - -c
-      - kubectl cnpg psql $NAME --context=$CONTEXT --namespace=$NAMESPACE
-    background: false
-    confirm: false
-    dangerous: true
-  #--- Display events from selected k8s objects every 5s
-  watch-events:
-    shortCut: Shift-H
-    description: Watch events
-    scopes:
-      - all
-    command: bash
-    args:
-      - -c
-      - watch -n 5 kubectl get events --context=$CONTEXT --namespace=$NAMESPACE --field-selector involvedObject.name=$NAME
-    background: false
-    confirm: false
-    dangerous: false
   #--- Display last modified fields from managedFields 
   display-blame:
     shortCut: Ctrl-J
-    description: Display blame
+    description: Fields blame
     scopes:
       - all
     command: bash
     args:
       - -c
       - kubectl blame $RESOURCE_NAME $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
-    background: false
-    confirm: false
-    dangerous: false
-  #--- Display resources dependencies
-  display-dependencies:
-    shortCut: Ctrl-N
-    description: Display dependencies
-    scopes:
-      - all
-    command: bash
-    args:
-      - -c
-      - kubectl lineage $RESOURCE_NAME $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
     background: false
     confirm: false
     dangerous: false
@@ -158,8 +66,60 @@ plugins:
     background: false
     confirm: false
     dangerous: false
+  #--- Get cert-manager certificates status
+  get-cert-status:
+    shortCut: Shift-Q
+    description: Cert status
+    scopes:
+      - certificates
+    command: bash
+    args:
+      - -c
+      - cmctl status certificate $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+    background: false
+    confirm: false
+    dangerous: false
+  #--- Get cnpg cluster status
+  get-cnpg-status:
+    shortCut: Shift-Q
+    description: Cnpg status
+    scopes:
+      - cluster
+    command: bash
+    args:
+      - -c
+      - kubectl cnpg status $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+    background: false
+    confirm: false
+    dangerous: false
+  #--- Get resources dependencies
+  get-dependencies:
+    shortCut: Ctrl-N
+    description: Display dependencies
+    scopes:
+      - all
+    command: bash
+    args:
+      - -c
+      - kubectl lineage $RESOURCE_NAME $NAME --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+    background: false
+    confirm: false
+    dangerous: false
+  #--- Get selected k8s application status in current namespace
+  get-app-status:
+    shortCut: Shift-Q
+    description: App status
+    scopes:
+      - app
+    command: bash
+    args:
+      - -c
+      - export FORCE_COLOR=1 ; kctrl app status -a $NAME --kubeconfig-context=$CONTEXT --namespace=$NAMESPACE --color --tty |& less -KR
+    background: false
+    confirm: false
+    dangerous: false
   #--- Get flux managed objects status in current namespace
-  flux-inventory:
+  get-flux-inventory:
     shortCut: x
     description: Flux inventory
     scopes:
@@ -171,21 +131,8 @@ plugins:
     background: false
     confirm: false
     dangerous: false
-  #--- Get all k8s objects created in current namespace
-  namespace-inventory:
-    shortCut: n
-    description: Namespace inventory
-    scopes:
-      - namespaces
-    command: bash
-    args:
-      - -c
-      - kubectl get-all --context=$CONTEXT --namespace=$NAME |& less -KR
-    background: false
-    confirm: false
-    dangerous: false
   #--- Get all information from helm releases in current namespace
-  helm-inventory:
+  get-helm-inventory:
     shortCut: Shift-H
     description: Helm inventory
     scopes:
@@ -197,9 +144,9 @@ plugins:
     background: false
     confirm: false
     dangerous: false
-  #--- View all chart values when helm chart was created in current namespace
-  helm-values:
-    shortCut: a
+  #--- Get all chart values when helm chart was created in current namespace
+  get-helm-values:
+    shortCut: Shift-Q
     description: All values
     scopes:
       - helm
@@ -207,6 +154,33 @@ plugins:
     args:
       - -c
       - helm get values $COL-NAME --kube-context=$CONTEXT --namespace=$NAMESPACE --all |& less -KR
+    background: false
+    confirm: false
+    dangerous: false
+  #--- Get loki logs for current namespace/pod
+  get-loki-logs:
+    shortCut: Shift-Q
+    description: Loki logs
+    scopes:
+      - namespaces
+      - pods
+    command: bash
+    args:
+      - -c
+      - get-loki-logs.sh $CONTEXT $CLUSTER $NAMESPACE $NAME
+    background: false
+    confirm: false
+    dangerous: true
+  #--- Get all k8s objects created in current namespace
+  get-namespace-inventory:
+    shortCut: n
+    description: Namespace inventory
+    scopes:
+      - namespaces
+    command: bash
+    args:
+      - -c
+      - kubectl get-all --context=$CONTEXT --namespace=$NAME |& less -KR
     background: false
     confirm: false
     dangerous: false
@@ -224,8 +198,8 @@ plugins:
     confirm: false
     dangerous: false
   #--- Get suspended helmreleases in all namespaces
-  get-suspended-helmreleases:
-    shortCut: Shift-S
+  get-suspended-helm-releases:
+    shortCut: Shift-Q
     description: List suspended
     scopes:
       - helmreleases
@@ -238,7 +212,7 @@ plugins:
     dangerous: false
   #--- Get suspended kustomizations in all namespaces
   get-suspended-kustomizations:
-    shortCut: Shift-S
+    shortCut: Shift-Q
     description: List suspended
     scopes:
       - kustomizations
@@ -249,8 +223,34 @@ plugins:
     background: false
     confirm: false
     dangerous: false
+  #--- Suspend selected k8s application in current namespace
+  suspend-app:
+    shortCut: Shift-T
+    description: App pause
+    scopes:
+      - app
+    command: bash
+    args:
+      - -c
+      - export FORCE_COLOR=1 ; kctrl app pause -a $NAME --kubeconfig-context=$CONTEXT --namespace=$NAMESPACE --yes --color --tty |& less -KR
+    background: false
+    confirm: false
+    dangerous: true
+  #--- Suspend/reconcile selected gitrepository in current namespace
+  suspend-resume-git-repo:
+    shortCut: Shift-T
+    scopes:
+      - gitrepositories
+    description: Suspend/resume
+    command: bash
+    args:
+      - -c
+      - flux $([ $(kubectl get gitrepo $NAME --context=$CONTEXT --namespace=$NAMESPACE -o=custom-columns=TYPE:.spec.suspend | tail -1) = true ] && echo resume || echo suspend) source git $NAME --timeout 10s --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
+    background: false
+    confirm: true
+    dangerous: true
   #--- Suspend/reconcile selected helmrelease in current namespace
-  suspend-resume-helmrelease:
+  suspend-resume-helm-release:
     shortCut: Shift-T
     description: Suspend/resume
     scopes:
@@ -275,19 +275,6 @@ plugins:
     background: false
     confirm: true
     dangerous: true
-  #--- Suspend/reconcile selected gitrepository in current namespace
-  suspend-resume-gitrepo:
-    shortCut: Shift-T
-    scopes:
-      - gitrepositories
-    description: Suspend/resume
-    command: bash
-    args:
-      - -c
-      - flux $([ $(kubectl get gitrepo $NAME --context=$CONTEXT --namespace=$NAMESPACE -o=custom-columns=TYPE:.spec.suspend | tail -1) = true ] && echo resume || echo suspend) source git $NAME --timeout 10s --context=$CONTEXT --namespace=$NAMESPACE |& less -KR
-    background: false
-    confirm: true
-    dangerous: true
   #--- Suspend/reconcile selected terraform in current namespace
   suspend-resume-tf:
     shortCut: Shift-T
@@ -301,10 +288,23 @@ plugins:
     background: false
     confirm: true
     dangerous: true
-  #--- Reconcile externalSecret in current namespace
-  reconcile-es:
+  #--- Reconcile selected k8s application in current namespace
+  reconcile-app:
     shortCut: Shift-Z
-    description: ExternalSecret reconcile
+    description: App reconcile
+    scopes:
+      - app
+    command: bash
+    args:
+      - -c
+      - export FORCE_COLOR=1 ; kctrl app kick -a $NAME --kubeconfig-context=$CONTEXT --namespace=$NAMESPACE --yes --color --tty |& less -KR
+    background: false
+    confirm: false
+    dangerous: true
+  #--- Reconcile externalSecret in current namespace
+  reconcile-external-secret:
+    shortCut: Shift-Z
+    description: Secret reconcile
     scopes:
       - es
     command: bash
@@ -315,7 +315,7 @@ plugins:
     confirm: false
     dangerous: true
   #--- Reconcile selected gitrepository in current namespace
-  reconcile-git:
+  reconcile-git-repo:
     shortCut: Shift-Z
     description: Flux reconcile
     scopes:
@@ -328,7 +328,7 @@ plugins:
     confirm: false
     dangerous: true
   #--- Reconcile selected helmrelease in current namespace
-  reconcile-helmrelease:
+  reconcile-helm-release:
     shortCut: Shift-Z
     description: Flux reconcile
     scopes:
@@ -382,7 +382,7 @@ plugins:
   #--- Reconcile selected terraform in current namespace
   reconcile-tf:
     shortCut: Shift-Z
-    description: Flux reconcile
+    description: Terraform reconcile
     scopes:
       - terraform
     command: bash
@@ -405,42 +405,42 @@ plugins:
     background: false
     confirm: false
     dangerous: true
-  #--- Get selected k8s application status in current namespace
-  App-status:
-    shortCut: Shift-Q
-    description: App status
+  #--- Run cnpg PSQL shell
+  run-cnpg-psql-shell:
+    shortCut: p
+    description: PSQL shell
     scopes:
-      - app
+      - cluster
     command: bash
     args:
       - -c
-      - export FORCE_COLOR=1 ; kctrl app status -a $NAME --kubeconfig-context=$CONTEXT --namespace=$NAMESPACE --color --tty |& less -KR
+      - kubectl cnpg psql $NAME --context=$CONTEXT --namespace=$NAMESPACE
+    background: false
+    confirm: false
+    dangerous: true
+  #--- Run debug container for selected pod in current namespace
+  run-debug:
+    shortCut: Shift-D
+    description: Run debug container
+    scopes:
+      - containers
+    command: bash
+    args:
+      - -c
+      - kubectl debug -it $POD --context=$CONTEXT --namespace=$NAMESPACE --target=$NAME --image=nicolaka/netshoot:v0.13 --share-processes -- bash
+    background: false
+    confirm: false
+    dangerous: true
+  #--- Display events from selected k8s objects every 5s
+  watch-events:
+    shortCut: Shift-H
+    description: Watch events
+    scopes:
+      - all
+    command: bash
+    args:
+      - -c
+      - watch -n 5 kubectl get events --context=$CONTEXT --namespace=$NAMESPACE --field-selector involvedObject.name=$NAME
     background: false
     confirm: false
     dangerous: false
-  #--- Pause selected k8s application in current namespace
-  App-pause:
-    shortCut: Shift-T
-    description: App pause
-    scopes:
-      - app
-    command: bash
-    args:
-      - -c
-      - export FORCE_COLOR=1 ; kctrl app pause -a $NAME --kubeconfig-context=$CONTEXT --namespace=$NAMESPACE --yes --color --tty |& less -KR
-    background: false
-    confirm: false
-    dangerous: true
-  #--- Reconcile selected k8s application in current namespace
-  App-kick:
-    shortCut: Shift-Z
-    description: App kick
-    scopes:
-      - app
-    command: bash
-    args:
-      - -c
-      - export FORCE_COLOR=1 ; kctrl app kick -a $NAME --kubeconfig-context=$CONTEXT --namespace=$NAMESPACE --yes --color --tty |& less -KR
-    background: false
-    confirm: false
-    dangerous: true
