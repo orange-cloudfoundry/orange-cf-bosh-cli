@@ -13,9 +13,9 @@ getCredhubValue() {
   fi
 }
 
-#--- Set intranet http proxy
-export PROXY_TYPE="intranet"
-export https_proxy="http://intranet-http-proxy.internal.paas:3129"
+#--- Set switch-proxy for vcenter access
+export PROXY_TYPE="switch"
+export https_proxy="http://switch-http-proxy.internal.paas:3127"
 export no_proxy="127.0.0.1,localhost,169.254.0.0/16,172.17.11.0/24,192.168.0.0/16,.internal.paas,.internal.paas.,.svc.cluster.local,.svc.cluster.local.,.cluster.local,.cluster.local."
 set_prompt
 
