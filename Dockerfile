@@ -35,11 +35,10 @@ ENV ARGO_VERSION="4.0.0" \
     KYVERNO_VERSION="1.17.0" \
     K9S_VERSION="0.50.18" \
     LOKI_VERSION="3.6.5" \
-    MONGO_BOSH_VERSION="4.0.25" \
+    MONGO_VERSION="4.0.25" \
     MONGO_SHELL_VERSION="2.4.2" \
-    MYSQL_SHELL_VERSION="8.0.33-1" \
+    MYSQL_VERSION="8.0.33" \
     NU_SHELL_VERSION="0.110.0" \
-    PINNIPED_VERSION="0.44.0" \
     POPEYE_VERSION="0.22.1" \
     RBAC_TOOL_VERSION="1.20.0" \
     REDIS_VERSION="6.2.4" \
@@ -155,12 +154,11 @@ RUN printf '\n=====================================================\n Install sy
     installTargz  "K9S" "k9s" "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${OS_ARCH_AMD}.tar.gz" "k9s" && \
     installZip    "LOKI" "logcli-linux-amd64" "logcli" "https://github.com/grafana/loki/releases/download/v${LOKI_VERSION}/logcli-linux-${OS_ARCH_AMD}.zip" && \
     installBinary "MINIO" "mc" "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_AMD}/mc" && \
-    installTargz  "MONGO-BOSH" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}.tgz" "mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_BOSH_VERSION}/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
+    installTargz  "MONGO" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_VERSION}.tgz" "mongodb-linux-${OS_ARCH_X86_64}-${MONGO_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_VERSION}/bin && mv mongodump /usr/local/bin && mv mongorestore /usr/local/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
     installTargz  "MONGO-SHELL" "mongosh" "https://github.com/mongodb-js/mongosh/releases/download/v${MONGO_SHELL_VERSION}/mongosh-${MONGO_SHELL_VERSION}-linux-x64.tgz" "mongosh-${MONGO_SHELL_VERSION}-linux-x64/bin/mongosh" && \
-    printf '\n=> Add MYSQL-SHELL CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_SHELL_VERSION}ubuntu22.04_${OS_ARCH_AMD}.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    printf '\n=> Add MYSQL-SHELL CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_VERSION}-1ubuntu22.04_${OS_ARCH_AMD}.deb" && dpkg -i /tmp/mysql-shell.deb && \
+    printf '\n=> Add MYSQL-DUMP CLI\n' && curl -sSLo /tmp/mysql-dump.deb "https://dev.mysql.com/get/Downloads/MySQL-Workbench/mysql-workbench-community_${MYSQL_VERSION}-1ubuntu22.04_${OS_ARCH_AMD}.deb" && dpkg --fsys-tarfile /tmp/mysql-dump.deb | tar -xO ./usr/lib/mysql-workbench/mysqldump > /usr/local/bin/mysqldump && \
     installTargz  "NU-SHELL" "nu" "https://github.com/nushell/nushell/releases/download/${NU_SHELL_VERSION}/nu-${NU_SHELL_VERSION}-${OS_ARCH_X86_64}-unknown-linux-gnu.tar.gz" "nu-${NU_SHELL_VERSION}-${OS_ARCH_X86_64}-unknown-linux-gnu/nu" && \
-    installBinary "PINNIPED" "pinniped" "https://github.com/vmware-tanzu/pinniped/releases/download/v${PINNIPED_VERSION}/pinniped-cli-linux-${OS_ARCH_AMD}" && \
-    addCompletion "PINNIPED" "pinniped" "completion bash" && \
     installTargz  "POPEYE" "popeye" "https://github.com/derailed/popeye/releases/download/v${POPEYE_VERSION}/popeye_Linux_${OS_ARCH_AMD}.tar.gz" "popeye" && \
     addCompletion "POPEYE" "popeye" "completion bash" && \
     installTargz  "RBAC-TOOL" "rbac-tool" "https://github.com/alcideio/rbac-tool/releases/download/v${RBAC_TOOL_VERSION}/rbac-tool_v${RBAC_TOOL_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "rbac-tool" && \
