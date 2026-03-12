@@ -193,7 +193,7 @@ plugins:
     command: bash
     args:
       - -c
-      - flux debug kustomization $NAME --show-vars |& less -KR
+      - flux debug kustomization $NAME --context=$CONTEXT --namespace=$NAMESPACE --show-vars |& less -KR
     background: false
     confirm: false
     dangerous: false

@@ -121,6 +121,9 @@ cat > ${HOME}/.tmux.conf <<EOF
 set -g default-terminal "xterm-256color"
 set -g status-bg ${TMUX_BG_COLOR}
 set -g status-fg white
+set -g set-titles on
+set -g history-limit 5000
+set -g mouse on
 EOF
 
 #--- bosh cli completion
