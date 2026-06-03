@@ -20,16 +20,16 @@ checkClusterResources() {
       printf "\n" ; printf "%bSTATUS NODE%b\n${result}" "${GREEN}" "${STD}" | column -t
     fi
 
-    #--- Check pvcs
-    result="$(kubectl get pvc -A --request-timeout=1s -o json | jq -r '.items[]|.status.phase + "|" + .spec.volumeName + "|" + .metadata.namespace + "|" + .metadata.name + "|" + .metadata.annotations."volume.kubernetes.io/selected-node" + "|"' | grep -vE "Bound|No resources found" | sed -e "s+||+ - +g" -e "s+|+ +g" | awk '{print $1" "$2" "$3"/"$4}' | sort)"
-    if [ "${result}" != "" ] ; then
-      printf "\n" ; printf "%bSTATUS PVC NAMESPACE/POD%b\n${result}" "${GREEN}" "${STD}" | column -t
-    fi
-
     #--- Check pvs
     result="$(kubectl get pv -A --request-timeout=1s --no-headers=true 2>&1 | grep -vE "Bound|No resources found" | awk '{print $5" "$1" "$6}' | sort)"
     if [ "${result}" != "" ] ; then
       printf "\n" ; printf "%bSTATUS PV NAMESPACE/POD%b\n${result}" "${GREEN}" "${STD}" | column -t
+    fi
+
+    #--- Check pvcs
+    result="$(kubectl get pvc -A --request-timeout=1s -o json | jq -r '.items[]|.status.phase + "|" + .spec.volumeName + "|" + .metadata.namespace + "|" + .metadata.name + "|" + .metadata.annotations."volume.kubernetes.io/selected-node" + "|"' | grep -vE "Bound|No resources found" | sed -e "s+||+ - +g" -e "s+|+ +g" | awk '{print $1" "$2" "$3"/"$4}' | sort)"
+    if [ "${result}" != "" ] ; then
+      printf "\n" ; printf "%bSTATUS PVC NAMESPACE/POD%b\n${result}" "${GREEN}" "${STD}" | column -t
     fi
 
     #--- Check longhorn volumes attachment
@@ -37,7 +37,7 @@ checkClusterResources() {
     if [ $? = 0 ] ; then
       result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + "|" + .metadata.name + "|" + .metadata.namespace + "/" + .status.kubernetesStatus.workloadsStatus[].podName + "|" + .spec.nodeID + "|"' | grep -v "attached/healthy" | sed -e "s+||+ - +g" -e "s+|+ +g" | awk '{print $1" "$2" "$3" "$4}')"
       if [ "${result}" != "" ] ; then
-        printf "\n" ; printf "%bSTATUS PVC NAMESPACE/POD NODE%b\n${result}" "${GREEN}" "${STD}" | column -t
+        printf "\n" ; printf "%bSTATUS LONGHORN_PVC NAMESPACE/POD NODE%b\n${result}" "${GREEN}" "${STD}" | column -t
       fi
     fi
 
@@ -48,7 +48,7 @@ checkClusterResources() {
     }')"
 
     if [ "${failed_suspended_resources}" != "" ] ; then
-      printf "\n" ; printf "%bREADY SUSP. KIND NAMESPACE/NAME%b\n${failed_suspended_resources}" "${GREEN}" "${STD}" | column -t
+      printf "\n" ; printf "%bSTATUS SUSP. KIND NAMESPACE/NAME%b\n${failed_suspended_resources}" "${GREEN}" "${STD}" | column -t
     fi
 
     #--- Check drift events on helmreleases
@@ -87,9 +87,15 @@ checkClusterResources() {
     fi
 
     #--- Check crossplane not synched resources
-    result="$(kubectl get crossplane -A --request-timeout=1s -o json 2>/dev/null | jq -r '.items[]|{kind} + .metadata + .status.conditions[]?|select((.type == "Synced") and .status == "False")|.kind + " " + .name + " " + .status')"
+    result="$(kubectl get crossplane -A --request-timeout=1s -o json 2>/dev/null | jq -r '.items[]|{kind} + .metadata + .status.conditions[]?|select((.type == "Synced") and .status == "False")|.status + " " + .kind + " " + .name')"
     if [ "${result}" != "" ] ; then
-      printf "\n" ; printf "%bKIND CROSSPLANE_NAME SYNCED%b\n${result}" "${GREEN}" "${STD}" | column -t
+      printf "\n" ; printf "%bSYNCED KIND CROSSPLANE_NAME%b\n${result}" "${GREEN}" "${STD}" | column -t
+    fi
+
+    #--- Check external secrets not synched
+    result="$(kubectl get SecretStores,ClusterSecretStores,ExternalSecrets -A --request-timeout=1s -o json 2>/dev/null | jq -r '.items[]|{kind}  + .metadata + .status.conditions[]?|select(.status == "False")|.status + " " + .reason + " " + .kind + " " + .namespace + "/" + .name')"
+    if [ "${result}" != "" ] ; then
+      printf "\n" ; printf "%bSTATUS REASON KIND NAMESPACE/NAME%b\n${result}" "${GREEN}" "${STD}" | column -t
     fi
   fi
 }
