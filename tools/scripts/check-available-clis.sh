@@ -6,7 +6,7 @@
 set -e
 printf "\nPATH: ${PATH}\n"
 printf "\n====================================================\n=> Check if ruby is available...\n====================================================\n"
-/usr/local/rvm/rubies/ruby-3.1.2/bin/ruby -e 'puts "Ruby is installed"'
+/usr/local/rvm/rubies/ruby-3.4.9/bin/ruby -e 'puts "Ruby is installed"'
 printf "\n====================================================\n=> Check if python is available...\n====================================================\n"
 python3 --version
 printf "\n====================================================\n=> Check if expected system tools are available...\n====================================================\n"
