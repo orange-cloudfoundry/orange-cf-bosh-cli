@@ -58,7 +58,7 @@ checkClusterResources() {
       #--- Check if HelmRelease status is failed/suspended
       for helmrelease in ${drifted_helmReleases} ; do
         status="$(echo "${failed_suspended_resources}" | grep "helmrelease" | grep "${helmrelease}")"
-        if [ "${status}" != "" ] ; then
+        if [ "${status}" = "" ] ; then
           result="${result}\nDriftDetected ${helmrelease}"
         fi
       done
@@ -86,16 +86,16 @@ checkClusterResources() {
       printf "\n%bCRDS with \"deletionTimestamp\"%b\n${result}\n" "${GREEN}" "${STD}"
     fi
 
-    #--- Check crossplane not synched resources
-    result="$(kubectl get crossplane -A --request-timeout=1s -o json 2>/dev/null | jq -r '.items[]|{kind} + .metadata + .status.conditions[]?|select((.type == "Synced") and .status == "False")|.status + " " + .kind + " " + .name')"
-    if [ "${result}" != "" ] ; then
-      printf "\n" ; printf "%bSYNCED KIND CROSSPLANE_NAME%b\n${result}" "${GREEN}" "${STD}" | column -t
-    fi
-
-    #--- Check external secrets not synched
+    #--- Check not synched external secrets
     result="$(kubectl get SecretStores,ClusterSecretStores,ExternalSecrets -A --request-timeout=1s -o json 2>/dev/null | jq -r '.items[]|{kind}  + .metadata + .status.conditions[]?|select(.status == "False")|.status + " " + .reason + " " + .kind + " " + .namespace + "/" + .name')"
     if [ "${result}" != "" ] ; then
       printf "\n" ; printf "%bSTATUS REASON KIND NAMESPACE/NAME%b\n${result}" "${GREEN}" "${STD}" | column -t
+    fi
+
+    #--- Check not synched crossplane resources
+    result="$(kubectl get crossplane -A --request-timeout=1s -o json 2>/dev/null | jq -r '.items[]|{kind} + .metadata + .status.conditions[]?|select((.type == "Synced") and .status == "False")|.status + " " + .kind + " " + .name')"
+    if [ "${result}" != "" ] ; then
+      printf "\n" ; printf "%bSYNCED KIND CROSSPLANE_NAME%b\n${result}" "${GREEN}" "${STD}" | column -t
     fi
   fi
 }
