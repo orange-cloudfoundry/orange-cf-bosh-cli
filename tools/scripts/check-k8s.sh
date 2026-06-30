@@ -53,7 +53,7 @@ checkClusterResources() {
 
     #--- Check drift events on helmreleases
     result=""
-    drifted_helmReleases="$(kubectl events -A --types=Warning --request-timeout=1s --no-headers=true | grep " DriftDetected *HelmRelease" | sed -e "s+.* state of release ++g" -e "s+ .*++g" -e "s+\.v.*++g" | sort)"
+    drifted_helmReleases="$(kubectl events -A --types=Warning --request-timeout=1s --no-headers=true | grep " DriftDetected *HelmRelease" | sed -e "s+.* state of release ++g" -e "s+ .*++g" -e "s+\.v.*++g" | sort | uniq)"
     if [ "${drifted_helmReleases}" != "" ] ; then
       #--- Check if HelmRelease status is failed/suspended
       for helmrelease in ${drifted_helmReleases} ; do
