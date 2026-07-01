@@ -35,7 +35,7 @@ checkClusterResources() {
     #--- Check longhorn volumes attachment
     result="$(kubectl get volumes.longhorn.io -n 02-longhorn -o json --request-timeout=1s 2>&1)"
     if [ $? = 0 ] ; then
-      result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + "|" + .metadata.name + "|" + .metadata.namespace + "/" + .status.kubernetesStatus.workloadsStatus[].podName + "|" + .spec.nodeID + "|"' | grep -v "attached/healthy" | sed -e "s+||+ - +g" -e "s+|+ +g" | awk '{print $1" "$2" "$3" "$4}')"
+      result="$(echo "${result}" | jq -r '.items[]|.status.state + "/" + .status.robustness + "|" + .metadata.name + "|" + .status.kubernetesStatus.namespace + "/" + .status.kubernetesStatus.workloadsStatus[].podName + "|" + .spec.nodeID + "|"' | grep -v "attached/healthy" | sed -e "s+||+ - +g" -e "s+|+ +g" | awk '{print $1" "$2" "$3" "$4}')"
       if [ "${result}" != "" ] ; then
         printf "\n" ; printf "%bSTATUS LONGHORN_PVC NAMESPACE/POD NODE%b\n${result}" "${GREEN}" "${STD}" | column -t
       fi
