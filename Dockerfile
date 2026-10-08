@@ -152,7 +152,7 @@ RUN printf '\n=====================================================\n Install sy
     addCompletion "KYVERNO" "kyverno" "completion bash" && \
     installTargz  "K9S" "k9s" "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${OS_ARCH_AMD}.tar.gz" "k9s" && \
     installZip    "LOKI" "logcli-linux-amd64" "logcli" "https://github.com/grafana/loki/releases/download/v${LOKI_VERSION}/logcli-linux-${OS_ARCH_AMD}.zip" && \
-    installBinary "MINIO" "mc" "https://dl.minio.io/client/mc/release/linux-${OS_ARCH_AMD}/mc" && \
+    installBinary "MINIO" "mc" "https://github.com/minio/mc/releases/download/RELEASE.2025-08-13T08-35-41Z/mc.linux-${OS_ARCH_AMD}.RELEASE.2025-08-13T08-35-41Z" && \
     installTargz  "MONGO" "mongo" "https://fastdl.mongodb.org/linux/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_VERSION}.tgz" "mongodb-linux-${OS_ARCH_X86_64}-${MONGO_VERSION}/bin/mongo" && cd /tmp/mongodb-linux-${OS_ARCH_X86_64}-${MONGO_VERSION}/bin && mv mongodump /usr/local/bin && mv mongorestore /usr/local/bin && mv mongostat /usr/local/bin && mv mongotop /usr/local/bin && \
     installTargz  "MONGO-SHELL" "mongosh" "https://github.com/mongodb-js/mongosh/releases/download/v${MONGO_SHELL_VERSION}/mongosh-${MONGO_SHELL_VERSION}-linux-x64.tgz" "mongosh-${MONGO_SHELL_VERSION}-linux-x64/bin/mongosh" && \
     printf '\n=> Add MYSQL-SHELL CLI\n' && curl -sSLo /tmp/mysql-shell.deb "https://dev.mysql.com/get/Downloads/MySQL-Shell/mysql-shell_${MYSQL_VERSION}-1ubuntu22.04_${OS_ARCH_AMD}.deb" && dpkg -i /tmp/mysql-shell.deb && \
