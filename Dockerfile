@@ -3,61 +3,61 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 
 #--- Clis versions
-ARG ARGO_VERSION="4.0.6" \
-    BBR_VERSION="1.9.79" \
-    BOSH_VERSION="7.10.6" \
+ARG ARGO_VERSION="4.1.4" \
+    BBR_VERSION="1.9.81" \
+    BOSH_VERSION="7.11.0" \
     BOSH_COMPLETION_VERSION="1.2.0" \
     BOSH_GEN_VERSION="0.101.2" \
-    CERT_MANAGER_VERSION="2.5.0" \
-    CF_VERSION="8.18.3" \
-    CF_UAAC_VERSION="4.31.0" \
-    CILIUM_VERSION="0.19.4" \
-    CNPG_VERSION="1.29.1" \
-    CREDHUB_VERSION="2.9.57" \
-    CROSSPLANE_CLI="2.3.3" \
-    FLUX_VERSION="2.7.5" \
+    CERT_MANAGER_VERSION="2.6.1" \
+    CF_VERSION="8.19.0" \
+    CF_UAAC_VERSION="5.1.0" \
+    CILIUM_VERSION="0.20.1" \
+    CNPG_VERSION="1.30.1" \
+    CREDHUB_VERSION="2.9.62" \
+    CROSSPLANE_CLI="2.4.2" \
+    FLUX_VERSION="2.9.1" \
     FLY_VERSION="8.2.4" \
-    GITLAB_VERSION="1.103.0" \
-    GITHUB_VERSION="2.95.0" \
+    GITLAB_VERSION="1.121.0" \
+    GITHUB_VERSION="2.102.0" \
     GOSS_VERSION="0.4.9" \
-    GOVC_VERSION="0.54.1" \
-    HELM_VERSION="3.17.1" \
-    HUBBLE_VERSION="1.19.4" \
+    GOVC_VERSION="0.56.0" \
+    HELM_VERSION="4.2.4" \
+    HUBBLE_VERSION="1.20.2" \
     JQ_VERSION="1.8.2" \
     JWT_VERSION="6.2.0" \
-    KCTRL_VERSION="0.60.3" \
-    KLBD_VERSION="0.49.1" \
+    KCTRL_VERSION="0.60.9" \
+    KLBD_VERSION="0.49.2" \
     KREW_VERSION="0.5.0" \
-    KUBECTL_VERSION="1.33.12" \
+    KUBECTL_VERSION="1.34.12" \
     KUBECTL_WHOAMI_VERSION="0.0.48" \
     KUBENS_VERSION="0.11.0" \
     KUBESWITCH_VERSION="0.9.3" \
-    KYVERNO_VERSION="1.18.1" \
+    KYVERNO_VERSION="1.18.2" \
     K9S_VERSION="0.51.0" \
-    LOKI_VERSION="3.7.2" \
+    LOKI_VERSION="3.7.8" \
     MONGO_VERSION="4.0.25" \
     MONGO_SHELL_VERSION="2.4.2" \
     MYSQL_VERSION="8.0.33" \
-    NU_SHELL_VERSION="0.113.1" \
+    NU_SHELL_VERSION="0.116.1" \
     POPEYE_VERSION="0.22.1" \
     RBAC_TOOL_VERSION="1.20.0" \
     REDIS_VERSION="6.2.4" \
     RUBY_BUNDLER_VERSION="4.0.15" \
     RUBY_VERSION="3.4.9" \
-    SHIELD_VERSION="9.0.1" \
-    SPICEDB_VERSION="1.1.1" \
-    SPRUCE_VERSION="1.35.9" \
-    TASK_VERSION="3.51.1" \
+    SHIELD_VERSION="9.0.2" \
+    SPICEDB_VERSION="1.2.1" \
+    SPRUCE_VERSION="1.35.21" \
+    TASK_VERSION="3.54.0" \
     TERRAFORM_BOSH_VERSION="0.11.14" \
-    TERRAFORM_K8S_VERSION="1.15.6" \
+    TERRAFORM_K8S_VERSION="1.16.5" \
     TERRAFORM_PLUGIN_CF_VERSION="0.11.2" \
-    TFCTL_VERSION="0.16.4" \
-    VAULT_VERSION="2.0.3" \
-    VCLUSTER_VERSION="0.35.1" \
-    VENDIR_VERSION="0.46.0" \
+    TFCTL_VERSION="0.16.5" \
+    VAULT_VERSION="2.1.2" \
+    VCLUSTER_VERSION="0.37.3" \
+    VENDIR_VERSION="0.46.2" \
     YAML_PATH_VERSION="0.4" \
-    YQ_VERSION="4.53.3" \
-    YTT_VERSION="0.55.1"
+    YQ_VERSION="4.54.1" \
+    YTT_VERSION="0.55.3"
 
 #--- Packages list, ruby env and plugins
 ARG INIT_PACKAGES="apt-transport-https ca-certificates curl openssh-server openssl sudo unzip wget" \
@@ -95,7 +95,6 @@ RUN printf '\n=====================================================\n Install sy
     sed -i 's/^PermitRootLogin .*/PermitRootLogin no/g' /etc/ssh/sshd_config && sed -i 's/^ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config && \
     sed -i 's/^PubkeyAuthentication .*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && sed -i 's/^.*PasswordAuthentication yes.*/PasswordAuthentication no/g' /etc/ssh/sshd_config && \
     sed -i 's/.*\[supervisord\].*/&\nnodaemon=true\nloglevel=debug/' /etc/supervisor/supervisord.conf && \
-    sed -i 's/^#Upstream http some.*/upstream http system-internet-http-proxy.internal.paas:3128 ".openshiftapps.com"/' /etc/tinyproxy/tinyproxy.conf && sed -i 's/^ConnectPort /#ConnectPort /' /etc/tinyproxy/tinyproxy.conf && \
     mkdir -p /var/run/sshd /var/log/supervisor /data/shared /home/bosh/.ssh && chmod 700 /home/bosh /home/bosh/.ssh && \
     printf '\n=====================================================\n Install clis and tools\n=====================================================\n' && \
     installBinary() { printf "\n=> Add $1 CLI\n" ; curl -sSLo /usr/local/bin/$2 "$3" ; } && \
