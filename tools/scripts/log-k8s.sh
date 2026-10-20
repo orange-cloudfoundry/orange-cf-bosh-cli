@@ -95,17 +95,18 @@ if [ ${flagError} = 0 ] ; then
 
   #--- Get clusters list
   TARGET_KUBECONFIG="" ; K8S_CONTEXTS=""
-  cluster_paths="$(credhub f | grep -E "name: /kubeconfigs/|name: /secrets/kubeconfigs/" | awk '{print $3}' | sort)"
+  cluster_paths="$(credhub f | grep "name: /secrets/kubeconfig_" | awk '{print $3}' | sort)"
 
   for path in ${cluster_paths} ; do
-    K8S_CLUSTER="$(echo "${path}" | sed -e "s+.*kubeconfigs\/++")"
-    K8S_CONTEXT="$(echo "${path}" | sed -e "s+.*kubeconfigs\/++" -e "s+-k8s++" -e "s+00-++")"
+    K8S_CLUSTER="$(echo "${path}" | sed -e "s+.*kubeconfig_++")"
+    K8S_CONTEXT="$(echo "${path}" | sed -e "s+.*kubeconfig_++" -e "s+_k8s++" -e "s+00_++")"
     K8S_CONTEXTS="${K8S_CONTEXTS} ${K8S_CONTEXT}"
     export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
 
     #--- Get k8s cluster configuration from credhub
-    credhub g -n ${path} -j 2> /dev/null | jq -r '.value' > ${KUBECONFIG}
-    if [ -s ${KUBECONFIG} ] ; then
+    credhub g -n ${path} -j 2> /dev/null | jq -r '.value' | base64 -d > ${KUBECONFIG}
+    flag="$(grep "kind: Config" ${KUBECONFIG})"
+    if [ "${flag}" != "" ] ; then
       updateKubeConfig "clusters.name" "${K8S_CLUSTER}"
       updateKubeConfig "contexts.context.cluster" "${K8S_CLUSTER}"
       updateKubeConfig "contexts.name" "${K8S_CONTEXT}"
