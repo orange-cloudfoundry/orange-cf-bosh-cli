@@ -15,8 +15,8 @@ export GIT_ICON=$'\u2387'
 export PROXY_ICON=$'\u26a1'
 export BOSH_ICON=$'\u2601\ufe0f'
 export K8S_ICON=$'\u2638\ufe0f'
-export WRITE_ICON=$'\u270d'
 export READ_ICON=$'\U0001f512'
+export WRITE_ICON=$'\U0001f513'
 
 #--- Source kctx functions
 if [ -f /usr/local/bin/switch-k8s-ctx.sh ] ; then
@@ -76,13 +76,13 @@ set_k8s_prompt()
     KNS="$(kubens -c 2> /dev/null)"
     if [ $? != 0 ] ; then
       if [ -z "${KUBE_EDITOR}" ] ; then
-        echo "${K8S_ICON} ${WRITE_ICON}  ${KCTX} "
+        echo "${K8S_ICON} ${WRITE_ICON} ${KCTX} "
       else
         echo "${K8S_ICON} ${READ_ICON} ${KCTX} "
       fi
     else
       if [ -z "${KUBE_EDITOR}" ] ; then
-        echo "${K8S_ICON} ${WRITE_ICON}  ${KCTX}:${KNS} "
+        echo "${K8S_ICON} ${WRITE_ICON} ${KCTX}:${KNS} "
       else
         echo "${K8S_ICON} ${READ_ICON} ${KCTX}:${KNS} "
       fi
