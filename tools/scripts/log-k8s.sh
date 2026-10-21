@@ -98,7 +98,7 @@ if [ ${flagError} = 0 ] ; then
   cluster_paths="$(credhub f | grep "name: /secrets/kubeconfig_" | awk '{print $3}' | sort)"
 
   for path in ${cluster_paths} ; do
-    K8S_CLUSTER="$(echo "${path}" | sed -e "s+.*kubeconfig_++")"
+    K8S_CLUSTER="$(echo "${path}" | sed -e "s+.*kubeconfig_++" -e "s+_+-+g")"
     K8S_CONTEXT="${K8S_CLUSTER}"
     K8S_CONTEXTS="${K8S_CONTEXTS} ${K8S_CONTEXT}"
     export KUBECONFIG="${HOME}/.kube/${K8S_CONTEXT}.yml"
