@@ -129,8 +129,7 @@ RUN printf '\n=====================================================\n Install sy
     printf "\n=> Add GITLAB CLI completion\n" ; /usr/bin/glab completion -s bash > /etc/bash_completion.d/glab && \
     installTargz  "GITHUB CLI" "gh" "https://github.com/cli/cli/releases/download/v${GITHUB_VERSION}/gh_${GITHUB_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "gh_${GITHUB_VERSION}_linux_${OS_ARCH_AMD}/bin/gh" && \
     addCompletion "GITHUB CLI" "gh" "completion bash" && \
-    installBinary "GOSS" "goss" "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss_${GOSS_VERSION}_linux_i386.tar.gz" && \
-    installBinary "KGOSS" "kgoss" "https://raw.githubusercontent.com/orange-cloudfoundry/goss/kgoss-kubectl-opts/extras/kgoss/kgoss" && \
+    installTargz "GOSS" "goss" "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss_${GOSS_VERSION}_linux_i386.tar.gz" "goss" && \
     installTargz  "GOVC" "govc" "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_${OS_ARCH_X86_64}.tar.gz" "govc" && \
     installTargz  "HELM" "helm" "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${OS_ARCH_AMD}.tar.gz" "linux-${OS_ARCH_AMD}/helm" && \
     addCompletion "HELM" "helm" "completion bash" && \
@@ -140,6 +139,7 @@ RUN printf '\n=====================================================\n Install sy
     installTargz  "JWT" "jwt" "https://github.com/mike-engel/jwt-cli/releases/download/${JWT_VERSION}/jwt-linux.tar.gz" "jwt" && \
     installBinary "KCTRL" "kctrl" "https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v${KCTRL_VERSION}/kctrl-linux-${OS_ARCH_AMD}" && \
     addCompletion "KCTRL" "kctrl" "completion bash" && \
+    installBinary "KGOSS" "kgoss" "https://raw.githubusercontent.com/orange-cloudfoundry/goss/kgoss-kubectl-opts/extras/kgoss/kgoss" && \
     installBinary "KLBD" "klbd" "https://github.com/k14s/kbld/releases/download/v${KLBD_VERSION}/kbld-linux-${OS_ARCH_AMD}" && \
     installBinary "KUBECTL" "kubectl" "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/${OS_ARCH_AMD}/kubectl" && \
     addCompletion "KUBECTL" "kubectl" "completion bash" && sed -i "s+__start_kubectl kubectl+__start_kubectl kubectl k+g" /etc/bash_completion.d/kubectl && \
