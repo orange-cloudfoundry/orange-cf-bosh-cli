@@ -129,7 +129,7 @@ RUN printf '\n=====================================================\n Install sy
     printf "\n=> Add GITLAB CLI completion\n" ; /usr/bin/glab completion -s bash > /etc/bash_completion.d/glab && \
     installTargz  "GITHUB CLI" "gh" "https://github.com/cli/cli/releases/download/v${GITHUB_VERSION}/gh_${GITHUB_VERSION}_linux_${OS_ARCH_AMD}.tar.gz" "gh_${GITHUB_VERSION}_linux_${OS_ARCH_AMD}/bin/gh" && \
     addCompletion "GITHUB CLI" "gh" "completion bash" && \
-    installBinary "GOSS" "goss" "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss-linux-${OS_ARCH_AMD}" && \
+    installTargz  "GOSS" "goss" "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss_${GOSS_VERSION}_darwin_${OS_ARCH_X86_64}.tar.gz" "goss" && \
     installBinary "KGOSS" "kgoss" "https://raw.githubusercontent.com/orange-cloudfoundry/goss/kgoss-kubectl-opts/extras/kgoss/kgoss" && \
     installTargz  "GOVC" "govc" "https://github.com/vmware/govmomi/releases/download/v${GOVC_VERSION}/govc_Linux_${OS_ARCH_X86_64}.tar.gz" "govc" && \
     installTargz  "HELM" "helm" "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${OS_ARCH_AMD}.tar.gz" "linux-${OS_ARCH_AMD}/helm" && \
